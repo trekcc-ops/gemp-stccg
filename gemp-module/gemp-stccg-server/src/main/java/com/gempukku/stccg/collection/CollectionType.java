@@ -56,4 +56,8 @@ public final class CollectionType {
     public int hashCode() {
         return _code != null ? _code.hashCode() : 0;
     }
+
+    public boolean hasCode(String code) {
+        return _code.equals(code);
+    }
 }

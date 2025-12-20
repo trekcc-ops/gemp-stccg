@@ -9,36 +9,144 @@ import com.gempukku.stccg.formats.GameFormat;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 
-public interface TournamentQueue {
-    int getCost();
+public abstract class TournamentQueue {
+    protected final int _cost;
+    protected final Queue<String> _players = new LinkedList<>();
+    protected final Map<String, CardDeck> _playerDecks = new HashMap<>();
+    protected final boolean _requiresDeck;
 
-    GameFormat getGameFormat(FormatLibrary formatLibrary);
+    protected final PairingMechanism _pairingMechanism;
+    protected final CollectionType _collectionType;
+    protected final TournamentPrizes _tournamentPrizes;
+    protected final String _format;
+    private final Tournament.Stage _stage;
+    protected final TournamentService _tournamentService;
+    protected final String _queueName;
 
-    CollectionType getCollectionType();
+    public TournamentQueue(int cost, boolean requiresDeck, CollectionType collectionType,
+                           TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism,
+                           String format, TournamentService tournamentService, Tournament.Stage stage,
+                           String queueName) {
+        _cost = cost;
+        _requiresDeck = requiresDeck;
+        _collectionType = collectionType;
+        _tournamentPrizes = tournamentPrizes;
+        _pairingMechanism = pairingMechanism;
+        _format = format;
+        _tournamentService = tournamentService;
+        _stage = stage;
+        _queueName = queueName;
+    }
 
-    String getTournamentQueueName();
+    public TournamentQueue(TournamentQueueInfo queueInfo, TournamentPrizes prizes,
+                           TournamentService tournamentService, Tournament.Stage stage, String queueName) {
+        this(queueInfo.getCost(), true, CollectionType.ALL_CARDS, prizes,
+                queueInfo.getPairingMechanism(), queueInfo.getFormat(), tournamentService, stage, queueName);
+    }
 
-    String getPrizesDescription();
 
-    String getPairingDescription();
+    public String getPairingDescription() {
+        return _pairingMechanism.getPlayOffSystem();
+    }
 
-    String getStartCondition();
+    public String getPairingRegistryRepresentation() {
+        return _pairingMechanism.getRegistryRepresentation();
+    }
 
-    boolean isRequiresDeck();
 
-    boolean process(TournamentQueueCallback tournamentQueueCallback, CollectionsManager collectionsManager)
+    public final CollectionType getCollectionType() {
+        return _collectionType;
+    }
+
+    public final String getPrizesRegistryRepresentation() {
+        return _tournamentPrizes.getRegistryRepresentation();
+    }
+
+
+    public final String getPrizesDescription() {
+        return _tournamentPrizes.getPrizeDescription();
+    }
+
+    public final synchronized void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck)
+            throws SQLException, IOException {
+        String playerName = player.getName();
+        if (!_players.contains(playerName) && isJoinable()) {
+            if (_cost <= 0 || collectionsManager.removeCurrencyFromPlayerCollection(
+                    "Joined " + getTournamentQueueName() + " queue", player, _cost)) {
+                _players.add(playerName);
+                if (_requiresDeck)
+                    _playerDecks.put(playerName, deck);
+            }
+        }
+    }
+
+    public final synchronized void leavePlayer(CollectionsManager collectionsManager, User player)
+            throws SQLException, IOException {
+        String playerName = player.getName();
+        if (_players.contains(playerName)) {
+            if (_cost > 0)
+                collectionsManager.addCurrencyToPlayerCollection(true,
+                        "Return for leaving " + getTournamentQueueName() + " queue", player, _cost);
+            _players.remove(playerName);
+            _playerDecks.remove(playerName);
+        }
+    }
+
+    public final synchronized void leaveAllPlayers(CollectionsManager collectionsManager)
+            throws SQLException, IOException {
+        if (_cost > 0) {
+            for (String player : _players) {
+                collectionsManager.addCurrencyToPlayerCollection(false,
+                        "Return for leaving " + getTournamentQueueName() + " queue", player, _cost);
+            }
+        }
+        _players.clear();
+        _playerDecks.clear();
+    }
+
+    public final synchronized int getPlayerCount() {
+        return _players.size();
+    }
+
+    public final synchronized boolean isPlayerSignedUp(String player) {
+        return _players.contains(player);
+    }
+
+    public final int getCost() {
+        return _cost;
+    }
+
+    public final boolean isRequiresDeck() {
+        return _requiresDeck;
+    }
+
+    public final GameFormat getGameFormat(FormatLibrary formatLibrary) {
+        return formatLibrary.get(_format);
+    }
+
+    public String getFormatText() {
+        return _format;
+    }
+
+    public Tournament.Stage getStage() {
+        return _stage;
+    }
+
+    public abstract boolean isJoinable();
+    public String getTournamentQueueName() {
+        return _queueName;
+    }
+    public abstract String getStartCondition();
+
+    public abstract void process(TournamentQueueCallback callback, CollectionsManager collectionsManager,
+                                 TournamentService tournamentService)
             throws SQLException, IOException;
 
-    void joinPlayer(CollectionsManager collectionsManager, User player, CardDeck deck) throws SQLException, IOException;
+    public abstract boolean shouldBeRemovedFromHall();
 
-    void leavePlayer(CollectionsManager collectionsManager, User player) throws SQLException, IOException;
-
-    void leaveAllPlayers(CollectionsManager collectionsManager) throws SQLException, IOException;
-
-    int getPlayerCount();
-
-    boolean isPlayerSignedUp(String player);
-
-    boolean isJoinable();
 }

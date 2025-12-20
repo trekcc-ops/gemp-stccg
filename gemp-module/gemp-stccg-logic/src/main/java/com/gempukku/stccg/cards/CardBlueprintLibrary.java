@@ -18,6 +18,7 @@ import com.gempukku.stccg.game.ICallback;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hjson.JsonValue;
@@ -41,6 +42,15 @@ public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint>
     private final ObjectMapper _jsonMapper;
 
     public CardBlueprintLibrary() {
+        this(false);
+    }
+
+    public CardBlueprintLibrary(boolean suppressMessages) {
+        if (suppressMessages) {
+            ((org.apache.logging.log4j.core.Logger) LOGGER).setLevel(Level.WARN);
+        }
+
+
         LOGGER.info("Locking blueprint library in constructor");
 
         //This will be released after the library has been initialized. Until then, all functional uses will be blocked.

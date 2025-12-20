@@ -8,6 +8,7 @@ import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.GameServer;
 
 import java.util.*;
 
@@ -59,7 +60,7 @@ public class HallCommunicationChannel implements LongPollableResource {
         return _lastConsumed;
     }
 
-    public final void processCommunicationChannel(HallServer hallServer, final User player,
+    public final void processCommunicationChannel(HallServer hallServer, GameServer gameServer, final User player,
                                                   Map<Object, Object> itemsToAddToHallElem) {
         updateLastAccess();
 
@@ -88,7 +89,7 @@ public class HallCommunicationChannel implements LongPollableResource {
         for (String gameId : playedGamesOnServer) {
             if (!_playedGames.contains(gameId)) {
                 try {
-                    DefaultGame cardGame = hallServer.getGameById(gameId);
+                    DefaultGame cardGame = gameServer.getGameById(gameId).getGame();
                     Map<String, String> map = new HashMap<>();
                     map.put("gameId", gameId);
                     map.put("gameType", cardGame.getGameType().name());

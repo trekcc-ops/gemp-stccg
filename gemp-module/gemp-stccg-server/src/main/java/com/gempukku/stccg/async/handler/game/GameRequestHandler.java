@@ -1,9 +1,10 @@
 package com.gempukku.stccg.async.handler.game;
 
 import com.gempukku.stccg.async.GempHttpRequest;
+import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.filterable.Phase;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMessage;
+import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.game.CardGameMediator;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
@@ -11,18 +12,16 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class GameRequestHandlerNew {
+public interface GameRequestHandler {
 
-    protected final Set<Phase> _autoPassDefault = new HashSet<>();
-    protected final String _gameId;
-
-    GameRequestHandlerNew(String gameId) {
-        _autoPassDefault.add(Phase.EXECUTE_ORDERS);
-        _gameId = gameId;
+    default void validateUserCanAccessGameState(User player, CardGameMediator mediator) throws PrivateInformationException {
+        if (!player.hasType(User.Type.ADMIN) && !mediator.allowsSpectators() &&
+                !mediator.hasPlayer(player.getName())) {
+            throw new PrivateInformationException();
+        }
     }
 
-
-    protected Set<Phase> getAutoPassPhases(GempHttpRequest request) {
+    default Set<Phase> getAutoPassPhases(GempHttpRequest request) {
         ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
         String cookieHeader = request.cookieHeader();
         if (!cookieHeader.isEmpty()) {
@@ -41,7 +40,9 @@ public class GameRequestHandlerNew {
                     return Collections.emptySet();
             }
         }
-        return _autoPassDefault;
+        Set<Phase> autoPassDefault = new HashSet<>();
+        autoPassDefault.add(Phase.EXECUTE_ORDERS);
+        return autoPassDefault;
     }
 
 }

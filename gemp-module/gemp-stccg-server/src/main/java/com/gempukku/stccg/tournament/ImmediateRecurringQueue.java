@@ -1,16 +1,12 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.DateUtils;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.collection.CollectionsManager;
 
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-public class ImmediateRecurringQueue extends AbstractTournamentQueue implements TournamentQueue {
-    private final String _tournamentQueueName;
+public class ImmediateRecurringQueue extends TournamentQueue {
     private final int _playerCap;
     private final String _tournamentIdPrefix;
 
@@ -18,15 +14,10 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
                                            String tournamentQueueName, int playerCap, boolean requiresDeck,
                                            TournamentService tournamentService, TournamentPrizes tournamentPrizes,
                                    PairingMechanism pairingMechanism) {
-        super(cost, requiresDeck, collectionType, tournamentPrizes, pairingMechanism, format, tournamentService);
-        _tournamentQueueName = tournamentQueueName;
+        super(cost, requiresDeck, collectionType, tournamentPrizes, pairingMechanism, format, tournamentService,
+                Tournament.Stage.PLAYING_GAMES, tournamentQueueName);
         _playerCap = playerCap;
         _tournamentIdPrefix = tournamentIdPrefix;
-    }
-
-    @Override
-    public String getTournamentQueueName() {
-        return _tournamentQueueName;
     }
 
     @Override
@@ -35,33 +26,38 @@ public class ImmediateRecurringQueue extends AbstractTournamentQueue implements 
     }
 
     @Override
-    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback,
-                                        CollectionsManager collectionsManager) {
-        if (_players.size() >= _playerCap) {
+    public synchronized void process(TournamentQueueCallback tournamentQueueCallback,
+                                     CollectionsManager collectionsManager, TournamentService tournamentService) {
+        if (hasEnoughPlayers()) {
             String tournamentId = _tournamentIdPrefix + System.currentTimeMillis();
-
             ZonedDateTime now = ZonedDateTime.now();
             String currentDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-            String tournamentName = _tournamentQueueName + " - " + currentDate;
-
-            for (int i=0; i<_playerCap; i++) {
-                String player = _players.poll();
-                _tournamentService.addPlayer(tournamentId, player, _playerDecks.get(player));
-                _playerDecks.remove(player);
-            }
-
-            Tournament tournament = _tournamentService.addTournament(tournamentId, null, tournamentName,
-                    _format, _collectionType, Tournament.Stage.PLAYING_GAMES, "singleElimination",
-                    _tournamentPrizes.getRegistryRepresentation(), new Date());
-
+            String tournamentName = _queueName + " - " + currentDate;
+            Tournament tournament = tournamentService.addTournament(this, tournamentId, tournamentName);
+            addPlayersToTournamentData(tournamentService, tournamentId);
             tournamentQueueCallback.createTournament(tournament);
         }
-        return false;
+    }
+
+    private boolean hasEnoughPlayers() {
+        return _players.size() >= _playerCap;
+    }
+
+    private void addPlayersToTournamentData(TournamentService tournamentService, String tournamentId) {
+        for (int i=0; i<_playerCap; i++) {
+            String player = _players.poll();
+            tournamentService.addPlayer(tournamentId, player, _playerDecks.get(player));
+            _playerDecks.remove(player);
+        }
     }
 
     @Override
     public boolean isJoinable() {
         return true;
+    }
+
+    @Override
+    public boolean shouldBeRemovedFromHall() {
+        return false;
     }
 }

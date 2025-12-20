@@ -1,6 +1,5 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 
 import java.time.ZoneId;
@@ -62,11 +61,13 @@ public class TournamentQueueInfo {
         return _minimumPlayers;
     }
 
-    public ScheduledTournamentQueue createNewScheduledTournamentQueue(ServerObjects objects, Tournament.Stage stage) {
+    public ScheduledTournamentQueue createNewScheduledTournamentQueue(CardBlueprintLibrary cardLibrary,
+                                                                      Tournament.Stage stage,
+                                                                      TournamentService tournamentService) {
         ZonedDateTime startDate = new Date(_startTime).toInstant().atZone(ZoneId.of("GMT"));
         String startCondition = startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         return new ScheduledTournamentQueue(this, _scheduledTournamentId, _startTime, _minimumPlayers,
-                startCondition, _tournamentName, stage, objects);
+                startCondition, _tournamentName, stage, cardLibrary, tournamentService);
     }
 
 }

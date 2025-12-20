@@ -7,11 +7,9 @@ import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.async.handler.WebRequestHandler;
 import com.gempukku.stccg.common.AppConfig;
-import com.gempukku.stccg.database.IpBanDAO;
-import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.database.UserNotFoundException;
-import com.gempukku.stccg.service.LoggedUserHolder;
+import com.gempukku.stccg.service.AdminService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.cookie.Cookie;
@@ -39,32 +37,21 @@ public class GempHttpRequest {
     private final Pattern originPattern = Pattern.compile(AppConfig.getProperty("origin.allowed.pattern"));
 
     private final FullHttpRequest _request;
-    private final LoggedUserHolder _loggedUserHolder;
+    private final AdminService _adminService;
     private final String _ipAddress;
     private final boolean _ipBanned;
     private final User _user;
     private final ResponseWriter _responseWriter;
 
-    public GempHttpRequest(FullHttpRequest request, ChannelHandlerContext context, ServerObjects serverObjects) {
+    public GempHttpRequest(FullHttpRequest request, ChannelHandlerContext context, AdminService adminService) {
         _request = request;
-        _loggedUserHolder = serverObjects.getLoggedUserHolder();
+        _adminService = adminService;
         _ipAddress = Objects.requireNonNullElse(request.headers().get("X-Forwarded-For"),
                 ((InetSocketAddress) context.channel().remoteAddress()).getAddress().getHostAddress()
         );
-        _ipBanned = determineIfIpIsBanned(serverObjects);
-        _user = identifyUser(serverObjects);
+        _ipBanned = _adminService.isIpBanned(_ipAddress);
+        _user = identifyUser();
         _responseWriter = new ResponseSender(context, request);
-    }
-
-    private boolean determineIfIpIsBanned(ServerObjects serverObjects) {
-        IpBanDAO ipBanDAO = serverObjects.getIpBanDAO();
-        if (ipBanDAO.getIpBans().contains(_ipAddress))
-            return true;
-        for (String bannedRange : ipBanDAO.getIpPrefixBans()) {
-            if (_ipAddress.startsWith(bannedRange))
-                return true;
-        }
-        return false;
     }
 
     public HttpHeaders headers() {
@@ -75,11 +62,10 @@ public class GempHttpRequest {
         return _request.method();
     }
 
-    private User identifyUser(ServerObjects serverObjects) {
+    private User identifyUser() {
         ServerCookieDecoder cookieDecoder = ServerCookieDecoder.STRICT;
         String cookieHeader = _request.headers().get(COOKIE);
         String userName = "";
-        PlayerDAO playerDAO = serverObjects.getPlayerDAO();
 
         if (cookieHeader != null) {
             Set<Cookie> cookies = cookieDecoder.decode(cookieHeader);
@@ -87,14 +73,14 @@ public class GempHttpRequest {
                 if ("loggedUser".equals(cookie.name())) {
                     String value = cookie.value();
                     if (value != null) {
-                        userName = _loggedUserHolder.getLoggedUserNew(value);
+                        userName = _adminService.getLoggedUserNew(value);
                     }
                 }
             }
         }
         if (!userName.isEmpty()) {
             try {
-                return playerDAO.getPlayer(userName);
+                return _adminService.getPlayer(userName);
             } catch(UserNotFoundException exp) {
                 return null;
             }
@@ -188,7 +174,7 @@ public class GempHttpRequest {
         return (result == null) ? "" : result;
     }
 
-    public void handle(ServerObjects serverObjects) {
+    public void handle(ObjectMapper mapper) {
         try {
             if (bannedIp()) { // throw 401 error
                 throw new HttpProcessingException(HttpURLConnection.HTTP_UNAUTHORIZED,
@@ -204,7 +190,7 @@ public class GempHttpRequest {
                     _responseWriter.writeError(
                             HttpURLConnection.HTTP_MOVED_PERM, Collections.singletonMap("Location", WEB_CONTEXT_PATH));
                 } else if (uri.startsWith(SERVER_CONTEXT_PATH)) {
-                    handleServerRequest(serverObjects);
+                    handleServerRequest(mapper);
                 }
             }
         } catch (HttpProcessingException exp) {
@@ -236,7 +222,7 @@ public class GempHttpRequest {
         }
     }
 
-    private void handleServerRequest(ServerObjects serverObjects) throws Exception {
+    private void handleServerRequest(ObjectMapper mapper) throws Exception {
         String uri = uriWithoutParameters();
         validateOrigin(this);
 
@@ -250,10 +236,11 @@ public class GempHttpRequest {
             String collectionType = afterHandlerType.substring(1);
             parameters.put("collectionType", collectionType);
         }
+        parameters.put("user", _user);
 
         try {
-            UriRequestHandler newHandler = new ObjectMapper().convertValue(parameters, UriRequestHandler.class);
-            newHandler.handleRequest(this, _responseWriter, serverObjects);
+            UriRequestHandler newHandler = mapper.convertValue(parameters, UriRequestHandler.class);
+            newHandler.handleRequest(this, _responseWriter);
         } catch (IllegalArgumentException exp) {
             if (exp.getCause() instanceof InvalidTypeIdException) {
                 // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer
@@ -261,8 +248,13 @@ public class GempHttpRequest {
                         new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND));
             }
         } catch (JsonProcessingException exp) {
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+            throw (exp.getCause() instanceof HttpProcessingException httpError) ?
+                    httpError : new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND);
         }
+    }
+
+    public boolean userIsAdmin() {
+        return _user != null && _user.isAdmin();
     }
 
 }

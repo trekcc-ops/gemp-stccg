@@ -1,6 +1,5 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.game.GameResultListener;
 
 import java.util.Map;
@@ -11,9 +10,6 @@ public class NotifyHallListenersGameResultListener implements GameResultListener
 
     NotifyHallListenersGameResultListener(HallServer hallServer) {
         _hallServer = hallServer;
-    }
-    NotifyHallListenersGameResultListener(ServerObjects serverObjects) {
-        _hallServer = serverObjects.getHallServer();
     }
 
     @Override

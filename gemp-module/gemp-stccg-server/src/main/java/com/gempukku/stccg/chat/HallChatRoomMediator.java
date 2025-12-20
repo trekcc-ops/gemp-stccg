@@ -1,22 +1,21 @@
 package com.gempukku.stccg.chat;
 
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.service.AdminService;
 
 import java.util.Locale;
 
 public class HallChatRoomMediator extends ChatRoomMediator {
-    private final ServerObjects _serverObjects;
+    private final AdminService _adminService;
 
     private enum ChatCommandType {
         ban, banIp, banIpRange, endIncognito, help, ignore, incognito, listIgnores, noCommand, unignore
     }
 
-    public HallChatRoomMediator(ServerObjects objects, int secondsTimeoutPeriod) {
-        super(objects, true, secondsTimeoutPeriod, true, HTMLUtils.HALL_WELCOME_MESSAGE,
+    public HallChatRoomMediator(AdminService adminService, int secondsTimeoutPeriod) {
+        super(adminService, true, secondsTimeoutPeriod, true, HTMLUtils.HALL_WELCOME_MESSAGE,
                 "Game Hall");
-        _serverObjects = objects;
+        _adminService = adminService;
         try {
             sendChatMessage(ChatStrings.SYSTEM_USER_ID, "Welcome to room: " + _roomName, true);
         } catch (PrivateInformationException exp) {
@@ -27,16 +26,15 @@ public class HallChatRoomMediator extends ChatRoomMediator {
         addCallbacks();
     }
     private void addCallbacks() {
-        AdminService adminService = _serverObjects.getAdminService();
-        addChatCommandCallback(ChatCommandType.ban, new BanUserCommandCallback(adminService));
-        addChatCommandCallback(ChatCommandType.banIp, new BanIpCommandCallback(adminService));
-        addChatCommandCallback(ChatCommandType.banIpRange, new BanIpRangeCommandCallback(adminService));
+        addChatCommandCallback(ChatCommandType.ban, new BanUserCommandCallback(_adminService));
+        addChatCommandCallback(ChatCommandType.banIp, new BanIpCommandCallback(_adminService));
+        addChatCommandCallback(ChatCommandType.banIpRange, new BanIpRangeCommandCallback(_adminService));
         addChatCommandCallback(ChatCommandType.ignore,
-                new IgnoreCommandCallback(this, _serverObjects));
+                new IgnoreCommandCallback(this, _adminService));
         addChatCommandCallback(ChatCommandType.unignore,
-                new UnignoreCommandCallback(this, _serverObjects));
+                new UnignoreCommandCallback(this, _adminService));
         addChatCommandCallback(ChatCommandType.listIgnores,
-                new ListIgnoresCommandCallback(this, _serverObjects));
+                new ListIgnoresCommandCallback(this, _adminService));
         addChatCommandCallback(ChatCommandType.incognito, 
                 new IncognitoCommandCallback(this, true));
         addChatCommandCallback(ChatCommandType.endIncognito, 

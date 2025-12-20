@@ -7,6 +7,7 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.GameParticipant;
 import com.gempukku.stccg.game.GameResultListener;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentCallback;
 
@@ -14,11 +15,14 @@ import java.util.Map;
 
 public class HallTournamentCallback implements TournamentCallback {
     private final HallServer _hallServer;
+    private final GameServer _gameServer;
     private final Tournament _tournament;
     private final GameSettings tournamentGameSettings;
 
-    HallTournamentCallback(HallServer hallServer, Tournament tournament, GameFormat tournamentFormat) {
+    HallTournamentCallback(HallServer hallServer, GameServer gameServer, Tournament tournament,
+                           GameFormat tournamentFormat) {
         _hallServer = hallServer;
+        _gameServer = gameServer;
         _tournament = tournament;
         tournamentGameSettings =
                 new GameSettings(tournamentFormat, null, null, true, false,
@@ -35,7 +39,7 @@ public class HallTournamentCallback implements TournamentCallback {
 
     private void createGameInternal(final GameParticipant[] participants) {
         GameResultListener listener = new MyGameResultListener(participants);
-        _hallServer.createTournamentGameInternal(
+        _hallServer.createTournamentGameInternal(_gameServer,
                 tournamentGameSettings, participants, _tournament.getTournamentName(), listener);
     }
 

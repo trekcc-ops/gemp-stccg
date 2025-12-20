@@ -5,6 +5,7 @@ import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatServer;
@@ -15,12 +16,14 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.CloseableReadLock;
 import com.gempukku.stccg.common.CloseableWriteLock;
 import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.database.UserNotFoundException;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.LeagueService;
+import com.gempukku.stccg.service.AdminService;
 import com.gempukku.stccg.tournament.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,15 +65,28 @@ public class HallServer extends AbstractServer {
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
     private final HallChatRoomMediator _hallChat;
     private final ServerObjects _serverObjects;
+    private final AdminService _adminService;
     private int _tickCounter = TICK_COUNTER_START;
+    private final TournamentService _tournamentService;
+    private final GameServer _gameServer;
+    private final CardBlueprintLibrary _cardBlueprintLibrary;
+    private final DeckDAO _deckDAO;
 
-    public HallServer(ServerObjects objects, FormatLibrary formatLibrary, ChatServer chatServer) {
+    public HallServer(ServerObjects objects, AdminService adminService, FormatLibrary formatLibrary,
+                      ChatServer chatServer, LeagueService leagueService, CollectionsManager collectionsManager,
+                      TournamentService tournamentService, GameServer gameServer, CardBlueprintLibrary cardLibrary,
+                      DeckDAO deckDAO) {
         _serverObjects = objects;
+        _adminService = adminService;
+        _tournamentService = tournamentService;
         _formatLibrary = formatLibrary;
-        _collectionsManager = objects.getCollectionsManager();
-        tableHolder = new TableHolder(objects);
-        _hallChat = new HallChatRoomMediator(_serverObjects, HALL_TIMEOUT_PERIOD);
+        _collectionsManager = collectionsManager;
+        tableHolder = new TableHolder(adminService, leagueService);
+        _hallChat = new HallChatRoomMediator(adminService, HALL_TIMEOUT_PERIOD);
+        _gameServer = gameServer;
+        _cardBlueprintLibrary = cardLibrary;
         chatServer.addChatRoom(_hallChat);
+        _deckDAO = deckDAO;
     }
 
     final void hallChanged() {
@@ -79,14 +95,13 @@ public class HallServer extends AbstractServer {
     }
 
     private void doAfterStartup() {
-        for (Tournament tournament : _serverObjects.getTournamentService().getLiveTournaments())
+        for (Tournament tournament : _tournamentService.getLiveTournaments())
             _runningTournaments.put(tournament.getTournamentId(), tournament);
         createStartupGameTables();
     }
 
     public final void setShutdown(boolean shutdown, ChatServer chatServer) throws SQLException, IOException {
-        _hallDataAccessLock.writeLock().lock();
-        try {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             boolean cancelMessage = _shutdown && !shutdown;
             _shutdown = shutdown;
             if (shutdown) {
@@ -100,8 +115,6 @@ public class HallServer extends AbstractServer {
                 chatServer.sendSystemMessageToAllUsers(
                         "Shutdown mode canceled; games may now resume.");
             }
-        } finally {
-            _hallDataAccessLock.writeLock().unlock();
         }
     }
 
@@ -118,12 +131,6 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public DefaultGame getGameById(String gameId) throws HttpProcessingException {
-        GameServer gameServer = _serverObjects.getGameServer();
-        CardGameMediator mediator = gameServer.getGameById(gameId);
-        return mediator.getGame();
-    }
-
     public final int getTablesCount() {
         try (CloseableReadLock ignored = _readLock.open()) {
             return tableHolder.getTableCount();
@@ -135,21 +142,15 @@ public class HallServer extends AbstractServer {
             tournamentQueue.leaveAllPlayers(_collectionsManager);
     }
 
-    public final void createNewTable(User player, User deckOwner, String deckName, GameSettings gameSettings)
+    public final void createNewTable(User player, GameSettings gameSettings, CardDeck cardDeck, GameServer gameServer,
+                                     LeagueService leagueService)
             throws HallException {
-        if (_shutdown)
-            throw new HallException("Server is in shutdown mode. " +
-                    "Server will be restarted after all running games are finished.");
-        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName);
-        _hallDataAccessLock.writeLock().lock();
-        try {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             GameParticipant participant = new GameParticipant(player, cardDeck);
             tableHolder.validatePlayerForLeague(player.getName(), gameSettings);
             final GameTable table = tableHolder.createTable(gameSettings, participant);
-            table.createGameIfFull(_serverObjects);
+            table.createGameIfFull(gameServer, this, leagueService);
             hallChanged();
-        } finally {
-            _hallDataAccessLock.writeLock().unlock();
         }
     }
 
@@ -158,105 +159,96 @@ public class HallServer extends AbstractServer {
 
         _hallDataAccessLock.writeLock().lock();
         try {
-            LeagueService leagueService = _serverObjects.getLeagueService();
             // Real basic game
-            GameSettings gameSettings = new GameSettings("debug1e", GameTimer.DEBUG_TIMER,
-                    "Startup Sample Game", false, false, false, _formatLibrary,
-                    leagueService);
 
-            User player1 = _serverObjects.getPlayerDAO().getPlayer("asdf");
-            User player2 = _serverObjects.getPlayerDAO().getPlayer("qwer");
+            GameSettings gameSettings = new GameSettings(_formatLibrary.get("debug1e"), false,
+                    false, false, GameTimer.DEBUG_TIMER, "Startup Sample Game");
 
-            CardDeck cardDeck1 = validateUserAndDeck(gameSettings.getGameFormat(), player1, "AMS Deck");
-            CardDeck cardDeck2 = validateUserAndDeck(gameSettings.getGameFormat(), player2, "Rommie Test");
+            User player1 = _adminService.getPlayer("asdf");
+            User player2 = _adminService.getPlayer("qwer");
+
+            CardDeck cardDeck1 = _deckDAO.getDeckForUser(player1, "AMS Deck");
+            CardDeck cardDeck2 = _deckDAO.getDeckForUser(player2, "Rommie Test");
 
             GameParticipant participant1 = new GameParticipant("asdf", cardDeck1);
             GameParticipant participant2 = new GameParticipant("qwer", cardDeck2);
 
             final GameTable table = tableHolder.createTable(gameSettings, participant1, participant2);
-            table.createGameIfFull(_serverObjects);
+            table.createGameWithNoLeague(_gameServer,this);
 
             try {
 
                 // Game in the middle of a battle
-                GameSettings gameSettings2 = new GameSettings("debug1e", GameTimer.DEBUG_TIMER,
-                        "Ship Battle Game", false, false, false, _formatLibrary,
-                        leagueService);
+                GameSettings gameSettings2 = new GameSettings(_formatLibrary.get("debug1e"), false,
+                        false, false, GameTimer.DEBUG_TIMER, "Ship Battle Game");
                 ST1EGame game = SampleGameBuilder.testShipBattleGame(_formatLibrary, 30, "asdf",
-                        "qwer", _serverObjects.getCardBlueprintLibrary());
+                        "qwer", _cardBlueprintLibrary);
                 GameParticipant newParticipant1 = new GameParticipant("asdf", new CardDeck(new HashMap<>()));
                 GameParticipant newParticipant2 = new GameParticipant("qwer", new CardDeck(new HashMap<>()));
                 final GameTable table2 = tableHolder.createTable(gameSettings2, newParticipant1, newParticipant2);
-                table2.createGameIfFull(_serverObjects);
+                table2.createGameWithNoLeague(_gameServer, this);
             } catch(CardNotFoundException | InvalidGameOperationException exp) {
                 LOGGER.error(exp);
             }
 
             hallChanged();
-        } catch (UserNotFoundException | HallException exp) {
+        } catch (UserNotFoundException exp) {
             LOGGER.error(exp);
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
     }
 
-    public void createTournamentGameInternal(GameSettings gameSettings, GameParticipant[] participants,
+    public void createTournamentGameInternal(GameServer gameServer, GameSettings gameSettings,
+                                             GameParticipant[] participants,
                                              String tournamentName, GameResultListener listener) {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             if (!_shutdown) {
                 final GameTable gameTable = tableHolder.createTable(gameSettings, participants);
                 List<GameResultListener> listenerList = List.of(listener,
                         new NotifyHallListenersGameResultListener(this));
-                _serverObjects.getGameServer().createNewGame(
-                        tournamentName, participants, gameTable, _serverObjects.getCardBlueprintLibrary(), listenerList);
+                gameServer.createNewGame(tournamentName, gameTable, listenerList);
             }
         }
     }
 
-    public final void joinQueue(String queueId, User player, String deckName)
+    public final void joinQueue(String queueId, User player, String deckName, CardBlueprintLibrary cardLibrary,
+                                DeckDAO deckDAO)
             throws HallException, SQLException, IOException {
-        if (_shutdown)
-            throw new HallException(
-                    "Server is in shutdown mode. Server will be restarted after all running games are finished.");
-
-        _hallDataAccessLock.writeLock().lock();
-        try {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             TournamentQueue tournamentQueue = _tournamentQueues.get(queueId);
             if (tournamentQueue == null)
                 throw new HallException(
                         "Tournament queue already finished accepting players, try again in a few seconds");
-
             CardDeck cardDeck = null;
             if (tournamentQueue.isRequiresDeck())
-                cardDeck = validateUserAndDeck(tournamentQueue.getGameFormat(_formatLibrary), player, deckName);
-
+                cardDeck = validateUserAndDeck(tournamentQueue.getGameFormat(_formatLibrary), player, deckName,
+                        cardLibrary, deckDAO);
             if (tournamentQueue.isPlayerSignedUp(player.getName()))
                 throw new HallException("You have already joined that queue");
             tournamentQueue.joinPlayer(_collectionsManager, player, cardDeck);
 
             hallChanged();
-
-        } finally {
-            _hallDataAccessLock.writeLock().unlock();
         }
     }
 
-    /**
-     *
-     */
-    public final void joinTableAsPlayer(String tableId, User player, User deckOwner, String deckName)
+    public final void joinTableAsPlayer(String tableId, User player, User deckOwner, String deckName,
+                                        CardBlueprintLibrary cardBlueprintLibrary, DeckDAO deckDAO,
+                                        LeagueService leagueService)
             throws HallException {
         if (_shutdown)
             throw new HallException(
                     "Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
         GameSettings gameSettings = tableHolder.getGameSettings(tableId);
-        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName);
+        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName,
+                cardBlueprintLibrary, deckDAO);
 
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            tableHolder.joinTable(tableId, player, cardDeck, _serverObjects, this);
+            tableHolder.joinTable(tableId, player, cardDeck, _gameServer, this, leagueService);
         }
     }
+
 
     public final void leaveQueue(String queueId, User player) throws SQLException, IOException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
@@ -388,13 +380,15 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private CardDeck validateUserAndDeck(GameFormat format, User player, String deckName) throws HallException {
-        CardDeck cardDeck = _serverObjects.getDeckDAO().getDeckForUser(player, deckName);
+    public CardDeck validateUserAndDeck(GameFormat format, User player, String deckName,
+                                         CardBlueprintLibrary cardBlueprintLibrary,
+                                         DeckDAO deckDAO) throws HallException {
+        CardDeck cardDeck = deckDAO.getDeckForUser(player, deckName);
         if (cardDeck == null)
             throw new HallException("You don't have a deck registered yet");
 
-        CardDeck deck = format.applyErrata(_serverObjects.getCardBlueprintLibrary(), cardDeck);
-        List<String> validations = format.validateDeck(_serverObjects.getCardBlueprintLibrary(), deck);
+        CardDeck deck = format.applyErrata(cardBlueprintLibrary, cardDeck);
+        List<String> validations = format.validateDeck(cardBlueprintLibrary, deck);
         if(!validations.isEmpty()) {
             String firstValidation = validations.stream().findFirst().orElse(null);
             long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();
@@ -447,7 +441,8 @@ public class HallServer extends AbstractServer {
                 TournamentQueue tournamentQueue = runningTournamentQueue.getValue();
                 queueCallback = new HallTournamentQueueCallback(_runningTournaments);
                 // If it's finished, remove it
-                if (tournamentQueue.process(queueCallback, _collectionsManager)) {
+                tournamentQueue.process(queueCallback, _collectionsManager, _tournamentService);
+                if (tournamentQueue.shouldBeRemovedFromHall()) {
                     _tournamentQueues.remove(tournamentQueueKey);
                     hallChanged();
                 }
@@ -456,8 +451,9 @@ public class HallServer extends AbstractServer {
             for (Map.Entry<String, Tournament> tournamentEntry : new HashMap<>(_runningTournaments).entrySet()) {
                 Tournament runningTournament = tournamentEntry.getValue();
                 GameFormat tournamentFormat = _formatLibrary.get(runningTournament.getFormat());
-                boolean changed = runningTournament.advanceTournament(
-                        new HallTournamentCallback(this, runningTournament, tournamentFormat), _collectionsManager);
+                HallTournamentCallback callback = new HallTournamentCallback(this,
+                        _gameServer, runningTournament, tournamentFormat);
+                boolean changed = runningTournament.advanceTournament(callback, _collectionsManager);
                 if (runningTournament.getTournamentStage() == Tournament.Stage.FINISHED)
                     _runningTournaments.remove(tournamentEntry.getKey());
                 if (changed)
@@ -468,13 +464,13 @@ public class HallServer extends AbstractServer {
                 _tickCounter = 0;
                 long nextLoadTime = System.currentTimeMillis() + SCHEDULED_TOURNAMENT_LOAD_TIME;
                 List<TournamentQueueInfo> futureTournamentQueues =
-                        _serverObjects.getTournamentService().getFutureScheduledTournamentQueues(nextLoadTime);
+                        _tournamentService.getFutureScheduledTournamentQueues(nextLoadTime);
                 for (TournamentQueueInfo queueInfo : futureTournamentQueues) {
                     String tournamentId = queueInfo.getScheduledTournamentId();
                     if (!_tournamentQueues.containsKey(tournamentId)) {
                         ScheduledTournamentQueue scheduledQueue =
                                 queueInfo.createNewScheduledTournamentQueue(
-                                        _serverObjects, Tournament.Stage.PLAYING_GAMES);
+                                        _cardBlueprintLibrary, Tournament.Stage.PLAYING_GAMES, _tournamentService);
                         _tournamentQueues.put(tournamentId, scheduledQueue);
                         hallChanged();
                     }
@@ -493,4 +489,9 @@ public class HallServer extends AbstractServer {
             throws PrivateInformationException, ChatCommandErrorException {
         _hallChat.sendChatMessage(senderName, message, true);
     }
+
+    public boolean isShutdown() {
+        return _shutdown;
+    }
+
 }

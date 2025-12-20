@@ -43,6 +43,11 @@ public class CachedIpBanDAO implements IpBanDAO, Cached {
     }
 
     @Override
+    public boolean isIpBanned(String ip) {
+        return _delegate.isIpBanned(ip);
+    }
+
+    @Override
     public final Set<String> getIpBans() {
         Set<String> result = _bannedIps;
         if (result != null)

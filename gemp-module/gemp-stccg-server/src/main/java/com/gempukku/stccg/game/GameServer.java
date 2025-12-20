@@ -4,8 +4,8 @@ import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.chat.*;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.common.CloseableReadLock;
+import com.gempukku.stccg.common.CloseableWriteLock;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.hall.GameTable;
 
@@ -19,22 +19,21 @@ public class GameServer extends AbstractServer {
 
     private static final long MILLIS_TO_MINUTES = 1000 * 60;
     private static final int TIMEOUT_PERIOD = 30;
-
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
     private final Collection<String> _gameDeathWarningsSent = new HashSet<>();
-
     private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
-
     private int _nextGameId = 1;
-
     private final ChatServer _chatServer;
     private final GameRecorder _gameRecorder;
-
     private final ReadWriteLock _lock = new ReentrantReadWriteLock();
+    private final CloseableReadLock _readLock = new CloseableReadLock(_lock);
+    private final CloseableWriteLock _writeLock = new CloseableWriteLock(_lock);
+    private final CardBlueprintLibrary _cardBlueprintLibrary;
 
-    public GameServer(ChatServer chatServer, GameRecorder gameRecorder) {
+    public GameServer(ChatServer chatServer, GameRecorder gameRecorder, CardBlueprintLibrary cardBlueprintLibrary) {
         _chatServer = chatServer;
         _gameRecorder = gameRecorder;
+        _cardBlueprintLibrary = cardBlueprintLibrary;
     }
 
     protected final void cleanup() {
@@ -97,18 +96,15 @@ public class GameServer extends AbstractServer {
         _chatServer.createChatRoom(chatRoomName, false, allowedUsers, TIMEOUT_PERIOD, isCompetitive);
     }
 
-
-    public final void createNewGame(String tournamentName, final GameParticipant[] participants,
-                                    GameTable gameTable, CardBlueprintLibrary blueprintLibrary,
-                                    List<GameResultListener> listeners) {
-        _lock.writeLock().lock();
-        try {
+    public final void createNewGame(String tournamentName, GameTable gameTable, List<GameResultListener> listeners) {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
+            GameParticipant[] participants = gameTable.getPlayers().toArray(new GameParticipant[0]);
             if (participants.length < 2)
                 throw new IllegalArgumentException("There has to be at least two players");
             final String gameId = String.valueOf(_nextGameId);
             GameSettings gameSettings = gameTable.getGameSettings();
             listeners.add(new FinishedGamesResultListener(this, gameId));
-            CardGameMediator cardGameMediator = new CardGameMediator(gameId, participants, blueprintLibrary,
+            CardGameMediator cardGameMediator = new CardGameMediator(gameId, participants, _cardBlueprintLibrary,
                     gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
                     gameSettings.getGameType());
             createGameChatRoom(gameSettings, participants, gameId);
@@ -116,34 +112,17 @@ public class GameServer extends AbstractServer {
             _runningGames.put(gameId, cardGameMediator);
             _nextGameId++;
             gameTable.startGame(cardGameMediator);
-        } finally {
-            _lock.writeLock().unlock();
         }
     }
 
 
     public final CardGameMediator getGameById(String gameId) throws HttpProcessingException {
-        CardGameMediator mediator;
-        _lock.readLock().lock();
-        try {
-            mediator = _runningGames.get(gameId);
-        } finally {
-            _lock.readLock().unlock();
+        try (CloseableReadLock ignored = _readLock.open()) {
+            CardGameMediator mediator = _runningGames.get(gameId);
+            if (mediator == null)
+                throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+            else return mediator;
         }
-        if (mediator == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        else return mediator;
-    }
-
-    public void cancelGame(User user, String gameId) throws HttpProcessingException {
-        CardGameMediator gameMediator = getGameById(gameId);
-        gameMediator.cancel(user.getName());
-    }
-
-    public void setPlayerAutoPassSettings(User resourceOwner, String gameId, Set<Phase> autoPassPhases)
-            throws HttpProcessingException {
-        CardGameMediator gameMediator = getGameById(gameId);
-        gameMediator.setPlayerAutoPassSettings(resourceOwner.getName(), autoPassPhases);
     }
 
     public void logGameEndTime(String gameId) {

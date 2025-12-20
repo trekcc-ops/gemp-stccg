@@ -1,8 +1,9 @@
 package com.gempukku.stccg.async.handler;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.game.GameRecorder;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 import org.apache.logging.log4j.LogManager;
@@ -18,10 +19,14 @@ import java.util.Map;
 public class ReplayRequestHandler implements UriRequestHandler {
     private final static int BYTE_LENGTH = 1024;
     private static final Logger LOGGER = LogManager.getLogger(ReplayRequestHandler.class);
+    private final GameRecorder _gameRecorder;
+
+    ReplayRequestHandler(@JacksonInject GameRecorder gameRecorder) {
+        _gameRecorder = gameRecorder;
+    }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         String uri = request.uriWithoutParameters();
         String replayId = uri.substring(1);
@@ -35,7 +40,7 @@ public class ReplayRequestHandler implements UriRequestHandler {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        final InputStream recordedGame = serverObjects.getGameRecorder().getRecordedGame(split[0], split[1]);
+        final InputStream recordedGame = _gameRecorder.getRecordedGame(split[0], split[1]);
         try (recordedGame) {
             if (recordedGame == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404

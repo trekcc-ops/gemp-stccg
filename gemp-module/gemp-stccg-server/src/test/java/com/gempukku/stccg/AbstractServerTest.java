@@ -8,7 +8,7 @@ public abstract class AbstractServerTest {
     protected static final FormatLibrary _formatLibrary;
 
     static {
-        _cardLibrary = new CardBlueprintLibrary();
+        _cardLibrary = new CardBlueprintLibrary(true);
         _formatLibrary = new FormatLibrary(_cardLibrary);
     }
 }

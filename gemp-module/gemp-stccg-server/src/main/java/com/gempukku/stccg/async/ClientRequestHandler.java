@@ -1,5 +1,7 @@
 package com.gempukku.stccg.async;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.service.AdminService;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -16,11 +18,13 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class ClientRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
     private static final Logger LOGGER = LogManager.getLogger(ClientRequestHandler.class);
-    private final ServerObjects _serverObjects;
+    private final ObjectMapper _mapper;
+    private final AdminService _adminService;
 
 
-    public ClientRequestHandler(ServerObjects serverObjects) {
-        _serverObjects = serverObjects;
+    public ClientRequestHandler(ObjectMapper serverMapper, AdminService adminService) {
+        _adminService = adminService;
+        _mapper = serverMapper;
     }
 
     @Override
@@ -30,9 +34,9 @@ public class ClientRequestHandler extends SimpleChannelInboundHandler<FullHttpRe
             channelHandlerContext.write(response);
             channelHandlerContext.flush();
         }
-
-        GempHttpRequest request = new GempHttpRequest(httpRequest, channelHandlerContext, _serverObjects);
-        request.handle(_serverObjects);
+        GempHttpRequest request =
+                new GempHttpRequest(httpRequest, channelHandlerContext, _adminService);
+        request.handle(_mapper);
     }
 
     @Override

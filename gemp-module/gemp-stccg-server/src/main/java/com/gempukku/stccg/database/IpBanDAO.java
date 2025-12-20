@@ -7,4 +7,5 @@ public interface IpBanDAO {
     Set<String> getIpPrefixBans();
     void addIpBan(String ip);
     void addIpPrefixBan(String ipPrefix);
+    boolean isIpBanned(String ip);
 }

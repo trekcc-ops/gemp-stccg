@@ -2,6 +2,8 @@ package com.gempukku.stccg.collection;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.GenericCardItem;
+import com.gempukku.stccg.common.CloseableReadLock;
+import com.gempukku.stccg.common.CloseableWriteLock;
 import com.gempukku.stccg.database.CollectionDAO;
 import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
@@ -12,47 +14,55 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
+import java.util.*;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CollectionsManager {
     private static final Logger LOGGER = LogManager.getLogger(CollectionsManager.class);
-    private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
+    private final CloseableWriteLock _writeLock;
+    private final CloseableReadLock _readLock;
     private final PlayerDAO _playerDAO;
     private final CollectionDAO _collectionDAO;
     private final TransferDAO _transferDAO;
-    private final CardBlueprintLibrary _cardLibrary;
 
-    private CardCollection _defaultCollection;
-
-    public CollectionsManager(PlayerDAO playerDAO, CollectionDAO collectionDAO, TransferDAO transferDAO,
-                              final CardBlueprintLibrary cardBlueprintLibrary) {
+    public CollectionsManager(PlayerDAO playerDAO, CollectionDAO collectionDAO, TransferDAO transferDAO) {
         _playerDAO = playerDAO;
         _collectionDAO = collectionDAO;
         _transferDAO = transferDAO;
-        _cardLibrary = cardBlueprintLibrary;
-
-        _defaultCollection = new CompleteCardCollection(_cardLibrary);
-
-        _cardLibrary.SubscribeToRefreshes(() -> _defaultCollection = new CompleteCardCollection(_cardLibrary));
+        ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+        _writeLock = new CloseableWriteLock(readWriteLock);
+        _readLock = new CloseableReadLock(readWriteLock);
     }
 
-    public CardCollection getPlayerCollection(User player, String collectionType) {
-        Lock lock = _readWriteLock.readLock();
-        lock.lock();
-        try {
-            if (collectionType.contains("+")) {
-                String[] collectionTypes = collectionType.split("\\+");
-                return createSumCollection(player, collectionTypes);
+    public CardCollection getPlayerMyCardsCollection(User player) {
+        try (CloseableReadLock ignored = _readLock.open()) {
+            CollectionType type = CollectionType.MY_CARDS;
+            String typeString = type.getCode();
+            int playerId = player.getId();
+            final CardCollection collection = _collectionDAO.getPlayerCollection(playerId, typeString);
+            return (collection == null) ? new DefaultCardCollection() : collection;
+        } catch (SQLException | IOException exp) {
+            throw new RuntimeException("Unable to get player collection", exp);
+        }
+    }
+
+    public CardCollection getPlayerCollectionWithLibrary(User player, String collectionType,
+                                                         CardBlueprintLibrary cardLibrary) {
+        try (CloseableReadLock ignored = _readLock.open()) {
+            if ("default".equals(collectionType)) {
+                return new CompleteCardCollection(cardLibrary);
             }
 
-            if ("default".equals(collectionType))
-                return _defaultCollection;
+            if (collectionType.contains("+")) {
+                String[] collectionTypes = collectionType.split("\\+");
+                List<CardCollection> collections = new ArrayList<>();
+                for (String type : collectionTypes) {
+                    CardCollection playerCollection = getPlayerCollectionWithLibrary(player, type, cardLibrary);
+                    collections.add(playerCollection);
+                }
+                return new SumCardCollection(collections);
+            }
 
             int playerId = player.getId();
             final CardCollection collection = _collectionDAO.getPlayerCollection(playerId, collectionType);
@@ -65,20 +75,9 @@ public class CollectionsManager {
             return collection;
         } catch (SQLException | IOException exp) {
             throw new RuntimeException("Unable to get player collection", exp);
-        } finally {
-            lock.unlock();
         }
     }
 
-    private CardCollection createSumCollection(User player, String[] collectionTypes) {
-        List<CardCollection> collections = new LinkedList<>();
-        for (String collectionType : collectionTypes) {
-            CardCollection playerCollection = getPlayerCollection(player, collectionType);
-            collections.add(playerCollection);
-        }
-
-        return new SumCardCollection(collections);
-    }
 
     private void overwritePlayerCollection(User player, String collectionType, CardCollection cardCollection,
                                            String reason) {
@@ -118,13 +117,10 @@ public class CollectionsManager {
         if (collectionType.getCode().contains("+"))
             throw new IllegalArgumentException("Invalid collection type: " + collectionType);
 
-        _readWriteLock.writeLock().lock();
-        try {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             overwritePlayerCollection(player, collectionType.getCode(), cardCollection, reason);
             _transferDAO.addTransferTo(notifyPlayer, player.getName(), reason, collectionType.getFullName(),
                     cardCollection.getCurrency(), cardCollection);
-        } finally {
-            _readWriteLock.writeLock().unlock();
         }
     }
 
@@ -132,8 +128,7 @@ public class CollectionsManager {
         if (collectionType.contains("+"))
             throw new IllegalArgumentException("Invalid collection type: " + collectionType);
 
-        _readWriteLock.readLock().lock();
-        try {
+        try (CloseableReadLock ignored = _readLock.open()) {
             final Map<Integer, CardCollection> playerCollectionsByType =
                     _collectionDAO.getPlayerCollectionsByType(collectionType);
 
@@ -144,28 +139,26 @@ public class CollectionsManager {
             return result;
         } catch (SQLException | IOException exp) {
             throw new RuntimeException("Unable to get players collection", exp);
-        } finally {
-            _readWriteLock.readLock().unlock();
         }
     }
 
     public CardCollection openPackInPlayerCollection(User player, CollectionType collectionType, String selection,
-                                                     ProductLibrary productLibrary, String packId) {
-        Lock lock = _readWriteLock.writeLock();
-        lock.lock();
-        try {
+                                                     ProductLibrary productLibrary, String packId,
+                                                     CardBlueprintLibrary cardBlueprintLibrary) {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             String collectionTypeCode = collectionType.getCode();
-            final CardCollection playerCollection = getPlayerCollection(player, collectionTypeCode);
+            final CardCollection playerCollection =
+                    getPlayerCollectionWithLibrary(player, collectionTypeCode, cardBlueprintLibrary);
             if (playerCollection == null)
                 return null;
             MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
 
             final CardCollection packContents =
-                    mutableCardCollection.openPack(packId, selection, _cardLibrary, productLibrary);
+                    mutableCardCollection.openPack(packId, selection, cardBlueprintLibrary, productLibrary);
             if (packContents != null) {
                 String reason = "Opened pack";
 
-                CardCollection cardCollection = cardCollectionFromBlueprintId(1, packId);
+                CardCollection cardCollection = cardCollectionFromBlueprintId(packId);
 
                 removeFromPlayerCollection(player, collectionTypeCode, cardCollection, reason);
                 addToPlayerCollection(player, collectionTypeCode, packContents, reason);
@@ -177,38 +170,60 @@ public class CollectionsManager {
                         packContents.getCurrency(), packContents);
             }
             return packContents;
-        } finally {
-            lock.unlock();
         }
     }
 
-    private CardCollection cardCollectionFromBlueprintId(int count, String blueprintId) {
+    private CardCollection cardCollectionFromBlueprintId(String blueprintId) {
         MutableCardCollection result = new DefaultCardCollection();
-        result.addItem(blueprintId, count);
+        result.addItem(blueprintId, 1);
         return result;
     }
 
-    public void addItemsToUserCollection(boolean notifyPlayer, String reason, User player,
-                                         CollectionType collectionType, Iterable<? extends GenericCardItem> items)  {
-        addItemsToUserCollection(notifyPlayer, reason, player, collectionType, items, null);
+    public void addItemsToUserCollection(boolean notifyPlayer, String reason, User user, CollectionType collectionType,
+                                         List<? extends GenericCardItem> cardItems,
+                                         CardBlueprintLibrary cardBlueprintLibrary) {
+        CardCollection userCollection = getPlayerCollectionWithLibrary(user, collectionType.getCode(),
+                 cardBlueprintLibrary);
+        addItemsToUserCollection(notifyPlayer, reason, user, collectionType, cardItems, userCollection);
     }
 
-    public void addItemsToPlayerCollection(boolean notifyPlayer, String reason, String player,
-                                           CollectionType collectionType, Iterable<? extends GenericCardItem> items) {
+    private void addItemsToUserCollection(boolean notifyPlayer, String reason, User player,
+                                         CollectionType collectionType, Iterable<? extends GenericCardItem> items,
+                                         CardCollection playerCollection)  {
+        addItemsToUserCollection(notifyPlayer, reason, player, collectionType, items, null,
+                playerCollection);
+    }
+
+    public void addAllCardsInCollectionToPlayerMyCardsCollection(boolean notifyPlayer, String reason, String player,
+                                                  CardCollection collectionItemsToAdd) {
         try {
-            addItemsToUserCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, items);
+            User user = _playerDAO.getPlayer(player);
+            CardCollection playerCollection = getPlayerMyCardsCollection(user);
+            addItemsToUserCollection(notifyPlayer, reason, user, CollectionType.MY_CARDS,
+                    collectionItemsToAdd.getAll(), playerCollection);
         } catch(UserNotFoundException exp) {
             LOGGER.error("Unable to find user '" + player + "' to add items to their collection");
         }
     }
 
+
+    public void addItemsToPlayerMyCardsCollection(boolean notifyPlayer, String reason, String player,
+                                                  Iterable<? extends GenericCardItem> items) {
+        try {
+            User user = _playerDAO.getPlayer(player);
+            CardCollection playerCollection = getPlayerMyCardsCollection(user);
+            addItemsToUserCollection(notifyPlayer, reason, user, CollectionType.MY_CARDS, items, playerCollection);
+        } catch(UserNotFoundException exp) {
+            LOGGER.error("Unable to find user '" + player + "' to add items to their collection");
+        }
+    }
+
+
     public void addItemsToUserCollection(boolean notifyPlayer, String reason, User player,
                                          CollectionType collectionType, Iterable<? extends GenericCardItem> items,
-                                         Map<String, Object> extraInformation){
-        _readWriteLock.writeLock().lock();
-        try {
+                                         Map<String, Object> extraInformation, CardCollection playerCollection){
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             String collectionCode = collectionType.getCode();
-            final CardCollection playerCollection = getPlayerCollection(player, collectionCode);
             if (playerCollection != null) {
                 MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
                 MutableCardCollection addedCards = new DefaultCardCollection();
@@ -231,130 +246,27 @@ public class CollectionsManager {
             }
         } catch (SQLException | IOException e) {
             throw new RuntimeException("Could not add items to player collection", e);
-        } finally {
-            _readWriteLock.writeLock().unlock();
         }
     }
 
 
-
-    public boolean tradeCards(User player, CollectionType collectionType, String removeBlueprintId, int removeCount,
-                              String addBlueprintId, int addCount, int currencyCost) throws SQLException, IOException {
-        _readWriteLock.writeLock().lock();
-        try {
-            String collectionTypeCode = collectionType.getCode();
-            String collectionFullName = collectionType.getFullName();
-            String playerName = player.getName();
-
-            final CardCollection playerCollection = getPlayerCollection(player, collectionTypeCode);
-            if (playerCollection != null) {
-                MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
-                if (!mutableCardCollection.removeItem(removeBlueprintId, removeCount))
-                    return false;
-                if (!mutableCardCollection.removeCurrency(currencyCost))
-                    return false;
-                mutableCardCollection.addItem(addBlueprintId, addCount);
-
-                String reason = "Trading items";
-
-                CardCollection removedCollection = cardCollectionFromBlueprintId(removeCount, removeBlueprintId);
-                CardCollection addedCollection = cardCollectionFromBlueprintId(addCount, addBlueprintId);
-
-                removeFromPlayerCollection(player, collectionTypeCode, removedCollection, reason);
-                addToPlayerCollection(player, collectionTypeCode, addedCollection, reason);
-                removeCurrencyFromPlayerCollection(reason, player, collectionType, currencyCost);
-
-                _transferDAO.addTransferFrom(playerName, reason, collectionFullName, currencyCost, removedCollection);
-                _transferDAO.addTransferTo(
-                        true, playerName, reason, collectionFullName, 0, addedCollection);
-
-                return true;
-            }
-            return false;
-        } finally {
-            _readWriteLock.writeLock().unlock();
-        }
-    }
-
-    public boolean buyCardToPlayerCollection(User player, CollectionType collectionType, String blueprintId,
-                                             int currency) throws SQLException, IOException {
-        _readWriteLock.writeLock().lock();
-        try {
-            String collectionCode = collectionType.getCode();
-            final CardCollection playerCollection = getPlayerCollection(player, collectionCode);
-            if (playerCollection != null) {
-                MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
-                if (!mutableCardCollection.removeCurrency(currency))
-                    return false;
-                mutableCardCollection.addItem(blueprintId, 1);
-
-                String reason = "Items bought";
-
-                removeCurrencyFromPlayerCollection(reason, player, collectionType, currency);
-                CardCollection collection = cardCollectionFromBlueprintId(1, blueprintId);
-                addToPlayerCollection(player, collectionCode, collection, reason);
-
-                String playerName = player.getName();
-                String collectionName = collectionType.getFullName();
-                _transferDAO.addTransferFrom(playerName, reason, collectionName, currency, new DefaultCardCollection());
-                _transferDAO.addTransferTo(true, playerName, reason, collectionName, 0, collection);
-
-                return true;
-            }
-            return false;
-        } finally {
-            _readWriteLock.writeLock().unlock();
-        }
-    }
-
-    public boolean sellCardInPlayerCollection(User player, CollectionType collectionType, String blueprintId,
-                                              int currency) throws SQLException, IOException {
-        _readWriteLock.writeLock().lock();
-        try {
-            final CardCollection playerCollection = getPlayerCollection(player, collectionType.getCode());
-            if (playerCollection != null) {
-                MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
-                if (!mutableCardCollection.removeItem(blueprintId, 1))
-                    return false;
-
-                String reason = "Selling items";
-
-                addCurrencyToPlayerCollection(false, reason, player, collectionType, currency);
-
-                CardCollection collection = cardCollectionFromBlueprintId(1, blueprintId);
-                removeFromPlayerCollection(player, collectionType.getCode(), collection, reason);
-
-                String collectionName = collectionType.getFullName();
-                _transferDAO.addTransferFrom(player.getName(), reason, collectionName, 0, collection);
-                _transferDAO.addTransferTo(false, player.getName(), reason, collectionName, currency,
-                        new DefaultCardCollection());
-
-                return true;
-            }
-            return false;
-        } finally {
-            _readWriteLock.writeLock().unlock();
-        }
-    }
-
-    public void addCurrencyToPlayerCollection(boolean notifyPlayer, String reason, String player,
-                                              CollectionType collectionType, int currency)
+    public void addCurrencyToPlayerCollection(boolean notifyPlayer, String reason, String player, int currency)
             throws SQLException, IOException {
         try {
-            addCurrencyToPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), collectionType, currency);
+            addCurrencyToPlayerCollection(notifyPlayer, reason, _playerDAO.getPlayer(player), currency);
         } catch(UserNotFoundException exp) {
             LOGGER.error("Unable to find player " + player);
         }
     }
 
-    public void addCurrencyToPlayerCollection(boolean notifyPlayer, String reason, User player,
-                                              CollectionType collectionType, int currency)
+
+    public void addCurrencyToPlayerCollection(boolean notifyPlayer, String reason, User player, int currency)
             throws SQLException, IOException {
         if (currency > 0) {
-            _readWriteLock.writeLock().lock();
-            try {
+            try (CloseableWriteLock ignored = _writeLock.open()) {
+                CollectionType collectionType = CollectionType.MY_CARDS;
                 String collectionTypeCode = collectionType.getCode();
-                final CardCollection playerCollection = getPlayerCollection(player, collectionTypeCode);
+                final CardCollection playerCollection = getPlayerMyCardsCollection(player);
                 if (playerCollection != null) {
                     MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
                     mutableCardCollection.addCurrency(currency);
@@ -366,18 +278,16 @@ public class CollectionsManager {
                     _transferDAO.addTransferTo(notifyPlayer, player.getName(), reason, collectionName, currency,
                             new DefaultCardCollection());
                 }
-            } finally {
-                _readWriteLock.writeLock().unlock();
             }
         }
     }
 
-    public boolean removeCurrencyFromPlayerCollection(String reason, User player, CollectionType collectionType,
-                                                      int currency) throws SQLException, IOException {
-        _readWriteLock.writeLock().lock();
-        try {
+    public boolean removeCurrencyFromPlayerCollection(String reason, User player, int currency)
+            throws SQLException, IOException {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
+            CollectionType collectionType = CollectionType.MY_CARDS;
             String collectionTypeCode = collectionType.getCode();
-            final CardCollection playerCollection = getPlayerCollection(player, collectionTypeCode);
+            final CardCollection playerCollection = getPlayerMyCardsCollection(player);
             if (playerCollection != null) {
                 MutableCardCollection mutableCardCollection = new DefaultCardCollection(playerCollection);
                 if (mutableCardCollection.removeCurrency(currency)) {
@@ -393,8 +303,14 @@ public class CollectionsManager {
                 }
             }
             return false;
-        } finally {
-            _readWriteLock.writeLock().unlock();
         }
+    }
+
+    public void setLastReward(User user, int latestMonday) throws SQLException {
+        _playerDAO.setLastReward(user, latestMonday);
+    }
+
+    public boolean updateLastReward(User user, Integer lastReward, int latestMonday) throws SQLException {
+       return _playerDAO.updateLastReward(user, lastReward, latestMonday);
     }
 }

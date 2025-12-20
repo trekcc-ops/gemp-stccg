@@ -1,5 +1,6 @@
 package com.gempukku.stccg.database;
 
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.common.JSONData;
 
 import java.time.ZonedDateTime;
@@ -12,7 +13,7 @@ public interface GameHistoryDAO {
                        int version);
     DBData.GameHistory getGameHistory(String recordID);
     boolean doesReplayIDExist(String id);
-    List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count);
+    List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) throws HttpProcessingException;
     int getGameHistoryForPlayerCount(User player);
 
     List<DBData.GameHistory> getGameHistoryForFormat(String format, int count);

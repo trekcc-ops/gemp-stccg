@@ -1,13 +1,13 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.database.IgnoreDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
+import com.gempukku.stccg.service.AdminService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,16 +15,16 @@ import java.util.*;
 
 class TableHolder {
     private static final Logger LOGGER = LogManager.getLogger(TableHolder.class);
-    private final LeagueService leagueService;
-    private final IgnoreDAO ignoreDAO;
+    private final LeagueService _leagueService;
+    private final AdminService _adminService;
     private final Map<String, GameTable> awaitingTables = new LinkedHashMap<>();
     private final Map<String, GameTable> runningTables = new LinkedHashMap<>();
 
     private int _nextTableId = 1;
 
-    public TableHolder(ServerObjects objects) {
-        this.leagueService = objects.getLeagueService();
-        this.ignoreDAO = objects.getIgnoreDAO();
+    public TableHolder(AdminService adminService, LeagueService leagueService) {
+        _leagueService = leagueService;
+        _adminService = adminService;
     }
 
     public final int getTableCount() {
@@ -59,10 +59,10 @@ class TableHolder {
                 throw new HallException("You can't play in multiple league games at the same time");
             }
 
-            if (!leagueService.isPlayerInLeague(league, userName))
+            if (!_leagueService.isPlayerInLeague(league, userName))
                 throw new HallException("You're not in that league");
 
-            if (!leagueService.canPlayRankedGame(league, gameSettings.getSeriesData(), userName))
+            if (!_leagueService.canPlayRankedGame(league, gameSettings.getSeries(), userName))
                 throw new HallException("You have already played max games in league");
         }
     }
@@ -90,8 +90,8 @@ class TableHolder {
         }
     }
 
-    public final void joinTable(String tableId, User player, CardDeck deck, ServerObjects serverObjects,
-                                     HallServer hallServer) throws HallException {
+    public final void joinTable(String tableId, User player, CardDeck deck, GameServer gameServer,
+                                     HallServer hallServer, LeagueService leagueService) throws HallException {
         final GameTable awaitingTable = awaitingTables.get(tableId);
         String userName = player.getName();
 
@@ -105,7 +105,7 @@ class TableHolder {
         awaitingTable.validateOpponentForLeague(userName, leagueService);
         awaitingTable.addPlayer(new GameParticipant(userName, deck));
         runTableIfFull(awaitingTable);
-        awaitingTable.createGameIfFull(serverObjects);
+        awaitingTable.createGameIfFull(gameServer, hallServer, leagueService);
         hallServer.hallChanged();
     }
 
@@ -211,13 +211,13 @@ class TableHolder {
             return true;
 
         // This player ignores someone of the participants
-        final Set<String> ignoredUsers = ignoreDAO.getIgnoredUsers(playerLooking);
+        final Set<String> ignoredUsers = _adminService.getIgnoredUsers(playerLooking);
         if (!Collections.disjoint(ignoredUsers, participants))
             return false;
 
         // One of the participants ignores this player
         for (String player : participants) {
-            final Set<String> ignored = ignoreDAO.getIgnoredUsers(player);
+            final Set<String> ignored = _adminService.getIgnoredUsers(player);
             if (ignored.contains(playerLooking))
                 return false;
         }

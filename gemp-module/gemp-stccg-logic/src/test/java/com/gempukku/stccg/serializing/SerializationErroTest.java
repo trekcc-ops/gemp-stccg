@@ -1,20 +1,18 @@
 package com.gempukku.stccg.serializing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import org.junit.jupiter.api.Test;
 
 public class SerializationErroTest {
 
     @Test
-    void serializeItem() throws JsonProcessingException, InvalidGameLogicException {
+    void serializeItem() throws JsonProcessingException, SerializableException {
         SerializingLibrary library = new SerializingLibrary();
         SerializableItem item = new SerializableItem(5, library);
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.WRAP_EXCEPTIONS, false);
+//        mapper.configure(DeserializationFeature.WRAP_EXCEPTIONS, false);
         mapper.setInjectableValues(new InjectableValues.Std().addValue(SerializingLibrary.class, library));
         String jsonString = mapper.writeValueAsString(item);
 

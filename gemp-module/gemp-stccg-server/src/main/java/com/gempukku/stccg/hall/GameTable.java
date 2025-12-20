@@ -1,7 +1,5 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
@@ -24,6 +22,7 @@ public class GameTable {
     private CardGameMediator cardGameMediator;
     private final int capacity;
     private TableStatus _tableStatus;
+
 
     enum TableStatus {
         WAITING, PLAYING, FINISHED
@@ -107,30 +106,33 @@ public class GameTable {
         return league != null && Objects.equals(gameSettings.getLeague(), league);
     }
 
-    private void createGame(GameServer gameServer, CardBlueprintLibrary cardLibrary, ServerObjects serverObjects) {
-        Set<GameParticipant> players = getPlayers();
-        GameParticipant[] participants = players.toArray(new GameParticipant[0]);
-        String tournamentName = gameSettings.getTournamentNameForHall();
-
-        List<GameResultListener> listenerList = new ArrayList<>();
-        listenerList.add(new NotifyHallListenersGameResultListener(serverObjects));
-        if (isForLeague()) {
-            listenerList.add(new LeagueGameResultListener(gameSettings, serverObjects));
-        }
-            gameServer.createNewGame(tournamentName, participants, this, cardLibrary, listenerList);
-    }
-
-    public void createGameIfFull(ServerObjects serverObjects) {
+    public void createGameIfFull(GameServer gameServer, HallServer hallServer, LeagueService leagueService) {
         if (isFull()) {
-            createGame(serverObjects.getGameServer(), serverObjects.getCardBlueprintLibrary(), serverObjects);
+            String tournamentName = gameSettings.getTournamentNameForHall();
+            List<GameResultListener> listenerList = new ArrayList<>();
+            listenerList.add(new NotifyHallListenersGameResultListener(hallServer));
+            if (isForLeague()) {
+                listenerList.add(new LeagueGameResultListener(gameSettings, leagueService));
+            }
+            gameServer.createNewGame(tournamentName, this, listenerList);
         }
     }
+
+    public void createGameWithNoLeague(GameServer gameServer, HallServer hallServer) {
+        if (isFull()) {
+            String tournamentName = gameSettings.getTournamentNameForHall();
+            List<GameResultListener> listenerList = new ArrayList<>();
+            listenerList.add(new NotifyHallListenersGameResultListener(hallServer));
+            gameServer.createNewGame(tournamentName, this, listenerList);
+        }
+    }
+
 
     public void validateOpponentForLeague(String userName, LeagueService leagueService) throws HallException {
         League league = gameSettings.getLeague();
         if (league != null) {
             if (!getPlayerNames().isEmpty() &&
-                    !leagueService.canPlayRankedGameAgainst(league, gameSettings.getSeriesData(),
+                    !leagueService.canPlayRankedGameAgainst(league, gameSettings.getSeries(),
                             getPlayerNames().getFirst(), userName))
                 throw new HallException(
                         "You have already played ranked league game against this player in that series");
@@ -150,5 +152,10 @@ public class GameTable {
     }
 
     TableStatus getStatus() { return _tableStatus; }
+
+    public String getTournamentNameForHall() {
+        return gameSettings.getTournamentNameForHall();
+    }
+
 
 }

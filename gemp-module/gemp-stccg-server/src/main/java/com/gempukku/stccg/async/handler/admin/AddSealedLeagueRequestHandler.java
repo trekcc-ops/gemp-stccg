@@ -1,58 +1,54 @@
 package com.gempukku.stccg.async.handler.admin;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.league.LeagueSeriesData;
-import com.gempukku.stccg.league.NewSealedLeagueData;
+import com.gempukku.stccg.league.LeagueService;
+import com.gempukku.stccg.league.SealedLeague;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-@JsonIgnoreProperties("cost")
 public class AddSealedLeagueRequestHandler implements UriRequestHandler, AdminRequestHandler {
-    private final long _creationTime;
-    private final int _start;
-    private final String _leagueTemplateName;
-    private final int _maxMatches;
-    private final String _name;
-    private final int _seriesDuration;
+    private final LeagueService _leagueService;
+    private final SealedLeague _league;
 
     AddSealedLeagueRequestHandler(
-        @JsonProperty(value = "format", required = true)
+            @JsonProperty(value = "format", required = true)
         String format,
-        @JsonProperty(value = "start", required = true)
+            @JsonProperty(value = "start", required = true)
         int start,
-        @JsonProperty(value = "seriesDuration", required = true)
+            @JsonProperty(value = "seriesDuration", required = true)
         int seriesDuration,
-        @JsonProperty(value = "maxMatches", required = true)
+            @JsonProperty(value = "maxMatches", required = true)
         int maxMatches,
-        @JsonProperty(value = "name", required = true)
-        String name
-    ) {
-        _creationTime = System.currentTimeMillis();
-        _leagueTemplateName = format;
-        _start = start;
-        _seriesDuration = seriesDuration;
-        _maxMatches = maxMatches;
-        _name = name;
+            @JsonProperty(value = "name", required = true)
+        String name,
+            @JsonProperty(value = "cost", required = true)
+            int cost,
+            @JacksonInject CardBlueprintLibrary cardBlueprintLibrary,
+            @JacksonInject FormatLibrary formatLibrary,
+            @JacksonInject LeagueService leagueService) {
+        _leagueService = leagueService;
+        LocalDate startDate = LocalDate.parse(String.valueOf(start), DateTimeFormatter.ofPattern("yyyyMMdd"));
+        ZonedDateTime startTime = startDate.atStartOfDay(ZoneId.of("UTC"));
+        _league = new SealedLeague(format, CollectionType.ALL_CARDS, cardBlueprintLibrary, startTime, formatLibrary,
+                cost, name, 0, seriesDuration, maxMatches, -999, 4);
     }
 
     @Override
-    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         validateLeagueAdmin(request);
-        CardBlueprintLibrary cardBlueprintLibrary = serverObjects.getCardBlueprintLibrary();
-        FormatLibrary formatLibrary = serverObjects.getFormatLibrary();
-        NewSealedLeagueData leagueData = new NewSealedLeagueData(cardBlueprintLibrary, formatLibrary, _leagueTemplateName,
-                _start, _seriesDuration, _maxMatches, _creationTime, _name);
-        List<LeagueSeriesData> series = leagueData.getSeries();
-        serverObjects.getLeagueDAO().addLeague(series, leagueData);
-        serverObjects.getLeagueService().clearCache();
+        _leagueService.addLeague(_league);
+        _leagueService.clearCache();
         responseWriter.writeJsonOkResponse();
     }
 

@@ -1,70 +1,75 @@
 package com.gempukku.stccg.async.handler.events;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
+import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.League;
-import com.gempukku.stccg.league.LeagueData;
-import com.gempukku.stccg.league.LeagueSeriesData;
+import com.gempukku.stccg.league.LeagueSeries;
 import com.gempukku.stccg.league.LeagueService;
+import com.gempukku.stccg.league.SoloDraftLeague;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 
 public class GetLeagueRequestHandler implements UriRequestHandler {
 
-    private final String _leagueType;
+    private final League _league;
+    private final LeagueService _leagueService;
+    private final CardBlueprintLibrary _cardBlueprintLibrary;
+    private final FormatLibrary _formatLibrary;
+    private final DraftFormatLibrary _draftLibrary;
+
     GetLeagueRequestHandler(
             @JsonProperty("leagueType")
-            String leagueType
-    ) {
-        _leagueType = leagueType;
+            String leagueType,
+            @JacksonInject LeagueService leagueService,
+            @JacksonInject CardBlueprintLibrary cardBlueprintLibrary,
+            @JacksonInject FormatLibrary formatLibrary,
+            @JacksonInject DraftFormatLibrary draftLibrary) throws HttpProcessingException {
+        _leagueService = leagueService;
+        _league = getLeagueByType(leagueService, leagueType);
+        if (_league == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+        _cardBlueprintLibrary = cardBlueprintLibrary;
+        _formatLibrary = formatLibrary;
+        _draftLibrary = draftLibrary;
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         User resourceOwner = request.user();
         Document doc = createNewDoc();
-        LeagueService leagueService = serverObjects.getLeagueService();
-        League league = getLeagueByType(leagueService, _leagueType);
-
-        if (league == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-
-        final LeagueData leagueData = league.getLeagueData(serverObjects.getCardBlueprintLibrary(),
-                serverObjects.getFormatLibrary(), serverObjects.getSoloDraftDefinitions());
-        final List<LeagueSeriesData> allSeries = leagueData.getSeries();
-
-        int end = allSeries.getLast().getEnd();
-        int start = allSeries.getFirst().getStart();
-        int currentDate = DateUtils.getCurrentDateAsInt();
 
         Element leagueElem = doc.createElement("league");
-        boolean inLeague = leagueService.isPlayerInLeague(league, resourceOwner);
+        boolean inLeague = _leagueService.isPlayerInLeague(_league, resourceOwner);
+        String joinable = String.valueOf(!inLeague && _league.getEnd().isAfter(ZonedDateTime.now()));
+        String draftable = String.valueOf(inLeague && _league instanceof SoloDraftLeague && _league.getStart().isBefore(ZonedDateTime.now()));
 
-        leagueElem.setAttribute("member", String.valueOf(inLeague));
-        leagueElem.setAttribute("joinable", String.valueOf(!inLeague && end >= currentDate));
-        leagueElem.setAttribute("draftable",
-                String.valueOf(inLeague && leagueData.isSoloDraftLeague() && start <= currentDate));
-        leagueElem.setAttribute("type", league.getType());
-        leagueElem.setAttribute("name", league.getName());
-        leagueElem.setAttribute("cost", String.valueOf(league.getCost()));
-        leagueElem.setAttribute("start", String.valueOf(allSeries.getFirst().getStart()));
-        leagueElem.setAttribute("end", String.valueOf(end));
+                leagueElem.setAttribute("member", String.valueOf(inLeague));
+        leagueElem.setAttribute("joinable", joinable);
+        leagueElem.setAttribute("draftable", draftable);
+        leagueElem.setAttribute("type", _league.getType());
+        leagueElem.setAttribute("name", _league.getName());
+        leagueElem.setAttribute("cost", String.valueOf(_league.getCost()));
+        leagueElem.setAttribute("start", String.valueOf(_league.getStart()));
+        leagueElem.setAttribute("end", String.valueOf(_league.getEnd()));
 
-        for (LeagueSeriesData series : allSeries) {
+        for (LeagueSeries series : _league.getAllSeries()) {
             Element seriesElem = doc.createElement("series");
             seriesElem.setAttribute("type", series.getName());
             seriesElem.setAttribute("maxMatches", String.valueOf(series.getMaxMatches()));
@@ -72,12 +77,12 @@ public class GetLeagueRequestHandler implements UriRequestHandler {
             seriesElem.setAttribute("end", String.valueOf(series.getEnd()));
             seriesElem.setAttribute("formatType", series.getFormat().getCode());
             seriesElem.setAttribute("format", series.getFormat().getName());
-            seriesElem.setAttribute("collection", series.getCollectionType().getFullName());
-            seriesElem.setAttribute("limited", String.valueOf(series.isLimited()));
+            seriesElem.setAttribute("collection", _league.getCollectionType().getFullName());
+            seriesElem.setAttribute("limited", String.valueOf(_league.isLimited()));
 
             Element matchesElem = doc.createElement("matches");
             Collection<LeagueMatchResult> playerMatches =
-                    leagueService.getPlayerMatchesInSeries(league, series, resourceOwner.getName());
+                    _leagueService.getPlayerMatchesInSeries(_league, series, resourceOwner.getName());
             for (LeagueMatchResult playerMatch : playerMatches) {
                 Element matchElem = doc.createElement("match");
                 matchElem.setAttribute("winner", playerMatch.getWinner());
@@ -86,7 +91,7 @@ public class GetLeagueRequestHandler implements UriRequestHandler {
             }
             seriesElem.appendChild(matchesElem);
 
-            final List<PlayerStanding> standings = leagueService.getLeagueSeriesStandings(league, series);
+            final List<PlayerStanding> standings = _leagueService.getLeagueSeriesStandings(_league, series);
             for (PlayerStanding standing : standings) {
                 Element standingElem = doc.createElement("standing");
                 setStandingAttributes(standing, standingElem);
@@ -96,7 +101,7 @@ public class GetLeagueRequestHandler implements UriRequestHandler {
             leagueElem.appendChild(seriesElem);
         }
 
-        List<PlayerStanding> leagueStandings = leagueService.getLeagueStandings(league);
+        List<PlayerStanding> leagueStandings = _leagueService.getLeagueStandings(_league);
         for (PlayerStanding standing : leagueStandings) {
             Element standingElem = doc.createElement("leagueStanding");
             setStandingAttributes(standing, standingElem);

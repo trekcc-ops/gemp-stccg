@@ -21,7 +21,7 @@ public interface PlayerDAO {
     List<User> findSimilarAccounts(String login) throws SQLException;
     Set<String> getBannedUsernames() throws SQLException;
 
-    User loginUser(String login, String password) throws SQLException;
+    User loginUser(String login, String password);
 
     void setLastReward(User player, int currentReward) throws SQLException;
 
@@ -33,4 +33,9 @@ public interface PlayerDAO {
     void updateLastLoginIp(String login, String remoteAddress) throws SQLException;
 
     List<DBData.DBPlayer> getAllPlayers();
+
+    default String getLastIpForUserName(String userName) throws UserNotFoundException {
+        User player = getPlayer(userName);
+        return player.getLastIp();
+    }
 }

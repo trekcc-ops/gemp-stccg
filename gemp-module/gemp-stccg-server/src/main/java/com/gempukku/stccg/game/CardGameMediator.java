@@ -236,7 +236,7 @@ public class CardGameMediator {
     }
 
     private boolean userCannotAccessGameState(User player) {
-        return !player.hasType(User.Type.ADMIN) && (!_allowSpectators || !_playersPlaying.contains(player.getName()));
+        return !player.hasType(User.Type.ADMIN) && !_allowSpectators && !_playersPlaying.contains(player.getName());
     }
 
 
@@ -270,22 +270,17 @@ public class CardGameMediator {
         }
     }
 
-    public final String signupUserForGameAndGetGameState(User player)
-            throws PrivateInformationException, JsonProcessingException {
-        String playerName = player.getName();
-        if (userCannotAccessGameState(player))
-            throw new PrivateInformationException();
+    public final String signupUserForGameAndGetGameState(String userName) throws JsonProcessingException {
         GameCommunicationChannel channel;
         int channelNumber;
-
         try (CloseableReadLock ignored = _readLock.open()) {
             channelNumber = _channelNextIndex;
             _channelNextIndex++;
-            channel = new GameCommunicationChannel(getGame(), playerName, channelNumber);
-            _communicationChannels.put(playerName, channel);
+            channel = new GameCommunicationChannel(getGame(), userName, channelNumber);
+            _communicationChannels.put(userName, channel);
             _game.addGameStateListener(channel);
             ObjectMapper mapper = new ObjectMapper();
-            String jsonString = _game.getGameState().serializeForPlayer(player.getName());
+            String jsonString = _game.getGameState().serializeForPlayer(userName);
             JsonNode gameState = mapper.readTree(jsonString);
             Map<String, Object> result = new HashMap<>();
             result.put("channelNumber", channelNumber);
@@ -383,4 +378,13 @@ public class CardGameMediator {
     public String getStatus() {
         return _game.getStatus();
     }
+
+    public boolean hasPlayer(String playerName) {
+        return _playersPlaying.contains(playerName);
+    }
+
+    public boolean allowsSpectators() {
+        return _allowSpectators;
+    }
+
 }

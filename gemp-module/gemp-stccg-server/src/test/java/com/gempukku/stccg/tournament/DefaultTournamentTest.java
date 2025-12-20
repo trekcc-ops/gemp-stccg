@@ -180,10 +180,10 @@ public class DefaultTournamentTest extends AbstractServerTest {
         tournament.advanceTournament(tournamentCallback, collectionsManager);
         Mockito.verify(tournamentCallback, new Times(4)).broadcastMessage(Mockito.anyString());
 
-        Mockito.verify(collectionsManager).addItemsToPlayerCollection(Mockito.eq(true), Mockito.anyString(), Mockito.eq("p1"), Mockito.eq(CollectionType.MY_CARDS), Mockito.anyCollection());
-        Mockito.verify(collectionsManager).addItemsToPlayerCollection(Mockito.eq(true), Mockito.anyString(), Mockito.eq("p5"), Mockito.eq(CollectionType.MY_CARDS), Mockito.anyCollection());
-        Mockito.verify(collectionsManager).addItemsToPlayerCollection(Mockito.eq(true), Mockito.anyString(), Mockito.eq("p3"), Mockito.eq(CollectionType.MY_CARDS), Mockito.anyCollection());
-        Mockito.verify(collectionsManager).addItemsToPlayerCollection(Mockito.eq(true), Mockito.anyString(), Mockito.eq("p7"), Mockito.eq(CollectionType.MY_CARDS), Mockito.anyCollection());
+        for (String playerName : List.of("p1", "p5", "p3", "p7")) {
+            Mockito.verify(collectionsManager).addItemsToPlayerMyCardsCollection(Mockito.eq(true),
+                    Mockito.anyString(), Mockito.eq(playerName), Mockito.anyCollection());
+        }
 
         assertEquals(3, tournament.getCurrentRound());
         assertEquals(Tournament.Stage.FINISHED, tournament.getTournamentStage());

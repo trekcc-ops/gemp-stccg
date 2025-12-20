@@ -1,10 +1,9 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.common.SetDefinition;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.draft.DraftChoice;
-import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
+import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.formats.FormatLibrary;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +14,6 @@ import java.util.TreeMap;
 public class DraftTests extends AbstractServerTest {
     @Test
     public void DraftTest() {
-        CollectionsManager collectionsManager =
-                new CollectionsManager(null, null, null, _cardLibrary);
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
         DraftFormatLibrary draftFormatLibrary =

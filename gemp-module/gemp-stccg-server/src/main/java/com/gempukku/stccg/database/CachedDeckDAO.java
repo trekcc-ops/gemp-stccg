@@ -1,7 +1,6 @@
 package com.gempukku.stccg.database;
 
 import com.gempukku.stccg.async.Cached;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.async.LoggingProxy;
 import org.apache.commons.collections4.map.LRUMap;
@@ -16,8 +15,8 @@ public class CachedDeckDAO implements DeckDAO, Cached {
             Collections.synchronizedMap(new LRUMap<>(DECK_LIMIT));
     private final Map<String, CardDeck> _decks = Collections.synchronizedMap(new LRUMap<>(DECK_LIMIT));
 
-    public CachedDeckDAO(ServerObjects serverObjects, DbAccess dbAccess) {
-        _delegate = LoggingProxy.createLoggingProxy(DeckDAO.class, new DbDeckDAO(serverObjects, dbAccess));
+    public CachedDeckDAO(DbAccess dbAccess) {
+        _delegate = LoggingProxy.createLoggingProxy(DeckDAO.class, new DbDeckDAO(dbAccess));
     }
 
     @Override

@@ -1,15 +1,19 @@
 package com.gempukku.stccg.async.handler.hall;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.DateUtils;
-import com.gempukku.stccg.async.*;
-import com.gempukku.stccg.async.handler.*;
+import com.gempukku.stccg.async.GempHttpRequest;
+import com.gempukku.stccg.async.HttpProcessingException;
+import com.gempukku.stccg.async.LongPollingResource;
+import com.gempukku.stccg.async.LongPollingSystem;
+import com.gempukku.stccg.async.handler.ResponseWriter;
+import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.collection.CardCollection;
-import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.HallCommunicationChannel;
 import com.gempukku.stccg.hall.HallServer;
 import org.apache.logging.log4j.LogManager;
@@ -27,32 +31,36 @@ public class UpdateHallRequestHandler implements UriRequestHandler {
     private final static int WEEKLY_REWARD = 5000;
     private static final Logger LOGGER = LogManager.getLogger(UpdateHallRequestHandler.class);
     private final int _channelNumber;
+    private final CollectionsManager _collectionsManager;
+    private final HallServer _hallServer;
+    private final LongPollingSystem _longPollingSystem;
+    private final GameServer _gameServer;
 
     UpdateHallRequestHandler(
             @JsonProperty("channelNumber")
-            int channelNumber
-    ) {
+            int channelNumber,
+            @JacksonInject CollectionsManager collectionsManager,
+            @JacksonInject HallServer hallServer,
+            @JacksonInject LongPollingSystem longPollingSystem,
+            @JacksonInject GameServer gameServer) {
         _channelNumber = channelNumber;
+        _collectionsManager = collectionsManager;
+        _hallServer = hallServer;
+        _gameServer = gameServer;
+        _longPollingSystem = longPollingSystem;
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
-                                    ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         User resourceOwner = request.user();
-        PlayerDAO playerDAO = serverObjects.getPlayerDAO();
-        CollectionsManager collectionsManager = serverObjects.getCollectionsManager();
-
-        processLoginReward(resourceOwner, playerDAO, collectionsManager);
-
-        HallServer hallServer = serverObjects.getHallServer();
-        LongPollingSystem pollingSystem = serverObjects.getLongPollingSystem();
-
+        processLoginReward(resourceOwner);
         try {
-            HallCommunicationChannel commChannel = hallServer.getCommunicationChannel(resourceOwner, _channelNumber);
+            HallCommunicationChannel commChannel = _hallServer.getCommunicationChannel(resourceOwner, _channelNumber);
             LongPollingResource polledResource = new HallUpdateLongPollingResource(
-                    commChannel, request, resourceOwner, responseWriter, hallServer, collectionsManager);
-            pollingSystem.processLongPollingResource(polledResource, commChannel);
+                    commChannel, request, resourceOwner, responseWriter, _hallServer, _collectionsManager,
+                    _gameServer);
+            polledResource.processInSystem(_longPollingSystem);
         }
         catch (HttpProcessingException exp) {
             logHttpError(LOGGER, exp.getStatus(), request.uri(), exp);
@@ -60,7 +68,7 @@ public class UpdateHallRequestHandler implements UriRequestHandler {
         }
     }
 
-    final void processLoginReward(User user, PlayerDAO playerDAO, CollectionsManager collectionsManager)
+    final void processLoginReward(User user)
             throws Exception {
         String userName = user.getName();
         synchronized (userName.intern()) {
@@ -69,14 +77,14 @@ public class UpdateHallRequestHandler implements UriRequestHandler {
 
             Integer lastReward = user.getLastLoginReward();
             if (lastReward == null) {
-                playerDAO.setLastReward(user, latestMonday);
-                collectionsManager.addCurrencyToPlayerCollection(true, "Signup reward", user,
-                        CollectionType.MY_CARDS, SIGNUP_REWARD);
+                _collectionsManager.setLastReward(user, latestMonday);
+                _collectionsManager.addCurrencyToPlayerCollection(true, "Signup reward", user,
+                        SIGNUP_REWARD);
             } else {
                 if (latestMonday != lastReward) {
-                    if (playerDAO.updateLastReward(user, lastReward, latestMonday))
-                        collectionsManager.addCurrencyToPlayerCollection(true, "Weekly reward",
-                                user, CollectionType.MY_CARDS, WEEKLY_REWARD);
+                    if (_collectionsManager.updateLastReward(user, lastReward, latestMonday))
+                        _collectionsManager.addCurrencyToPlayerCollection(true, "Weekly reward",
+                                user, WEEKLY_REWARD);
                 }
             }
         }
@@ -90,16 +98,19 @@ public class UpdateHallRequestHandler implements UriRequestHandler {
         private final ResponseWriter _responseWriter;
         private boolean _processed;
         private final HallServer _hallServer;
+        private final GameServer _gameServer;
         private final CollectionsManager _collectionsManager;
 
         private HallUpdateLongPollingResource(HallCommunicationChannel commChannel, GempHttpRequest request,
                                               User resourceOwner, ResponseWriter responseWriter,
-                                              HallServer hallServer, CollectionsManager collectionsManager) {
+                                              HallServer hallServer, CollectionsManager collectionsManager,
+                                              GameServer gameServer) {
             _hallCommunicationChannel = commChannel;
             _request = request;
             _resourceOwner = resourceOwner;
             _responseWriter = responseWriter;
             _hallServer = hallServer;
+            _gameServer = gameServer;
             _collectionsManager = collectionsManager;
         }
 
@@ -115,10 +126,10 @@ public class UpdateHallRequestHandler implements UriRequestHandler {
                     Map<Object, Object> itemsToSerialize = new HashMap<>();
 
                     _hallCommunicationChannel.processCommunicationChannel(
-                            _hallServer, _resourceOwner, itemsToSerialize);
+                            _hallServer, _gameServer, _resourceOwner, itemsToSerialize);
 
                     CardCollection playerCollection =
-                            _collectionsManager.getPlayerCollection(_resourceOwner, CollectionType.MY_CARDS.getCode());
+                            _collectionsManager.getPlayerMyCardsCollection(_resourceOwner);
                     itemsToSerialize.put("currency", playerCollection.getCurrency());
 
                     String jsonString = new ObjectMapper().writeValueAsString(itemsToSerialize);
@@ -129,6 +140,11 @@ public class UpdateHallRequestHandler implements UriRequestHandler {
                 }
                 _processed = true;
             }
+        }
+
+        @Override
+        public void processInSystem(LongPollingSystem system) {
+            system.processLongPollingResource(this, _hallCommunicationChannel);
         }
     }
 

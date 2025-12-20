@@ -4,11 +4,7 @@ import com.gempukku.stccg.common.AppConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpContentCompressor;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
@@ -18,18 +14,17 @@ public class GempServer {
         int httpPort = AppConfig.getPort();
 
         ServerObjects objects = new ServerObjects();
+        ServerChannelInitializer initializer = objects.getChannelInitializer();
 
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
-            objects.getLongPollingSystem().start();
-
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
-                    .childHandler(new ServerChannelInitializer(objects))
+                    .childHandler(initializer)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childOption(ChannelOption.TCP_NODELAY, true);
             ChannelFuture bind = bootstrap.bind(httpPort);
@@ -41,20 +36,4 @@ public class GempServer {
         }
     }
 
-    private static class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
-        private final ServerObjects _objects;
-
-        private ServerChannelInitializer(ServerObjects objects) {
-            _objects = objects;
-        }
-
-        @Override
-        public void initChannel(SocketChannel channel) {
-            ChannelPipeline pipeline = channel.pipeline();
-            pipeline.addLast(new HttpServerCodec());
-            pipeline.addLast(new HttpObjectAggregator(Short.MAX_VALUE));
-            pipeline.addLast(new HttpContentCompressor());
-            pipeline.addLast(new ClientRequestHandler(_objects));
-        }
-    }
 }

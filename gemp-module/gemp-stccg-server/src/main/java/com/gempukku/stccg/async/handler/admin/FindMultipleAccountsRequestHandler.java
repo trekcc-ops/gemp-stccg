@@ -1,14 +1,14 @@
 package com.gempukku.stccg.async.handler.admin;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
-import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.service.AdminService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -18,23 +18,24 @@ import java.util.List;
 public class FindMultipleAccountsRequestHandler implements UriRequestHandler, AdminRequestHandler {
 
     private final String _userName;
+    private final AdminService _adminService;
 
     FindMultipleAccountsRequestHandler(
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @JsonProperty(value = "userName", required = true)
-            String userName
-    ) {
+            String userName,
+            @JacksonInject AdminService adminService) {
         _userName = userName;
+        _adminService = adminService;
     }
 
     @Override
-    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
 
         validateAdmin(request);
-        PlayerDAO playerDAO = serverObjects.getPlayerDAO();
 
-        List<User> similarPlayers = playerDAO.findSimilarAccounts(_userName);
+        List<User> similarPlayers = _adminService.findSimilarAccounts(_userName);
         if (similarPlayers.isEmpty())
             throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
