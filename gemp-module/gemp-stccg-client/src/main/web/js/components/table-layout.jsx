@@ -9,7 +9,7 @@ export default function TableLayout({gamestate}) {
 
     return(
         <Stack id="table"
-            direction="row"
+            direction="row-reverse"
         >
             {spacelineLocations}
         </Stack>
