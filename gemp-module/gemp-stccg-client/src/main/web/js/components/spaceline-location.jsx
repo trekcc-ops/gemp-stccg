@@ -1,6 +1,7 @@
 // Represents a column of cards anchored at a mission card.
 
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import CardStack from "./card-stack.jsx";
 
 // TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
@@ -31,12 +32,7 @@ function get_mission_cards(gamestate, locationData, yourPlayerId) {
     for (const cardId of locationData["missionCardIds"]) {
         let cardData = gamestate["visibleCardsInGame"][cardId.toString()];
         if (cardData != null) {
-            if (cardData["owner"] === yourPlayerId) {
-                retarr.push(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "missions"}} />);
-            }
-            else {
-                retarr.push(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "missions", transform: "scale(1, -1);"}} />);
-            }
+            retarr.push(cardData);
         }
     }
     return retarr;
@@ -81,18 +77,21 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
 
     // Render top to bottom
     let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-facil", transform: "rotate(180deg)"}} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
     );
     let opponentShipCards = get_ship_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "opp-ship", transform: "rotate(180deg)"}} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
     );
-    let missionCards = get_mission_cards(gamestate, locationData, yourPlayerId);
+    let missionCards = get_mission_cards(gamestate, locationData, yourPlayerId).map((cardData, index) => {
+        let isInverted = cardData.owner === yourPlayerId ? "none" : "rotate(180deg)";
+        return(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{transform: isInverted}} />);
+    });
     let yourShipCards = get_ship_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "you-ship"}} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
     );
     
     let yourFacilityCards = get_facility_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{gridRowStart: "you-facil"}} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
     );
 
     return(
@@ -111,11 +110,21 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
                 alignItems: "center"
             }}
         >
-            {opponentShipCards}
-            {opponentFacilityCards}
-            {missionCards}
-            {yourShipCards}
-            {yourFacilityCards}
+            <Stack direction="row" sx={{gridRowStart: "opp-facil", transform: "rotate(180deg)"}}>
+                {opponentFacilityCards}
+            </Stack>
+            <Stack direction="row" sx={{gridRowStart: "opp-ship", transform: "rotate(180deg)"}}>
+                {opponentShipCards}
+            </Stack>
+            <Stack direction="row" sx={{gridRowStart: "missions"}}>
+                {missionCards}
+            </Stack>
+            <Stack direction="row" sx={{gridRowStart: "you-ship"}}>
+                {yourShipCards}
+            </Stack>
+            <Stack direction="row" sx={{gridRowStart: "you-facil"}}>
+                {yourFacilityCards}
+            </Stack>
         </Box>
     );
 }
