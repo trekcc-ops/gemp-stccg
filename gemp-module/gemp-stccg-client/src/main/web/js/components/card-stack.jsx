@@ -110,8 +110,8 @@ export default function CardStack( {gamestate, anchor_id, sx} ) {
     // Set minimum size of the stack as a whole.
     // Dependent on quantity of cards in the stack, calculated above.
     const nestedCardOffset = 10; //px
-    const stackMinWidth = `${cardMinWidth + (nestedCardOffset * allCards.length)}px`;
-    const stackMinHeight = `${cardMinHeight + (nestedCardOffset * allCards.length)}px`;
+    const stackMinWidth = allCards.length > 1 ? `${cardMinWidth + (nestedCardOffset * allCards.length)}px` : `${cardMinWidth}px`;
+    const stackMinHeight = allCards.length > 1 ? `${cardMinHeight + (nestedCardOffset * allCards.length)}px` : `${cardMinHeight}px`;
 
     // Render the card data
     let reactCardObjs = allCards.map((cardData, i) => 
