@@ -18,7 +18,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class GameServer extends AbstractServer {
 
     private static final long MILLIS_TO_MINUTES = 1000 * 60;
-    private static final int TIMEOUT_PERIOD = 30;
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
     private final Collection<String> _gameDeathWarningsSent = new HashSet<>();
     private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
@@ -84,18 +83,6 @@ public class GameServer extends AbstractServer {
         return "Game" + gameId;
     }
 
-    private void createGameChatRoom(GameSettings gameSettings, GameParticipant[] participants, String gameId) {
-        String chatRoomName = getChatRoomName(gameId);
-        Set<String> allowedUsers = new HashSet<>();
-        boolean isCompetitive = gameSettings.isCompetitive();
-
-        if (isCompetitive) {
-            for (GameParticipant participant : participants)
-                allowedUsers.add(participant.getPlayerId());
-        }
-        _chatServer.createChatRoom(chatRoomName, false, allowedUsers, TIMEOUT_PERIOD, isCompetitive);
-    }
-
     public final void createNewGame(String tournamentName, GameTable gameTable, List<GameResultListener> listeners) {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             GameParticipant[] participants = gameTable.getPlayers().toArray(new GameParticipant[0]);
@@ -107,7 +94,7 @@ public class GameServer extends AbstractServer {
             CardGameMediator cardGameMediator = new CardGameMediator(gameId, participants, _cardBlueprintLibrary,
                     gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
                     gameSettings.getGameType());
-            createGameChatRoom(gameSettings, participants, gameId);
+            _chatServer.createGameChatRoom(gameSettings, participants, gameId);
             cardGameMediator.initialize(_gameRecorder, tournamentName, listeners);
             _runningGames.put(gameId, cardGameMediator);
             _nextGameId++;

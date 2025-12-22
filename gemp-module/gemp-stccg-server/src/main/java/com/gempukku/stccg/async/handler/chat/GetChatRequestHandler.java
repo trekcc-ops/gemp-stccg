@@ -12,6 +12,7 @@ import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.service.AdminService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,15 +22,18 @@ public class GetChatRequestHandler implements UriRequestHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(GetChatRequestHandler.class);
     private final ChatRoomMediator _chatRoom;
+    private final AdminService _adminService;
 
     GetChatRequestHandler(
             @JsonProperty("roomName")
         String roomName,
-            @JacksonInject ChatServer chatServer) throws HttpProcessingException {
+            @JacksonInject ChatServer chatServer,
+            @JacksonInject AdminService adminService) throws HttpProcessingException {
         _chatRoom = chatServer.getChatRoom(roomName);
         if (_chatRoom == null) {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
+        _adminService = adminService;
     }
 
     @Override
@@ -37,7 +41,7 @@ public class GetChatRequestHandler implements UriRequestHandler {
             throws Exception {
         User resourceOwner = request.user();
         try {
-            _chatRoom.joinUser(resourceOwner);
+            _chatRoom.joinUser(resourceOwner, _adminService);
             ChatCommunicationChannel listener = _chatRoom.getChatRoomListener(resourceOwner);
             String jsonString = new ObjectMapper().writeValueAsString(listener);
             responseWriter.writeJsonResponse(jsonString);

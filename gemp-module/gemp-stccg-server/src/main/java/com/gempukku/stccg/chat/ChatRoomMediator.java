@@ -12,7 +12,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ChatRoomMediator {
-    private final AdminService _adminService;
     private static final Logger LOGGER = LogManager.getLogger(ChatRoomMediator.class);
     private final ChatRoom _chatRoom;
     private final Map<String, ChatCommunicationChannel> _listeners = new HashMap<>();
@@ -23,10 +22,9 @@ public class ChatRoomMediator {
     private String _welcomeMessage;
     protected final String _roomName;
 
-    public ChatRoomMediator(AdminService adminService, boolean muteJoinPartMessages,
+    public ChatRoomMediator(boolean muteJoinPartMessages,
                             int secondsTimeoutPeriod, boolean allowIncognito, String welcomeMessage,
                             String roomName) {
-        _adminService = adminService;
         _channelInactivityTimeoutPeriod = 1000 * secondsTimeoutPeriod;
         _chatRoom = new ChatRoom(muteJoinPartMessages, allowIncognito);
         _welcomeMessage = welcomeMessage;
@@ -34,9 +32,8 @@ public class ChatRoomMediator {
     }
 
 
-    public ChatRoomMediator(AdminService adminService, boolean muteJoinPartMessages, int secondsTimeoutPeriod,
+    public ChatRoomMediator(boolean muteJoinPartMessages, int secondsTimeoutPeriod,
                             Set<String> allowedPlayers, boolean allowIncognito, String roomName) {
-        _adminService = adminService;
         if (!allowedPlayers.isEmpty()) {
             _allowedPlayers.addAll(allowedPlayers);
         }
@@ -46,14 +43,14 @@ public class ChatRoomMediator {
     }
 
 
-    public final void joinUser(User user)
+    public final void joinUser(User user, AdminService adminService)
             throws PrivateInformationException, SQLException {
         _lock.writeLock().lock();
         try {
             String playerId = user.getName();
             if (user.isAdmin() || _allowedPlayers.isEmpty() || _allowedPlayers.contains(playerId)) {
-                Set<String> usersToIgnore = _adminService.getBannedUsernames();
-                Set<String> ignoredUsers = _adminService.getIgnoredUsers(playerId);
+                Set<String> usersToIgnore = adminService.getBannedUsernames();
+                Set<String> ignoredUsers = adminService.getIgnoredUsers(playerId);
                 usersToIgnore.addAll(ignoredUsers);
                 ChatCommunicationChannel value = new ChatCommunicationChannel(this, user, usersToIgnore);
                 _listeners.put(playerId, value);

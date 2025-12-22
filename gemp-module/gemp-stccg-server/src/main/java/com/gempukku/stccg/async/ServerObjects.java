@@ -86,7 +86,7 @@ public class ServerObjects {
         GameRecorder gameRecorder = new GameRecorder(gameHistoryService, _playerDAO);
 
         // Server objects; these should have as few properties as possible. Ideally they would not have other servers as properties.
-        ChatServer chatServer = new ChatServer(_adminService);
+        ChatServer chatServer = new ChatServer();
         GameServer gameServer = new GameServer(chatServer, gameRecorder, _cardBlueprintLibrary);
         HallServer hallServer =
                 new HallServer(_adminService, _formatLibrary, chatServer, leagueService,

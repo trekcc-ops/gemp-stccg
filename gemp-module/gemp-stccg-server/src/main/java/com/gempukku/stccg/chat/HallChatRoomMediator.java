@@ -13,7 +13,7 @@ public class HallChatRoomMediator extends ChatRoomMediator {
     }
 
     public HallChatRoomMediator(AdminService adminService, int secondsTimeoutPeriod) {
-        super(adminService, true, secondsTimeoutPeriod, true, HTMLUtils.HALL_WELCOME_MESSAGE,
+        super(true, secondsTimeoutPeriod, true, HTMLUtils.HALL_WELCOME_MESSAGE,
                 "Game Hall");
         _adminService = adminService;
         try {
