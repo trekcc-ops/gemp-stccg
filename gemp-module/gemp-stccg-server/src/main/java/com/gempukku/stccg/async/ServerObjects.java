@@ -89,7 +89,7 @@ public class ServerObjects {
         ChatServer chatServer = new ChatServer(_adminService);
         GameServer gameServer = new GameServer(chatServer, gameRecorder, _cardBlueprintLibrary);
         HallServer hallServer =
-                new HallServer(this, _adminService, _formatLibrary, chatServer, leagueService,
+                new HallServer(_adminService, _formatLibrary, chatServer, leagueService,
                         collectionsManager, tournamentService, gameServer, _cardBlueprintLibrary, _deckDAO);
 
         _injectables.addValue(AdminService.class, _adminService);

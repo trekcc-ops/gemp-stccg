@@ -4,7 +4,6 @@ import com.gempukku.stccg.AbstractServer;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
@@ -64,7 +63,6 @@ public class HallServer extends AbstractServer {
     private final Map<String, Tournament> _runningTournaments = new LinkedHashMap<>();
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
     private final HallChatRoomMediator _hallChat;
-    private final ServerObjects _serverObjects;
     private final AdminService _adminService;
     private int _tickCounter = TICK_COUNTER_START;
     private final TournamentService _tournamentService;
@@ -72,11 +70,10 @@ public class HallServer extends AbstractServer {
     private final CardBlueprintLibrary _cardBlueprintLibrary;
     private final DeckDAO _deckDAO;
 
-    public HallServer(ServerObjects objects, AdminService adminService, FormatLibrary formatLibrary,
+    public HallServer(AdminService adminService, FormatLibrary formatLibrary,
                       ChatServer chatServer, LeagueService leagueService, CollectionsManager collectionsManager,
                       TournamentService tournamentService, GameServer gameServer, CardBlueprintLibrary cardLibrary,
                       DeckDAO deckDAO) {
-        _serverObjects = objects;
         _adminService = adminService;
         _tournamentService = tournamentService;
         _formatLibrary = formatLibrary;
