@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SealedLeague extends League {
+
     private final List<LeagueSeries> _allSeries;
     private final CardBlueprintLibrary _cardLibrary;
     private final SealedEventDefinition _eventDefinition;

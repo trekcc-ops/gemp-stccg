@@ -36,7 +36,7 @@ public class GetAvailableDraftPicksRequestHandler implements SoloDraftRequestHan
             @JacksonInject LeagueService leagueService) throws LeagueNotFoundException {
         _collectionsManager = collectionsManager;
         _cardBlueprintLibrary = cardBlueprintLibrary;
-        if (leagueService.getLeagueByType(leagueType) instanceof SoloDraftLeague draftLeague) {
+        if (leagueService.getLeagueById(leagueType) instanceof SoloDraftLeague draftLeague) {
             _league = draftLeague;
         } else {
             throw new LeagueNotFoundException();

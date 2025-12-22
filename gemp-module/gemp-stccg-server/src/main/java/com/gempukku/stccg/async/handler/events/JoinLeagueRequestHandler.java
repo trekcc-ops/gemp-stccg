@@ -31,7 +31,7 @@ public class JoinLeagueRequestHandler implements UriRequestHandler {
             throws Exception {
         User resourceOwner = request.user();
         try {
-            League league = _leagueService.getLeagueByType(_leagueType);
+            League league = _leagueService.getLeagueById(_leagueType);
             if (!_leagueService.playerJoinsLeague(league, resourceOwner, request.ip()))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_CONFLICT); // 409
         } catch(LeagueNotFoundException exp) {

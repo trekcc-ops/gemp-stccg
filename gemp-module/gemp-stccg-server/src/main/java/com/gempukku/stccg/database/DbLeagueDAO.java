@@ -1,8 +1,10 @@
 package com.gempukku.stccg.database;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.gempukku.stccg.league.League;
+import com.gempukku.stccg.league.LeagueMapper;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,22 +19,21 @@ import java.util.List;
 
 public class DbLeagueDAO implements LeagueDAO {
 
-    private static final String INSERT_STATEMENT =
-            "insert into league_test (properties, start, end) " +
-                    "values (?, ?, ?)";
+    private static final String INSERT_STATEMENT = "INSERT INTO league (properties, start, end) VALUES (?, ?, ?)";
     private static final String SELECT_STATEMENT =
-            "select properties from league_test where end>=? order by start desc";
+            "SELECT league_id, properties FROM league WHERE end>=? ORDER BY start DESC";
+    private static final String UPDATE_STATUS_STATEMENT = "UPDATE league SET status=? WHERE league_id=?";
     private final DbAccess _dbAccess;
-    private final ObjectMapper _leagueMapper;
+    private final LeagueMapper _leagueMapper;
 
-    public DbLeagueDAO(DbAccess dbAccess, ObjectMapper leagueMapper) {
+    public DbLeagueDAO(DbAccess dbAccess, LeagueMapper leagueMapper) {
         _dbAccess = dbAccess;
         _leagueMapper = leagueMapper;
     }
 
     public final void addLeague(League league) {
         try {
-            String properties = _leagueMapper.writeValueAsString(league);
+            String properties = _leagueMapper.writeLeagueAsJsonString(league);
             String startTimeStamp = convertToTimeStamp(league.getStart());
             String endTimeStamp = convertToTimeStamp(league.getEnd());
             SQLUtils.executeStatementWithParameters(_dbAccess, INSERT_STATEMENT, properties, startTimeStamp,
@@ -42,8 +43,7 @@ public class DbLeagueDAO implements LeagueDAO {
         }
     }
 
-
-    public final List<League> loadActiveLeagues() throws SQLException, JsonProcessingException {
+    public final List<League> loadActiveLeagues() throws SQLException {
         try (Connection conn = _dbAccess.getDataSource().getConnection()) {
             try (PreparedStatement statement = conn.prepareStatement(SELECT_STATEMENT)) {
                 String currentTimestamp = convertToTimeStamp(ZonedDateTime.now());
@@ -51,9 +51,16 @@ public class DbLeagueDAO implements LeagueDAO {
                 try (ResultSet rs = statement.executeQuery()) {
                     List<League> activeLeagues = new ArrayList<>();
                     while (rs.next()) {
-                        String properties = rs.getString(1);
-                        League league = _leagueMapper.readValue(properties, League.class);
-                        activeLeagues.add(league);
+                        int leagueId = rs.getInt(1);
+                        String properties = rs.getString(2);
+                        try {
+                            JsonNode propertiesJson = _leagueMapper.readTree(properties);
+                            ((ObjectNode) propertiesJson).put("leagueId", leagueId);
+                            League league = _leagueMapper.treeToValue(propertiesJson, League.class);
+                            activeLeagues.add(league);
+                        } catch(Exception exp) {
+                            throw new SQLException("Unable to deserialize league with id " + leagueId, exp);
+                        }
                     }
                     return activeLeagues;
                 }
@@ -61,11 +68,11 @@ public class DbLeagueDAO implements LeagueDAO {
         }
     }
 
-    public final void setStatus(League league, int newStatus) {
+    public final void setStatus(League league) {
         try {
-            String sqlStatement = "update league set status=? where type=?";
-            SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
-                    newStatus, league.getType());
+            int status = league.getStatus();
+            int leagueId = league.getLeagueId();
+            SQLUtils.executeStatementWithParameters(_dbAccess, UPDATE_STATUS_STATEMENT, status, leagueId);
         } catch (SQLException exp) {
             throw new RuntimeException("Unable to update league status", exp);
         }

@@ -80,7 +80,7 @@ public class CreateTableRequestHandler implements UriRequestHandler {
         if (format == null) {
             // Maybe it's a league format?
             try {
-                league = leagueService.getLeagueByType(rawFormat);
+                league = leagueService.getLeagueById(rawFormat);
                 series = leagueService.getCurrentLeagueSeriesNew(league);
                 if (series == null) {
                     _hallExceptionMessage = "There is no ongoing series for that league";

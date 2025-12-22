@@ -14,6 +14,7 @@ import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.game.GameRecorder;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.HallServer;
+import com.gempukku.stccg.league.LeagueMapper;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.packs.ProductLibrary;
 import com.gempukku.stccg.service.AdminService;
@@ -77,10 +78,7 @@ public class ServerObjects {
                 new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO);
 
         // Multiple database access; these ones have some library properties but shouldn't
-        ObjectMapper leagueMapper = new ObjectMapper().setInjectableValues(new InjectableValues.Std()
-                .addValue(CardBlueprintLibrary.class, _cardBlueprintLibrary)
-                .addValue(FormatLibrary.class, _formatLibrary)
-                .addValue(DraftFormatLibrary.class, _draftFormatLibrary));
+        LeagueMapper leagueMapper = new LeagueMapper(_cardBlueprintLibrary, _formatLibrary, _draftFormatLibrary);
         LeagueService leagueService = new LeagueService(collectionsManager, leagueMapper, dbAccess);
         TournamentService tournamentService = new TournamentService(_cardBlueprintLibrary, dbAccess);
 

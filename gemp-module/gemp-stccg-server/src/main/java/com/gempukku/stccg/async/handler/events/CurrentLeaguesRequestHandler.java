@@ -38,7 +38,7 @@ public class CurrentLeaguesRequestHandler implements UriRequestHandler {
         for (League league : _leagueService.getActiveLeagues()) {
 
             Element leagueElem = doc.createElement("league");
-            leagueElem.setAttribute("type", league.getType());
+            leagueElem.setAttribute("type", String.valueOf(league.getLeagueId()));
             leagueElem.setAttribute("name", league.getName());
             leagueElem.setAttribute("start", String.valueOf(league.getStart()));
             leagueElem.setAttribute("end", String.valueOf(league.getEnd()));

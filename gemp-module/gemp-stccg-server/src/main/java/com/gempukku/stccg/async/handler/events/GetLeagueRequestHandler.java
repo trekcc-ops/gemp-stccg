@@ -6,12 +6,9 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.draft.DraftFormatLibrary;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueSeries;
 import com.gempukku.stccg.league.LeagueService;
@@ -29,24 +26,24 @@ public class GetLeagueRequestHandler implements UriRequestHandler {
 
     private final League _league;
     private final LeagueService _leagueService;
-    private final CardBlueprintLibrary _cardBlueprintLibrary;
-    private final FormatLibrary _formatLibrary;
-    private final DraftFormatLibrary _draftLibrary;
 
     GetLeagueRequestHandler(
-            @JsonProperty("leagueType")
-            String leagueType,
-            @JacksonInject LeagueService leagueService,
-            @JacksonInject CardBlueprintLibrary cardBlueprintLibrary,
-            @JacksonInject FormatLibrary formatLibrary,
-            @JacksonInject DraftFormatLibrary draftLibrary) throws HttpProcessingException {
+            @JsonProperty("leagueId")
+            int leagueId,
+            @JacksonInject LeagueService leagueService) throws HttpProcessingException {
         _leagueService = leagueService;
-        _league = getLeagueByType(leagueService, leagueType);
-        if (_league == null)
+        League foundLeague = null;
+        for (League league : leagueService.getActiveLeagues()) {
+            if (league.getLeagueId() == leagueId) {
+                foundLeague = league;
+                break;
+            }
+        }
+        if (foundLeague != null) {
+            _league = foundLeague;
+        } else {
             throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
-        _cardBlueprintLibrary = cardBlueprintLibrary;
-        _formatLibrary = formatLibrary;
-        _draftLibrary = draftLibrary;
+        }
     }
 
     @Override
@@ -58,12 +55,13 @@ public class GetLeagueRequestHandler implements UriRequestHandler {
         Element leagueElem = doc.createElement("league");
         boolean inLeague = _leagueService.isPlayerInLeague(_league, resourceOwner);
         String joinable = String.valueOf(!inLeague && _league.getEnd().isAfter(ZonedDateTime.now()));
-        String draftable = String.valueOf(inLeague && _league instanceof SoloDraftLeague && _league.getStart().isBefore(ZonedDateTime.now()));
+        String draftable = String.valueOf(inLeague && _league instanceof SoloDraftLeague &&
+                _league.getStart().isBefore(ZonedDateTime.now()));
 
                 leagueElem.setAttribute("member", String.valueOf(inLeague));
         leagueElem.setAttribute("joinable", joinable);
         leagueElem.setAttribute("draftable", draftable);
-        leagueElem.setAttribute("type", _league.getType());
+        leagueElem.setAttribute("type", String.valueOf(_league.getLeagueId()));
         leagueElem.setAttribute("name", _league.getName());
         leagueElem.setAttribute("cost", String.valueOf(_league.getCost()));
         leagueElem.setAttribute("start", String.valueOf(_league.getStart()));
@@ -111,14 +109,6 @@ public class GetLeagueRequestHandler implements UriRequestHandler {
         doc.appendChild(leagueElem);
 
         responseWriter.writeXmlResponseWithNoHeaders(doc);
-    }
-
-    private League getLeagueByType(LeagueService leagueService, String type) {
-        for (League league : leagueService.getActiveLeagues()) {
-            if (league.getType().equals(type))
-                return league;
-        }
-        return null;
     }
 
     private static void setStandingAttributes(PlayerStanding standing, Element standingElem) {

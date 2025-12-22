@@ -45,8 +45,8 @@ public class LeagueServiceTest extends AbstractServerTest {
 
     private void setUpMockitoCalls() throws Exception {
         Mockito.when(leagueDao.loadActiveLeagues()).thenReturn(leagues);
-        Mockito.when(leagueMatchDAO.getLeagueMatches(league.getType())).thenReturn(matches);
-        Mockito.when(leagueParticipationDAO.getUsersParticipating(league.getType())).thenReturn(_playersParticipating);
+        Mockito.when(leagueMatchDAO.getLeagueMatches(league.getLeagueId())).thenReturn(matches);
+        Mockito.when(leagueParticipationDAO.getUsersParticipating(league.getLeagueId())).thenReturn(_playersParticipating);
         leagueService = new LeagueService(leagueDao, leagueMatchDAO, leagueParticipationDAO,
                 collectionsManager);
     }
@@ -67,9 +67,9 @@ public class LeagueServiceTest extends AbstractServerTest {
         assertFalse(leagueService.canPlayRankedGameAgainst(league, series, "player1", "player2"));
         assertTrue(leagueService.canPlayRankedGameAgainst(league, series, "player1", "player3"));
 
-        Mockito.verify(leagueMatchDAO).getLeagueMatches(league.getType());
+        Mockito.verify(leagueMatchDAO).getLeagueMatches(league.getLeagueId());
         Mockito.verify(leagueMatchDAO).addPlayedMatch(
-                league.getType(), series.getName(), "player1", "player2");
+                league.getLeagueId(), series.getName(), "player1", "player2");
         Mockito.verifyNoMoreInteractions(leagueMatchDAO);
 
         leagueService.reportLeagueGameResult(league, series, "player1", "player3");
@@ -79,7 +79,7 @@ public class LeagueServiceTest extends AbstractServerTest {
         assertFalse(leagueService.canPlayRankedGameAgainst(league, series, "player1", "player3"));
 
         Mockito.verify(leagueMatchDAO).addPlayedMatch(
-                league.getType(), series.getName(), "player1", "player3");
+                league.getLeagueId(), series.getName(), "player1", "player3");
         Mockito.verifyNoMoreInteractions(leagueMatchDAO);
     }
 
@@ -89,20 +89,15 @@ public class LeagueServiceTest extends AbstractServerTest {
         matches = Set.of(new LeagueMatchResult(series.getName(), "player1", "player2"));
         setUpMockitoCalls();
 
-        LeagueParticipationDAO leagueParticipationDAO = Mockito.mock(LeagueParticipationDAO.class);
-        CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
-
-        LeagueService leagueService = new LeagueService(leagueDao, leagueMatchDAO, leagueParticipationDAO, collectionsManager);
-
         assertTrue(leagueService.canPlayRankedGame(league, series, "player1"));
         assertFalse(leagueService.canPlayRankedGameAgainst(league, series, "player1", "player2"));
         assertTrue(leagueService.canPlayRankedGameAgainst(league, series, "player1", "player3"));
 
         leagueService.reportLeagueGameResult(league, series, "player1", "player3");
 
-        Mockito.verify(leagueMatchDAO).getLeagueMatches(league.getType());
+        Mockito.verify(leagueMatchDAO).getLeagueMatches(league.getLeagueId());
 
-        Mockito.verify(leagueMatchDAO).addPlayedMatch(league.getType(), series.getName(), "player1", "player3");
+        Mockito.verify(leagueMatchDAO).addPlayedMatch(league.getLeagueId(), series.getName(), "player1", "player3");
         Mockito.verifyNoMoreInteractions(leagueMatchDAO);
 
         assertFalse(leagueService.canPlayRankedGame(league, series, "player1"));

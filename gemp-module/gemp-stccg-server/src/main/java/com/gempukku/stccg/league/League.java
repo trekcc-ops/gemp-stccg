@@ -1,5 +1,8 @@
 package com.gempukku.stccg.league;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.CollectionType;
@@ -13,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.List;
 
+@JsonIgnoreProperties(value = { "start", "end" }, allowGetters = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "class")
 public abstract class League implements Iterable<LeagueSeries> {
     protected final Clock _clock;
@@ -40,36 +44,44 @@ public abstract class League implements Iterable<LeagueSeries> {
         this(cost, name, status, collectionType, leagueId, leaguePrizes, Clock.systemUTC());
     }
 
+    @JsonProperty("cost")
     public int getCost() {
         return _cost;
     }
 
+    @JsonProperty("name")
     public String getName() {
         return _name;
     }
 
-    public String getType() {
-        return String.valueOf(_leagueId);
+    @JsonProperty("leagueId")
+    public int getLeagueId() {
+        return _leagueId;
     }
 
-
+    @JsonProperty("status")
     public int getStatus() {
         return _status;
     }
 
+    @JsonProperty("allSeries")
     public abstract List<LeagueSeries> getAllSeries();
+    @JsonProperty("start")
     public ZonedDateTime getStart() {
         return getAllSeries().getFirst().getStart();
     }
 
+    @JsonProperty("end")
     public ZonedDateTime getEnd() {
         return getAllSeries().getLast().getEnd();
     }
 
+    @JsonProperty("collectionType")
     public CollectionType getCollectionType() {
         return _collectionType;
     }
 
+    @JsonIgnore
     public abstract boolean isLimited();
 
     @NotNull
@@ -86,6 +98,7 @@ public abstract class League implements Iterable<LeagueSeries> {
         return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSeries);
     }
 
+    @JsonIgnore
     public int getMaxRepeatMatchesPerSeries() {
         return 1;
     }

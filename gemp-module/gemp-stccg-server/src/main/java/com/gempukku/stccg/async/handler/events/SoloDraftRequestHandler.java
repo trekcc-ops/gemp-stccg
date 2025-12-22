@@ -20,7 +20,7 @@ public interface SoloDraftRequestHandler {
     default SoloDraftLeague getLeague(String leagueType, LeagueService leagueService)
             throws HttpProcessingException {
         try {
-            League league = leagueService.getLeagueByType(leagueType);
+            League league = leagueService.getLeagueById(leagueType);
             ZonedDateTime leagueStart = league.getStart();
             if (league instanceof SoloDraftLeague soloDraftData && leagueStart.isBefore(ZonedDateTime.now())) {
                 return soloDraftData;

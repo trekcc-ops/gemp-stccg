@@ -21,17 +21,17 @@ public class ConstructedLeague extends League {
     private final List<LeagueSeries> _allSeries;
 
     @JsonCreator
-    private ConstructedLeague(@JsonProperty("cost")
+    private ConstructedLeague(@JsonProperty(value = "cost", required = true)
                              int cost,
-                             @JsonProperty("name")
+                             @JsonProperty(value = "name", required = true)
                              String name,
-                             @JsonProperty("collectionType")
+                             @JsonProperty(value = "collectionType", required = true)
                              CollectionType collectionType,
-                             @JsonProperty("allSeries")
+                             @JsonProperty(value = "allSeries", required = true)
                              List<LeagueSeries> allSeries,
-                             @JsonProperty("status")
+                             @JsonProperty(value = "status", required = true)
                              int status,
-                             @JsonProperty("leagueId")
+                             @JsonProperty(value = "leagueId", required = true)
                              int leagueId,
                              @JacksonInject CardBlueprintLibrary cardLibrary
     ) {

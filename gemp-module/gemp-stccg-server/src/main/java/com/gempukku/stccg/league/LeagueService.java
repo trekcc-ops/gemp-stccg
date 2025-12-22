@@ -1,8 +1,5 @@
 package com.gempukku.stccg.league;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.LoggingProxy;
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CollectionsManager;
@@ -10,6 +7,8 @@ import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.LeagueMatchResult;
 import com.gempukku.stccg.competitive.PlayerStanding;
 import com.gempukku.stccg.database.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,23 +17,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LeagueService {
+    private static final Logger LOGGER = LogManager.getLogger(LeagueService.class);
     private final LeagueDAO _leagueDAO;
     private final CachedLeagueMatchDAO _leagueMatchDAO;
     private final CachedLeagueParticipationDAO _leagueParticipationDAO;
     private final CollectionsManager _collectionsManager;
-    private final Map<String, List<PlayerStanding>> _leagueStandings = new ConcurrentHashMap<>();
+    private final Map<Integer, List<PlayerStanding>> _leagueStandings = new ConcurrentHashMap<>();
     private final Map<String, List<PlayerStanding>> _seriesStandings = new ConcurrentHashMap<>();
-    private int _activeLeaguesLoadedDate;
-    private List<League> _activeLeagues;
-
-    public LeagueService(CollectionsManager collectionsManager, ObjectMapper leagueMapper, DbAccess dbAccess) {
-        _leagueDAO =
-                LoggingProxy.createLoggingProxy(LeagueDAO.class, new DbLeagueDAO(dbAccess, leagueMapper));
-        _leagueParticipationDAO = new CachedLeagueParticipationDAO(dbAccess);
-        _leagueMatchDAO = new CachedLeagueMatchDAO(dbAccess);
-        _collectionsManager = collectionsManager;
-        refreshActiveLeagues();
-    }
+    private ZonedDateTime _lastActiveLeagueRefreshTime;
+    private final List<League> _activeLeagues = new ArrayList<>();
 
     public LeagueService(LeagueDAO leagueDao, LeagueMatchDAO leagueMatchDao,
                          LeagueParticipationDAO leagueParticipationDAO, CollectionsManager collectionsManager) {
@@ -42,56 +33,62 @@ public class LeagueService {
         _leagueMatchDAO = new CachedLeagueMatchDAO(leagueMatchDao);
         _leagueParticipationDAO = new CachedLeagueParticipationDAO(leagueParticipationDAO);
         _collectionsManager = collectionsManager;
-//        refreshActiveLeagues();
+        refreshActiveLeagues();
+        LOGGER.info("Created LeagueService with " + _activeLeagues.size() + " leagues");
+    }
+
+    public LeagueService(CollectionsManager collectionsManager, LeagueMapper leagueMapper, DbAccess dbAccess) {
+        this(
+            LoggingProxy.createLoggingProxy(LeagueDAO.class, new DbLeagueDAO(dbAccess, leagueMapper)),
+            new CachedLeagueMatchDAO(dbAccess),
+            new CachedLeagueParticipationDAO(dbAccess),
+            collectionsManager
+        );
     }
 
     public synchronized void clearCache() {
         _seriesStandings.clear();
         _leagueStandings.clear();
-        _activeLeaguesLoadedDate = 0;
-
-        _leagueMatchDAO.clearCache();
-        _leagueParticipationDAO.clearCache();
+        refreshActiveLeagues();
     }
 
     private synchronized void refreshActiveLeagues() {
-        int currentDate = DateUtils.getCurrentDateAsInt();
         _leagueMatchDAO.clearCache();
         _leagueParticipationDAO.clearCache();
-
         try {
-            _activeLeagues = _leagueDAO.loadActiveLeagues();
-            _activeLeaguesLoadedDate = currentDate;
-            processLoadedLeagues(currentDate);
-        } catch (SQLException | JsonProcessingException e) {
+            _activeLeagues.clear();
+            _activeLeagues.addAll(_leagueDAO.loadActiveLeagues());
+            _lastActiveLeagueRefreshTime = ZonedDateTime.now();
+            processLoadedLeagues();
+        } catch (SQLException e) {
             throw new RuntimeException("Unable to load Leagues", e);
         }
     }
 
     public synchronized List<League> getActiveLeagues() {
-        if (DateUtils.getCurrentDateAsInt() != _activeLeaguesLoadedDate) {
+        if (ZonedDateTime.now().isAfter(_lastActiveLeagueRefreshTime.plusDays(1))) {
             refreshActiveLeagues();
         }
         return Collections.unmodifiableList(_activeLeagues);
     }
 
-    private void processLoadedLeagues(int currentDate) {
+    private void processLoadedLeagues() {
         for (League activeLeague : _activeLeagues) {
             int oldStatus = activeLeague.getStatus();
             List<PlayerStanding> leagueStandings = getLeagueStandings(activeLeague);
             activeLeague.process(_collectionsManager, leagueStandings);
             int newStatus = activeLeague.getStatus();
             if (newStatus != oldStatus)
-                _leagueDAO.setStatus(activeLeague, newStatus);
+                _leagueDAO.setStatus(activeLeague);
         }
     }
 
     public synchronized boolean isPlayerInLeague(League league, String userName) {
-        return _leagueParticipationDAO.getUsersParticipating(league.getType()).contains(userName);
+        return _leagueParticipationDAO.getUsersParticipating(league.getLeagueId()).contains(userName);
     }
 
     public synchronized boolean isPlayerInLeague(League league, User player) {
-        return _leagueParticipationDAO.getUsersParticipating(league.getType()).contains(player.getName());
+        return _leagueParticipationDAO.getUsersParticipating(league.getLeagueId()).contains(player.getName());
     }
 
     public synchronized boolean playerJoinsLeague(League league, User player, String remoteAddress)
@@ -102,17 +99,17 @@ public class LeagueService {
         if (_collectionsManager.removeCurrencyFromPlayerCollection("Joining "+league.getName()+" league",
                 player, cost)) {
             league.joinLeague(_collectionsManager, player);
-            _leagueParticipationDAO.userJoinsLeague(league.getType(), player, remoteAddress);
-            _leagueStandings.remove(LeagueMapKeys.getLeagueMapKey(league));
+            _leagueParticipationDAO.userJoinsLeague(league.getLeagueId(), player, remoteAddress);
+            _leagueStandings.remove(league.getLeagueId());
             return true;
         } else {
             return false;
         }
     }
 
-    public synchronized League getLeagueByType(String type) throws LeagueNotFoundException {
+    public synchronized League getLeagueById(String type) throws LeagueNotFoundException {
         for (League league : getActiveLeagues()) {
-            if (league.getType().equals(type))
+            if (String.valueOf(league.getLeagueId()).equals(type))
                 return league;
         }
         throw new LeagueNotFoundException();
@@ -140,10 +137,9 @@ public class LeagueService {
 
     public synchronized void reportLeagueGameResult(League league, LeagueSeries series, String winner,
                                                     String loser) {
-        _leagueMatchDAO.addPlayedMatch(league.getType(), series.getName(), winner, loser);
-
-        _leagueStandings.remove(LeagueMapKeys.getLeagueMapKey(league));
-        _seriesStandings.remove(LeagueMapKeys.getLeagueSeriesMapKey(league, series));
+        _leagueMatchDAO.addPlayedMatch(league.getLeagueId(), series.getName(), winner, loser);
+        _leagueStandings.remove(league.getLeagueId());
+        _seriesStandings.remove(getLeagueSeriesMapKey(league, series));
 
         awardPrizesToPlayer(league, series, winner, true);
         awardPrizesToPlayer(league, series, loser, false);
@@ -169,7 +165,7 @@ public class LeagueService {
     public synchronized Collection<LeagueMatchResult> getPlayerMatchesInSeries(League league,
                                                                                LeagueSeries series,
                                                                                String player) {
-        final Collection<LeagueMatchResult> allMatches = _leagueMatchDAO.getLeagueMatches(league.getType());
+        final Collection<LeagueMatchResult> allMatches = _leagueMatchDAO.getLeagueMatches(league.getLeagueId());
         Set<LeagueMatchResult> result = new HashSet<>();
         for (LeagueMatchResult match : allMatches) {
             if (match.getSeriesName().equals(series.getName()) && (match.getWinner().equals(player) ||
@@ -181,22 +177,22 @@ public class LeagueService {
 
 
     public synchronized List<PlayerStanding> getLeagueStandings(League league) {
-        List<PlayerStanding> leagueStandings = _leagueStandings.get(LeagueMapKeys.getLeagueMapKey(league));
+        List<PlayerStanding> leagueStandings = _leagueStandings.get(league.getLeagueId());
         if (leagueStandings == null) {
             synchronized (this) {
                 leagueStandings = createLeagueStandings(league);
-                _leagueStandings.put(LeagueMapKeys.getLeagueMapKey(league), leagueStandings);
+                _leagueStandings.put(league.getLeagueId(), leagueStandings);
             }
         }
         return leagueStandings;
     }
 
     public synchronized List<PlayerStanding> getLeagueSeriesStandings(League league, LeagueSeries series) {
-        List<PlayerStanding> standings = _seriesStandings.get(LeagueMapKeys.getLeagueSeriesMapKey(league, series));
+        List<PlayerStanding> standings = _seriesStandings.get(getLeagueSeriesMapKey(league, series));
         if (standings == null) {
             synchronized (this) {
                 standings = createLeagueSeriesStandings(league, series);
-                _seriesStandings.put(LeagueMapKeys.getLeagueSeriesMapKey(league, series), standings);
+                _seriesStandings.put(getLeagueSeriesMapKey(league, series), standings);
             }
         }
         return standings;
@@ -204,8 +200,8 @@ public class LeagueService {
 
 
     private List<PlayerStanding> createLeagueSeriesStandings(League league, LeagueSeries series) {
-        final Collection<String> playersParticipating = _leagueParticipationDAO.getUsersParticipating(league.getType());
-        final Collection<LeagueMatchResult> matches = _leagueMatchDAO.getLeagueMatches(league.getType());
+        final Collection<String> playersParticipating = _leagueParticipationDAO.getUsersParticipating(league.getLeagueId());
+        final Collection<LeagueMatchResult> matches = _leagueMatchDAO.getLeagueMatches(league.getLeagueId());
 
         Set<LeagueMatchResult> matchResults = new HashSet<>();
         for (LeagueMatchResult match : matches) {
@@ -217,8 +213,8 @@ public class LeagueService {
     }
 
     private List<PlayerStanding> createLeagueStandings(League league) {
-        final Collection<String> playersParticipating = _leagueParticipationDAO.getUsersParticipating(league.getType());
-        final Collection<LeagueMatchResult> matches = _leagueMatchDAO.getLeagueMatches(league.getType());
+        final Collection<String> playersParticipating = _leagueParticipationDAO.getUsersParticipating(league.getLeagueId());
+        final Collection<LeagueMatchResult> matches = _leagueMatchDAO.getLeagueMatches(league.getLeagueId());
 
         return createStandingsForMatchesAndPoints(playersParticipating, matches);
     }
@@ -251,5 +247,10 @@ public class LeagueService {
     public void addLeague(League league) {
         _leagueDAO.addLeague(league);
     }
+
+    private static String getLeagueSeriesMapKey(League league, LeagueSeries series) {
+        return league.getLeagueId() + ":" + series.getName();
+    }
+
 
 }
