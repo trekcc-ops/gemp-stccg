@@ -11,9 +11,12 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.GameServer;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HallCommunicationChannel implements LongPollableResource {
-    private final int _channelNumber;
+
+    private static final AtomicInteger nextChannelNumber = new AtomicInteger(0);
+    private final int _channelNumber = nextChannelNumber.incrementAndGet();
     private long _lastConsumed;
     private final Map<String, Map<String, String>> _tournamentQueuePropsOnClient = new LinkedHashMap<>();
     private final Map<String, Map<String, String>> _tournamentPropsOnClient = new LinkedHashMap<>();
@@ -21,10 +24,6 @@ public class HallCommunicationChannel implements LongPollableResource {
     private Set<String> _playedGames = new HashSet<>();
     private volatile boolean _changed;
     private volatile WaitingRequest _waitingRequest;
-
-    public HallCommunicationChannel(int channelNumber) {
-        _channelNumber = channelNumber;
-    }
 
     @Override
     public final synchronized void deregisterRequest() {

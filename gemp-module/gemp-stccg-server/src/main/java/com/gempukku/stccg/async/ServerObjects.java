@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 public class ServerObjects {
     private static final Logger LOGGER = LogManager.getLogger(ServerObjects.class);
     private final CardBlueprintLibrary _cardBlueprintLibrary;
-    private final CachedDeckDAO _deckDAO;
     private final CachedCollectionDAO _collectionDAO;
     private final CachedPlayerDAO _playerDAO;
     private final CachedTransferDAO _transferDAO;
@@ -53,7 +52,7 @@ public class ServerObjects {
         LOGGER.info("GempukkuServer loading DAOs...");
         DbAccess dbAccess = new DbAccess();
 
-        _deckDAO = new CachedDeckDAO(dbAccess);
+        CachedDeckDAO _deckDAO = new CachedDeckDAO(dbAccess);
         _collectionDAO = new CachedCollectionDAO(dbAccess);
         _playerDAO = new CachedPlayerDAO(dbAccess);
         _transferDAO = new CachedTransferDAO(dbAccess);
@@ -77,7 +76,7 @@ public class ServerObjects {
         CollectionsManager collectionsManager =
                 new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO);
 
-        // Multiple database access; these ones have some library properties but shouldn't
+        // Multiple database access; these have some library properties but shouldn't
         LeagueMapper leagueMapper = new LeagueMapper(_cardBlueprintLibrary, _formatLibrary, _draftFormatLibrary);
         LeagueService leagueService = new LeagueService(collectionsManager, leagueMapper, dbAccess);
         TournamentService tournamentService = new TournamentService(_cardBlueprintLibrary, dbAccess);

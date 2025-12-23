@@ -59,7 +59,6 @@ public class HallServer extends AbstractServer {
     private final CloseableWriteLock _writeLock = new CloseableWriteLock(_hallDataAccessLock);
     private final TableHolder tableHolder;
     private final Map<User, HallCommunicationChannel> _playerChannelCommunication = new ConcurrentHashMap<>();
-    private int _nextChannelNumber = 0;
     private final Map<String, Tournament> _runningTournaments = new LinkedHashMap<>();
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
     private final HallChatRoomMediator _hallChat;
@@ -306,7 +305,7 @@ public class HallServer extends AbstractServer {
 
     public final HallCommunicationChannel signupUserForHallAndGetChannel(User player) {
         try (CloseableReadLock ignored = _readLock.open()) {
-            HallCommunicationChannel channel = new HallCommunicationChannel(_nextChannelNumber++);
+            HallCommunicationChannel channel = new HallCommunicationChannel();
             _playerChannelCommunication.put(player, channel);
             return channel;
         }
