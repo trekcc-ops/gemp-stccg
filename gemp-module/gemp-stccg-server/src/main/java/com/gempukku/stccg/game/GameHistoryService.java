@@ -2,8 +2,12 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LoggingProxy;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.*;
+import com.gempukku.stccg.formats.GameFormat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -14,10 +18,22 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameHistoryService {
     private final GameHistoryDAO _gameHistoryDAO;
     private final Map<String, Integer> _playerGameCount = new ConcurrentHashMap<>();
+    private final GameRecorder _gameRecorder;
 
-    public GameHistoryService(DbAccess dbAccess) {
+    public GameHistoryService(PlayerDAO playerDAO, DbAccess dbAccess) {
         _gameHistoryDAO =
                 LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess));
+        _gameRecorder = new GameRecorder(this, playerDAO);
+    }
+
+    public final GameRecordingInProgress recordGame(CardGameMediator game, GameFormat format,
+                                                    final String tournamentName,
+                                                    final Map<String, ? extends CardDeck> decks) {
+        return _gameRecorder.recordGame(game, format, tournamentName, decks);
+    }
+
+    public final InputStream getRecordedGame(String playerId, String recordId) throws IOException {
+        return _gameRecorder.getRecordedGame(playerId, recordId);
     }
 
     public final int addGameHistory(DBData.GameHistory gh) {

@@ -11,7 +11,6 @@ import com.gempukku.stccg.database.*;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
-import com.gempukku.stccg.game.GameRecorder;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.LeagueMapper;
@@ -72,7 +71,7 @@ public class ServerObjects {
         // Services for multiple database access
         // Constructors should only take DAO objects and dbAccess as parameters
         _adminService = new AdminService(_playerDAO, _ipBanDAO, dbAccess);
-        GameHistoryService gameHistoryService = new GameHistoryService(dbAccess);
+        GameHistoryService gameHistoryService = new GameHistoryService(_playerDAO, dbAccess);
         CollectionsManager collectionsManager =
                 new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO);
 
@@ -81,19 +80,15 @@ public class ServerObjects {
         LeagueService leagueService = new LeagueService(collectionsManager, leagueMapper, dbAccess);
         TournamentService tournamentService = new TournamentService(_cardBlueprintLibrary, dbAccess);
 
-        // GameRecorder is just kind of weird
-        GameRecorder gameRecorder = new GameRecorder(gameHistoryService, _playerDAO);
-
-        // Server objects; these should have as few properties as possible. Ideally they would not have other servers as properties.
+        // Servers; these should have as few properties as possible. Ideally they would not have other servers as properties.
         ChatServer chatServer = new ChatServer();
-        GameServer gameServer = new GameServer(chatServer, gameRecorder, _cardBlueprintLibrary);
+        GameServer gameServer = new GameServer(chatServer, gameHistoryService, _cardBlueprintLibrary);
         HallServer hallServer =
                 new HallServer(_adminService, _formatLibrary, chatServer, leagueService,
                         collectionsManager, tournamentService, gameServer, _cardBlueprintLibrary);
 
         _injectables.addValue(AdminService.class, _adminService);
         _injectables.addValue(GameHistoryService.class, gameHistoryService);
-        _injectables.addValue(GameRecorder.class, gameRecorder);
         _injectables.addValue(CollectionsManager.class, collectionsManager);
         _injectables.addValue(LeagueService.class, leagueService);
         _injectables.addValue(TournamentService.class, tournamentService);

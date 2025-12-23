@@ -6,9 +6,9 @@ import java.util.Set;
 public class RecordingGameResultListener implements GameResultListener {
 
     final String[] _playerNames;
-    final GameRecorder.GameRecordingInProgress _recording;
+    final GameRecordingInProgress _recording;
 
-    public RecordingGameResultListener(Set<String> playerNames, GameRecorder.GameRecordingInProgress recording) {
+    public RecordingGameResultListener(Set<String> playerNames, GameRecordingInProgress recording) {
         _recording = recording;
         _playerNames = playerNames.toArray(new String[0]);
     }

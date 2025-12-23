@@ -49,7 +49,7 @@ public class GameRecorder {
         _playerDAO = playerDAO;
     }
 
-    public static String getPlayTestMessage(Map<String, String> playerRecordingId, String winnerName,
+    private static String getPlayTestMessage(Map<String, String> playerRecordingId, String winnerName,
                                             String loserName) {
         String url = AppConfig.getPlaytestUrl() +
                 AppConfig.getPlaytestPrefixUrl() + winnerName + "$" +
@@ -94,10 +94,6 @@ public class GameRecorder {
             }
 
         };
-    }
-
-    public interface GameRecordingInProgress {
-        void finishRecording(String winner, String winReason, String loser, String loseReason);
     }
 
     private static File getRecordingFileVersion0(String playerId, String gameId) {

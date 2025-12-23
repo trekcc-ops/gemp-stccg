@@ -23,15 +23,15 @@ public class GameServer extends AbstractServer {
     private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
     private int _nextGameId = 1;
     private final ChatServer _chatServer;
-    private final GameRecorder _gameRecorder;
+    private final GameHistoryService _historyService;
     private final ReadWriteLock _lock = new ReentrantReadWriteLock();
     private final CloseableReadLock _readLock = new CloseableReadLock(_lock);
     private final CloseableWriteLock _writeLock = new CloseableWriteLock(_lock);
     private final CardBlueprintLibrary _cardBlueprintLibrary;
 
-    public GameServer(ChatServer chatServer, GameRecorder gameRecorder, CardBlueprintLibrary cardBlueprintLibrary) {
+    public GameServer(ChatServer chatServer, GameHistoryService historyService, CardBlueprintLibrary cardBlueprintLibrary) {
         _chatServer = chatServer;
-        _gameRecorder = gameRecorder;
+        _historyService = historyService;
         _cardBlueprintLibrary = cardBlueprintLibrary;
     }
 
@@ -95,7 +95,7 @@ public class GameServer extends AbstractServer {
                     gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
                     gameSettings.getGameType());
             _chatServer.createGameChatRoom(gameSettings, participants, gameId);
-            cardGameMediator.initialize(_gameRecorder, tournamentName, listeners);
+            cardGameMediator.initialize(_historyService, tournamentName, listeners);
             _runningGames.put(gameId, cardGameMediator);
             _nextGameId++;
             gameTable.startGame(cardGameMediator);

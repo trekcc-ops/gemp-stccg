@@ -3,7 +3,7 @@ package com.gempukku.stccg.async.handler;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.game.GameRecorder;
+import com.gempukku.stccg.game.GameHistoryService;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.util.AsciiString;
 import org.apache.logging.log4j.LogManager;
@@ -19,10 +19,10 @@ import java.util.Map;
 public class ReplayRequestHandler implements UriRequestHandler {
     private final static int BYTE_LENGTH = 1024;
     private static final Logger LOGGER = LogManager.getLogger(ReplayRequestHandler.class);
-    private final GameRecorder _gameRecorder;
+    private final GameHistoryService _historyService;
 
-    ReplayRequestHandler(@JacksonInject GameRecorder gameRecorder) {
-        _gameRecorder = gameRecorder;
+    ReplayRequestHandler(@JacksonInject GameHistoryService historyService) {
+        _historyService = historyService;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ReplayRequestHandler implements UriRequestHandler {
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-        final InputStream recordedGame = _gameRecorder.getRecordedGame(split[0], split[1]);
+        final InputStream recordedGame = _historyService.getRecordedGame(split[0], split[1]);
         try (recordedGame) {
             if (recordedGame == null)
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404

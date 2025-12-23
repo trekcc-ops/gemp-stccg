@@ -344,7 +344,7 @@ public class CardGameMediator {
         }
     }
 
-    public void initialize(GameRecorder gameRecorder, String tournamentName, List<GameResultListener> listeners) {
+    public void initialize(GameHistoryService gameHistory, String tournamentName, List<GameResultListener> listeners) {
         GameFormat gameFormat = _game.getFormat();
         sendMessageToPlayers("You're starting a game of " + gameFormat);
         StringBuilder players = new StringBuilder();
@@ -359,7 +359,7 @@ public class CardGameMediator {
 
         sendMessageToPlayers("Players in the game are: " + players);
 
-        final var gameRecordingInProgress = gameRecorder.recordGame(this, gameFormat, tournamentName, decks);
+        final var gameRecordingInProgress = gameHistory.recordGame(this, gameFormat, tournamentName, decks);
 
         listeners.add(new RecordingGameResultListener(_playersPlaying, gameRecordingInProgress));
         _gameResultListeners.addAll(listeners);
