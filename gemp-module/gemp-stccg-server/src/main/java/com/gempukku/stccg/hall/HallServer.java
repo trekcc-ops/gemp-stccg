@@ -15,9 +15,9 @@ import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.CloseableReadLock;
 import com.gempukku.stccg.common.CloseableWriteLock;
 import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.database.UserNotFoundException;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.*;
@@ -63,27 +63,22 @@ public class HallServer extends AbstractServer {
     private final Map<String, Tournament> _runningTournaments = new LinkedHashMap<>();
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
     private final HallChatRoomMediator _hallChat;
-    private final AdminService _adminService;
     private int _tickCounter = TICK_COUNTER_START;
     private final TournamentService _tournamentService;
     private final GameServer _gameServer;
     private final CardBlueprintLibrary _cardBlueprintLibrary;
-    private final DeckDAO _deckDAO;
 
     public HallServer(AdminService adminService, FormatLibrary formatLibrary,
                       ChatServer chatServer, LeagueService leagueService, CollectionsManager collectionsManager,
-                      TournamentService tournamentService, GameServer gameServer, CardBlueprintLibrary cardLibrary,
-                      DeckDAO deckDAO) {
-        _adminService = adminService;
+                      TournamentService tournamentService, GameServer gameServer, CardBlueprintLibrary cardLibrary) {
         _tournamentService = tournamentService;
         _formatLibrary = formatLibrary;
         _collectionsManager = collectionsManager;
         tableHolder = new TableHolder(adminService, leagueService);
         _hallChat = new HallChatRoomMediator(adminService, HALL_TIMEOUT_PERIOD);
+        chatServer.addChatRoom(_hallChat);
         _gameServer = gameServer;
         _cardBlueprintLibrary = cardLibrary;
-        chatServer.addChatRoom(_hallChat);
-        _deckDAO = deckDAO;
     }
 
     final void hallChanged() {
@@ -161,14 +156,26 @@ public class HallServer extends AbstractServer {
             GameSettings gameSettings = new GameSettings(_formatLibrary.get("debug1e"), false,
                     false, false, GameTimer.DEBUG_TIMER, "Startup Sample Game");
 
-            User player1 = _adminService.getPlayer("asdf");
-            User player2 = _adminService.getPlayer("qwer");
+            Map<SubDeck, List<String>> deck1 = new HashMap<>();
+            deck1.put(SubDeck.SEED_DECK, List.of("101_104", "109_063", "101_106", "111_009"));
+            deck1.put(SubDeck.MISSIONS, List.of("204_003"));
+            List<String> drawDeck1 = new ArrayList<>();
+            drawDeck1.addAll(List.of("101_215", "101_304", "155_053"));
+            drawDeck1.addAll(Collections.nCopies(3, "101_293"));
+            drawDeck1.addAll(Collections.nCopies(2, "101_271"));
+            drawDeck1.addAll(Collections.nCopies(15, "101_331"));
+            drawDeck1.addAll(Collections.nCopies(6, "101_202"));
+            drawDeck1.addAll(Collections.nCopies(3, "101_201"));
+            drawDeck1.addAll(Collections.nCopies(3, "101_320"));
+            deck1.put(SubDeck.DRAW_DECK, drawDeck1);
 
-            CardDeck cardDeck1 = _deckDAO.getDeckForUser(player1, "AMS Deck");
-            CardDeck cardDeck2 = _deckDAO.getDeckForUser(player2, "Rommie Test");
+            Map<SubDeck, List<String>> deck2 = new HashMap<>();
+            deck2.put(SubDeck.MISSIONS, List.of("101_148", "181_037", "123_079"));
+            deck2.put(SubDeck.SEED_DECK, List.of("101_106", "105_015", "116_011", "115_010"));
+            deck2.put(SubDeck.DRAW_DECK, Collections.nCopies(34, "101_320"));
 
-            GameParticipant participant1 = new GameParticipant("asdf", cardDeck1);
-            GameParticipant participant2 = new GameParticipant("qwer", cardDeck2);
+            GameParticipant participant1 = new GameParticipant("asdf", new CardDeck(deck1));
+            GameParticipant participant2 = new GameParticipant("qwer", new CardDeck(deck2));
 
             final GameTable table = tableHolder.createTable(gameSettings, participant1, participant2);
             table.createGameWithNoLeague(_gameServer,this);
@@ -189,8 +196,6 @@ public class HallServer extends AbstractServer {
             }
 
             hallChanged();
-        } catch (UserNotFoundException exp) {
-            LOGGER.error(exp);
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
