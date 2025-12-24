@@ -70,12 +70,46 @@ function get_facility_cards(gamestate, locationid, playerid) {
     return retarr;
 }
 
-export default function SpacelineLocation( {gamestate, locationid} ) {
+function get_core_cards(gamestate, locationid, playerid) {
+    let retarr = [];
+
+    let ids_in_core = [];
+    for (const playerData of gamestate["players"]) {
+        if (playerData["playerId"] === playerid) {
+            for (const cardid of playerData["cardGroups"]["CORE"]["cardIds"]) {
+                ids_in_core.push(cardid.toString());
+            }
+        }
+    }
+
+    let visible_cards_in_game = gamestate["visibleCardsInGame"];
+    for (const cardid of ids_in_core) {
+        if (Object.hasOwn(visible_cards_in_game, cardid.toString())) {
+            const cardData = visible_cards_in_game[cardid.toString()];
+            if (cardData.owner === playerid &&
+                cardData.isInPlay === true) {
+                
+                retarr.push(cardData);
+            }
+        }
+    }
+
+    return retarr;
+}
+
+export default function SpacelineLocation( {gamestate, locationid, showCore = false} ) {
     let yourPlayerId = get_your_player_id(gamestate);
     let opponentPlayerId = get_opponent_player_id(gamestate);
     let locationData = get_spaceline_location_data(gamestate, locationid);
 
     // Render top to bottom
+    let opponentCoreCards;
+    if (showCore) {
+        opponentCoreCards = get_core_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
+            <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
+        );
+    }
+
     let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
         <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
     );
@@ -94,6 +128,13 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
         <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
     );
 
+    let yourCoreCards;
+    if (showCore) {
+        yourCoreCards = get_core_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
+            <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
+        );
+    }
+
     return(
         <Box
             data-spacelinelocation={locationid}
@@ -101,12 +142,15 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
             sx={{
                 display: "grid",
                 gridTemplateColumns: "1fr",
-                gridTemplateRows: `[opp-special] auto [opp-side] minmax(auto, 1fr) [missions] auto [you-side] minmax(auto, 1fr) [you-special] auto`,
+                gridTemplateRows: `[opp-side] minmax(auto, 1fr) [missions] auto [you-side] minmax(auto, 1fr)`,
                 justifyItems: "center"
             }}
         >   
-            {/* TODO: Core */}
             <Stack data-side={"opponentSide"} direction="column" alignItems={"flex-end"} justifyContent={"center"} sx={{gridRowStart: "opp-side"}}>
+                {/* TODO: Core should be a singular, unique card-sized object, not a collection of cards shown on table. */}
+                <Stack id={"opponentCore"} direction="row" alignItems={"flex-end"} justifyContent={"center"} >
+                    {opponentCoreCards}
+                </Stack>
                 {/* TODO: Time locations */}
                 <Stack direction="row" sx={{transform: "rotate(180deg)"}}>
                     {opponentFacilityCards}
@@ -128,8 +172,13 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
                     {yourFacilityCards}
                 </Stack>
                 {/* TODO: Time locations */}
+                {/* TODO: Core should be a singular, unique card-sized object, not a collection of cards shown on table. */}
+                <Stack id={"yourCore"} direction="row" alignItems={"flex-end"} justifyContent={"center"} >
+                    {yourCoreCards}
+                </Stack>
             </Stack>
-            {/* TODO: Core */}
+
+            
         </Box>
     );
 }
