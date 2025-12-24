@@ -115,26 +115,36 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
             sx={{
                 display: "grid",
                 gridTemplateColumns: "1fr",
-                gridTemplateRows: `[opp-special] auto [opp-facil] 1fr [opp-ship] ${opponentShipRowHeight} [missions] 1fr [you-ship] ${yourShipRowHeight} [you-facil] 1fr [you-special] auto`,
+                gridTemplateRows: `[opp-special] auto [opp-side] minmax(auto, 1fr) [missions] auto [you-side] minmax(auto, 1fr) [you-special] auto`,
                 justifyItems: "center",
-                alignItems: "center"
+                //alignItems: "center"
             }}
-        >
-            <Stack direction="row" sx={{gridRowStart: "opp-facil", transform: "rotate(180deg)"}}>
-                {opponentFacilityCards}
+        >   
+            {/* TODO: Core */}
+            <Stack data-side={"opponentSide"} direction="column" alignItems={"flex-end"} justifyContent={"center"} sx={{gridRowStart: "opp-side"}}>
+                {/* TODO: Time locations */}
+                <Stack direction="row" sx={{transform: "rotate(180deg)"}}>
+                    {opponentFacilityCards}
+                </Stack>
+                <Stack direction="row" sx={{transform: "rotate(180deg)"}}>
+                    {opponentShipCards}
+                </Stack>
             </Stack>
-            <Stack direction="row" sx={{gridRowStart: "opp-ship", transform: "rotate(180deg)"}}>
-                {opponentShipCards}
-            </Stack>
+
             <Stack direction="row" sx={{gridRowStart: "missions"}}>
                 {missionCards}
             </Stack>
-            <Stack direction="row" sx={{gridRowStart: "you-ship"}}>
-                {yourShipCards}
+
+            <Stack data-side={"yourSide"} direction="column" alignItems={"flex-start"} justifyContent={"center"} sx={{gridRowStart: "you-side"}}>
+                <Stack direction="row">
+                    {yourShipCards}
+                </Stack>
+                <Stack direction="row">
+                    {yourFacilityCards}
+                </Stack>
+                {/* TODO: Time locations */}
             </Stack>
-            <Stack direction="row" sx={{gridRowStart: "you-facil"}}>
-                {yourFacilityCards}
-            </Stack>
+            {/* TODO: Core */}
         </Box>
     );
 }
