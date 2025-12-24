@@ -34,7 +34,7 @@ export default function Card( {card, index, inc_minWidth, inc_minHeight} ) {
         .then((url) => {
             setImageUrl(url);
         });
-    },[]);
+    },[card.imageUrl]);
 
     const columnPosition = `${index+1}/auto`;
     const rowPosition = `${index+1}/auto`;
