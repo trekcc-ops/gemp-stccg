@@ -54,17 +54,6 @@ function get_ship_cards(gamestate, locationid, playerid) {
     return retarr;
 }
 
-function player_has_ship_cards_anywhere(gamestate, playerid) {
-    let ships = Object.values(gamestate["visibleCardsInGame"])
-        .filter((cardData) => (
-            cardData["owner"] === playerid &&
-            cardData["cardType"] === "SHIP" &&
-            cardData["attachedToCardId"] == null
-        ));
-    
-    return(ships.length > 0);
-}
-
 function get_facility_cards(gamestate, locationid, playerid) {
     let retarr = [];
     
@@ -105,9 +94,6 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
         <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
     );
 
-    let opponentShipRowHeight = player_has_ship_cards_anywhere(gamestate, opponentPlayerId) ? "1fr" : "auto";
-    let yourShipRowHeight = player_has_ship_cards_anywhere(gamestate, yourPlayerId) ? "1fr" : "auto";
-
     return(
         <Box
             data-spacelinelocation={locationid}
@@ -116,8 +102,7 @@ export default function SpacelineLocation( {gamestate, locationid} ) {
                 display: "grid",
                 gridTemplateColumns: "1fr",
                 gridTemplateRows: `[opp-special] auto [opp-side] minmax(auto, 1fr) [missions] auto [you-side] minmax(auto, 1fr) [you-special] auto`,
-                justifyItems: "center",
-                //alignItems: "center"
+                justifyItems: "center"
             }}
         >   
             {/* TODO: Core */}
