@@ -21,23 +21,24 @@ public class GameServer extends AbstractServer {
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
     private final Collection<String> _gameDeathWarningsSent = new HashSet<>();
     private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
-    private int _nextGameId = 1;
     private final ChatServer _chatServer;
     private final GameHistoryService _historyService;
-    private final ReadWriteLock _lock = new ReentrantReadWriteLock();
-    private final CloseableReadLock _readLock = new CloseableReadLock(_lock);
-    private final CloseableWriteLock _writeLock = new CloseableWriteLock(_lock);
+    private final CloseableReadLock _readLock;
+    private final CloseableWriteLock _writeLock;
     private final CardBlueprintLibrary _cardBlueprintLibrary;
 
-    public GameServer(ChatServer chatServer, GameHistoryService historyService, CardBlueprintLibrary cardBlueprintLibrary) {
+    public GameServer(ChatServer chatServer, GameHistoryService historyService,
+                      CardBlueprintLibrary cardBlueprintLibrary) {
         _chatServer = chatServer;
         _historyService = historyService;
         _cardBlueprintLibrary = cardBlueprintLibrary;
+        ReadWriteLock lock = new ReentrantReadWriteLock();
+        _readLock = new CloseableReadLock(lock);
+        _writeLock = new CloseableWriteLock(lock);
     }
 
     protected final void cleanup() {
-        _lock.writeLock().lock();
-        try {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
             long currentTime = System.currentTimeMillis();
 
             Map<String, Date> copy = new LinkedHashMap<>(_finishedGamesTime);
@@ -74,8 +75,6 @@ public class GameServer extends AbstractServer {
 
             for (CardGameMediator cardGameMediator : _runningGames.values())
                 cardGameMediator.cleanup();
-        } finally {
-            _lock.writeLock().unlock();
         }
     }
 
@@ -88,16 +87,14 @@ public class GameServer extends AbstractServer {
             GameParticipant[] participants = gameTable.getPlayers().toArray(new GameParticipant[0]);
             if (participants.length < 2)
                 throw new IllegalArgumentException("There has to be at least two players");
-            final String gameId = String.valueOf(_nextGameId);
             GameSettings gameSettings = gameTable.getGameSettings();
-            listeners.add(new FinishedGamesResultListener(this, gameId));
-            CardGameMediator cardGameMediator = new CardGameMediator(gameId, participants, _cardBlueprintLibrary,
+            CardGameMediator cardGameMediator = new CardGameMediator(participants, _cardBlueprintLibrary,
                     gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
                     gameSettings.getGameType());
-            _chatServer.createGameChatRoom(gameSettings, participants, gameId);
+            listeners.add(new FinishedGamesResultListener(this, cardGameMediator.getGameId()));
+            _chatServer.createGameChatRoom(gameSettings, participants, cardGameMediator.getGameId());
             cardGameMediator.initialize(_historyService, tournamentName, listeners);
-            _runningGames.put(gameId, cardGameMediator);
-            _nextGameId++;
+            _runningGames.put(cardGameMediator.getGameId(), cardGameMediator);
             gameTable.startGame(cardGameMediator);
         }
     }

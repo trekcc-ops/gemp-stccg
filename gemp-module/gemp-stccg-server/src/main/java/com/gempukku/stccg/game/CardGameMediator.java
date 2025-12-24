@@ -27,9 +27,12 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CardGameMediator {
+    private static final AtomicInteger nextId = new AtomicInteger(1);
+    private final String _gameId = String.valueOf(nextId.incrementAndGet());
     private static final long MILLIS_TO_SECONDS = 1000L;
     private static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     private static final String ERROR_MESSAGE = "Error processing game decision";
@@ -39,7 +42,6 @@ public class CardGameMediator {
     protected final Map<String, PlayerClock> _playerClocks = new HashMap<>();
     private final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
     private final Set<String> _playersPlaying = new HashSet<>();
-    private final String _gameId;
     private final GameTimer _timeSettings;
     private final boolean _allowSpectators;
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
@@ -54,10 +56,9 @@ public class CardGameMediator {
     private final Set<String> _requestedCancel = new HashSet<>();
 
 
-    CardGameMediator(String gameId, GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
-                            boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType) {
+    CardGameMediator(GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
+                     boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType) {
         _allowSpectators = allowSpectators;
-        _gameId = gameId;
         _timeSettings = timeSettings;
         if (participants.length < 1)
             throw new IllegalArgumentException("Game can't have less than one participant");
