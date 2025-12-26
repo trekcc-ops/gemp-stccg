@@ -3,6 +3,7 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import CardStack from "./card-stack.jsx";
+import CoreCardStack from './core-card-stack.jsx';
 
 // TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
 function get_your_player_id(gamestate) {
@@ -70,33 +71,6 @@ function get_facility_cards(gamestate, locationid, playerid) {
     return retarr;
 }
 
-function get_core_cards(gamestate, locationid, playerid) {
-    let retarr = [];
-
-    let ids_in_core = [];
-    for (const playerData of gamestate["players"]) {
-        if (playerData["playerId"] === playerid) {
-            for (const cardid of playerData["cardGroups"]["CORE"]["cardIds"]) {
-                ids_in_core.push(cardid.toString());
-            }
-        }
-    }
-
-    let visible_cards_in_game = gamestate["visibleCardsInGame"];
-    for (const cardid of ids_in_core) {
-        if (Object.hasOwn(visible_cards_in_game, cardid.toString())) {
-            const cardData = visible_cards_in_game[cardid.toString()];
-            if (cardData.owner === playerid &&
-                cardData.isInPlay === true) {
-                
-                retarr.push(cardData);
-            }
-        }
-    }
-
-    return retarr;
-}
-
 export default function SpacelineLocation( {gamestate, locationid, showCore = false} ) {
     let yourPlayerId = get_your_player_id(gamestate);
     let opponentPlayerId = get_opponent_player_id(gamestate);
@@ -105,9 +79,7 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
     // Render top to bottom
     let opponentCoreCards;
     if (showCore) {
-        opponentCoreCards = get_core_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
-            <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
-        );
+        opponentCoreCards = <CoreCardStack key={`core-${opponentPlayerId}`} gamestate={gamestate} player_id={opponentPlayerId} sx={{transform: "rotate(180deg)"}} />
     }
 
     let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
@@ -130,9 +102,7 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
 
     let yourCoreCards;
     if (showCore) {
-        yourCoreCards = get_core_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
-            <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
-        );
+        yourCoreCards = <CoreCardStack key={`core-${yourPlayerId}`} gamestate={gamestate} player_id={yourPlayerId} />
     }
 
     return(
