@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Box, Badge, CircularProgress } from '@mui/material';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import { fetchImage } from '../gemp-022/communication.js';
+import { useTrekccImage } from '../hooks/useTrekccImage.jsx';
 
 /*
 example card: {
@@ -26,15 +27,8 @@ export default function Card( {card, index, inc_minWidth, inc_minHeight} ) {
         stopped_badge = "Stopped";
         overlay = {filter: "grayscale(80%)"};
     }
-
-    const [imageUrl, setImageUrl] = useState(null);
-
-    useEffect(() => {
-        fetchImage(card.imageUrl)
-        .then((url) => {
-            setImageUrl(url);
-        });
-    },[card.imageUrl]);
+    
+    const imageUrl = useTrekccImage(card.imageUrl);
 
     const columnPosition = `${index+1}/auto`;
     const rowPosition = `${index+1}/auto`;
