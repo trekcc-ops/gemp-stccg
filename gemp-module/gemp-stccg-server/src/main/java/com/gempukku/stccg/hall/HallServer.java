@@ -208,7 +208,7 @@ public class HallServer extends AbstractServer {
                 final GameTable gameTable = tableHolder.createTable(gameSettings, participants);
                 List<GameResultListener> listenerList = List.of(listener,
                         new NotifyHallListenersGameResultListener(this));
-                gameServer.createNewGame(tournamentName, gameTable, listenerList);
+                gameTable.createTournamentGameInternal(gameServer, listenerList, tournamentName);
             }
         }
     }

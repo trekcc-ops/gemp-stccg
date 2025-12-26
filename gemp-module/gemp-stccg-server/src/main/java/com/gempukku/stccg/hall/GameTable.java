@@ -7,13 +7,10 @@ import com.gempukku.stccg.game.GameResultListener;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 public class GameTable {
-    private static final Logger LOGGER = LogManager.getLogger(GameTable.class);
 
     private final GameSettings gameSettings;
     private final Map<String, GameParticipant> players = new HashMap<>();
@@ -33,14 +30,12 @@ public class GameTable {
         this.capacity = 2; // manually change Tribbles player limit
         _tableId = tableId;
         _tableStatus = TableStatus.WAITING;
-        LOGGER.debug("Capacity of game: {}", this.capacity);
         for (GameParticipant participant : participants) {
             addPlayer(participant);
         }
     }
 
     public final void startGame(CardGameMediator cardGameMediator) {
-        LOGGER.debug("GameTable - startGame function called;");
         this.cardGameMediator = cardGameMediator;
         cardGameMediator.startGame();
     }
@@ -114,7 +109,7 @@ public class GameTable {
             if (isForLeague()) {
                 listenerList.add(new LeagueGameResultListener(gameSettings, leagueService));
             }
-            gameServer.createNewGame(tournamentName, this, listenerList);
+            createNewGame(gameServer, tournamentName, listenerList);
         }
     }
 
@@ -123,8 +118,17 @@ public class GameTable {
             String tournamentName = gameSettings.getTournamentNameForHall();
             List<GameResultListener> listenerList = new ArrayList<>();
             listenerList.add(new NotifyHallListenersGameResultListener(hallServer));
-            gameServer.createNewGame(tournamentName, this, listenerList);
+            createNewGame(gameServer, tournamentName, listenerList);
         }
+    }
+
+    public void createTournamentGameInternal(GameServer gameServer, List<GameResultListener> listeners,
+                                             String tournamentName) {
+        createNewGame(gameServer, tournamentName, listeners);
+    }
+
+    private void createNewGame(GameServer server, String gameName, List<GameResultListener> listeners) {
+        server.createNewGame(gameName, this, listeners);
     }
 
 

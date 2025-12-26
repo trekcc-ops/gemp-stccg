@@ -82,7 +82,28 @@ public class ServerObjects {
 
         // Servers; these should have as few properties as possible. Ideally they would not have other servers as properties.
         ChatServer chatServer = new ChatServer();
+                // cardBlueprintLibrary only used to create physical cards for new games
+                // chatServer
+                // gameHistoryService
         GameServer gameServer = new GameServer(chatServer, gameHistoryService, _cardBlueprintLibrary);
+                // adminService - used in constructor to create table holder & hall chat room mediator
+                // chatServer - used in constructor to create hall chat room mediator
+                // leagueService - used in constructor to create table holder
+                // formatLibrary - used in:
+                    /*
+                        createStartupGames
+                        joinQueue - to pull the GameFormat of a TournamentQueue object; can we just store that as GameFormat?
+                        processHall - to pull the GameFormat of a TournamentQueue object
+                        processHall - to pull the GameFormat of a Tournament object
+                        cleanup - to pull the GameFormat of a Tournament object
+                     */
+                // collectionsManager
+                    /*
+                        cancelTournamentQueues - refunds player costs of joining tournaments when server is shut down
+                     */
+                // tournamentService
+                // gameServer
+                // cardBlueprintLibrary
         HallServer hallServer =
                 new HallServer(_adminService, _formatLibrary, chatServer, leagueService,
                         collectionsManager, tournamentService, gameServer, _cardBlueprintLibrary);

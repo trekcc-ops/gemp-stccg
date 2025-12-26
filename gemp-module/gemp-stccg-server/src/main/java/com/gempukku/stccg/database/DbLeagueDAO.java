@@ -22,7 +22,7 @@ public class DbLeagueDAO implements LeagueDAO {
     private static final String INSERT_STATEMENT = "INSERT INTO league (properties, start, end) VALUES (?, ?, ?)";
     private static final String SELECT_STATEMENT =
             "SELECT league_id, properties FROM league WHERE end>=? ORDER BY start DESC";
-    private static final String UPDATE_STATUS_STATEMENT = "UPDATE league SET status=? WHERE league_id=?";
+    private static final String UPDATE_STATEMENT = "UPDATE league SET properties=? WHERE league_id=?";
     private final DbAccess _dbAccess;
     private final LeagueMapper _leagueMapper;
 
@@ -70,10 +70,10 @@ public class DbLeagueDAO implements LeagueDAO {
 
     public final void setStatus(League league) {
         try {
-            int status = league.getStatus();
             int leagueId = league.getLeagueId();
-            SQLUtils.executeStatementWithParameters(_dbAccess, UPDATE_STATUS_STATEMENT, status, leagueId);
-        } catch (SQLException exp) {
+            String properties = _leagueMapper.writeLeagueAsJsonString(league);
+            SQLUtils.executeStatementWithParameters(_dbAccess, UPDATE_STATEMENT, properties, leagueId);
+        } catch (SQLException | JsonProcessingException exp) {
             throw new RuntimeException("Unable to update league status", exp);
         }
     }
