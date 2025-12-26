@@ -236,7 +236,7 @@ public class GempHttpRequest {
             String collectionType = afterHandlerType.substring(1);
             parameters.put("collectionType", collectionType);
         }
-        parameters.put("user", _user);
+//        parameters.put("user", _user);
 
         try {
             UriRequestHandler newHandler = mapper.convertValue(parameters, UriRequestHandler.class);
