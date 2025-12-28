@@ -9,6 +9,8 @@ import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.chat.GameChatRoomMediator;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.CloseableReadLock;
@@ -26,13 +28,19 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CardGameMediator {
+
+    private static final long MINUTES_AFTER_GAME_END_TO_DESTROY = 5;
+    private static final long MINUTES_AFTER_GAME_END_TO_WARN_CHAT = 4;
     private static final AtomicInteger nextId = new AtomicInteger(1);
-    private final String _gameId = String.valueOf(nextId.incrementAndGet());
+    private final String _gameId = String.valueOf(nextId.getAndIncrement());
     private static final long MILLIS_TO_SECONDS = 1000L;
     private static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     private static final String ERROR_MESSAGE = "Error processing game decision";
@@ -44,6 +52,7 @@ public class CardGameMediator {
     private final Set<String> _playersPlaying = new HashSet<>();
     private final GameTimer _timeSettings;
     private final boolean _allowSpectators;
+    private final GameChatRoomMediator _gameChat;
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
 
     private final ReentrantReadWriteLock _lock = new ReentrantReadWriteLock(true);
@@ -54,10 +63,12 @@ public class CardGameMediator {
     private final DefaultGame _game;
     protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     private final Set<String> _requestedCancel = new HashSet<>();
+    private ZonedDateTime _endTime;
 
 
     CardGameMediator(GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
-                     boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType) {
+                     boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType,
+                     ChatServer chatServer, boolean isCompetitive) {
         _allowSpectators = allowSpectators;
         _timeSettings = timeSettings;
         if (participants.length < 1)
@@ -83,6 +94,8 @@ public class CardGameMediator {
         if (_game.isCancelled()) {
             cancelGameDueToError();
         }
+
+        _gameChat = chatServer.createGameChatRoom(isCompetitive, participants, _gameId); // adds to server automatically
     }
 
 
@@ -92,6 +105,7 @@ public class CardGameMediator {
 
     public final void destroy() {
         _destroyed = true;
+        _gameChat.destroy();
     }
 
     public final String getGameId() {
@@ -139,37 +153,48 @@ public class CardGameMediator {
 
     public final void cleanup() {
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            long currentTime = System.currentTimeMillis();
-            Map<String, GameCommunicationChannel> channelsCopy = new HashMap<>(_communicationChannels);
-            for (Map.Entry<String, GameCommunicationChannel> playerChannels : channelsCopy.entrySet()) {
-                String playerId = playerChannels.getKey();
-                // Channel is stale (user no longer connected to game, to save memory, we remove the channel
-                // User can always reconnect and establish a new channel
-                GameStateListener channel = playerChannels.getValue();
-                if (currentTime >
-                        channel.getLastAccessed() + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
-                    _game.removeGameStateListener(channel);
-                    _communicationChannels.remove(playerId);
-                }
+
+            if (getMinutesSinceEndTime() >= MINUTES_AFTER_GAME_END_TO_WARN_CHAT) {
+                _gameChat.sendChatDestroyWarning();
             }
 
-            if (_game.getWinnerPlayerId() == null) {
-                Map<String, Long> decisionTimes = new HashMap<>(_decisionQuerySentTimes);
-                for (Map.Entry<String, Long> playerDecision : decisionTimes.entrySet()) {
-                    String player = playerDecision.getKey();
-                    long decisionSent = playerDecision.getValue();
-                    if (currentTime > decisionSent + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
-                        addTimeSpentOnDecisionToUserClock(player);
-                        _game.playerLost(player, "Player decision timed-out");
+            if (getMinutesSinceEndTime() >= MINUTES_AFTER_GAME_END_TO_DESTROY) {
+                destroy();
+            }
+
+            if (!_destroyed) {
+                long currentTime = System.currentTimeMillis();
+                Map<String, GameCommunicationChannel> channelsCopy = new HashMap<>(_communicationChannels);
+                for (Map.Entry<String, GameCommunicationChannel> playerChannels : channelsCopy.entrySet()) {
+                    String playerId = playerChannels.getKey();
+                    // Channel is stale (user no longer connected to game, to save memory, we remove the channel
+                    // User can always reconnect and establish a new channel
+                    GameStateListener channel = playerChannels.getValue();
+                    if (currentTime >
+                            channel.getLastAccessed() + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
+                        _game.removeGameStateListener(channel);
+                        _communicationChannels.remove(playerId);
                     }
                 }
 
-                for (PlayerClock playerClock : _playerClocks.values()) {
-                    String player = playerClock.getPlayerId();
-                    if (_timeSettings.maxSecondsPerPlayer() -
-                            playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
-                        addTimeSpentOnDecisionToUserClock(player);
-                        _game.playerLost(player, "Player run out of time");
+                if (_game.getWinnerPlayerId() == null) {
+                    Map<String, Long> decisionTimes = new HashMap<>(_decisionQuerySentTimes);
+                    for (Map.Entry<String, Long> playerDecision : decisionTimes.entrySet()) {
+                        String player = playerDecision.getKey();
+                        long decisionSent = playerDecision.getValue();
+                        if (currentTime > decisionSent + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
+                            addTimeSpentOnDecisionToUserClock(player);
+                            _game.playerLost(player, "Player decision timed-out");
+                        }
+                    }
+
+                    for (PlayerClock playerClock : _playerClocks.values()) {
+                        String player = playerClock.getPlayerId();
+                        if (_timeSettings.maxSecondsPerPlayer() -
+                                playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
+                            addTimeSpentOnDecisionToUserClock(player);
+                            _game.playerLost(player, "Player run out of time");
+                        }
                     }
                 }
             }
@@ -194,7 +219,6 @@ public class CardGameMediator {
                     _game.sendMessage("Game was cancelled, as requested by all parties.");
                     for (GameResultListener gameResultListener : _gameResultListeners)
                         gameResultListener.gameCancelled();
-                    _game.setFinished(true);
                 }
             }
         }
@@ -388,4 +412,15 @@ public class CardGameMediator {
         return _allowSpectators;
     }
 
+    private long getMinutesSinceEndTime() {
+        if (_endTime == null) {
+            return -999;
+        } else {
+            return ChronoUnit.MINUTES.between(_endTime, ZonedDateTime.now());
+        }
+    }
+
+    public void logEndTime() {
+        _endTime = ZonedDateTime.now(ZoneId.of("UTC"));
+    }
 }

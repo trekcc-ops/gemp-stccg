@@ -17,10 +17,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class GameServer extends AbstractServer {
 
-    private static final long MILLIS_TO_MINUTES = 1000 * 60;
     private final Map<String, CardGameMediator> _runningGames = new ConcurrentHashMap<>();
-    private final Collection<String> _gameDeathWarningsSent = new HashSet<>();
-    private final Map<String, Date> _finishedGamesTime = Collections.synchronizedMap(new LinkedHashMap<>());
     private final ChatServer _chatServer;
     private final GameHistoryService _historyService;
     private final CloseableReadLock _readLock;
@@ -39,47 +36,11 @@ public class GameServer extends AbstractServer {
 
     protected final void cleanup() {
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            long currentTime = System.currentTimeMillis();
-
-            Map<String, Date> copy = new LinkedHashMap<>(_finishedGamesTime);
-            for (Map.Entry<String, Date> finishedGame : copy.entrySet()) {
-                String gameId = finishedGame.getKey();
-                // 4 minutes
-                long _timeToGameDeathWarning = MILLIS_TO_MINUTES * 4;
-                if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeathWarning
-                        && !_gameDeathWarningsSent.contains(gameId)) {
-                    try {
-                        String message = "This game is already finished and will be shortly removed, " +
-                                "please move to the Game Hall";
-                        ChatRoomMediator chatRoom = _chatServer.getChatRoom(getChatRoomName(gameId));
-                        chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID, message, true);
-                    } catch (PrivateInformationException exp) {
-                        // Ignore, sent as admin
-                    } catch (ChatCommandErrorException e) {
-                        // Ignore, no command
-                    }
-                    _gameDeathWarningsSent.add(gameId);
-                }
-                // 5 minutes
-                long _timeToGameDeath = MILLIS_TO_MINUTES * 5;
-                if (currentTime > finishedGame.getValue().getTime() + _timeToGameDeath) {
-                    _runningGames.get(gameId).destroy();
-                    _gameDeathWarningsSent.remove(gameId);
-                    _runningGames.remove(gameId);
-                    _chatServer.destroyChatRoom(getChatRoomName(gameId));
-                    _finishedGamesTime.remove(gameId);
-                } else {
-                    break;
-                }
+            for (CardGameMediator mediator : _runningGames.values()) {
+                mediator.cleanup();
             }
-
-            for (CardGameMediator cardGameMediator : _runningGames.values())
-                cardGameMediator.cleanup();
+            _runningGames.values().removeIf(CardGameMediator::isDestroyed);
         }
-    }
-
-    private static String getChatRoomName(String gameId) {
-        return "Game" + gameId;
     }
 
     public final void createNewGame(String tournamentName, GameTable gameTable, List<GameResultListener> listeners) {
@@ -90,9 +51,7 @@ public class GameServer extends AbstractServer {
             GameSettings gameSettings = gameTable.getGameSettings();
             CardGameMediator cardGameMediator = new CardGameMediator(participants, _cardBlueprintLibrary,
                     gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
-                    gameSettings.getGameType());
-            listeners.add(new FinishedGamesResultListener(this, cardGameMediator.getGameId()));
-            _chatServer.createGameChatRoom(gameSettings, participants, cardGameMediator.getGameId());
+                    gameSettings.getGameType(), _chatServer, gameSettings.isCompetitive());
             cardGameMediator.initialize(_historyService, tournamentName, listeners);
             _runningGames.put(cardGameMediator.getGameId(), cardGameMediator);
             gameTable.startGame(cardGameMediator);
@@ -109,7 +68,4 @@ public class GameServer extends AbstractServer {
         }
     }
 
-    public void logGameEndTime(String gameId) {
-        _finishedGamesTime.put(gameId, new Date());
-    }
 }

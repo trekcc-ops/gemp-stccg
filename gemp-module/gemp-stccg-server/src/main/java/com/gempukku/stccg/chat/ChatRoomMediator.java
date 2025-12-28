@@ -21,6 +21,7 @@ public class ChatRoomMediator {
     final Map<String, ChatCommandCallback> _chatCommandCallbacks = new HashMap<>();
     private String _welcomeMessage;
     protected final String _roomName;
+    private boolean _destroyed;
 
     public ChatRoomMediator(boolean muteJoinPartMessages,
                             int secondsTimeoutPeriod, boolean allowIncognito, String welcomeMessage,
@@ -186,5 +187,13 @@ public class ChatRoomMediator {
 
     public String getName() {
         return _roomName;
+    }
+
+    public void destroy() {
+        _destroyed = true;
+    }
+
+    public boolean isDestroyed() {
+        return _destroyed;
     }
 }

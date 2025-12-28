@@ -13,10 +13,11 @@ public class GameMediatorListener implements GameResultListener {
     @Override
     public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
         _mediator.gameFinished(winnerPlayerId, winReason, loserReasons);
+        _mediator.logEndTime();
     }
 
     @Override
     public void gameCancelled() {
-        // nothing to do here
+        _mediator.logEndTime();
     }
 }

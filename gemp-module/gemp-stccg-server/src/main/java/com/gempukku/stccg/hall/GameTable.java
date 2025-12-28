@@ -9,12 +9,15 @@ import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameTable {
 
+    private static final AtomicInteger nextId = new AtomicInteger(0);
+    private final int _tableId = nextId.incrementAndGet();
+
     private final GameSettings gameSettings;
     private final Map<String, GameParticipant> players = new HashMap<>();
-    private final int _tableId;
 
     private CardGameMediator cardGameMediator;
     private final int capacity;
@@ -25,10 +28,9 @@ public class GameTable {
         WAITING, PLAYING, FINISHED
     }
 
-    public GameTable(int tableId, GameSettings gameSettings, GameParticipant... participants) {
+    public GameTable(GameSettings gameSettings, GameParticipant... participants) {
         this.gameSettings = gameSettings;
         this.capacity = 2; // manually change Tribbles player limit
-        _tableId = tableId;
         _tableStatus = TableStatus.WAITING;
         for (GameParticipant participant : participants) {
             addPlayer(participant);
@@ -113,15 +115,6 @@ public class GameTable {
         }
     }
 
-    public void createGameWithNoLeague(GameServer gameServer, HallServer hallServer) {
-        if (isFull()) {
-            String tournamentName = gameSettings.getTournamentNameForHall();
-            List<GameResultListener> listenerList = new ArrayList<>();
-            listenerList.add(new NotifyHallListenersGameResultListener(hallServer));
-            createNewGame(gameServer, tournamentName, listenerList);
-        }
-    }
-
     public void createTournamentGameInternal(GameServer gameServer, List<GameResultListener> listeners,
                                              String tournamentName) {
         createNewGame(gameServer, tournamentName, listeners);
@@ -156,10 +149,6 @@ public class GameTable {
     }
 
     TableStatus getStatus() { return _tableStatus; }
-
-    public String getTournamentNameForHall() {
-        return gameSettings.getTournamentNameForHall();
-    }
 
 
 }

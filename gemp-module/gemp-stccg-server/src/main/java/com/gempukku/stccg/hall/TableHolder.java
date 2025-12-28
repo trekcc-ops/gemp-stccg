@@ -17,8 +17,6 @@ public class TableHolder {
     private final Map<String, GameTable> awaitingTables = new LinkedHashMap<>();
     private final Map<String, GameTable> runningTables = new LinkedHashMap<>();
 
-    private int _nextTableId = 1;
-
     public TableHolder(AdminService adminService, LeagueService leagueService) {
         _leagueService = leagueService;
         _adminService = adminService;
@@ -65,9 +63,7 @@ public class TableHolder {
     }
 
     public final GameTable createTable(GameSettings gameSettings, GameParticipant... participants) {
-        int tableId = _nextTableId;
-        _nextTableId++;
-        GameTable table = new GameTable(tableId, gameSettings, participants);
+        GameTable table = new GameTable(gameSettings, participants);
         awaitingTables.put(String.valueOf(table.getTableId()), table);
         runTableIfFull(table);
         return table;
