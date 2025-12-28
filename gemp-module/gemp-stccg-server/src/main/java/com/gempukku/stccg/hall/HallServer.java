@@ -38,7 +38,6 @@ public class HallServer extends AbstractServer {
     private static final int TICK_COUNTER_START = 60;
     private static final int PLAYER_TABLE_INACTIVITY_PERIOD = 1000 * 20 ; // 20 seconds
     private static final int PLAYER_CHAT_INACTIVITY_PERIOD = 1000 * 60 * 5; // 5 minutes
-    // Repeat tournaments every 2 days
 
     @SuppressWarnings("SpellCheckingInspection")
     private static final String DEFAULT_MESSAGE_OF_THE_DAY = "Lorem ipsum dolor sit amet, " +
@@ -323,64 +322,28 @@ public class HallServer extends AbstractServer {
     @Override
     protected final void cleanup() throws SQLException, IOException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            // Remove finished games
             _tableHolder.removeFinishedGames();
+            removeInactivePlayers();
+            updateTournamentQueues();
+            updateRunningTournaments();
+        }
+    }
 
-            long currentTime = System.currentTimeMillis();
-            Map<User, HallCommunicationChannel> visitCopy = new LinkedHashMap<>(_playerChannelCommunication);
-            for (Map.Entry<User, HallCommunicationChannel> lastVisitedPlayer : visitCopy.entrySet()) {
-                if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + PLAYER_TABLE_INACTIVITY_PERIOD) {
-                    User player = lastVisitedPlayer.getKey();
-                    boolean leftTables = leaveAwaitingTablesForLeavingPlayer(player);
-                    boolean leftQueues = leaveQueuesForLeavingPlayer(player);
-                    if (leftTables || leftQueues)
-                        hallChanged();
-                }
-
-                if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + PLAYER_CHAT_INACTIVITY_PERIOD) {
-                    User player = lastVisitedPlayer.getKey();
-                    _playerChannelCommunication.remove(player);
-                }
-            }
-
-            TournamentQueueCallback queueCallback;
-
-            for (Map.Entry<String, TournamentQueue> runningTournamentQueue :
-                    new HashMap<>(_tournamentQueues).entrySet()) {
-                String tournamentQueueKey = runningTournamentQueue.getKey();
-                TournamentQueue tournamentQueue = runningTournamentQueue.getValue();
-                queueCallback = new HallTournamentQueueCallback(_runningTournaments);
-                // If it's finished, remove it
-                tournamentQueue.process(queueCallback, _collectionsManager, _tournamentService);
-                if (tournamentQueue.shouldBeRemovedFromHall()) {
-                    _tournamentQueues.remove(tournamentQueueKey);
-                    hallChanged();
-                }
-            }
-
-            for (Map.Entry<String, Tournament> tournamentEntry : new HashMap<>(_runningTournaments).entrySet()) {
-                Tournament runningTournament = tournamentEntry.getValue();
-                GameFormat tournamentFormat = runningTournament.getGameFormat();
-                HallTournamentCallback callback = new HallTournamentCallback(this,
-                        _gameServer, runningTournament, tournamentFormat, _hallChat);
-                boolean changed = runningTournament.advanceTournament(callback, _collectionsManager);
-                if (runningTournament.getTournamentStage() == Tournament.Stage.FINISHED)
-                    _runningTournaments.remove(tournamentEntry.getKey());
-                if (changed)
+    private void removeInactivePlayers() throws SQLException, IOException {
+        long currentTime = System.currentTimeMillis();
+        Map<User, HallCommunicationChannel> visitCopy = new LinkedHashMap<>(_playerChannelCommunication);
+        for (Map.Entry<User, HallCommunicationChannel> lastVisitedPlayer : visitCopy.entrySet()) {
+            if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + PLAYER_TABLE_INACTIVITY_PERIOD) {
+                User player = lastVisitedPlayer.getKey();
+                boolean leftTables = leaveAwaitingTablesForLeavingPlayer(player);
+                boolean leftQueues = leaveQueuesForLeavingPlayer(player);
+                if (leftTables || leftQueues)
                     hallChanged();
             }
-
-            if (_tickCounter == TICK_COUNTER_START) {
-                _tickCounter = 0;
-                long nextLoadTime = System.currentTimeMillis() + SCHEDULED_TOURNAMENT_LOAD_TIME;
-                Map<String, TournamentQueue> queuesToAdd =
-                        _tournamentService.getFutureScheduledTournamentQueuesNotInHall(nextLoadTime, _tournamentQueues);
-                if (!queuesToAdd.isEmpty()) {
-                    _tournamentQueues.putAll(queuesToAdd);
-                    hallChanged();
-                }
+            if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + PLAYER_CHAT_INACTIVITY_PERIOD) {
+                User player = lastVisitedPlayer.getKey();
+                _playerChannelCommunication.remove(player);
             }
-            _tickCounter++;
         }
     }
 
@@ -391,6 +354,47 @@ public class HallServer extends AbstractServer {
 
     public boolean isShutdown() {
         return _shutdown;
+    }
+
+    private void updateTournamentQueues() throws SQLException, IOException {
+        for (Map.Entry<String, TournamentQueue> runningTournamentQueue :
+                new HashMap<>(_tournamentQueues).entrySet()) {
+            String tournamentQueueKey = runningTournamentQueue.getKey();
+            TournamentQueue tournamentQueue = runningTournamentQueue.getValue();
+            TournamentQueueCallback queueCallback = new HallTournamentQueueCallback(_runningTournaments);
+            tournamentQueue.process(queueCallback, _collectionsManager, _tournamentService);
+            // If it's finished, remove it
+            if (tournamentQueue.shouldBeRemovedFromHall()) {
+                _tournamentQueues.remove(tournamentQueueKey);
+                hallChanged();
+            }
+        }
+
+        if (_tickCounter == TICK_COUNTER_START) {
+            _tickCounter = 0;
+            long nextLoadTime = System.currentTimeMillis() + SCHEDULED_TOURNAMENT_LOAD_TIME;
+            Map<String, TournamentQueue> queuesToAdd =
+                    _tournamentService.getFutureScheduledTournamentQueuesNotInHall(nextLoadTime, _tournamentQueues);
+            if (!queuesToAdd.isEmpty()) {
+                _tournamentQueues.putAll(queuesToAdd);
+                hallChanged();
+            }
+        }
+        _tickCounter++;
+    }
+
+    private void updateRunningTournaments() {
+        for (Map.Entry<String, Tournament> tournamentEntry : new HashMap<>(_runningTournaments).entrySet()) {
+            Tournament runningTournament = tournamentEntry.getValue();
+            GameFormat tournamentFormat = runningTournament.getGameFormat();
+            HallTournamentCallback callback = new HallTournamentCallback(this,
+                    _gameServer, runningTournament, tournamentFormat, _hallChat);
+            boolean changed = runningTournament.advanceTournament(callback, _collectionsManager);
+            if (runningTournament.getTournamentStage() == Tournament.Stage.FINISHED)
+                _runningTournaments.remove(tournamentEntry.getKey());
+            if (changed)
+                hallChanged();
+        }
     }
 
 }
