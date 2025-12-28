@@ -1,10 +1,8 @@
 package com.gempukku.stccg.hall;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.game.CardGameMediator;
-import com.gempukku.stccg.game.GameParticipant;
-import com.gempukku.stccg.game.GameResultListener;
-import com.gempukku.stccg.game.GameServer;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
 
@@ -23,7 +21,6 @@ public class GameTable {
     private final int capacity;
     private TableStatus _tableStatus;
 
-
     enum TableStatus {
         WAITING, PLAYING, FINISHED
     }
@@ -37,9 +34,22 @@ public class GameTable {
         }
     }
 
-    public final void startGame(CardGameMediator cardGameMediator) {
+    public CardGameMediator createMediator(CardBlueprintLibrary cardBlueprintLibrary,
+                                           String tournamentName, List<GameCreationListener> creationListeners,
+                                           List<GameResultListener> resultListeners) {
+        GameParticipant[] participants = getPlayers().toArray(new GameParticipant[0]);
+        if (participants.length < 2)
+            throw new IllegalArgumentException("There has to be at least two players");
+        CardGameMediator cardGameMediator = new CardGameMediator(participants, cardBlueprintLibrary,
+                gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
+                gameSettings.getGameType(), gameSettings.isCompetitive(), tournamentName);
+        for (GameCreationListener listener : creationListeners) {
+            listener.process(cardGameMediator);
+        }
+        cardGameMediator.initialize(resultListeners);
         this.cardGameMediator = cardGameMediator;
         cardGameMediator.startGame();
+        return cardGameMediator;
     }
 
     public final CardGameMediator getMediator() {

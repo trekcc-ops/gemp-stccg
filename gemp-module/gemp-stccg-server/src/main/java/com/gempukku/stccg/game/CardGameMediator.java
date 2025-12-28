@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
+import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.chat.ChatServer;
-import com.gempukku.stccg.chat.GameChatRoomMediator;
-import com.gempukku.stccg.chat.PrivateInformationException;
+import com.gempukku.stccg.chat.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.CloseableReadLock;
 import com.gempukku.stccg.common.CloseableWriteLock;
@@ -52,6 +51,7 @@ public class CardGameMediator {
     private final Set<String> _playersPlaying = new HashSet<>();
     private final GameTimer _timeSettings;
     private final boolean _allowSpectators;
+    private final String _gameName;
     private final GameChatRoomMediator _gameChat;
     protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
 
@@ -66,10 +66,11 @@ public class CardGameMediator {
     private ZonedDateTime _endTime;
 
 
-    CardGameMediator(GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
-                     boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType,
-                     ChatServer chatServer, boolean isCompetitive) {
+    public CardGameMediator(GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
+                            boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType,
+                            boolean isCompetitive, String gameName) {
         _allowSpectators = allowSpectators;
+        _gameName = gameName;
         _timeSettings = timeSettings;
         if (participants.length < 1)
             throw new IllegalArgumentException("Game can't have less than one participant");
@@ -95,7 +96,28 @@ public class CardGameMediator {
             cancelGameDueToError();
         }
 
-        _gameChat = chatServer.createGameChatRoom(isCompetitive, participants, _gameId); // adds to server automatically
+        _gameChat = createGameChat(isCompetitive, participants);
+    }
+
+    private GameChatRoomMediator createGameChat(boolean isCompetitive, GameParticipant[] participants) {
+        String chatRoomName = "Game " + _gameId;
+        Set<String> allowedUsers = new HashSet<>();
+
+        if (isCompetitive) {
+            for (GameParticipant participant : participants)
+                allowedUsers.add(participant.getPlayerId());
+        }
+
+        String welcomeMessage = isCompetitive ? "Welcome to private room" : "Welcome to room";
+        GameChatRoomMediator chatRoom = new GameChatRoomMediator(false, allowedUsers,
+                false, chatRoomName);
+        try {
+            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID,
+                    welcomeMessage + ": " + chatRoomName, true);
+        } catch (PrivateInformationException | ChatCommandErrorException exp) {
+            // Ignore, sent as admin
+        }
+        return chatRoom;
     }
 
 
@@ -105,7 +127,9 @@ public class CardGameMediator {
 
     public final void destroy() {
         _destroyed = true;
-        _gameChat.destroy();
+        if (_gameChat != null) {
+            _gameChat.destroy();
+        }
     }
 
     public final String getGameId() {
@@ -369,25 +393,24 @@ public class CardGameMediator {
         }
     }
 
-    public void initialize(GameHistoryService gameHistory, String tournamentName, List<GameResultListener> listeners) {
+    public void initialize(List<GameResultListener> listeners) {
         GameFormat gameFormat = _game.getFormat();
         sendMessageToPlayers("You're starting a game of " + gameFormat);
-        StringBuilder players = new StringBuilder();
-        Map<String, CardDeck> decks =  new HashMap<>();
-
-        for (String playerName : _playersPlaying) {
-            if (!players.isEmpty())
-                players.append(", ");
-            players.append(playerName);
-            decks.put(playerName, _playerDecks.get(playerName));
-        }
-
+        String players = TextUtils.concatenateStrings(_playersPlaying);
         sendMessageToPlayers("Players in the game are: " + players);
-
-        final var gameRecordingInProgress = gameHistory.recordGame(this, gameFormat, tournamentName, decks);
-
-        listeners.add(new RecordingGameResultListener(_playersPlaying, gameRecordingInProgress));
         _gameResultListeners.addAll(listeners);
+    }
+
+    public Set<String> getPlayers() {
+        return _playersPlaying;
+    }
+
+    public Map<String, CardDeck> getDecks() {
+        return _playerDecks;
+    }
+
+    public void addResultListener(GameResultListener listener) {
+        _gameResultListeners.add(listener);
     }
 
     public void gameFinished(String winnerPlayerId, String winReason, Map<String, String> loserReasons) {
@@ -423,4 +446,13 @@ public class CardGameMediator {
     public void logEndTime() {
         _endTime = ZonedDateTime.now(ZoneId.of("UTC"));
     }
+
+    public String getName() {
+        return _gameName;
+    }
+
+    public ChatRoomMediator getChat() {
+        return _gameChat;
+    }
+
 }

@@ -1,11 +1,8 @@
 package com.gempukku.stccg.chat;
 
 import com.gempukku.stccg.AbstractServer;
-import com.gempukku.stccg.game.GameParticipant;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatServer extends AbstractServer {
@@ -14,32 +11,6 @@ public class ChatServer extends AbstractServer {
 
     public void addChatRoom(ChatRoomMediator chatRoom) {
         _chatRooms.put(chatRoom.getName(), chatRoom);
-    }
-
-
-    public GameChatRoomMediator createGameChatRoom(boolean isCompetitive, GameParticipant[] participants, String gameId) {
-        String chatRoomName = getChatRoomName(gameId);
-        Set<String> allowedUsers = new HashSet<>();
-
-        if (isCompetitive) {
-            for (GameParticipant participant : participants)
-                allowedUsers.add(participant.getPlayerId());
-        }
-
-        String welcomeMessage = isCompetitive ? "Welcome to private room" : "Welcome to room";
-        GameChatRoomMediator chatRoom = new GameChatRoomMediator(false, allowedUsers,
-                false, chatRoomName);
-        try {
-            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID,
-                    welcomeMessage + ": " + chatRoomName, true);
-        } catch (PrivateInformationException | ChatCommandErrorException exp) {
-            // Ignore, sent as admin
-        }
-        return chatRoom;
-    }
-
-    private static String getChatRoomName(String gameId) {
-        return "Game" + gameId;
     }
 
 

@@ -3,12 +3,12 @@ package com.gempukku.stccg.game;
 import java.util.Map;
 import java.util.Set;
 
-public class RecordingGameResultListener implements GameResultListener {
+public class GameRecordingResultListener implements GameResultListener {
 
     final String[] _playerNames;
     final GameRecordingInProgress _recording;
 
-    public RecordingGameResultListener(Set<String> playerNames, GameRecordingInProgress recording) {
+    public GameRecordingResultListener(Set<String> playerNames, GameRecordingInProgress recording) {
         _recording = recording;
         _playerNames = playerNames.toArray(new String[0]);
     }

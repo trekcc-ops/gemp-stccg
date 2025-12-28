@@ -26,6 +26,13 @@ public class GameHistoryService {
         _gameRecorder = new GameRecorder(this, playerDAO);
     }
 
+    public final GameRecordingInProgress recordGame(CardGameMediator game,
+                                                    final String tournamentName,
+                                                    final Map<String, ? extends CardDeck> decks) {
+        return _gameRecorder.recordGame(game, game.getGame().getFormat(), tournamentName, decks);
+    }
+
+
     public final GameRecordingInProgress recordGame(CardGameMediator game, GameFormat format,
                                                     final String tournamentName,
                                                     final Map<String, ? extends CardDeck> decks) {

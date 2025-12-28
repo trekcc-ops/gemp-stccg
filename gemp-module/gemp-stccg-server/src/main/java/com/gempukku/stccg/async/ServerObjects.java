@@ -12,8 +12,11 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.database.*;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.GameChatCreationListener;
 import com.gempukku.stccg.game.GameHistoryService;
+import com.gempukku.stccg.game.GameRecordingCreationListener;
 import com.gempukku.stccg.game.GameServer;
+import com.gempukku.stccg.hall.GameCreationListener;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.hall.TableHolder;
 import com.gempukku.stccg.league.LeagueMapper;
@@ -23,6 +26,9 @@ import com.gempukku.stccg.service.AdminService;
 import com.gempukku.stccg.tournament.TournamentService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerObjects {
     private static final Logger LOGGER = LogManager.getLogger(ServerObjects.class);
@@ -85,18 +91,18 @@ public class ServerObjects {
 
         // Servers; these should have as few properties as possible. Ideally they would not have other servers as properties.
         ChatServer chatServer = new ChatServer();
-        ChatRoomMediator hallChat = new HallChatRoomMediator(_adminService);
-        chatServer.addChatRoom(hallChat);
-                // cardBlueprintLibrary only used to create physical cards for new games
-                // chatServer
-                // gameHistoryService
-        GameServer gameServer = new GameServer(chatServer, gameHistoryService, _cardBlueprintLibrary);
+
+        List<GameCreationListener> listeners = new ArrayList<>();
+        listeners.add(new GameRecordingCreationListener(gameHistoryService));
+        listeners.add(new GameChatCreationListener(chatServer));
+        GameServer gameServer = new GameServer(_cardBlueprintLibrary, listeners); // cardBlueprintLibrary used to create cards for new games
+        TableHolder tableHolder = new TableHolder(_adminService, leagueService);
 
                 // collectionsManager - used to pay to join tournament queues (or be refunded when leaving them)
                 // tournamentService - used in doAfterStartup and cleanup methods to process tournaments
                 // gameServer - used when creating new games, and to construct HallTournamentCallback in cleanup method
-
-        TableHolder tableHolder = new TableHolder(_adminService, leagueService);
+        ChatRoomMediator hallChat = new HallChatRoomMediator(_adminService);
+        chatServer.addChatRoom(hallChat);
         HallServer hallServer = new HallServer(collectionsManager, tournamentService, gameServer, hallChat, tableHolder);
 
         _injectables.addValue(AdminService.class, _adminService);
