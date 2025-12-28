@@ -1,6 +1,7 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.chat.ChatCommandErrorException;
+import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
@@ -18,12 +19,14 @@ public class HallTournamentCallback implements TournamentCallback {
     private final GameServer _gameServer;
     private final Tournament _tournament;
     private final GameSettings tournamentGameSettings;
+    private final ChatRoomMediator _hallChat;
 
     HallTournamentCallback(HallServer hallServer, GameServer gameServer, Tournament tournament,
-                           GameFormat tournamentFormat) {
+                           GameFormat tournamentFormat, ChatRoomMediator hallChat) {
         _hallServer = hallServer;
         _gameServer = gameServer;
         _tournament = tournament;
+        _hallChat = hallChat;
         tournamentGameSettings =
                 new GameSettings(tournamentFormat, null, null, true, false,
                         false, false, GameTimer.TOURNAMENT_TIMER, null);
@@ -46,7 +49,7 @@ public class HallTournamentCallback implements TournamentCallback {
     @Override
     public final void broadcastMessage(String message) {
         try {
-            _hallServer.sendAdminMessage("TournamentSystem", message);
+            _hallChat.sendChatMessage("TournamentSystem", message, true);
         } catch (PrivateInformationException exp) {
             // Ignore, sent as admin
         } catch (ChatCommandErrorException e) {

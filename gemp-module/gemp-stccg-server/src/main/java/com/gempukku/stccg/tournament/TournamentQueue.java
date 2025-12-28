@@ -4,7 +4,6 @@ import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 
 import java.io.IOException;
@@ -23,31 +22,33 @@ public abstract class TournamentQueue {
     protected final PairingMechanism _pairingMechanism;
     protected final CollectionType _collectionType;
     protected final TournamentPrizes _tournamentPrizes;
-    protected final String _format;
+    protected final GameFormat _gameFormat;
     private final Tournament.Stage _stage;
     protected final TournamentService _tournamentService;
     protected final String _queueName;
 
     public TournamentQueue(int cost, boolean requiresDeck, CollectionType collectionType,
                            TournamentPrizes tournamentPrizes, PairingMechanism pairingMechanism,
-                           String format, TournamentService tournamentService, Tournament.Stage stage,
+                           GameFormat gameFormat, TournamentService tournamentService, Tournament.Stage stage,
                            String queueName) {
         _cost = cost;
         _requiresDeck = requiresDeck;
         _collectionType = collectionType;
         _tournamentPrizes = tournamentPrizes;
         _pairingMechanism = pairingMechanism;
-        _format = format;
+        _gameFormat = gameFormat;
         _tournamentService = tournamentService;
         _stage = stage;
         _queueName = queueName;
     }
 
     public TournamentQueue(TournamentQueueInfo queueInfo, TournamentPrizes prizes,
-                           TournamentService tournamentService, Tournament.Stage stage, String queueName) {
+                           TournamentService tournamentService, Tournament.Stage stage, String queueName,
+                           GameFormat gameFormat) {
         this(queueInfo.getCost(), true, CollectionType.ALL_CARDS, prizes,
-                queueInfo.getPairingMechanism(), queueInfo.getFormat(), tournamentService, stage, queueName);
+                queueInfo.getPairingMechanism(), gameFormat, tournamentService, stage, queueName);
     }
+
 
 
     public String getPairingDescription() {
@@ -125,12 +126,12 @@ public abstract class TournamentQueue {
         return _requiresDeck;
     }
 
-    public final GameFormat getGameFormat(FormatLibrary formatLibrary) {
-        return formatLibrary.get(_format);
+    public GameFormat getGameFormat() {
+        return _gameFormat;
     }
 
-    public String getFormatText() {
-        return _format;
+    public String getFormatCode() {
+        return _gameFormat.getCode();
     }
 
     public Tournament.Stage getStage() {

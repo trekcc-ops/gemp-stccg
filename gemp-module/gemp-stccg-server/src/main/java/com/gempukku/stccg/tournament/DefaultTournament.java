@@ -1,11 +1,12 @@
 package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.formats.GameFormat;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -19,7 +20,7 @@ public class DefaultTournament implements Tournament {
     private final TournamentPrizes _tournamentPrizes;
     private final String _tournamentId;
     private final String _tournamentName;
-    private final String _format;
+    private final GameFormat _gameFormat;
     private final CollectionType _collectionType;
     private Stage _tournamentStage;
     private int _tournamentRound;
@@ -42,12 +43,12 @@ public class DefaultTournament implements Tournament {
     private List<PlayerStanding> _currentStandings;
 
     DefaultTournament(TournamentService tournamentService, String tournamentId, String tournamentName,
-                      String format, CollectionType collectionType, int tournamentRound, Stage tournamentStage,
+                      GameFormat gameFormat, CollectionType collectionType, int tournamentRound, Stage tournamentStage,
                       PairingMechanism pairingMechanism, TournamentPrizes tournamentPrizes) {
         _tournamentService = tournamentService;
         _tournamentId = tournamentId;
         _tournamentName = tournamentName;
-        _format = format;
+        _gameFormat = gameFormat;
         _collectionType = collectionType;
         _tournamentRound = tournamentRound;
         _tournamentStage = tournamentStage;
@@ -57,7 +58,7 @@ public class DefaultTournament implements Tournament {
         _currentlyPlayingPlayers = new HashSet<>();
 
         _players = new HashSet<>(_tournamentService.getPlayers(_tournamentId));
-        _playerDecks = new HashMap<>(_tournamentService.getPlayerDecks(_tournamentId, _format));
+        _playerDecks = new HashMap<>(_tournamentService.getPlayerDecks(_tournamentId, gameFormat.getCode()));
         _droppedPlayers = new HashSet<>(_tournamentService.getDroppedPlayers(_tournamentId));
         _playerByes = new HashMap<>(_tournamentService.getPlayerByes(_tournamentId));
         _finishedTournamentMatches = new HashSet<>();
@@ -124,7 +125,7 @@ public class DefaultTournament implements Tournament {
 
     @Override
     public String getFormat() {
-        return _format;
+        return _gameFormat.getCode();
     }
 
     @Override
@@ -135,6 +136,11 @@ public class DefaultTournament implements Tournament {
         } finally {
             _lock.readLock().unlock();
         }
+    }
+
+    @Override
+    public GameFormat getGameFormat() {
+        return _gameFormat;
     }
 
     @Override

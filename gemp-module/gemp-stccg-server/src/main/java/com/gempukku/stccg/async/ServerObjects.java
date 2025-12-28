@@ -3,7 +3,9 @@ package com.gempukku.stccg.async;
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.chat.HallChatRoomMediator;
 import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
 import com.gempukku.stccg.collection.CollectionsManager;
@@ -75,38 +77,27 @@ public class ServerObjects {
         CollectionsManager collectionsManager =
                 new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO);
 
-        // Multiple database access; these have some library properties but shouldn't
+        // Multiple database access; these have some library properties but maybe shouldn't
         LeagueMapper leagueMapper = new LeagueMapper(_cardBlueprintLibrary, _formatLibrary, _draftFormatLibrary);
         LeagueService leagueService = new LeagueService(collectionsManager, leagueMapper, dbAccess);
-        TournamentService tournamentService = new TournamentService(_cardBlueprintLibrary, dbAccess);
+        TournamentService tournamentService = new TournamentService(_cardBlueprintLibrary, _formatLibrary, dbAccess);
 
         // Servers; these should have as few properties as possible. Ideally they would not have other servers as properties.
         ChatServer chatServer = new ChatServer();
+        ChatRoomMediator hallChat = new HallChatRoomMediator(_adminService);
+        chatServer.addChatRoom(hallChat);
                 // cardBlueprintLibrary only used to create physical cards for new games
                 // chatServer
                 // gameHistoryService
         GameServer gameServer = new GameServer(chatServer, gameHistoryService, _cardBlueprintLibrary);
                 // adminService - used in constructor to create table holder & hall chat room mediator
-                // chatServer - used in constructor to create hall chat room mediator
                 // leagueService - used in constructor to create table holder
-                // formatLibrary - used in:
-                    /*
-                        createStartupGames
-                        joinQueue - to pull the GameFormat of a TournamentQueue object; can we just store that as GameFormat?
-                        processHall - to pull the GameFormat of a TournamentQueue object
-                        processHall - to pull the GameFormat of a Tournament object
-                        cleanup - to pull the GameFormat of a Tournament object
-                     */
-                // collectionsManager
-                    /*
-                        cancelTournamentQueues - refunds player costs of joining tournaments when server is shut down
-                     */
-                // tournamentService
-                // gameServer
-                // cardBlueprintLibrary
-        HallServer hallServer =
-                new HallServer(_adminService, _formatLibrary, chatServer, leagueService,
-                        collectionsManager, tournamentService, gameServer, _cardBlueprintLibrary);
+                // collectionsManager - used to pay to join tournament queues (or be refunded when leaving them)
+                // tournamentService - used in doAfterStartup and cleanup methods to process tournaments
+                // gameServer - used when creating new games, and to construct HallTournamentCallback in cleanup method
+
+        HallServer hallServer = new HallServer(_adminService, leagueService, collectionsManager,
+                tournamentService, gameServer, hallChat);
 
         _injectables.addValue(AdminService.class, _adminService);
         _injectables.addValue(GameHistoryService.class, gameHistoryService);

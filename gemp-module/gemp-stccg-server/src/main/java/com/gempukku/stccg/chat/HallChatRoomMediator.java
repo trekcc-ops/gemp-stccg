@@ -8,12 +8,14 @@ import java.util.Locale;
 public class HallChatRoomMediator extends ChatRoomMediator {
     private final AdminService _adminService;
 
+    private static final int HALL_TIMEOUT_PERIOD = 300;
+
     private enum ChatCommandType {
         ban, banIp, banIpRange, endIncognito, help, ignore, incognito, listIgnores, noCommand, unignore
     }
 
-    public HallChatRoomMediator(AdminService adminService, int secondsTimeoutPeriod) {
-        super(true, secondsTimeoutPeriod, true, HTMLUtils.HALL_WELCOME_MESSAGE,
+    public HallChatRoomMediator(AdminService adminService) {
+        super(true, HALL_TIMEOUT_PERIOD, true, HTMLUtils.HALL_WELCOME_MESSAGE,
                 "Game Hall");
         _adminService = adminService;
         try {

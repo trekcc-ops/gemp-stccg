@@ -1,8 +1,8 @@
 package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.AbstractServerTest;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.database.User;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,13 +14,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings({"LongLine", "StaticMethodReferencedViaSubclass"})
 public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
+
+    private ImmediateRecurringQueue createQueue(TournamentService tournamentService) {
+        return new ImmediateRecurringQueue(10, _formatLibrary.get("format"), CollectionType.MY_CARDS,
+                "id-", "name-", 2, false, tournamentService,
+                new NoPrizes(), new SingleEliminationPairing("singleElimination"));
+    }
+
     @Test
     public void joiningQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
-
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
-                "id-", "name-", 2, false, tournamentService,
-                new NoPrizes(), new SingleEliminationPairing("singleElimination"));
+        ImmediateRecurringQueue queue = createQueue(tournamentService);
 
         User player = new User(1, "p1", "pass", "u",
                 null, null, null, null);
@@ -44,9 +48,7 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     @Test
     public void leavingQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
-
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
-                "id-", "name-", 2, false, tournamentService, new NoPrizes(), new SingleEliminationPairing("singleElimination"));
+        ImmediateRecurringQueue queue = createQueue(tournamentService);
 
         User player = new User(1, "p1", "pass", "u", null, null, null, null);
 
@@ -71,9 +73,7 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
     @Test
     public void cancellingQueue() throws SQLException, IOException {
         TournamentService tournamentService = Mockito.mock(TournamentService.class);
-
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
-                "id-", "name-", 2, false, tournamentService, new NoPrizes(), new SingleEliminationPairing("singleElimination"));
+        ImmediateRecurringQueue queue = createQueue(tournamentService);
 
         User player = new User(1, "p1", "pass", "u", null, null, null, null);
 
@@ -101,9 +101,7 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
                         .addTournament(Mockito.any(ImmediateRecurringQueue.class), Mockito.anyString(),
                                 Mockito.anyString()))
                 .thenReturn(tournament);
-
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
-                "id-", "name-", 2, false, tournamentService, new NoPrizes(), new SingleEliminationPairing("singleElimination"));
+        ImmediateRecurringQueue queue = createQueue(tournamentService);
 
 
         User player1 = new User(1, "p1", "pass", "u", null, null, null, null);
@@ -151,8 +149,7 @@ public class SingleEliminationRecurringQueueTest extends AbstractServerTest {
                                 Mockito.anyString()))
                 .thenReturn(tournament);
 
-        ImmediateRecurringQueue queue = new ImmediateRecurringQueue(10, "format", CollectionType.MY_CARDS,
-                "id-", "name-", 2, false, tournamentService, new NoPrizes(), new SingleEliminationPairing("singleElimination"));
+        ImmediateRecurringQueue queue = createQueue(tournamentService);
 
         User player1 = new User(1, "p1", "pass", "u", null, null, null, null);
         User player2 = new User(2, "p2", "pass", "u", null, null, null, null);

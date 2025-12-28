@@ -2,9 +2,10 @@ package com.gempukku.stccg.tournament;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.formats.GameFormat;
 
 import java.util.List;
 
@@ -62,4 +63,6 @@ public interface Tournament {
     List<PlayerStanding> getCurrentStandings();
 
     boolean isPlayerInCompetition(String player);
+
+    GameFormat getGameFormat();
 }

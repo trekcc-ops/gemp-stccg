@@ -8,6 +8,7 @@ import com.gempukku.stccg.database.DbAccess;
 import com.gempukku.stccg.database.DbTournamentDAO;
 import com.gempukku.stccg.database.DbTournamentMatchDAO;
 import com.gempukku.stccg.database.DbTournamentPlayerDAO;
+import com.gempukku.stccg.formats.FormatLibrary;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,8 +22,9 @@ public class TournamentService {
     private final TournamentMatchDAO _tournamentMatchDao;
     private final CardBlueprintLibrary _library;
     private final Map<String, Tournament> _tournamentById = new HashMap<>();
+    private final FormatLibrary _formatLibrary;
 
-    public TournamentService(CardBlueprintLibrary library, DbAccess dbAccess) {
+    public TournamentService(CardBlueprintLibrary library, FormatLibrary formatLibrary, DbAccess dbAccess) {
         _tournamentDao =
                 LoggingProxy.createLoggingProxy(TournamentDAO.class, new DbTournamentDAO(dbAccess));
         _tournamentPlayerDao =
@@ -30,9 +32,10 @@ public class TournamentService {
         _tournamentMatchDao =
                 LoggingProxy.createLoggingProxy(TournamentMatchDAO.class, new DbTournamentMatchDAO(dbAccess));
         _library = library;
+        _formatLibrary = formatLibrary;
     }
 
-    
+
     public void clearCache() {
         _tournamentById.clear();
     }
@@ -83,7 +86,7 @@ public class TournamentService {
     }
 
     public Tournament addTournament(TournamentQueue queue, String tournamentId, String tournamentName) {
-        String format = queue.getFormatText();
+        String format = queue.getFormatCode();
         CollectionType collectionType = queue.getCollectionType();
         Tournament.Stage stage = queue.getStage();
         String pairingMechanism = queue.getPairingRegistryRepresentation();
@@ -136,7 +139,7 @@ public class TournamentService {
         Tournament tournament;
         try {
             tournament = tournamentInfo.createDefaultTournament(this,
-                    tournamentInfo.getTournamentId(), cardLibrary);
+                    tournamentInfo.getTournamentId(), cardLibrary, _formatLibrary);
         } catch (Exception exp) {
             throw new RuntimeException("Unable to create Tournament", exp);
         }
@@ -162,5 +165,20 @@ public class TournamentService {
     
     public void updateScheduledTournamentStarted(String scheduledTournamentId) {
         _tournamentDao.updateScheduledTournamentStarted(scheduledTournamentId);
+    }
+
+    public Map<String, TournamentQueue> getFutureScheduledTournamentQueuesNotInHall(long nextLoadTime,
+                                                                                    Map<String, TournamentQueue> tournamentQueues) {
+        Map<String, TournamentQueue> result = new HashMap<>();
+        List<TournamentQueueInfo> futureTournamentQueues = getFutureScheduledTournamentQueues(nextLoadTime);
+        for (TournamentQueueInfo queueInfo : futureTournamentQueues) {
+            String tournamentId = queueInfo.getScheduledTournamentId();
+            if (!tournamentQueues.containsKey(tournamentId)) {
+                ScheduledTournamentQueue scheduledQueue = queueInfo
+                        .createNewScheduledTournamentQueue(_library, _formatLibrary, Tournament.Stage.PLAYING_GAMES, this);
+                result.put(tournamentId, scheduledQueue);
+            }
+        }
+        return result;
     }
 }

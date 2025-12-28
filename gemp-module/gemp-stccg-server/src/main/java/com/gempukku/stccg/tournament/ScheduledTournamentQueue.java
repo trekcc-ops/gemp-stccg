@@ -2,6 +2,7 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.formats.GameFormat;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -15,15 +16,17 @@ public class ScheduledTournamentQueue extends TournamentQueue {
     private boolean _shouldBeRemoved;
 
     public ScheduledTournamentQueue(TournamentQueueInfo queueInfo, String tournamentId, long startTime,
-                                    int minimumPlayers, String format, String tournamentName,
+                                    int minimumPlayers, String startCondition, String tournamentName,
                                     Tournament.Stage stage, CardBlueprintLibrary cardBlueprintLibrary,
-                                    TournamentService tournamentService) {
-        super(queueInfo, queueInfo.getPrizes(cardBlueprintLibrary), tournamentService, stage, tournamentName);
+                                    TournamentService tournamentService, GameFormat gameFormat) {
+        super(queueInfo, queueInfo.getPrizes(cardBlueprintLibrary), tournamentService, stage, tournamentName,
+                gameFormat);
         _scheduledTournamentId = tournamentId;
         _startTime = startTime;
         _minimumPlayers = minimumPlayers;
-        _startCondition = format;
+        _startCondition = startCondition;
     }
+
 
     @Override
     public String getPairingDescription() {

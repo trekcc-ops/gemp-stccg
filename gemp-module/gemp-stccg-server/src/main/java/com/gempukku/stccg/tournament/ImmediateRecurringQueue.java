@@ -2,6 +2,7 @@ package com.gempukku.stccg.tournament;
 
 import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.formats.GameFormat;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,9 +11,9 @@ public class ImmediateRecurringQueue extends TournamentQueue {
     private final int _playerCap;
     private final String _tournamentIdPrefix;
 
-    public ImmediateRecurringQueue(int cost, String format, CollectionType collectionType, String tournamentIdPrefix,
-                                           String tournamentQueueName, int playerCap, boolean requiresDeck,
-                                           TournamentService tournamentService, TournamentPrizes tournamentPrizes,
+    public ImmediateRecurringQueue(int cost, GameFormat format, CollectionType collectionType, String tournamentIdPrefix,
+                                   String tournamentQueueName, int playerCap, boolean requiresDeck,
+                                   TournamentService tournamentService, TournamentPrizes tournamentPrizes,
                                    PairingMechanism pairingMechanism) {
         super(cost, requiresDeck, collectionType, tournamentPrizes, pairingMechanism, format, tournamentService,
                 Tournament.Stage.PLAYING_GAMES, tournamentQueueName);

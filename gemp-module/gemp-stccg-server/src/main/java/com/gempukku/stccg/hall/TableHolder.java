@@ -8,13 +8,10 @@ import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.service.AdminService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 class TableHolder {
-    private static final Logger LOGGER = LogManager.getLogger(TableHolder.class);
     private final LeagueService _leagueService;
     private final AdminService _adminService;
     private final Map<String, GameTable> awaitingTables = new LinkedHashMap<>();
