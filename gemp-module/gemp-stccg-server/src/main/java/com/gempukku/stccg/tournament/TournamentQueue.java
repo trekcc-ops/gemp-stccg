@@ -150,4 +150,19 @@ public abstract class TournamentQueue {
 
     public abstract boolean shouldBeRemovedFromHall();
 
+    public Map<String, String> serializeForHall(String userName) {
+
+        Map<String, String> props = new HashMap<>();
+        props.put("cost", String.valueOf(getCost()));
+        props.put("collection", getCollectionType().getFullName());
+        props.put("format", getGameFormat().getName());
+        props.put("queueName", getTournamentQueueName());
+        props.put("playerCount", String.valueOf(getPlayerCount()));
+        props.put("prizes", getPrizesDescription());
+        props.put("system", getPairingDescription());
+        props.put("start", getStartCondition());
+        props.put("signedUp", String.valueOf(isPlayerSignedUp(userName)));
+        props.put("joinable", String.valueOf(isJoinable()));
+        return props;
+    }
 }

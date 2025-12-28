@@ -11,7 +11,7 @@ import com.gempukku.stccg.service.AdminService;
 
 import java.util.*;
 
-class TableHolder {
+public class TableHolder {
     private final LeagueService _leagueService;
     private final AdminService _adminService;
     private final Map<String, GameTable> awaitingTables = new LinkedHashMap<>();

@@ -18,7 +18,6 @@ import com.gempukku.stccg.game.GameParticipant;
 import com.gempukku.stccg.game.GameResultListener;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.LeagueService;
-import com.gempukku.stccg.service.AdminService;
 import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentQueue;
 import com.gempukku.stccg.tournament.TournamentQueueCallback;
@@ -51,7 +50,7 @@ public class HallServer extends AbstractServer {
     private final ReadWriteLock _hallDataAccessLock = new ReentrantReadWriteLock(false);
     private final CloseableReadLock _readLock = new CloseableReadLock(_hallDataAccessLock);
     private final CloseableWriteLock _writeLock = new CloseableWriteLock(_hallDataAccessLock);
-    private final TableHolder tableHolder;
+    private final TableHolder _tableHolder;
     private final Map<User, HallCommunicationChannel> _playerChannelCommunication = new ConcurrentHashMap<>();
     private final Map<String, Tournament> _runningTournaments = new LinkedHashMap<>();
     private final Map<String, TournamentQueue> _tournamentQueues = new LinkedHashMap<>();
@@ -60,13 +59,11 @@ public class HallServer extends AbstractServer {
     private final TournamentService _tournamentService;
     private final GameServer _gameServer;
 
-    public HallServer(AdminService adminService,
-                      LeagueService leagueService, CollectionsManager collectionsManager,
-                      TournamentService tournamentService, GameServer gameServer,
-                      ChatRoomMediator hallChat) {
+    public HallServer(CollectionsManager collectionsManager, TournamentService tournamentService, GameServer gameServer,
+                      ChatRoomMediator hallChat, TableHolder tableHolder) {
         _tournamentService = tournamentService;
         _collectionsManager = collectionsManager;
-        tableHolder = new TableHolder(adminService, leagueService);
+        _tableHolder = tableHolder;
         _hallChat = hallChat;
         _gameServer = gameServer;
     }
@@ -86,7 +83,7 @@ public class HallServer extends AbstractServer {
             boolean cancelMessage = _shutdown && !shutdown;
             _shutdown = shutdown;
             if (shutdown) {
-                tableHolder.cancelWaitingTables();
+                _tableHolder.cancelWaitingTables();
                 cancelTournamentQueues();
                 chatServer.sendSystemMessageToAllUsers(
                         "System is entering shutdown mode and will be restarted when all games are finished.");
@@ -114,7 +111,7 @@ public class HallServer extends AbstractServer {
 
     public final int getTablesCount() {
         try (CloseableReadLock ignored = _readLock.open()) {
-            return tableHolder.getTableCount();
+            return _tableHolder.getTableCount();
         }
     }
 
@@ -128,8 +125,8 @@ public class HallServer extends AbstractServer {
             throws HallException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             GameParticipant participant = new GameParticipant(player, cardDeck);
-            tableHolder.validatePlayerForLeague(player.getName(), gameSettings);
-            final GameTable table = tableHolder.createTable(gameSettings, participant);
+            _tableHolder.validatePlayerForLeague(player.getName(), gameSettings);
+            final GameTable table = _tableHolder.createTable(gameSettings, participant);
             table.createGameIfFull(gameServer, this, leagueService);
             hallChanged();
         }
@@ -140,7 +137,7 @@ public class HallServer extends AbstractServer {
                                              String tournamentName, GameResultListener listener) {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             if (!_shutdown) {
-                final GameTable gameTable = tableHolder.createTable(gameSettings, participants);
+                final GameTable gameTable = _tableHolder.createTable(gameSettings, participants);
                 List<GameResultListener> listenerList = List.of(listener,
                         new NotifyHallListenersGameResultListener(this));
                 gameTable.createTournamentGameInternal(gameServer, listenerList, tournamentName);
@@ -176,12 +173,12 @@ public class HallServer extends AbstractServer {
             throw new HallException(
                     "Server is in shutdown mode. Server will be restarted after all running games are finished.");
 
-        GameSettings gameSettings = tableHolder.getGameSettings(tableId);
+        GameSettings gameSettings = _tableHolder.getGameSettings(tableId);
         CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName,
                 cardBlueprintLibrary, deckDAO);
 
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            tableHolder.joinTable(tableId, player, cardDeck, _gameServer, this, leagueService);
+            _tableHolder.joinTable(tableId, player, cardDeck, _gameServer, this, leagueService);
         }
     }
 
@@ -222,7 +219,7 @@ public class HallServer extends AbstractServer {
     public final void leaveAwaitingTable(User player, String tableId) {
         _hallDataAccessLock.writeLock().lock();
         try {
-            tableHolder.leaveAwaitingTable(player, tableId);
+            _tableHolder.leaveAwaitingTable(player, tableId);
             hallChanged();
         } finally {
             _hallDataAccessLock.writeLock().unlock();
@@ -232,7 +229,7 @@ public class HallServer extends AbstractServer {
     private boolean leaveAwaitingTablesForLeavingPlayer(User player) {
         _hallDataAccessLock.writeLock().lock();
         try {
-            return tableHolder.leaveAwaitingTablesForPlayer(player.getName());
+            return _tableHolder.leaveAwaitingTablesForPlayer(player.getName());
         } finally {
             _hallDataAccessLock.writeLock().unlock();
         }
@@ -275,42 +272,19 @@ public class HallServer extends AbstractServer {
             if (_messageOfTheDay != null)
                 itemsToSerialize.put("messageOfTheDay", _messageOfTheDay);
 
-            tableHolder.processTables(player, playedGamesOnServer, tablesOnServer);
+            _tableHolder.processTables(player, playedGamesOnServer, tablesOnServer);
 
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
                 TournamentQueue tournamentQueue = tournamentQueueEntry.getValue();
-                GameFormat gameFormat = tournamentQueue.getGameFormat();
-
-                Map<String, String> props = new HashMap<>();
-                props.put("cost", String.valueOf(tournamentQueue.getCost()));
-                props.put("collection", tournamentQueue.getCollectionType().getFullName());
-                props.put("format", gameFormat.getName());
-                props.put("queueName", tournamentQueue.getTournamentQueueName());
-                props.put("playerCount", String.valueOf(tournamentQueue.getPlayerCount()));
-                props.put("prizes", tournamentQueue.getPrizesDescription());
-                props.put("system", tournamentQueue.getPairingDescription());
-                props.put("start", tournamentQueue.getStartCondition());
-                props.put("signedUp", String.valueOf(tournamentQueue.isPlayerSignedUp(player.getName())));
-                props.put("joinable", String.valueOf(tournamentQueue.isJoinable()));
-
+                Map<String, String> props = tournamentQueue.serializeForHall(player.getName());
                 tournamentQueuesOnServer.put(tournamentQueueKey, props);
             }
 
             for (Map.Entry<String, Tournament> tournamentEntry : _runningTournaments.entrySet()) {
                 String tournamentKey = tournamentEntry.getKey();
                 Tournament tournament = tournamentEntry.getValue();
-
-                Map<String, String> props = new HashMap<>();
-                props.put("collection", tournament.getCollectionType().getFullName());
-                props.put("format", tournament.getGameFormat().getName());
-                props.put("name", tournament.getTournamentName());
-                props.put("system", tournament.getPlayOffSystem());
-                props.put("stage", tournament.getTournamentStage().getHumanReadable());
-                props.put("round", String.valueOf(tournament.getCurrentRound()));
-                props.put("playerCount", String.valueOf(tournament.getPlayersInCompetitionCount()));
-                props.put("signedUp", String.valueOf(tournament.isPlayerInCompetition(player.getName())));
-
+                Map<String, String> props = tournament.serializeForHall(player.getName());
                 tournamentsOnServer.put(tournamentKey, props);
             }
         }
@@ -350,7 +324,7 @@ public class HallServer extends AbstractServer {
     protected final void cleanup() throws SQLException, IOException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             // Remove finished games
-            tableHolder.removeFinishedGames();
+            _tableHolder.removeFinishedGames();
 
             long currentTime = System.currentTimeMillis();
             Map<User, HallCommunicationChannel> visitCopy = new LinkedHashMap<>(_playerChannelCommunication);

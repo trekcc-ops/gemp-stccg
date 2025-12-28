@@ -15,6 +15,7 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.GameHistoryService;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.HallServer;
+import com.gempukku.stccg.hall.TableHolder;
 import com.gempukku.stccg.league.LeagueMapper;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.packs.ProductLibrary;
@@ -90,14 +91,13 @@ public class ServerObjects {
                 // chatServer
                 // gameHistoryService
         GameServer gameServer = new GameServer(chatServer, gameHistoryService, _cardBlueprintLibrary);
-                // adminService - used in constructor to create table holder & hall chat room mediator
-                // leagueService - used in constructor to create table holder
+
                 // collectionsManager - used to pay to join tournament queues (or be refunded when leaving them)
                 // tournamentService - used in doAfterStartup and cleanup methods to process tournaments
                 // gameServer - used when creating new games, and to construct HallTournamentCallback in cleanup method
 
-        HallServer hallServer = new HallServer(_adminService, leagueService, collectionsManager,
-                tournamentService, gameServer, hallChat);
+        TableHolder tableHolder = new TableHolder(_adminService, leagueService);
+        HallServer hallServer = new HallServer(collectionsManager, tournamentService, gameServer, hallChat, tableHolder);
 
         _injectables.addValue(AdminService.class, _adminService);
         _injectables.addValue(GameHistoryService.class, gameHistoryService);
