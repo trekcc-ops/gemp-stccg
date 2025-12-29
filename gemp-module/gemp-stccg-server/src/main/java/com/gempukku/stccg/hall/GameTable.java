@@ -94,7 +94,6 @@ public class GameTable {
     }
 
     public void setAsPlaying() { _tableStatus = TableStatus.PLAYING; }
-    public void setAsFinished() { _tableStatus = TableStatus.FINISHED; }
 
     public int getTableId() { return _tableId; }
 
@@ -144,7 +143,11 @@ public class GameTable {
     }
 
     public boolean isGameFinished() {
-        return _cardGameMediator != null && _cardGameMediator.isFinished();
+        boolean isFinished = _cardGameMediator != null && _cardGameMediator.isFinished();
+        if (isFinished) {
+            _tableStatus = TableStatus.FINISHED;
+        }
+        return isFinished;
     }
 
     public boolean playerIsPlayingForLeague(String userName, League league) {
@@ -157,5 +160,8 @@ public class GameTable {
 
     TableStatus getStatus() { return _tableStatus; }
 
+    public boolean shouldBeRemoved() {
+        return _cardGameMediator != null && _cardGameMediator.isDestroyed();
+    }
 
 }

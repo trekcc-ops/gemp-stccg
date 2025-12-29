@@ -144,8 +144,8 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public final void joinQueue(String queueId, User player, String deckName, CardBlueprintLibrary cardLibrary,
-                                DeckDAO deckDAO)
+    public final void addPlayerToQueue(String queueId, User player, String deckName, CardBlueprintLibrary cardLibrary,
+                                       DeckDAO deckDAO)
             throws HallException, SQLException, IOException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             TournamentQueue tournamentQueue = _tournamentQueues.get(queueId);
@@ -166,7 +166,7 @@ public class HallServer extends AbstractServer {
 
     public final void joinTableAsPlayer(String tableId, User player, User deckOwner, String deckName,
                                         CardBlueprintLibrary cardBlueprintLibrary, DeckDAO deckDAO,
-                                        LeagueService leagueService)
+                                        LeagueService leagueService, GameServer gameServer)
             throws HallException {
         if (_shutdown)
             throw new HallException(
@@ -177,12 +177,12 @@ public class HallServer extends AbstractServer {
                 cardBlueprintLibrary, deckDAO);
 
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            _tableHolder.joinTable(tableId, player, cardDeck, _gameServer, this, leagueService);
+            _tableHolder.joinTable(tableId, player, cardDeck, gameServer, this, leagueService);
         }
     }
 
 
-    public final void leaveQueue(String queueId, User player) throws SQLException, IOException {
+    public final void removePlayerFromQueue(String queueId, User player) throws SQLException, IOException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             TournamentQueue tournamentQueue = _tournamentQueues.get(queueId);
             if (tournamentQueue != null && tournamentQueue.isPlayerSignedUp(player.getName())) {
@@ -192,7 +192,7 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    private boolean leaveQueuesForLeavingPlayer(User player) throws SQLException, IOException {
+    private boolean removePlayerFromAllQueues(User player) throws SQLException, IOException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             boolean result = false;
             for (TournamentQueue tournamentQueue : _tournamentQueues.values()) {
@@ -271,7 +271,8 @@ public class HallServer extends AbstractServer {
             if (_messageOfTheDay != null)
                 itemsToSerialize.put("messageOfTheDay", _messageOfTheDay);
 
-            _tableHolder.processTables(player, playedGamesOnServer, tablesOnServer);
+            playedGamesOnServer.addAll(_tableHolder.getPlayedGames(player));
+            tablesOnServer.putAll(_tableHolder.getSerializedTables(player));
 
             for (Map.Entry<String, TournamentQueue> tournamentQueueEntry : _tournamentQueues.entrySet()) {
                 String tournamentQueueKey = tournamentQueueEntry.getKey();
@@ -336,7 +337,7 @@ public class HallServer extends AbstractServer {
             if (currentTime > lastVisitedPlayer.getValue().getLastAccessed() + PLAYER_TABLE_INACTIVITY_PERIOD) {
                 User player = lastVisitedPlayer.getKey();
                 boolean leftTables = leaveAwaitingTablesForLeavingPlayer(player);
-                boolean leftQueues = leaveQueuesForLeavingPlayer(player);
+                boolean leftQueues = removePlayerFromAllQueues(player);
                 if (leftTables || leftQueues)
                     hallChanged();
             }

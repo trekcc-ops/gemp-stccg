@@ -46,7 +46,7 @@ public class JoinQueueRequestHandler implements UriRequestHandler {
             responseWriter.writeXmlMarshalExceptionResponse("Server is in shutdown mode. Server will be restarted after all running games are finished.");
         } else {
             try {
-                _hallServer.joinQueue(_queueId, resourceOwner, _deckName, _cardBlueprintLibrary, _deckDAO);
+                _hallServer.addPlayerToQueue(_queueId, resourceOwner, _deckName, _cardBlueprintLibrary, _deckDAO);
                 responseWriter.writeXmlOkResponse();
             } catch (HallException e) {
                 if (doNotIgnoreError(e)) {

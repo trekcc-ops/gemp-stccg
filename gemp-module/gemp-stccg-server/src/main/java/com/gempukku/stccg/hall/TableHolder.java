@@ -104,13 +104,15 @@ public class TableHolder {
 
 
     public final GameSettings getGameSettings(String tableId) throws HallException {
-        final GameTable gameTable = awaitingTables.get(tableId);
-        if (gameTable != null)
+        GameTable gameTable = awaitingTables.get(tableId);
+        if (gameTable == null) {
+            gameTable = runningTables.get(tableId);
+        }
+        if (gameTable == null) {
+            throw new HallException("Table was already removed");
+        } else {
             return gameTable.getGameSettings();
-        GameTable runningTable = runningTables.get(tableId);
-        if (runningTable != null)
-            return runningTable.getGameSettings();
-        throw new HallException("Table was already removed");
+        }
     }
 
     public final void leaveAwaitingTable(User player, String tableId) {
@@ -138,64 +140,65 @@ public class TableHolder {
         return result;
     }
 
-    final void processTables(User player, Set<String> playedGamesOnServer,
-                             Map<String, GameTableView> tablesOnServer) {
-
-        boolean isAdmin = player.isAdmin();
-
-        // First waiting
-        for (Map.Entry<String, GameTable> tableInformation : awaitingTables.entrySet()) {
-            final GameTable table = tableInformation.getValue();
-            String tableId = tableInformation.getKey();
-            List<String> players = (table.isForLeague()) ? Collections.emptyList() : table.getPlayerNames();
-            if (isAdmin || isNoIgnores(players, player.getName())) {
-                tablesOnServer.put(tableId, new GameTableView(table, player));
-            }
-        }
-
-        // Then non-finished
-        Map<String, GameTable> finishedTables = new HashMap<>();
-
+    final Set<String> getPlayedGames(User player) {
+        Set<String> result = new HashSet<>();
         for (Map.Entry<String, GameTable> runningGame : runningTables.entrySet()) {
             final GameTable runningTable = runningGame.getValue();
             CardGameMediator cardGameMediator = runningTable.getMediator();
             if (cardGameMediator != null) {
-                boolean isVisibleToUser = !runningTable.getGameSettings().isHiddenGame() || runningTable.hasPlayer(player);
-                if (isAdmin || (isVisibleToUser &&
+                boolean isVisibleToUser = !runningTable.getGameSettings().isHiddenGame() ||
+                        runningTable.hasPlayer(player);
+                if (player.isAdmin() || (isVisibleToUser &&
                         isNoIgnores(runningTable.getPlayerNames(), player.getName()))) {
-                    if (runningTable.isGameFinished()) {
-                        runningTable.setAsFinished();
-                        finishedTables.put(runningGame.getKey(), runningTable);
-                    } else {
-                        tablesOnServer.put(runningGame.getKey(), new GameTableView(runningTable, player));
-                        if (runningTable.hasPlayer(player))
-                            playedGamesOnServer.add(cardGameMediator.getGameId());
+                    if (!runningTable.isGameFinished() && runningTable.hasPlayer(player)) {
+                            result.add(cardGameMediator.getGameId());
                     }
                 }
             }
         }
+        return result;
+    }
 
-        // Then rest
-        for (Map.Entry<String, GameTable> nonPlayingGame : finishedTables.entrySet()) {
-            final GameTable runningTable = nonPlayingGame.getValue();
-            CardGameMediator cardGameMediator = runningTable.getMediator();
-            if (cardGameMediator != null) {
-                if (isAdmin || isNoIgnores(runningTable.getPlayerNames(), player.getName())) {
-                    tablesOnServer.put(nonPlayingGame.getKey(), new GameTableView(runningTable, player));
-                }
+    final Map<String, GameTableView> getSerializedTables(User player) {
+        Map<String, GameTableView> result = new HashMap<>();
+        List<GameTable> finishedTables = new ArrayList<>();
+
+        List<GameTable> tablesInOrder = new ArrayList<>(awaitingTables.values());
+        for (GameTable table : runningTables.values()) {
+            if (table.isGameFinished()) {
+                finishedTables.add(table);
+            } else {
+                tablesInOrder.add(table);
             }
         }
+        tablesInOrder.addAll(finishedTables);
+
+        for (GameTable table : tablesInOrder) {
+            boolean serializeTable = shouldTableBeSerializedForUser(table, player);
+            if (serializeTable) {
+                result.put(String.valueOf(table.getTableId()), new GameTableView(table, player));
+            }
+        }
+        return result;
+    }
+
+    private boolean shouldTableBeSerializedForUser(GameTable table, User player) {
+        if (player.isAdmin()) {
+            return true;
+        }
+        List<String> players = (table.isForLeague() && table.getStatus() == GameTable.TableStatus.WAITING) ?
+                Collections.emptyList() : table.getPlayerNames();
+        if (!isNoIgnores(players, player.getName())) {
+            return false;
+        }
+        if (table.getStatus() == GameTable.TableStatus.PLAYING) {
+            return !table.getGameSettings().isHiddenGame() || table.hasPlayer(player);
+        }
+        return true;
     }
 
     public final void removeFinishedGames() {
-        final Iterator<Map.Entry<String, GameTable>> iterator = runningTables.entrySet().iterator();
-        while (iterator.hasNext()) {
-            final Map.Entry<String, GameTable> runningTable = iterator.next();
-            CardGameMediator cardGameMediator = runningTable.getValue().getMediator();
-            if (cardGameMediator.isDestroyed()) {
-                iterator.remove();
-            }
-        }
+        runningTables.values().removeIf(GameTable::shouldBeRemoved);
     }
 
     private boolean isNoIgnores(Collection<String> participants, String playerLooking) {

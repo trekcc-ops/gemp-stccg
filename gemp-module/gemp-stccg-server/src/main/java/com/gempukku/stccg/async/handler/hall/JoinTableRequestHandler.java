@@ -8,6 +8,7 @@ import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.HallException;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.LeagueService;
@@ -26,6 +27,7 @@ public class JoinTableRequestHandler implements UriRequestHandler {
     private final DeckDAO _deckDAO;
     private final CardBlueprintLibrary _cardLibrary;
     private final LeagueService _leagueService;
+    private final GameServer _gameServer;
     JoinTableRequestHandler(
             @JsonProperty("deckName")
         String deckName,
@@ -35,7 +37,8 @@ public class JoinTableRequestHandler implements UriRequestHandler {
             @JacksonInject AdminService adminService,
             @JacksonInject CardBlueprintLibrary cardLibrary,
             @JacksonInject DeckDAO deckDAO,
-            @JacksonInject LeagueService leagueService
+            @JacksonInject LeagueService leagueService,
+            @JacksonInject GameServer gameServer
             ) {
         _deckName = deckName;
         _tableId = tableId;
@@ -44,6 +47,7 @@ public class JoinTableRequestHandler implements UriRequestHandler {
         _cardLibrary = cardLibrary;
         _deckDAO = deckDAO;
         _leagueService = leagueService;
+        _gameServer = gameServer;
     }
 
     @Override
@@ -53,14 +57,14 @@ public class JoinTableRequestHandler implements UriRequestHandler {
 
         try {
             _hallServer.joinTableAsPlayer(_tableId, resourceOwner, resourceOwner, _deckName, _cardLibrary, _deckDAO,
-                    _leagueService);
+                    _leagueService, _gameServer);
             responseWriter.writeXmlOkResponse();
         } catch (HallException e) {
             try {
                 //Try again assuming it's a new player using the default deck library decks
                 User libraryOwner = _adminService.getPlayer("Librarian");
                 _hallServer.joinTableAsPlayer(_tableId, resourceOwner, libraryOwner, _deckName, _cardLibrary, _deckDAO,
-                        _leagueService);
+                        _leagueService, _gameServer);
                 responseWriter.writeXmlOkResponse();
                 return;
             } catch (HallException ex) {

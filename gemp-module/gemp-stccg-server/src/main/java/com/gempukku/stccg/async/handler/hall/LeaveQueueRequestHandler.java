@@ -25,7 +25,7 @@ public class LeaveQueueRequestHandler implements UriRequestHandler {
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         User resourceOwner = request.user();
-        _hallServer.leaveQueue(_queueId, resourceOwner);
+        _hallServer.removePlayerFromQueue(_queueId, resourceOwner);
         responseWriter.writeXmlOkResponse();
     }
 
