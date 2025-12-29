@@ -1,9 +1,13 @@
 package com.gempukku.stccg.hall;
 
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.league.*;
+import com.gempukku.stccg.game.CardGameMediator;
+import com.gempukku.stccg.game.GameParticipant;
+import com.gempukku.stccg.league.League;
+import com.gempukku.stccg.league.LeagueSeries;
 
 public class GameSettings {
     private final GameFormat gameFormat;
@@ -28,13 +32,6 @@ public class GameSettings {
         this.timeSettings = timer;
         this.userDescription = description;
         this.isInviteOnly = isInviteOnly;
-    }
-
-
-    public GameSettings(GameFormat gameFormat, boolean privateGame, boolean isInviteOnly, boolean hiddenGame,
-                        GameTimer timer, String description) {
-        this(gameFormat, null, null, false, privateGame, isInviteOnly, hiddenGame,
-                timer, description);
     }
 
 
@@ -88,5 +85,12 @@ public class GameSettings {
 
     public String getFormatName() {
         return gameFormat.getName();
+    }
+
+    public CardGameMediator createGameMediator(GameParticipant[] participants,
+                                               CardBlueprintLibrary cardBlueprintLibrary, String gameName) {
+        return new CardGameMediator(participants, cardBlueprintLibrary, allowsSpectators(), getTimeSettings(),
+                getGameFormat(), getGameType(), isCompetitive(), gameName);
+
     }
 }

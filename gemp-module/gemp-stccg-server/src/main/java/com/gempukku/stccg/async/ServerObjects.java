@@ -40,10 +40,12 @@ public class ServerObjects {
     private final FormatLibrary _formatLibrary;
     private final DraftFormatLibrary _draftFormatLibrary;
     private AdminService _adminService;
+
+    // Injectable server objects to be called when constructing client request handlers
     private final InjectableValues.Std _injectables = new InjectableValues.Std();
 
     public ServerObjects() {
-        //Libraries and other important prerequisite managers that are used by lots of other managers
+        // Libraries
         LOGGER.info("GempukkuServer loading prerequisites...");
         _cardBlueprintLibrary = new CardBlueprintLibrary();
         _formatLibrary = new FormatLibrary(_cardBlueprintLibrary);
@@ -55,8 +57,7 @@ public class ServerObjects {
         _injectables.addValue(FormatLibrary.class, _formatLibrary);
         _injectables.addValue(DraftFormatLibrary.class, _draftFormatLibrary);
 
-        // Now bulk initialize various managers
-        // DAO objects should only have dbAccess as a constructor parameter
+        // Database objects
         LOGGER.info("GempukkuServer loading DAOs...");
         DbAccess dbAccess = new DbAccess();
 
@@ -78,33 +79,31 @@ public class ServerObjects {
 
     private void createServices(DbAccess dbAccess) {
         // Services for multiple database access
-        // Constructors should only take DAO objects and dbAccess as parameters
         _adminService = new AdminService(_playerDAO, _ipBanDAO, dbAccess);
         GameHistoryService gameHistoryService = new GameHistoryService(_playerDAO, dbAccess);
         CollectionsManager collectionsManager =
                 new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO);
-
-        // Multiple database access; these have some library properties but maybe shouldn't
         LeagueMapper leagueMapper = new LeagueMapper(_cardBlueprintLibrary, _formatLibrary, _draftFormatLibrary);
         LeagueService leagueService = new LeagueService(collectionsManager, leagueMapper, dbAccess);
         TournamentService tournamentService = new TournamentService(_cardBlueprintLibrary, _formatLibrary, dbAccess);
 
-        // Servers; these should have as few properties as possible. Ideally they would not have other servers as properties.
+        // Chat server
         ChatServer chatServer = new ChatServer();
 
+        // Game server
         List<GameCreationListener> listeners = new ArrayList<>();
         listeners.add(new GameRecordingCreationListener(gameHistoryService));
         listeners.add(new GameChatCreationListener(chatServer));
-        GameServer gameServer = new GameServer(_cardBlueprintLibrary, listeners); // cardBlueprintLibrary used to create cards for new games
-        TableHolder tableHolder = new TableHolder(_adminService, leagueService);
+        GameServer gameServer = new GameServer(_cardBlueprintLibrary, listeners);
 
-                // collectionsManager - used to pay to join tournament queues (or be refunded when leaving them)
-                // tournamentService - used in doAfterStartup and cleanup methods to process tournaments
-                // gameServer - used when creating new games, and to construct HallTournamentCallback in cleanup method
+        // Hall server
+        TableHolder tableHolder = new TableHolder(_adminService, leagueService);
         ChatRoomMediator hallChat = new HallChatRoomMediator(_adminService);
         chatServer.addChatRoom(hallChat);
-        HallServer hallServer = new HallServer(collectionsManager, tournamentService, gameServer, hallChat, tableHolder);
+        HallServer hallServer =
+                new HallServer(collectionsManager, tournamentService, gameServer, hallChat, tableHolder);
 
+        // Add services and servers to injectables for client request methods
         _injectables.addValue(AdminService.class, _adminService);
         _injectables.addValue(GameHistoryService.class, gameHistoryService);
         _injectables.addValue(CollectionsManager.class, collectionsManager);

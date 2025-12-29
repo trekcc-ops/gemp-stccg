@@ -45,8 +45,12 @@ public class GameServer extends AbstractServer {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             CardGameMediator mediator = gameTable.createMediator(_cardBlueprintLibrary, tournamentName,
                     _gameCreationListeners, resultListeners);
-            _runningGames.put(mediator.getGameId(), mediator);
+            addMediatorToRunningGames(mediator);
         }
+    }
+
+    private void addMediatorToRunningGames(CardGameMediator mediator) {
+        _runningGames.put(mediator.getGameId(), mediator);
     }
 
 

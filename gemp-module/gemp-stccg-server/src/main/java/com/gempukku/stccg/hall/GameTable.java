@@ -17,7 +17,7 @@ public class GameTable {
     private final GameSettings gameSettings;
     private final Map<String, GameParticipant> players = new HashMap<>();
 
-    private CardGameMediator cardGameMediator;
+    private CardGameMediator _cardGameMediator;
     private final int capacity;
     private TableStatus _tableStatus;
 
@@ -40,24 +40,21 @@ public class GameTable {
         GameParticipant[] participants = getPlayers().toArray(new GameParticipant[0]);
         if (participants.length < 2)
             throw new IllegalArgumentException("There has to be at least two players");
-        CardGameMediator cardGameMediator = new CardGameMediator(participants, cardBlueprintLibrary,
-                gameSettings.allowsSpectators(), gameSettings.getTimeSettings(), gameSettings.getGameFormat(),
-                gameSettings.getGameType(), gameSettings.isCompetitive(), tournamentName);
+        _cardGameMediator = gameSettings.createGameMediator(participants, cardBlueprintLibrary, tournamentName);
         for (GameCreationListener listener : creationListeners) {
-            listener.process(cardGameMediator);
+            listener.process(_cardGameMediator);
         }
-        cardGameMediator.initialize(resultListeners);
-        this.cardGameMediator = cardGameMediator;
-        cardGameMediator.startGame();
-        return cardGameMediator;
+        _cardGameMediator.initialize(resultListeners);
+        _cardGameMediator.startGame();
+        return _cardGameMediator;
     }
 
     public final CardGameMediator getMediator() {
-        return cardGameMediator;
+        return _cardGameMediator;
     }
 
     public final boolean wasGameStarted() {
-        return cardGameMediator != null;
+        return _cardGameMediator != null;
     }
 
     public final void addPlayer(GameParticipant player) {
@@ -147,7 +144,7 @@ public class GameTable {
     }
 
     public boolean isGameFinished() {
-        return cardGameMediator != null && cardGameMediator.isFinished();
+        return _cardGameMediator != null && _cardGameMediator.isFinished();
     }
 
     public boolean playerIsPlayingForLeague(String userName, League league) {
@@ -155,7 +152,7 @@ public class GameTable {
     }
 
     public String getGameId() {
-        return (cardGameMediator == null) ? null : cardGameMediator.getGameId();
+        return (_cardGameMediator == null) ? null : _cardGameMediator.getGameId();
     }
 
     TableStatus getStatus() { return _tableStatus; }
