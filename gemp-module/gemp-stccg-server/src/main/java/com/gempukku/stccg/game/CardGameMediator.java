@@ -40,14 +40,14 @@ public class CardGameMediator {
     private static final long MINUTES_AFTER_GAME_END_TO_WARN_CHAT = 4;
     private static final AtomicInteger nextId = new AtomicInteger(1);
     private final String _gameId = String.valueOf(nextId.getAndIncrement());
-    private static final long MILLIS_TO_SECONDS = 1000L;
     private static final Logger LOGGER = LogManager.getLogger(CardGameMediator.class);
     private static final String ERROR_MESSAGE = "Error processing game decision";
     private final Map<String, GameCommunicationChannel> _communicationChannels =
             Collections.synchronizedMap(new HashMap<>());
     final Map<String, CardDeck> _playerDecks = new HashMap<>();
     protected final Map<String, PlayerClock> _playerClocks = new HashMap<>();
-    private final Map<String, Long> _decisionQuerySentTimes = new HashMap<>();
+
+    private final Map<String, ZonedDateTime> _decisionQuerySentTimes = new HashMap<>();
     private final Set<String> _playersPlaying = new HashSet<>();
     private final GameTimer _timeSettings;
     private final boolean _allowSpectators;
@@ -187,26 +187,26 @@ public class CardGameMediator {
             }
 
             if (!_destroyed) {
-                long currentTime = System.currentTimeMillis();
                 Map<String, GameCommunicationChannel> channelsCopy = new HashMap<>(_communicationChannels);
                 for (Map.Entry<String, GameCommunicationChannel> playerChannels : channelsCopy.entrySet()) {
                     String playerId = playerChannels.getKey();
                     // Channel is stale (user no longer connected to game, to save memory, we remove the channel
                     // User can always reconnect and establish a new channel
                     GameStateListener channel = playerChannels.getValue();
-                    if (currentTime >
-                            channel.getLastAccessed() + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
+                    if (ZonedDateTime.now().isAfter(channel.getLastAccessed()
+                            .plusSeconds(_timeSettings.maxSecondsPerDecision()))) {
                         _game.removeGameStateListener(channel);
                         _communicationChannels.remove(playerId);
                     }
                 }
 
                 if (_game.getWinnerPlayerId() == null) {
-                    Map<String, Long> decisionTimes = new HashMap<>(_decisionQuerySentTimes);
-                    for (Map.Entry<String, Long> playerDecision : decisionTimes.entrySet()) {
+                    Map<String, ZonedDateTime> decisionTimes = new HashMap<>(_decisionQuerySentTimes);
+                    for (Map.Entry<String, ZonedDateTime> playerDecision : decisionTimes.entrySet()) {
                         String player = playerDecision.getKey();
-                        long decisionSent = playerDecision.getValue();
-                        if (currentTime > decisionSent + _timeSettings.maxSecondsPerDecision() * MILLIS_TO_SECONDS) {
+                        ZonedDateTime decisionSent = playerDecision.getValue();
+                        if (ZonedDateTime.now()
+                                .isAfter(decisionSent.plusSeconds(_timeSettings.maxSecondsPerDecision()))) {
                             addTimeSpentOnDecisionToUserClock(player);
                             _game.playerLost(player, "Player decision timed-out");
                         }
@@ -340,17 +340,15 @@ public class CardGameMediator {
 
 
     private void startClocksForUsersPendingDecision() {
-        long currentTime = System.currentTimeMillis();
         Set<String> users = getGame().getUsersPendingDecision();
         for (String user : users)
-            _decisionQuerySentTimes.put(user, currentTime);
+            _decisionQuerySentTimes.put(user, ZonedDateTime.now());
     }
 
     private void addTimeSpentOnDecisionToUserClock(String participantId) {
-        Long queryTime = _decisionQuerySentTimes.remove(participantId);
+        ZonedDateTime queryTime = _decisionQuerySentTimes.remove(participantId);
         if (queryTime != null) {
-            long currentTime = System.currentTimeMillis();
-            long diffSec = (currentTime - queryTime) / 1000;
+            long diffSec = ChronoUnit.SECONDS.between(queryTime, ZonedDateTime.now());
             //noinspection NumericCastThatLosesPrecision
             PlayerClock playerClock = _playerClocks.get(participantId);
             playerClock.addElapsedTime((int) diffSec);
@@ -360,10 +358,10 @@ public class CardGameMediator {
     private int getCurrentUserPendingTime(String participantId) {
         int result = 0;
         if (_decisionQuerySentTimes.containsKey(participantId)) {
-            long queryTime = _decisionQuerySentTimes.get(participantId);
-            long currentTime = System.currentTimeMillis();
+            ZonedDateTime queryTime = _decisionQuerySentTimes.get(participantId);
+            long diff = ChronoUnit.SECONDS.between(queryTime, ZonedDateTime.now());
             //noinspection NumericCastThatLosesPrecision
-            result = (int) ((currentTime - queryTime) / 1000);
+            result = (int) diff;
         }
         return result;
     }
