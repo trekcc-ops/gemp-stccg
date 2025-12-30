@@ -428,7 +428,7 @@ export default function MiniDrawer() {
                     */}
                 </Drawer>
                 {/* content */}
-                <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                <Box component="main" sx={{ flexGrow: 1 }}>
                     <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
                     <div id="main-layout-grid">
                         <TableLayout gamestate={loadedGameState} />

@@ -95,8 +95,8 @@ export default function CardStack( {gamestate, anchor_id, sx} ) {
 
 
     // Set minimum size of cards in the stack.
-    const cardMinWidth = 80; //px
-    const cardMinHeight = 110; //px
+    const cardMinWidth = 65; //px
+    const cardMinHeight = 90; //px
     // BUG: This also sets the max width because cards aren't growing thanks to the grid trick.
     //      May have to set this dynamically based on document width? Grr. Gonna be weird.
     //      May have to go back to absolute positioned elements that are ~90% wide?
@@ -119,15 +119,16 @@ export default function CardStack( {gamestate, anchor_id, sx} ) {
             key={cardData.cardId}
             card={cardData}
             index={i}
-            inc_minWidth={`${cardMinWidth}px`}
-            inc_minHeight={`${cardMinHeight}px`}
+            sx={{
+                minWidth: `${cardMinWidth}px`,
+                minHeight:`${cardMinHeight}px`
+            }}
         />
     );
 
     return(
         <Box
             data-cardstackanchorid={anchor_id}
-            flexGrow={1}
             sx={{
                 minWidth: stackMinWidth,
                 minHeight: stackMinHeight,
