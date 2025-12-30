@@ -19,7 +19,7 @@ example card: {
 }
 */
 
-export default function Card( {card, index, inc_minWidth, inc_minHeight} ) {
+export default function Card( {card, index, sx} ) {
     let badge_color = "error";
     let stopped_badge = 0; // hidden by default
     let overlay = {};
@@ -30,9 +30,9 @@ export default function Card( {card, index, inc_minWidth, inc_minHeight} ) {
     
     const imageUrl = useTrekccImage(card.imageUrl);
 
-    const columnPosition = `${index+1}/auto`;
-    const rowPosition = `${index+1}/auto`;
-    const cardZIndex = index? -index : 0;
+    const columnPosition = index ? `${index+1}/auto` : undefined;
+    const rowPosition = index ? `${index+1}/auto` : undefined;
+    const cardZIndex = index ? -index : 0;
 
     return(
         <Box
@@ -41,13 +41,12 @@ export default function Card( {card, index, inc_minWidth, inc_minHeight} ) {
                 gridColumn: columnPosition,
                 gridRow: rowPosition,
                 zIndex: cardZIndex,
-                minWidth: inc_minWidth, 
-                minHeight: inc_minHeight
+                ...sx //also use incoming styles from parent
             }}
         >
             {/*<Badge color={badge_color} badgeContent={stopped_badge}>*/}
                 {/* If imageurl is null, show a circular progress spinner, otherwise load the graphic. */}
-                {imageUrl ? <img width={"100%"} src={imageUrl} style={overlay} /> : <CircularProgress/>}
+                {imageUrl ? <img height={"100%"} width={"100%"} src={imageUrl} style={overlay} /> : <CircularProgress/>}
             {/*</Badge>*/}
         </Box>
     );
