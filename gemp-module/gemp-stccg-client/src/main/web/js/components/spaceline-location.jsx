@@ -75,12 +75,15 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
     let yourPlayerId = get_your_player_id(gamestate);
     let opponentPlayerId = get_opponent_player_id(gamestate);
     let locationData = get_spaceline_location_data(gamestate, locationid);
+    let showCoreCards=false;
 
     // Render top to bottom
     let opponentCoreCards;
-    if (showCore) {
+    /* Disable showing core cards in the spaceline since we made a special row for them.
+    if (showCoreCards) {
         opponentCoreCards = <CoreCardStack key={`core-${opponentPlayerId}`} gamestate={gamestate} player_id={opponentPlayerId} sx={{transform: "rotate(180deg)"}} />
     }
+    */
 
     let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
         <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
@@ -101,9 +104,11 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
     );
 
     let yourCoreCards;
-    if (showCore) {
+    /* Disable showing core cards in the spaceline since we made a special row for them.
+    if (showCoreCards) {
         yourCoreCards = <CoreCardStack key={`core-${yourPlayerId}`} gamestate={gamestate} player_id={yourPlayerId} />
     }
+    */
 
     return(
         <Box
@@ -117,7 +122,7 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
             }}
         >   
             <Stack data-side={"opponentSide"} direction="column" alignItems={"flex-end"} justifyContent={"center"} sx={{gridRowStart: "opp-side"}}>
-                {/* TODO: Core should be a singular, unique card-sized object, not a collection of cards shown on table. */}
+                {/* TODO: Decide if we keep core here or in a row */}
                 <Stack id={"opponentCore"} direction="row" alignItems={"flex-end"} justifyContent={"center"} >
                     {opponentCoreCards}
                 </Stack>
@@ -142,7 +147,7 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
                     {yourFacilityCards}
                 </Stack>
                 {/* TODO: Time locations */}
-                {/* TODO: Core should be a singular, unique card-sized object, not a collection of cards shown on table. */}
+                {/* TODO: Decide if we keep core here or in a row */}
                 <Stack id={"yourCore"} direction="row" alignItems={"flex-end"} justifyContent={"center"} >
                     {yourCoreCards}
                 </Stack>
