@@ -71,15 +71,40 @@ function get_facility_cards(gamestate, locationid, playerid) {
     return retarr;
 }
 
+function get_quadrant_color(gamestate, locationId) {
+    let locationData;
+    for (let spacelineLocation of Object.values(gamestate["spacelineLocations"])) {
+        if (spacelineLocation.locationId === locationId) {
+            locationData = spacelineLocation;
+        }
+    }
+
+    switch (locationData.quadrant) {
+        case "ALPHA":
+            return "rgba(21, 24, 119, 0.2)";
+        case "GAMMA":
+            return "rgba(21, 119, 21, 0.2)";
+        case "DELTA":
+            return "rgba(255, 255, 0, 0.2)";
+        case "MIRROR":
+            return "rgba(142, 29, 29, 0.2)";
+        default:
+            return "rgba(0, 0, 0, 0.2)";
+    }
+    
+};
+
 export default function SpacelineLocation( {gamestate, locationid, showCore = false} ) {
     let yourPlayerId = get_your_player_id(gamestate);
     let opponentPlayerId = get_opponent_player_id(gamestate);
     let locationData = get_spaceline_location_data(gamestate, locationid);
     let showCoreCards=false;
+    const quadrantColor = get_quadrant_color(gamestate, locationid);
 
     // Render top to bottom
     let opponentCoreCards;
     /* Disable showing core cards in the spaceline since we made a special row for them.
+    // TODO: Decide if we keep this
     if (showCoreCards) {
         opponentCoreCards = <CoreCardStack key={`core-${opponentPlayerId}`} gamestate={gamestate} player_id={opponentPlayerId} sx={{transform: "rotate(180deg)"}} />
     }
@@ -105,6 +130,7 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
 
     let yourCoreCards;
     /* Disable showing core cards in the spaceline since we made a special row for them.
+    // TODO: Decide if we keep this
     if (showCoreCards) {
         yourCoreCards = <CoreCardStack key={`core-${yourPlayerId}`} gamestate={gamestate} player_id={yourPlayerId} />
     }
@@ -118,7 +144,8 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
                 display: "grid",
                 gridTemplateColumns: "1fr",
                 gridTemplateRows: `[opp-side] minmax(auto, 1fr) [missions] auto [you-side] minmax(auto, 1fr)`,
-                justifyItems: "center"
+                justifyItems: "center",
+                backgroundColor: quadrantColor
             }}
         >   
             <Stack data-side={"opponentSide"} direction="column" alignItems={"flex-end"} justifyContent={"center"} sx={{gridRowStart: "opp-side"}}>
