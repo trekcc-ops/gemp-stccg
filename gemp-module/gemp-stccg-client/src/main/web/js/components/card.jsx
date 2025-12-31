@@ -60,7 +60,12 @@ function cardTooltip(card, gamestate) {
 
         let retstring = "";
         if (locationData) {
-            retstring = `${card.title} (${locationData.quadrant})`;
+            if (locationData.region) {
+                retstring = `${card.title} (${locationData.quadrant}, ${locationData.region})`;
+            }
+            else {
+                retstring = `${card.title} (${locationData.quadrant})`;
+            }
         }
         return(retstring);
     }
