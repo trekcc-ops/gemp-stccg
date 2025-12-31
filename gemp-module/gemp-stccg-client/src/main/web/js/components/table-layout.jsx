@@ -59,7 +59,14 @@ export default function TableLayout({gamestate}) {
 
 
     return(
-        <Stack id="table" direction="column">
+        <Stack id="table"
+            direction="column"
+            sx={{
+                borderLeft: "1px solid #fff",
+                borderTop: "1px solid #fff",
+                borderRight: "1px solid #fff"
+            }}
+        >
             <Stack id="opponent-core" spacing={2} direction="row" sx={{
                 alignItems: "center",
                 justifyContent: "center"
