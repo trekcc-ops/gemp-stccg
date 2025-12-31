@@ -117,6 +117,7 @@ export default function CardStack( {gamestate, anchor_id, sx} ) {
     let reactCardObjs = allCards.map((cardData, i) => 
         <Card
             key={cardData.cardId}
+            gamestate={gamestate}
             card={cardData}
             index={i}
             sx={{
