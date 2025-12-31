@@ -154,7 +154,6 @@ export default function MiniDrawer() {
         };
 
         fetchData();
-        console.log(`loadedGameState: ${loadedGameState}`);
     },[]);
 
     const theme = useTheme();
