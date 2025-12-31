@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import { Stack } from '@mui/material';
-import Card from './card.jsx';
+import CardStack from './card-stack.jsx';
 
 function get_hand(gamestate) {
     let player_id = gamestate["requestingPlayer"];
@@ -26,13 +26,13 @@ function get_hand(gamestate) {
     }
 }
 
-export default function Hand( {gamestate} ) {
+export default function Hand( {gamestate, sx} ) {
     let hand_from_gamestate = get_hand(gamestate);
     let rows = hand_from_gamestate.map(card => 
-        <Card key={card["cardId"]} card={card} />
+        <CardStack key={card.cardId} gamestate={gamestate} anchor_id={card.cardId} />
     )
     return(
-        <Stack direction={"row"}>
+        <Stack direction={"row"} spacing={1} justifyContent={"center"} alignItems={"center"} sx={{...sx}}>
             {rows}
         </Stack>);
 }
