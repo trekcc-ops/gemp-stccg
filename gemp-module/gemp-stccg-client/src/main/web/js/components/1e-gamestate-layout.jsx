@@ -24,14 +24,11 @@ import CardTreeView from './card-tree-view.jsx';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import ChatIcon from '@mui/icons-material/Chat';
 import HistoryIcon from '@mui/icons-material/History';
-import PhaseIndicator from './phase-indicator.jsx';
 import { Tooltip } from '@mui/material';
-import ActionReactionPane from './action-reaction-pane.jsx';
 import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
-import Hand from './hand.jsx';
 import Card from './card.jsx';
-import TableLayout from './table-layout.jsx';
+import MainLayoutGrid from './main-layout-grid.jsx';
 
 function get_your_player_id(gamestate) {
     return gamestate["requestingPlayer"];
@@ -430,13 +427,7 @@ export default function MiniDrawer() {
                 {/* content */}
                 <Box component="main" sx={{ flexGrow: 1 }}>
                     <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
-                    <div id="main-layout-grid">
-                        <TableLayout gamestate={loadedGameState} />
-                        <div id="hand-pane"><Hand gamestate={loadedGameState} /></div>
-                        <div id="action-reaction-pane"><ActionReactionPane gamestate={loadedGameState}/></div>
-                        <div id="phase-pane"><PhaseIndicator gamestate={loadedGameState} /></div>
-                    </div>
-                    
+                    <MainLayoutGrid gamestate={loadedGameState} />
                 </Box>
             </Box>
         );
