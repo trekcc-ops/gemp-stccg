@@ -20,9 +20,9 @@ function get_decision_text(gamestate) {
     }
 }
 
-export default function ActionReactionPane({gamestate}) {
+export default function ActionReactionPane({gamestate, sx}) {
     return(
-        <Box>
+        <Box sx={{...sx}}>
             <Typography align='center'>{get_decision_text(gamestate)}</Typography>
         </Box>
     );
