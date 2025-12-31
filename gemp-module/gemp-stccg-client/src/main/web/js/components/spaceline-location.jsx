@@ -92,7 +92,59 @@ function get_quadrant_color(gamestate, locationId) {
             return "rgba(0, 0, 0, 0.2)";
     }
     
-};
+}
+
+function get_region_border(gamestate, locationId) {
+    let prevLocationData;
+    let thisLocationData;
+    let nextLocationData;
+    for (let index = 0; index < gamestate["spacelineLocations"].length; index++) {
+        const prevLocation = gamestate["spacelineLocations"][index - 1];
+        const thisLocation = gamestate["spacelineLocations"][index];
+        const nextLocation = gamestate["spacelineLocations"][index + 1];
+
+        if (thisLocation.locationId === locationId) {
+            thisLocationData = thisLocation;
+
+            if (prevLocation) {
+                prevLocationData = prevLocation;
+            }
+
+            if (nextLocation) {
+                nextLocationData = nextLocation;
+            }
+            break;
+        }
+    }
+    
+    let prevBorderObj = {};
+    let nextBorderObj = {};
+    if (thisLocationData.region) {
+        console.log(`locationid ${thisLocationData.locationId} region is ${thisLocationData.region}`);
+        if (prevLocationData) {
+            if (prevLocationData.region !== thisLocationData.region) {
+                // rightmost in region
+                prevBorderObj = {
+                    borderRightStyle: "dashed",
+                    borderRightWidth: "2px",
+                    borderRightColor: "white"
+                }
+            }
+        }
+
+        if (nextLocationData) {
+            if (nextLocationData.region !== thisLocationData.region) {
+                // leftmost in region
+                nextBorderObj = {
+                    borderLeftStyle: "dashed",
+                    borderLeftWidth: "2px",
+                    borderLeftColor: "white"
+                }
+            }
+        }
+    }
+    return {...prevBorderObj, ...nextBorderObj};
+}
 
 export default function SpacelineLocation( {gamestate, locationid, showCore = false} ) {
     let yourPlayerId = get_your_player_id(gamestate);
@@ -100,6 +152,7 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
     let locationData = get_spaceline_location_data(gamestate, locationid);
     let showCoreCards=false;
     const quadrantColor = get_quadrant_color(gamestate, locationid);
+    const regionBorders = get_region_border(gamestate, locationid);
 
     // Render top to bottom
     let opponentCoreCards;
@@ -145,7 +198,8 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
                 gridTemplateColumns: "1fr",
                 gridTemplateRows: `[opp-side] minmax(auto, 1fr) [missions] auto [you-side] minmax(auto, 1fr)`,
                 justifyItems: "center",
-                backgroundColor: quadrantColor
+                backgroundColor: quadrantColor,
+                ...regionBorders
             }}
         >   
             <Stack data-side={"opponentSide"} direction="column" alignItems={"flex-end"} justifyContent={"center"} sx={{gridRowStart: "opp-side"}}>
