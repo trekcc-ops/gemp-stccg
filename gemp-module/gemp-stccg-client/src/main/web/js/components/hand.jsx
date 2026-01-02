@@ -26,10 +26,10 @@ function get_hand(gamestate) {
     }
 }
 
-export default function Hand( {gamestate, sx} ) {
+export default function Hand( {gamestate, openCardDetailsFunc, sx} ) {
     let hand_from_gamestate = get_hand(gamestate);
     let rows = hand_from_gamestate.map(card => 
-        <CardStack key={card.cardId} gamestate={gamestate} anchor_id={card.cardId} />
+        <CardStack key={card.cardId} gamestate={gamestate} anchor_id={card.cardId} openCardDetailsFunc={openCardDetailsFunc} />
     )
     return(
         <Stack direction={"row"} spacing={1} justifyContent={"center"} alignItems={"center"} sx={{...sx}}>

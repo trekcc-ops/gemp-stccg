@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Badge from '@mui/material/Badge';
 import CircularProgress from '@mui/material/CircularProgress';
 import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import { useTrekccImage } from '../hooks/useTrekccImage.jsx';
 
@@ -94,7 +95,7 @@ function cardTooltip(card, gamestate) {
     }
 }
 
-export default function Card( {card, gamestate, index, sx} ) {
+export default function Card( {card, gamestate, index, openCardDetailsFunc, sx} ) {
     let badge_color = "error";
     let stopped_badge = 0; // hidden by default
     let overlay = {};
@@ -121,9 +122,11 @@ export default function Card( {card, gamestate, index, sx} ) {
             }}
         >
             <Tooltip title={tooltipText}>
+                <Button onClick={() => openCardDetailsFunc(card.cardId)} sx={{height: "100%", width:"100%", padding: "0px"}}>
             {/*<Badge color={badge_color} badgeContent={stopped_badge}>*/}
                 {/* If imageurl is null, show a circular progress spinner, otherwise load the graphic. */}
-                {imageUrl ? <img height={"100%"} width={"100%"} src={imageUrl} style={overlay} /> : <CircularProgress/>}
+                    {imageUrl ? <img height={"100%"} width={"100%"} src={imageUrl} style={overlay} /> : <CircularProgress/>}
+                </Button>
             {/*</Badge>*/}
             </Tooltip>
         </Box>

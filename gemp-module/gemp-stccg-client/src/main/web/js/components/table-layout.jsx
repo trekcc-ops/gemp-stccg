@@ -41,7 +41,7 @@ function get_core_cards(gamestate, playerid) {
     return retarr;
 }
 
-export default function TableLayout({gamestate}) {
+export default function TableLayout({gamestate, openCardDetailsFunc}) {
     let opponentPlayerId = get_opponent_player_id(gamestate);
     let yourPlayerId = get_your_player_id(gamestate);
     let opponentCoreCards = get_core_cards(gamestate, opponentPlayerId);
@@ -50,10 +50,10 @@ export default function TableLayout({gamestate}) {
     let spacelineLocations = [];
     gamestate["spacelineLocations"].map((item, index) => {
         if (index === 0) {
-            spacelineLocations.push(<SpacelineLocation key={item["locationId"]} gamestate={gamestate} locationid={item["locationId"]} showCore={true} />);
+            spacelineLocations.push(<SpacelineLocation key={item["locationId"]} gamestate={gamestate} locationid={item["locationId"]} openCardDetailsFunc={openCardDetailsFunc} showCore={true} />);
         }
         else {
-            spacelineLocations.push(<SpacelineLocation key={item["locationId"]} gamestate={gamestate} locationid={item["locationId"]} />);
+            spacelineLocations.push(<SpacelineLocation key={item["locationId"]} gamestate={gamestate} locationid={item["locationId"]} openCardDetailsFunc={openCardDetailsFunc} />);
         }
     });
 
@@ -72,7 +72,7 @@ export default function TableLayout({gamestate}) {
                 justifyContent: "center"
             }}>
                 {opponentCoreCards.map((cardData, index) => 
-                    <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{transform: "rotate(180deg)"}} />
+                    <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} sx={{transform: "rotate(180deg)"}} />
                 )}
             </Stack>
             <Stack id="space"
@@ -85,7 +85,7 @@ export default function TableLayout({gamestate}) {
                 justifyContent: "center"
             }}>
                 {yourCoreCards.map((cardData, index) => 
-                    <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
+                    <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
                 )}
             </Stack>
         </Stack>

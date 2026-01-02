@@ -1,7 +1,7 @@
 // A CardStack represents any card that could have items placed on it or under it.
 // We will display up to three cards on top of it
 // We will display up to three cards beneath it.
-import { Box } from "@mui/material";
+import Box from "@mui/material/Box";
 import Card from "./card.jsx";
 
 // TODO: This is dependent on gamestate having an attached cardTreeModel.
@@ -86,7 +86,7 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
     return retarr;
 }
 
-export default function CardStack( {gamestate, anchor_id, sx} ) {
+export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, sx} ) {
     /* CardStack sets a grid with columns that are smaller than the content.
      * By setting a z-index and the minimum card width and height to values larger than the
      *   width and height of the cell, the card image overflows its grid cell
@@ -120,6 +120,7 @@ export default function CardStack( {gamestate, anchor_id, sx} ) {
             gamestate={gamestate}
             card={cardData}
             index={i}
+            openCardDetailsFunc={openCardDetailsFunc}
             sx={{
                 minWidth: `${cardMinWidth}px`,
                 minHeight:`${cardMinHeight}px`

@@ -145,7 +145,7 @@ function get_region_border(gamestate, locationId) {
     return {...prevBorderObj, ...nextBorderObj};
 }
 
-export default function SpacelineLocation( {gamestate, locationid, showCore = false} ) {
+export default function SpacelineLocation( {gamestate, locationid, openCardDetailsFunc, showCore = false} ) {
     let yourPlayerId = get_your_player_id(gamestate);
     let opponentPlayerId = get_opponent_player_id(gamestate);
     let locationData = get_spaceline_location_data(gamestate, locationid);
@@ -163,21 +163,21 @@ export default function SpacelineLocation( {gamestate, locationid, showCore = fa
     */
 
     let opponentFacilityCards = get_facility_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
     );
     let opponentShipCards = get_ship_cards(gamestate, locationid, opponentPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
     );
     let missionCards = get_mission_cards(gamestate, locationData, yourPlayerId).map((cardData, index) => {
         let isInverted = cardData.owner === yourPlayerId ? "none" : "rotate(180deg)";
-        return(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} sx={{transform: isInverted}} />);
+        return(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} sx={{transform: isInverted}} />);
     });
     let yourShipCards = get_ship_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
     );
     
     let yourFacilityCards = get_facility_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
-        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} />
+        <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
     );
 
     let yourCoreCards;
