@@ -120,7 +120,6 @@ function get_region_border(gamestate, locationId) {
     let prevBorderObj = {};
     let nextBorderObj = {};
     if (thisLocationData.region) {
-        console.log(`locationid ${thisLocationData.locationId} region is ${thisLocationData.region}`);
         if (prevLocationData) {
             if (prevLocationData.region !== thisLocationData.region) {
                 // rightmost in region
