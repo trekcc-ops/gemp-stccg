@@ -13,7 +13,6 @@ function find_cards_by_filter(gamestate, cardData, cardPropertyFilter) {
             }
         }
     }
-    console.log(`matches: ${matches}`);
     return matches;
 }
 
