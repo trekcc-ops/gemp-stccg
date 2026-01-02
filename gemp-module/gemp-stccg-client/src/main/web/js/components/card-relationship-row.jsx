@@ -1,6 +1,7 @@
 import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
 import CardStack from "./card-stack";
 
 function find_cards_by_filter(gamestate, cardData, cardPropertyFilter) {
@@ -20,15 +21,17 @@ function find_cards_by_filter(gamestate, cardData, cardPropertyFilter) {
 export default function CardRelationshipRow({title, gamestate, cardData, cardPropertyFilter, openCardDetailsFunc}) {
     let children = find_cards_by_filter(gamestate, cardData, cardPropertyFilter);
     let cardStacks = children.map((card) => 
-        <CardStack key={card.cardId} gamestate={gamestate} anchor_id={card.cardId} openCardDetailsFunc={openCardDetailsFunc} />
+        <Grid>
+            <CardStack key={card.cardId} gamestate={gamestate} anchor_id={card.cardId} openCardDetailsFunc={openCardDetailsFunc} />
+        </Grid>
     );
     return(
         <Box>
             <Stack direction={"column"} spacing={2}>
                 <Typography>{title}</Typography>
-                <Stack direction={"row"} spacing={2} >
+                <Grid container spacing={2} >
                     {cardStacks}
-                </Stack>
+                </Grid>
             </Stack>
         </Box>
     )
