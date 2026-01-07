@@ -20,6 +20,11 @@ export default function ChangeDataSourceDialog({open, onCloseFunc, dataSource}) 
         closeDataSourceDialog();
     };
 
+    // TODO: Get a list of games from comms.getHall()
+    //       Display them
+    //       Let the user select from the list
+    //       Attempt to load that gameId's gamestate via URL
+
     return(
         <Dialog open={open} onClose={closeDataSourceDialog}>
             <DialogTitle>Data Source: {dataSource}</DialogTitle>
