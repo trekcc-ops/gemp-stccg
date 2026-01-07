@@ -33,7 +33,6 @@ export default function CardDetailsDialog( {gamestate, cardId, setCardIdFunc, is
                     </Stack>
                     
                     <Stack direction={"column"} spacing={2} alignItems={"center"} justifyContent={"center"}>
-                        {/* TODO: Hide card relationship rows if not applicable. */}
                         <CardRelationshipRow title={"Attached"} gamestate={gamestate} cardData={cardData} cardPropertyFilter={"attachedToCardId"} openCardDetailsFunc={setCardIdFunc} />
                         {/* TODO: Add relationships like on top, modified by, etc. */}
                     </Stack>

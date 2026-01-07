@@ -27,12 +27,15 @@ export default function CardRelationshipRow({title, gamestate, cardData, cardPro
     );
     return(
         <Box>
-            <Stack direction={"column"} spacing={2}>
-                <Typography>{title}</Typography>
-                <Grid container spacing={2} >
-                    {cardStacks}
-                </Grid>
-            </Stack>
+            {/* If we have children, then show the row. */}
+            {children.length > 0 &&
+                <Stack direction={"column"} spacing={2}>
+                    <Typography>{title}</Typography>
+                    <Grid container spacing={2} >
+                        {cardStacks}
+                    </Grid>
+                </Stack>
+            }
         </Box>
     )
 } 
