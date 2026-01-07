@@ -1,5 +1,4 @@
-import Box from '@mui/material/Box';
-import { Stack } from '@mui/material';
+import Stack from '@mui/material/Stack';
 import CardStack from './card-stack.jsx';
 
 function get_hand(gamestate) {

@@ -44,21 +44,6 @@ function get_opponent_player_id(gamestate) {
     return opponent_player_data[0]["playerId"];
 }
 
-// DEBUG / DEMO DATA
-let card_in_active_pane = {
-    "cardId": 55,
-    "title": "Jadzia Dax",
-    "blueprintId": "112_208",
-    "owner": "andrew",
-    "locationId": 7,
-    "attachedToCardId": 48,
-    "isStopped": true,
-    "imageUrl": "https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif",
-    "cardType": "PERSONNEL",
-    "uniqueness": "UNIQUE"
-  }
-//let card_in_active_pane;
-
 const drawerWidth = 240;
 
 // CSS theming overrides for opening

@@ -4,7 +4,6 @@ import TableLayout from './table-layout.jsx';
 import Hand from './hand.jsx';
 import ActionReactionPane from './action-reaction-pane.jsx';
 import PhaseIndicator from './phase-indicator.jsx';
-//import { cardDetailsDialogBoxIsOpen, setCardDetailsDialogBoxIsOpen } from '../context/1e-ui-state.js';
 import { useState } from "react";
 import CardDetailsDialog from "./card-details-dialog.jsx";
 

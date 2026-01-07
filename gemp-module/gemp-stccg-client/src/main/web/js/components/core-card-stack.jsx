@@ -32,6 +32,7 @@ function get_core_cards(gamestate, playerid) {
     return retarr;
 }
 
+// TODO: Decide if we need this of if we're going to keep the separate Core row.
 export default function CoreCardStack( {gamestate, player_id, sx} ) {
     /* CardStack sets a grid with columns that are smaller than the content.
      * By setting a z-index and the minimum card width and height to values larger than the

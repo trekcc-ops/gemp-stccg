@@ -2,9 +2,8 @@ import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
+// TODO: Decide if we want to use the tiny MobileStepper, keep the expanded text one, or write something new.
 import MobileStepper from '@mui/material/MobileStepper';
-import Stack from '@mui/material/Stack';
-import { Typography } from '@mui/material';
 
 const enum_to_friendly_text = new Map([
     ["SEED_DOORWAY", "Seed Doorway"],

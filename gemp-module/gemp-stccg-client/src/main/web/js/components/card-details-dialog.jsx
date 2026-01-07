@@ -1,13 +1,11 @@
-import { useState } from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import CardStack from './card-stack';
 import Card from './card';
 import Stack from '@mui/material/Stack';
 import NorthIcon from '@mui/icons-material/North';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import CardRelationshipRow from './card-relationship-row';
 
 export default function CardDetailsDialog( {gamestate, cardId, setCardIdFunc, isOpen, onCloseFunc} ) {
@@ -19,6 +17,7 @@ export default function CardDetailsDialog( {gamestate, cardId, setCardIdFunc, is
                 <DialogTitle>Card Details: {cardTitle}</DialogTitle>
                 <Stack direction={"row"} spacing={2}>
                     <Stack direction={"column"} spacing={2} alignItems={"center"} justifyContent={"center"}>
+                        {/* Only display the UP button if the card is attached to something. */}
                         {Object.hasOwn(cardData, "attachedToCardId") &&
                             <Button variant='contained' onClick={() => setCardIdFunc(cardData["attachedToCardId"])}>
                                 <Stack direction={"column"} spacing={2} alignItems={"center"} justifyContent={"center"}>
@@ -34,10 +33,11 @@ export default function CardDetailsDialog( {gamestate, cardId, setCardIdFunc, is
                     </Stack>
                     
                     <Stack direction={"column"} spacing={2} alignItems={"center"} justifyContent={"center"}>
+                        {/* TODO: Hide card relationship rows if not applicable. */}
                         <CardRelationshipRow title={"Attached"} gamestate={gamestate} cardData={cardData} cardPropertyFilter={"attachedToCardId"} openCardDetailsFunc={setCardIdFunc} />
+                        {/* TODO: Add relationships like on top, modified by, etc. */}
                     </Stack>
                 </Stack>
-                {/*<Button onClick={() => {setCardIdFunc(43)}}>Change Card ID</Button>*/}
             </Dialog>
         )
     }
@@ -50,13 +50,3 @@ export default function CardDetailsDialog( {gamestate, cardId, setCardIdFunc, is
     }
     
 }
-
-/*
-import PropTypes from 'prop-types';
-CardDetailsDialog.propTypes = {
-  gamestate: PropTypes.object.isRequired,
-  cardId: PropTypes.string.isRequired,
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
-};
-*/
