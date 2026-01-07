@@ -16,7 +16,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import NumberField from './mui-number-field.jsx';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -27,8 +26,7 @@ import ChatIcon from '@mui/icons-material/Chat';
 import HistoryIcon from '@mui/icons-material/History';
 import SourceIcon from '@mui/icons-material/Source';
 import Tooltip from '@mui/material/Tooltip';
-import DialogTitle from '@mui/material/DialogTitle';
-import Dialog from '@mui/material/Dialog';
+import ChangeDataSourceDialog from './change-data-source-dialog.jsx';
 import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
 import Card from './card.jsx';
@@ -192,13 +190,7 @@ export default function MiniDrawer() {
                                 <IconButton aria-label="Data Source" onClick={() => {setChangeDataSourceDialogOpen(true)}}>
                                     <SourceIcon />
                                 </IconButton>
-                                <Dialog open={changeDataSourceDialogOpen} onClose={() => {setChangeDataSourceDialogOpen(false)}}>
-                                    <DialogTitle>Data Source: {dataSource}</DialogTitle>
-                                    <Stack>
-                                        <Typography>Set game ID:</Typography>
-                                        <NumberField size="small" defaultValue={0}/>
-                                    </Stack>
-                                </Dialog>
+                                <ChangeDataSourceDialog open={changeDataSourceDialogOpen} onCloseFunc={setChangeDataSourceDialogOpen} dataSource={dataSource} />
                             </Tooltip>
                             <PlayerScorePane id="your-player-score-pane" gamestate={loadedGameState} player_id={get_your_player_id(loadedGameState)}/>
                                 
