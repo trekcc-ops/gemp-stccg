@@ -29,9 +29,19 @@ function get_player_data(player_id, gamestate) {
         let discardsize = player_data[0]["cardGroups"]["DISCARD"]["cardCount"];
         let removedsize = player_data[0]["cardGroups"]["REMOVED"]["cardCount"];
         let thescore = player_data[0]["score"];
+
+        let player_clock;
+        for (const clockObj of gamestate["playerClocks"]) {
+            if (clockObj.playerId === player_id) {
+                let date = new Date(0);
+                date.setSeconds(parseInt(clockObj.timeRemaining));
+                player_clock = date.toISOString().substring(11, 19);
+            }
+        }
+        
         return {
             "username": username,
-            "clock": "0:00", // TODO: Clock from Game State, which may not be player specific.
+            "clock": player_clock,
             "drawsize": drawsize,
             "handsize": handsize,
             "discardsize": discardsize,
