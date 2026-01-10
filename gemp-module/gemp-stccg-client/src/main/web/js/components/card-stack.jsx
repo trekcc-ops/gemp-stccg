@@ -3,6 +3,7 @@
 // We will display up to three cards beneath it.
 import Box from "@mui/material/Box";
 import Card from "./card.jsx";
+import { theme } from '../../js/gemp-022/common.js';
 
 // TODO: This is dependent on gamestate having an attached cardTreeModel.
 //       Use flat version until such time as that's integrated.
@@ -86,6 +87,20 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
     return retarr;
 }
 
+function cardInStackHasValidAction(gamestate, allCardsInStack) {
+    if (Object.hasOwn(gamestate, "pendingDecision")) {
+        if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
+            for (const stackCardData of allCardsInStack) {
+                if (gamestate.pendingDecision.cardIds.includes(stackCardData.cardId.toString())) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
 export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, sx} ) {
     /* CardStack sets a grid with columns that are smaller than the content.
      * By setting a z-index and the minimum card width and height to values larger than the
@@ -97,6 +112,7 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
     // Set minimum size of cards in the stack.
     const cardMinWidth = 65; //px
     const cardMinHeight = 90; //px
+    const validActionBorder = 2; //px
     // BUG: This also sets the max width because cards aren't growing thanks to the grid trick.
     //      May have to set this dynamically based on document width? Grr. Gonna be weird.
     //      May have to go back to absolute positioned elements that are ~90% wide?
@@ -110,8 +126,12 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
     // Set minimum size of the stack as a whole.
     // Dependent on quantity of cards in the stack, calculated above.
     const nestedCardOffset = 5; //px
-    const stackMinWidth = allCards.length > 1 ? `${cardMinWidth + (nestedCardOffset * allCards.length)}px` : `${cardMinWidth}px`;
-    const stackMinHeight = allCards.length > 1 ? `${cardMinHeight + (nestedCardOffset * allCards.length)}px` : `${cardMinHeight}px`;
+    const stackMinWidth = allCards.length > 1 ? `${cardMinWidth + (nestedCardOffset * allCards.length) + (validActionBorder * 2)}px` : `${cardMinWidth + (validActionBorder * 2)}px`;
+    const stackMinHeight = allCards.length > 1 ? `${cardMinHeight + (nestedCardOffset * allCards.length) + (validActionBorder * 2)}px` : `${cardMinHeight + (validActionBorder * 2)}px`;
+
+    const validAction = cardInStackHasValidAction(gamestate, allCards);
+    const stackBorder = validAction ? `2px solid ${theme.palette.primary.light}` : "none";
+    const stackBorderRadius =  validAction ? "7px" : "none";
 
     // Render the card data
     let reactCardObjs = allCards.map((cardData, i) => 
@@ -137,6 +157,8 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
                 display: "grid",
                 gridTemplateColumns: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
                 gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
+                border: stackBorder,
+                borderRadius: stackBorderRadius,
                 ...sx //also use incoming styles from parent
             }}>
             {reactCardObjs}
