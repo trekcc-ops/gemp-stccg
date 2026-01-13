@@ -9,7 +9,6 @@ function find_cards_by_filter(gamestate, cardData, cardPropertyFilter) {
     for (const [id, card] of Object.entries(gamestate["visibleCardsInGame"])) {
         if (Object.hasOwn(card, cardPropertyFilter)) {
             if (card[cardPropertyFilter] === cardData.cardId) {
-                console.log(`id match ${cardData.cardid}`);
                 matches.push(card);
             }
         }
