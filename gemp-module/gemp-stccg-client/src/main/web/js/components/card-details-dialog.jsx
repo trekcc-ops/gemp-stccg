@@ -12,6 +12,7 @@ import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import DataArrayIcon from '@mui/icons-material/DataArray';
 import DeveloperModeIcon from '@mui/icons-material/DeveloperMode';
 import ViewWeekIcon from '@mui/icons-material/ViewWeek';
+import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
 
 function flyButton(gamestate, cardData) {
     if (cardData.cardType != "SHIP") {
@@ -28,16 +29,34 @@ function flyButton(gamestate, cardData) {
 
     let flyActionThisCard = false;
     if (Object.hasOwn(gamestate, "pendingDecision")) {
-        if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
-            // if this card is listed in the pending decision ids
-            if (gamestate.pendingDecision.cardIds.includes(cardData.cardId.toString())) {
-                // Check if there are any actions for this card that are beaming
-                for (const decision of gamestate.pendingDecision.displayedCards) {
-                    if (decision.actionType === "FLY_SHIP" &&
-                        decision.cardId === cardData.cardId.toString()) {
-                            flyActionThisCard = true;
+        if (Object.hasOwn(gamestate.pendingDecision, "elementType")) {
+            if (gamestate.pendingDecision.elementType === "CARD_ACTION_CHOICE") {
+                if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
+                    // if this card is listed in the pending decision ids
+                    if (gamestate.pendingDecision.cardIds.includes(cardData.cardId.toString())) {
+                        // Check if there are any actions for this card that are beaming
+                        for (const decision of gamestate.pendingDecision.displayedCards) {
+                            if (decision.actionType === "FLY_SHIP" &&
+                                decision.cardId === cardData.cardId.toString()) {
+                                    flyActionThisCard = true;
+                            }
+                        }
                     }
                 }
+            }
+            else if (gamestate.pendingDecision.elementType === "ACTION") {
+                if (Object.hasOwn(gamestate.pendingDecision, "actions")) {
+                    // Check if there are any actions for this card that are beaming
+                    for (const action of gamestate.pendingDecision.actions) {
+                        if (action.actionType === "FLY_SHIP" &&
+                            action.performingCardId === cardData.cardId) {
+                                flyActionThisCard = true;
+                        }
+                    }
+                }
+            }
+            else {
+                console.error(`Unrecognized gamestate.pendingDecision.elementType: ${gamestate.pendingDecision.elementType}`);
             }
         }
     }
@@ -67,22 +86,40 @@ function dockUndockButton(gamestate, cardData) {
     let dockActionThisCard = false;
     let undockActionThisCard = false;
     if (Object.hasOwn(gamestate, "pendingDecision")) {
-        if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
-            // if this card is listed in the pending decision ids
-            if (gamestate.pendingDecision.cardIds.includes(cardData.cardId.toString())) {
-                // Check if there are any actions for this card that are beaming
-                for (const decision of gamestate.pendingDecision.displayedCards) {
-                    if (decision.actionType === "DOCK_SHIP" &&
-                        decision.cardId === cardData.cardId.toString()) {
-                            dockActionThisCard = true;
-                    }
+        if (gamestate.pendingDecision.elementType === "CARD_ACTION_CHOICE") {
+            if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
+                // if this card is listed in the pending decision ids
+                if (gamestate.pendingDecision.cardIds.includes(cardData.cardId.toString())) {
+                    // Check if there are any actions for this card that are beaming
+                    for (const decision of gamestate.pendingDecision.displayedCards) {
+                        if (decision.actionType === "DOCK_SHIP" &&
+                            decision.cardId === cardData.cardId.toString()) {
+                                dockActionThisCard = true;
+                        }
 
-                    if (decision.actionType === "UNDOCK_SHIP" &&
-                        decision.cardId === cardData.cardId.toString()) {
-                            undockActionThisCard = true;
+                        if (decision.actionType === "UNDOCK_SHIP" &&
+                            decision.cardId === cardData.cardId.toString()) {
+                                undockActionThisCard = true;
+                        }
                     }
                 }
             }
+        }
+        else if (gamestate.pendingDecision.elementType === "ACTION") {
+            for (const action of gamestate.pendingDecision.actions) {
+                if (action.actionType === "DOCK_SHIP" &&
+                    action.performingCardId === cardData.cardId) {
+                        dockActionThisCard = true;
+                }
+
+                if (action.actionType === "UNDOCK_SHIP" &&
+                    action.performingCardId === cardData.cardId) {
+                        undockActionThisCard = true;
+                }
+            }
+        }
+        else {
+            console.error(`Unrecognized gamestate.pendingDecision.elementType: ${gamestate.pendingDecision.elementType}`);
         }
     }
 
@@ -124,17 +161,30 @@ function beamButton(gamestate, cardData) {
 
     let beamActionThisCard = false;
     if (Object.hasOwn(gamestate, "pendingDecision")) {
-        if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
-            // if this card is listed in the pending decision ids
-            if (gamestate.pendingDecision.cardIds.includes(cardData.cardId.toString())) {
-                // Check if there are any actions for this card that are beaming
-                for (const decision of gamestate.pendingDecision.displayedCards) {
-                    if (decision.actionType === "BEAM_CARDS" &&
-                        decision.cardId === cardData.cardId.toString()) {
-                            beamActionThisCard = true;
+        if (gamestate.pendingDecision.elementType === "CARD_ACTION_CHOICE") {
+            if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
+                // if this card is listed in the pending decision ids
+                if (gamestate.pendingDecision.cardIds.includes(cardData.cardId.toString())) {
+                    // Check if there are any actions for this card that are beaming
+                    for (const decision of gamestate.pendingDecision.displayedCards) {
+                        if (decision.actionType === "BEAM_CARDS" &&
+                            decision.cardId === cardData.cardId.toString()) {
+                                beamActionThisCard = true;
+                        }
                     }
                 }
             }
+        }
+        else if (gamestate.pendingDecision.elementType === "ACTION") {
+            for (const action of gamestate.pendingDecision.actions) {
+                if (action.actionType === "BEAM_CARDS" &&
+                    action.performingCardId === cardData.cardId) {
+                        beamActionThisCard = true;
+                }
+            }
+        }
+        else {
+            console.error(`Unrecognized gamestate.pendingDecision.elementType: ${gamestate.pendingDecision.elementType}`);
         }
     }
 
@@ -152,7 +202,66 @@ function beamButton(gamestate, cardData) {
 }
 
 function attemptButton(gamestate, cardData) {
+    if (cardData.cardType != "SHIP" &&
+        cardData.cardType != "PERSONNEL" &&
+        cardData.cardType != "MISSION") {
+        return;
+    }
 
+    let your_player_id = gamestate["requestingPlayer"];
+
+    let attemptButtonThisCard = false;
+    if (Object.hasOwn(gamestate, "pendingDecision")) {
+        if (gamestate.pendingDecision.elementType === "CARD_ACTION_CHOICE") {
+            if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
+                // if this card is listed in the pending decision ids
+                if (gamestate.pendingDecision.cardIds.includes(cardData.cardId.toString())) {
+                    // Check if there are any actions for this card that are beaming
+                    for (const decision of gamestate.pendingDecision.displayedCards) {
+                        if (decision.actionType === "ATTEMPT_MISSION" &&
+                            decision.cardId === cardData.cardId.toString()) {
+                                attemptButtonThisCard = true;
+                        }
+                    }
+                }
+            }
+        }
+        else if (gamestate.pendingDecision.elementType === "ACTION") {
+            for (const action of gamestate.pendingDecision.actions) {
+                if (action.actionType === "ATTEMPT_MISSION" &&
+                    action.performingCardId === cardData.cardId) {
+                        attemptButtonThisCard = true;
+                }
+            }
+        }
+        else {
+            console.error(`Unrecognized gamestate.pendingDecision.elementType: ${gamestate.pendingDecision.elementType}`);
+        }
+
+        
+    }
+
+    // Reasons to show the icon but disable it
+    let isDisabled = false;
+    if ((cardData.cardType === "SHIP" || cardData.cardType === "PERSONNEL") &&
+        (cardData.owner != your_player_id)) {
+            isDisabled = true;
+    }
+    if (cardData.cardType === "MISSION" && attemptButtonThisCard === false) {
+        isDisabled = true;
+    }
+
+    if (attemptButtonThisCard) {
+        if (isDisabled) {
+            return(<Button disabled startIcon={<SensorOccupiedIcon/>}>Attempt</Button>);
+        }
+        else {
+            return(<Button startIcon={<SensorOccupiedIcon/>}>Attempt</Button>);
+        }
+    }
+    else {
+        return;
+    }
 }
 
 function battleButton(gamestate, cardData) {
@@ -202,6 +311,7 @@ export default function CardDetailsDialog( {gamestate, cardId, setCardIdFunc, is
                                 {flyButton(gamestate, cardData)}
                                 {dockUndockButton(gamestate, cardData)}
                                 {beamButton(gamestate, cardData)}
+                                {attemptButton(gamestate, cardData)}
                             </ButtonGroup>
                         </Box>
                         <Box><Typography>Card Details</Typography></Box>
