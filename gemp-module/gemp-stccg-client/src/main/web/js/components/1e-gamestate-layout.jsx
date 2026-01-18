@@ -190,7 +190,7 @@ export default function MiniDrawer() {
                                 <IconButton aria-label="Data Source" onClick={() => {setChangeDataSourceDialogOpen(true)}}>
                                     <SourceIcon />
                                 </IconButton>
-                                <ChangeDataSourceDialog open={changeDataSourceDialogOpen} onCloseFunc={setChangeDataSourceDialogOpen} dataSource={dataSource} />
+                                <ChangeDataSourceDialog open={changeDataSourceDialogOpen} onCloseFunc={setChangeDataSourceDialogOpen} dataSource={dataSource} setDataSource={setDataSource} />
                             </Tooltip>
                             <PlayerScorePane id="your-player-score-pane" gamestate={loadedGameState} player_id={get_your_player_id(loadedGameState)}/>
                                 
