@@ -31,6 +31,7 @@ import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
 import Card from './card.jsx';
 import MainLayoutGrid from './main-layout-grid.jsx';
+import player_state from '../../player_state.json?url';
 
 function get_your_player_id(gamestate) {
     return gamestate["requestingPlayer"];
@@ -130,7 +131,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
-    const [dataSource, setDataSource] = useState("player_state.json");
+    const [dataSource, setDataSource] = useState(player_state);
     const [changeDataSourceDialogOpen, setChangeDataSourceDialogOpen] = useState(false);
     const [loadedGameState, setLoadedGameState] = useState(null);
     
