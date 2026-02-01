@@ -88,7 +88,7 @@ public class GetHallRequestHandler implements UriRequestHandler {
             }
         }
         for (League league : _leagueService.getActiveLeagues()) {
-            final LeagueSeries seriesData = _leagueService.getCurrentLeagueSeriesNew(league);
+            final LeagueSeries seriesData = _leagueService.getCurrentLeagueSeries(league);
             if (seriesData != null && _leagueService.isPlayerInLeague(league, player)) {
                 Map<String, String> formatMap = new HashMap<>();
                 formatMap.put("type", String.valueOf(league.getLeagueId()));

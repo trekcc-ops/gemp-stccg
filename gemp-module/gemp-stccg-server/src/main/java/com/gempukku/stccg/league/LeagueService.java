@@ -124,7 +124,7 @@ public class LeagueService {
         return null;
     }
 
-    public synchronized LeagueSeries getCurrentLeagueSeriesNew(League league) {
+    public synchronized LeagueSeries getCurrentLeagueSeries(League league) {
         ZonedDateTime currentDate = ZonedDateTime.now();
         for (LeagueSeries series : league) {
             if (currentDate.isAfter(series.getStart()) && currentDate.isBefore(series.getEnd()))
