@@ -141,7 +141,7 @@ public class CreateTableRequestHandler implements UriRequestHandler {
         if (_hallServer.isShutdown()) {
             responseWriter.writeXmlMarshalExceptionResponse("Server is in shutdown mode. " +
                     "Server will be restarted after all running games are finished.");
-        } else if (!_hallExceptionMessage.isEmpty()) {
+        } else if (_hallExceptionMessage != null) {
             responseWriter.writeXmlMarshalExceptionResponse(_hallExceptionMessage);
         } else {
 
