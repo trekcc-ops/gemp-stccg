@@ -25,31 +25,25 @@ public class DefaultTournamentTest extends AbstractServerTest {
         GameFormat format = _formatLibrary.getFormatByName("1E Modern Complete");
         Map<String, CardDeck> playerDecks = new HashMap<>();
         Set<String> allPlayers = new HashSet<>(Arrays.asList("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"));
-        playerDecks.put("p1", new CardDeck("p1", format));
-        playerDecks.put("p2", new CardDeck("p2", format));
-        playerDecks.put("p3", new CardDeck("p3", format));
-        playerDecks.put("p4", new CardDeck("p4", format));
-        playerDecks.put("p5", new CardDeck("p5", format));
-        playerDecks.put("p6", new CardDeck("p6", format));
-        playerDecks.put("p7", new CardDeck("p7", format));
-        playerDecks.put("p8", new CardDeck("p8", format));
+
+        for (String playerName : allPlayers) {
+            playerDecks.put(playerName, new CardDeck(playerName, format));
+        }
 
         Set<String> droppedAfterRoundOne = new HashSet<>(Arrays.asList("p2", "p4", "p6", "p8"));
         Set<String> droppedAfterRoundTwo = new HashSet<>(Arrays.asList("p2", "p3", "p4", "p6", "p7", "p8"));
         Set<String> droppedAfterRoundThree = new HashSet<>(Arrays.asList("p2", "p3", "p4", "p5", "p6", "p7", "p8"));
 
         Mockito.when(tournamentService.getPlayers(tournamentId)).thenReturn(allPlayers);
-        Mockito.when(tournamentService.getPlayerDecks(tournamentId, "format")).thenReturn(playerDecks);
+        Mockito.when(tournamentService.getPlayerDecks(tournamentId, format.getCode())).thenReturn(playerDecks);
 
         PairingMechanism pairingMechanism = Mockito.mock(PairingMechanism.class);
         Mockito.when(pairingMechanism.shouldDropLoser()).thenReturn(true);
 
         CollectionsManager collectionsManager = Mockito.mock(CollectionsManager.class);
 
-        GameFormat gameFormat = _formatLibrary.get("format");
-
         DefaultTournament tournament = new DefaultTournament(tournamentService, tournamentId, "Name",
-                gameFormat, CollectionType.ALL_CARDS, 0, Tournament.Stage.PLAYING_GAMES,
+                format, CollectionType.ALL_CARDS, 0, Tournament.Stage.PLAYING_GAMES,
                 pairingMechanism, new SingleEliminationOnDemandPrizes(_cardLibrary, "onDemand"));
         int _waitForPairingsTime = 100;
         tournament.setWaitForPairingsTime(_waitForPairingsTime);
