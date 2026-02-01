@@ -69,7 +69,7 @@ public class DefaultTournamentTest extends AbstractServerTest {
         processRound(pairingMechanism, tournament, tournamentCallback, 2);
         processRound(pairingMechanism, tournament, tournamentCallback, 3);
 
-        for (String playerName : List.of("p1", "p5", "p3", "p7")) {
+        for (String playerName : pairingsByRound.get(1).keySet()) {
             Mockito.verify(collectionsManager).addItemsToPlayerMyCardsCollection(Mockito.eq(true),
                     Mockito.anyString(), Mockito.eq(playerName), Mockito.anyCollection());
         }
