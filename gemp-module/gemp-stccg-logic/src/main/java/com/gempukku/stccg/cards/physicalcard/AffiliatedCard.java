@@ -100,23 +100,27 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         return false;
     }
 
-    public boolean canReportToFacilityAsAffiliation(FacilityCard facility, Affiliation affiliation, ST1EGame stGame) {
+    public boolean canReportToCrewAsAffiliation(CardWithCrew cardWithCrew, Affiliation affiliation, ST1EGame stGame) {
             /* Normally, Personnel, Ship, and Equipment cards play at a usable, compatible outpost or headquarters
                 in their native quadrant. */
         if (this instanceof ReportableCard) {
             // TODO - Does not perform any compatibility checks other than affiliation
-            if ((facility.getFacilityType() == FacilityType.OUTPOST || facility.getFacilityType() == FacilityType.HEADQUARTERS) &&
-                    facility.isUsableBy(getOwnerName()) && facility.isInQuadrant(stGame, getNativeQuadrant())) {
+            if (cardWithCrew instanceof ShipCard shipCard) {
                 Collection<CardWithCompatibility> otherCards = new ArrayList<>();
-                otherCards.add(facility);
-                otherCards.addAll(facility.getPersonnelInCrew(stGame));
+                otherCards.add(shipCard);
+                otherCards.addAll(shipCard.getPersonnelInCrew(stGame));
                 return isCompatibleWithOtherCardsAsAffiliation(affiliation, otherCards, stGame);
-            } else {
-                return false;
+            } else if (cardWithCrew instanceof FacilityCard facilityCard) {
+                if ((facilityCard.getFacilityType() == FacilityType.OUTPOST || facilityCard.getFacilityType() == FacilityType.HEADQUARTERS) &&
+                        facilityCard.isUsableBy(getOwnerName()) && facilityCard.isInQuadrant(stGame, getNativeQuadrant())) {
+                    Collection<CardWithCompatibility> otherCards = new ArrayList<>();
+                    otherCards.add(facilityCard);
+                    otherCards.addAll(cardWithCrew.getPersonnelInCrew(stGame));
+                    return isCompatibleWithOtherCardsAsAffiliation(affiliation, otherCards, stGame);
+                }
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
 

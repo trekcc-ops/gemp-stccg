@@ -12,7 +12,7 @@ public interface ReportableCard extends CardWithCompatibility {
             return true;
         if (this instanceof AffiliatedCard affiliatedCard) {
             for (Affiliation affiliation : affiliatedCard.getAffiliationOptions())
-                if (affiliatedCard.canReportToFacilityAsAffiliation(facility, affiliation, stGame))
+                if (affiliatedCard.canReportToCrewAsAffiliation(facility, affiliation, stGame))
                     return true;
         }
         return false;

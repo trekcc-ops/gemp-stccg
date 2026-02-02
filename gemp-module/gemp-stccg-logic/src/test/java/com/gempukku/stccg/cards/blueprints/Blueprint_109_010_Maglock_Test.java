@@ -13,7 +13,6 @@ import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,21 +37,11 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
         _maglock = builder.addSeedCard("109_010", "Maglock", P2, _mission);
         builder.setPhase(Phase.EXECUTE_ORDERS);
-        runabout = builder.addCardInHand("101_331", "Runabout", P1, ShipCard.class);
-        troi = builder.addCardInHand("101_205", "Deanna Troi", P1, PersonnelCard.class);
-        hobson = builder.addCardInHand("101_202", "Christopher Hobson", P1, PersonnelCard.class);
-        picard = builder.addCardInHand("101_215", "Jean-Luc Picard", P1, PersonnelCard.class);
-        data = builder.addCardInHand("101_204", "Data", P1, PersonnelCard.class);
-
-        reportCardsToFacility(outpost, troi, hobson, picard, data, runabout);
-
-        assertTrue(outpost.hasCardInCrew(troi));
-        assertTrue(outpost.hasCardInCrew(hobson));
-        assertTrue(outpost.hasCardInCrew(picard));
-        assertTrue(outpost.hasCardInCrew(data));
-        assertFalse(outpost.hasCardInCrew(runabout));
-        assertEquals(outpost, runabout.getDockedAtCard(_game));
-
+        runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
+        data = builder.addCardAboardShip("101_204", "Data", P1, runabout, PersonnelCard.class);
+        troi = builder.addCardAboardShip("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
+        hobson = builder.addCardAboardShip("101_202", "Christopher Hobson", P1, runabout, PersonnelCard.class);
+        picard = builder.addCardAboardShip("101_215", "Jean-Luc Picard", P1, runabout, PersonnelCard.class);
         _game.startGame();
     }
 
@@ -63,17 +52,9 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
 
         initializeGame();
 
-        List<PersonnelCard> personnelBeaming = new ArrayList<>();
-        personnelBeaming.add(troi);
-        personnelBeaming.add(hobson);
-        personnelBeaming.add(picard);
-
-        beamCards(P1, outpost, personnelBeaming, runabout);
-        for (PersonnelCard card : personnelBeaming) {
-            assertTrue(runabout.hasCardInCrew(card));
-            assertFalse(outpost.hasCardInCrew(card));
-        }
-        assertEquals(0, _game.getGameState().getAwayTeams().size());
+        // leave Data at the outpost to not meet the 3 OFFICER with STRENGTH >5 requirement
+        beamCards(P1, runabout, List.of(data), outpost);
+        assertFalse(runabout.hasCardInCrew(data));
 
         undockShip(P1, runabout);
         assertFalse(runabout.isDocked());
@@ -94,14 +75,9 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
 
         initializeGame();
 
-        List<PersonnelCard> personnelBeaming = List.of(data, hobson, picard);
-
-        beamCards(P1, outpost, personnelBeaming, runabout);
-        for (PersonnelCard card : personnelBeaming) {
-            assertTrue(runabout.hasCardInCrew(card));
-            assertFalse(outpost.hasCardInCrew(card));
-        }
-        assertEquals(0, _game.getGameState().getAwayTeams().size());
+        // Leave Troi at the outpost; still meet requirement
+        beamCards(P1, runabout, List.of(troi), outpost);
+        assertFalse(runabout.hasCardInCrew(troi));
 
         undockShip(P1, runabout);
         assertFalse(runabout.isDocked());

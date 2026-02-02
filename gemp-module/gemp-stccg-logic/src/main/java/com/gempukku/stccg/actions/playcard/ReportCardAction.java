@@ -1,10 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
-import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.ReportableCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -37,7 +34,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
-                            FacilityCard facilityCard) {
+                            CardWithCrew facilityCard) {
         this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay, facilityCard));
     }
 
@@ -58,15 +55,15 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 }
                 setAsSuccessful();
 
-                FacilityCard facility = _targetResolver.getDestinationFacility();
+                CardWithCrew destination = _targetResolver.getDestination();
                 GameState gameState = cardGame.getGameState();
 
                 cardGame.removeCardsFromZone(Collections.singleton(reportable));
-                reportable.setLocationId(cardGame, facility.getLocationId());
-                reportable.attachTo(facility);
+                reportable.setLocationId(cardGame, destination.getLocationId());
+                reportable.attachTo(destination);
                 gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
 
-                if (reportable instanceof ShipCard ship) {
+                if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
                     ship.dockAtFacility(facility);
                 }
 

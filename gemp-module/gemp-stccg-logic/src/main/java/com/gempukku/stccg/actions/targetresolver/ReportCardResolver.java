@@ -3,10 +3,7 @@ package com.gempukku.stccg.actions.targetresolver;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ReportableCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.filters.Filters;
@@ -21,7 +18,7 @@ import java.util.*;
 public class ReportCardResolver implements ActionCardResolver {
 
     private final ReportableCard _cardEnteringPlay;
-    private FacilityCard _destinationFacility;
+    private CardWithCrew _destinationCard;
     private Affiliation _affiliationToReportAs;
     private final String _performingPlayerName;
     private SelectCardsAction _selectDestinationAction;
@@ -34,9 +31,9 @@ public class ReportCardResolver implements ActionCardResolver {
         _performingPlayerName = cardEnteringPlay.getOwnerName();
     }
 
-    public ReportCardResolver(ReportableCard cardEnteringPlay, FacilityCard destination) {
+    public ReportCardResolver(ReportableCard cardEnteringPlay, CardWithCrew destination) {
         this(cardEnteringPlay);
-        _destinationFacility = destination;
+        _destinationCard = destination;
     }
 
     public ReportCardResolver(ReportableCard cardEnteringPlay,
@@ -48,7 +45,7 @@ public class ReportCardResolver implements ActionCardResolver {
     @Override
     public void resolve(DefaultGame cardGame) throws InvalidGameLogicException {
         if (cardGame instanceof ST1EGame stGame) {
-            if (!_isFailed && _destinationFacility == null) {
+            if (!_isFailed && _destinationCard == null) {
                 selectDestination(stGame);
             } else if (!_isFailed && _cardEnteringPlay instanceof AffiliatedCard affiliatedCard &&
                     _affiliationToReportAs == null) {
@@ -72,7 +69,7 @@ public class ReportCardResolver implements ActionCardResolver {
         } else if (_selectDestinationAction.wasCompleted()) {
             Collection<PhysicalCard> cardResult = _selectDestinationAction.getSelectedCards();
             if (cardResult.size() == 1 && Iterables.getOnlyElement(cardResult) instanceof FacilityCard facility) {
-                _destinationFacility = facility;
+                _destinationCard = facility;
             } else {
                 _isFailed = true;
             }
@@ -87,7 +84,7 @@ public class ReportCardResolver implements ActionCardResolver {
         } else if (_affiliationSelectionAction == null) {
             Set<Affiliation> affiliationOptions = new HashSet<>();
             for (Affiliation affiliation : affiliatedCard.getAffiliationOptions()) {
-                if (affiliatedCard.canReportToFacilityAsAffiliation(_destinationFacility, affiliation, stGame))
+                if (affiliatedCard.canReportToCrewAsAffiliation(_destinationCard, affiliation, stGame))
                     affiliationOptions.add(affiliation);
             }
             if (affiliationOptions.size() == 1) {
@@ -122,13 +119,13 @@ public class ReportCardResolver implements ActionCardResolver {
 
     @Override
     public boolean isResolved() {
-        return _destinationFacility != null &&
+        return _destinationCard != null &&
                 (_affiliationToReportAs != null || !(_cardEnteringPlay instanceof AffiliatedCard));
     }
 
     @Override
     public Collection<PhysicalCard> getCards() {
-        return List.of(_destinationFacility);
+        return List.of(_destinationCard);
     }
 
     @Override
@@ -140,8 +137,8 @@ public class ReportCardResolver implements ActionCardResolver {
         }
     }
 
-    public FacilityCard getDestinationFacility() {
-        return _destinationFacility;
+    public CardWithCrew getDestination() {
+        return _destinationCard;
     }
 
     public Affiliation getAffiliationToReportAs() {
@@ -149,7 +146,7 @@ public class ReportCardResolver implements ActionCardResolver {
     }
 
     public void setDestination(FacilityCard facility) {
-        _destinationFacility = facility;
+        _destinationCard = facility;
     }
 
     public void setAffiliation(Affiliation affiliation) {

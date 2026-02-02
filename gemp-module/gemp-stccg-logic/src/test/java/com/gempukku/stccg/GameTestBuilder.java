@@ -1,13 +1,12 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -127,5 +126,34 @@ public class GameTestBuilder {
         } else {
             throw new CardNotFoundException("Could not find a mission location for mission card '" + mission.getBlueprintId() + "'");
         }
+    }
+
+    public <T extends PersonnelCard> T addCardAboardShip(String blueprintId, String cardTitle, String ownerName,
+                                                         ShipCard ship, Class<T> clazz)
+            throws CardNotFoundException, InvalidGameOperationException {
+        T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
+
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, ship);
+        reportAction.setAffiliation(cardToAdd.getCurrentAffiliations().getFirst());
+        executeAction(reportAction);
+
+        assertTrue(cardToAdd.isInPlay());
+        assertTrue(cardToAdd.isAttachedTo(ship));
+        assertTrue(ship.hasCardInCrew(cardToAdd));
+        return cardToAdd;
+    }
+
+    public ShipCard addDockedShip(String blueprintId, String cardTitle, String ownerName, FacilityCard facility)
+            throws CardNotFoundException, InvalidGameOperationException {
+        ShipCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, ShipCard.class);
+
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, facility);
+        reportAction.setAffiliation(cardToAdd.getCurrentAffiliations().getFirst());
+        executeAction(reportAction);
+
+        assertTrue(cardToAdd.isInPlay());
+        assertTrue(cardToAdd.isDocked());
+        assertTrue(cardToAdd.isAttachedTo(facility));
+        return cardToAdd;
     }
 }
