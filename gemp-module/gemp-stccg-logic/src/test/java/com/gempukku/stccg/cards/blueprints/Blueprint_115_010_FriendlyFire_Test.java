@@ -1,70 +1,48 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
-    
-    // Unit tests for card definition of Maglock
+
+    private FacilityCard outpost;
+    private PersonnelCard picard;
+    private MissionCard _mission;
+    private PhysicalCard friendly;
+    private PersonnelCard troi;
+    private PersonnelCard hobson;
+    private PersonnelCard data;
+    private ShipCard runabout;
+
+    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        _mission = builder.addMission("101_171", "Investigate Rogue Comet", P1);
+        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        friendly = builder.addSeedCard("115_010", "Friendly Fire", P2, _mission);
+        builder.setPhase(Phase.EXECUTE_ORDERS);
+        runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
+        data = builder.addCardAboardShip("101_204", "Data", P1, runabout, PersonnelCard.class);
+        troi = builder.addCardAboardShip("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
+        hobson = builder.addCardAboardShip("101_202", "Christopher Hobson", P1, runabout, PersonnelCard.class);
+        picard = builder.addCardAboardShip("101_215", "Jean-Luc Picard", P1, runabout, PersonnelCard.class);
+        _game.startGame();
+    }
 
     @Test
-    public void placeOnMissionTest() throws DecisionResultInvalidException,
+    public void failDilemmaTest() throws DecisionResultInvalidException,
             CardNotFoundException, InvalidGameOperationException {
-        initializeQuickMissionAttempt("Investigate Rogue Comet");
-        assertNotNull(_mission);
 
-        ST1EPhysicalCard friendly =
-                (ST1EPhysicalCard) _game.addCardToGame("115_010", P1);
-
-        seedCardsUnder(Collections.singleton(friendly), _mission);
-
-        // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-
-        PersonnelCard troi = (PersonnelCard) _game.addCardToGame("101_205", P1);
-        PersonnelCard hobson = (PersonnelCard) _game.addCardToGame("101_202", P1);
-        PersonnelCard picard = (PersonnelCard) _game.addCardToGame("101_215", P1);
-        PersonnelCard data = (PersonnelCard) _game.addCardToGame("101_204", P1);
-        ShipCard runabout =
-                (ShipCard) _game.addCardToGame("101_331", P1);
-
-        reportCardsToFacility(_outpost, troi, hobson, picard, data, runabout);
-
-        assertTrue(_outpost.hasCardInCrew(troi));
-        assertTrue(_outpost.hasCardInCrew(hobson));
-        assertTrue(_outpost.hasCardInCrew(picard));
-        assertTrue(_outpost.hasCardInCrew(data));
-        assertFalse(_outpost.hasCardInCrew(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard(_game));
-        skipCardPlay();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-
-        List<PersonnelCard> personnelBeaming = new ArrayList<>();
-        personnelBeaming.add(troi);
-        personnelBeaming.add(hobson);
-        personnelBeaming.add(picard);
-
-        beamCards(P1, _outpost, personnelBeaming, runabout);
-        for (PersonnelCard card : personnelBeaming) {
-            assertTrue(runabout.hasCardInCrew(card));
-            assertFalse(_outpost.hasCardInCrew(card));
-        }
+        initializeGame();
 
         undockShip(P1, runabout);
         assertFalse(friendly.isPlacedOnMission());
