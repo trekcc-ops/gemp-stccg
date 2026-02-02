@@ -3,7 +3,6 @@ package com.gempukku.stccg.async.handler.hall;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
@@ -20,8 +19,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.net.HttpURLConnection;
+import java.time.DayOfWeek;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,7 +74,8 @@ public class UpdateHallRequestHandler implements UriRequestHandler {
         String userName = user.getName();
         synchronized (userName.intern()) {
             ZonedDateTime now = ZonedDateTime.now(ZoneId.of("GMT"));
-            int latestMonday = DateUtils.getMondayBeforeOrOn(now);
+            ZonedDateTime lastMondayDate = now.minusDays(now.getDayOfWeek().getValue() - DayOfWeek.MONDAY.getValue());
+            int latestMonday = Integer.parseInt(lastMondayDate.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
             Integer lastReward = user.getLastLoginReward();
             if (lastReward == null) {
