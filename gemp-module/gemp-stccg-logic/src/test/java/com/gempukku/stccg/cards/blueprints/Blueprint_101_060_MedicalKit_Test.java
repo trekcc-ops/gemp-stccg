@@ -31,7 +31,7 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
     }
 
     @Test
-    public void cunningTest() throws Exception {
+    public void skillTest() throws Exception {
         initializeGame();
 
         reportCardsToFacility(List.of(picard, taris), outpost);
