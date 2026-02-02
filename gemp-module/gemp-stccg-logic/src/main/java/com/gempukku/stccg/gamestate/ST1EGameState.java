@@ -4,13 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
-import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.CardDeck;
@@ -177,20 +173,6 @@ public class ST1EGameState extends GameState {
         } else {
             return Collections.max(_locationIds.keySet()) + 1;
         }
-    }
-
-    public void addMissionLocationToSpacelineForTestingOnly(ST1EGame cardGame, MissionCard newMission, int indexNumber) {
-        // Do not use in non-testing classes
-        SeedMissionCardAction seedAction = new SeedMissionCardAction(cardGame, newMission, indexNumber);
-        seedAction.processEffect(cardGame);
-    }
-
-    public void seedFacilityAtLocationForTestingOnly(ST1EGame cardGame, FacilityCard card, MissionCard destinationCard)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        // Do not use in non-testing classes
-        SeedOutpostAction seedAction = new SeedOutpostAction(cardGame, card, destinationCard);
-        seedAction.setAffiliation(card.getCurrentAffiliations().getFirst());
-        seedAction.processEffect(cardGame);
     }
 
 

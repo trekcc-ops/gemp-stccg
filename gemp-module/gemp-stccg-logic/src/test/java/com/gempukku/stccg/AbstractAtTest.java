@@ -40,7 +40,8 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
     private TribblesGame _tribblesGame;
     protected static final String P1 = "player1";
     protected static final String P2 = "player2";
-    private FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
+    protected List<String> _players = List.of(P1, P2);
+    protected FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
     protected FacilityCard _outpost;
     protected MissionCard _mission;
     protected MissionCard _rogueComet;
@@ -892,7 +893,9 @@ public abstract class AbstractAtTest extends AbstractLogicTest {
 
     protected void reportCardToFacility(ReportableCard reportable, FacilityCard facility)
             throws InvalidGameLogicException {
-        if (reportable instanceof EquipmentCard) {
+        if (reportable == null || facility == null) {
+            throw new InvalidGameLogicException("Cannot report with null cards");
+        } else if (reportable instanceof EquipmentCard) {
             ReportCardAction reportCardAction = new ReportCardAction(_game, reportable, false, facility);
             reportCardAction.processEffect(_game);
         } else if (reportable instanceof AffiliatedCard affiliatedCard && affiliatedCard.getAffiliationOptions().size() <= 1) {
