@@ -227,4 +227,8 @@ public abstract class ActionyAction implements Action {
         }
     }
 
+    public void setAsInitiated() {
+        _actionStatus = ActionStatus.initiation_complete;
+    }
+
 }

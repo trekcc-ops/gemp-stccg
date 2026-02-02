@@ -62,4 +62,6 @@ public interface Action {
             throws InvalidGameOperationException;
 
     void cancel();
+
+    void setAsInitiated();
 }

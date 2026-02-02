@@ -1,5 +1,6 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -16,6 +17,8 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.processes.st1e.ST1EPlayPhaseSegmentProcess;
 
 import java.util.ArrayList;
@@ -72,15 +75,22 @@ public class GameTestBuilder {
         }
     }
 
-    public MissionCard addMission(String blueprintId, String cardTitle, String ownerName) throws CardNotFoundException {
+    private void executeAction(Action action) throws InvalidGameOperationException {
+        action.setAsInitiated();
+        action.executeNextSubAction(_game.getActionsEnvironment(), _game);
+    }
+
+    public MissionCard addMission(String blueprintId, String cardTitle, String ownerName)
+            throws CardNotFoundException, InvalidGameOperationException {
         MissionCard mission = addCardToGame(blueprintId, cardTitle, ownerName, MissionCard.class);
         _missions.add(mission);
         SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, _missions.indexOf(mission));
-        seedAction.processEffect(_game);
+        executeAction(seedAction);
         return mission;
     }
 
-    public FacilityCard addFacility(String facilityBlueprintId, String ownerName) throws CardNotFoundException {
+    public FacilityCard addFacility(String facilityBlueprintId, String ownerName)
+            throws CardNotFoundException, InvalidGameOperationException {
         if (_missions.isEmpty()) {
             addMission(DEFAULT_MISSION, DEFAULT_MISSION_TITLE, ownerName);
         }
@@ -89,7 +99,7 @@ public class GameTestBuilder {
         if (facilityCard instanceof FacilityCard facility) {
             SeedOutpostAction seedAction = new SeedOutpostAction(_game, facility, _missions.getFirst());
             seedAction.setAffiliation(facility.getCurrentAffiliations().getFirst());
-            seedAction.processEffect(_game);
+            executeAction(seedAction);
             assertTrue(facilityCard.isInPlay());
             return facility;
         } else {
@@ -106,4 +116,16 @@ public class GameTestBuilder {
         return cardToAdd;
     }
 
+    public PhysicalCard addSeedCard(String blueprintId, String cardTitle, String ownerName,
+                                    MissionCard mission) throws CardNotFoundException {
+        PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, PhysicalCard.class);
+        cardToAdd.setZone(Zone.VOID);
+        GameLocation location = mission.getGameLocation(_game);
+        if (location instanceof MissionLocation missionLocation) {
+            missionLocation.seedCardUnderMission(_game, cardToAdd);
+            return cardToAdd;
+        } else {
+            throw new CardNotFoundException("Could not find a mission location for mission card '" + mission.getBlueprintId() + "'");
+        }
+    }
 }
