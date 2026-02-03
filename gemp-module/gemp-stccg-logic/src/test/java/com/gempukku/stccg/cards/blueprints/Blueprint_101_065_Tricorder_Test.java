@@ -25,17 +25,15 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         _game = builder.getGame();
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
         tricorder = builder.addCardInHand("101_065", "Tricorder", P1, EquipmentCard.class);
-        geordi = builder.addCardInHand("101_212", "Geordi La Forge", P1, PersonnelCard.class);
-        tamal = builder.addCardInHand("172_031", "Tamal", P1, PersonnelCard.class);
-        deanna = builder.addCardInHand("101_205", "Deanna Troi", P1, PersonnelCard.class);
+        geordi = builder.addCardAboardShipOrFacility("101_212", "Geordi La Forge", P1, outpost, PersonnelCard.class);
+        tamal = builder.addCardAboardShipOrFacility("172_031", "Tamal", P1, outpost, PersonnelCard.class);
+        deanna = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, outpost, PersonnelCard.class);
+        builder.startGame();
     }
 
     @Test
     public void skillTest() throws Exception {
         initializeGame();
-
-        assertTrue(outpost.isInPlay());
-        reportCardsToFacility(outpost, geordi, tamal, deanna);
 
         assertFalse(geordi.hasSkill(SkillName.SCIENCE, _game));
         assertFalse(deanna.hasSkill(SkillName.SCIENCE, _game));
