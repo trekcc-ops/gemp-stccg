@@ -74,7 +74,7 @@ public class ChooseStuffSubActionBlueprint implements SubActionBlueprint {
                     new SelectPlayerAction(cardGame, context, _saveToMemoryId, Arrays.asList(cardGame.getAllPlayerIds()));
             case CHOOSEPLAYEREXCEPT -> {
                 List<String> playerIds = Arrays.asList(cardGame.getAllPlayerIds());
-                playerIds.remove(_excludePlayerSource.getPlayerId(cardGame, context));
+                playerIds.removeIf(playerName -> _excludePlayerSource.isPlayer(playerName, cardGame, context));
                 yield new SelectPlayerAction(cardGame, context, _saveToMemoryId, playerIds);
             }
             case CHOOSETRIBBLEPOWER -> new SelectTribblePowerAction(cardGame, context, _saveToMemoryId);

@@ -27,7 +27,7 @@ public class StartOfTurnTriggerChecker implements TriggerChecker {
         } else {
             Action startTurnAction = cardGame.getCurrentAction();
             return startTurnAction != null &&
-                    Objects.equals(startTurnAction.getPerformingPlayerId(), _player.getPlayerId(cardGame, actionContext));
+                    Objects.equals(startTurnAction.getPerformingPlayerId(), _player.getPlayerName(cardGame, actionContext));
         }
     }
 }

@@ -33,7 +33,7 @@ public class ShuffleCardsIntoDrawDeckSubActionBlueprint implements SubActionBlue
 
     @Override
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
-        String performingPlayerName = _performingPlayerSource.getPlayerId(cardGame, context);
+        String performingPlayerName = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
         return List.of(new ShuffleCardsIntoDrawDeckAction(cardGame, context.card(),
                 performingPlayerName, cardTarget));

@@ -76,7 +76,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
     private boolean played(DefaultGame game, ActionResult actionResult, ActionContext context, Filterable... filters) {
         if (actionResult.hasType(ActionResult.Type.JUST_PLAYED)) {
             if (_playingPlayer == null ||
-                    actionResult.getPerformingPlayerId().equals(_playingPlayer.getPlayerId(game, context))) {
+                    actionResult.getPerformingPlayerId().equals(_playingPlayer.getPlayerName(game, context))) {
                 PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();
                 return Filters.and(filters).accepts(game, playedCard);
             }

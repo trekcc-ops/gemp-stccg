@@ -33,8 +33,7 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
     }
 
     @Override
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard) {
+    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext)) {
             UseGameTextAction action = new UseGameTextAction(cardGame, thisCard, actionContext);

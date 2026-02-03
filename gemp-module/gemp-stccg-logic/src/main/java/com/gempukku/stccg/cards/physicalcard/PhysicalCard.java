@@ -189,4 +189,7 @@ public interface PhysicalCard {
     void setCardId(int cardId);
 
     Collection<TopLevelSelectableAction> getOptionalResponseActionsWhileInPlay(DefaultGame game, Player player);
+
+    boolean isBeingEncounteredBy(String playerName, DefaultGame cardGame);
+    boolean isBeingEncountered(DefaultGame cardGame);
 }

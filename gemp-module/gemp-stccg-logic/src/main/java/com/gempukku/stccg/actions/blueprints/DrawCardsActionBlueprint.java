@@ -36,7 +36,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         final String targetPlayerId;
         if (_drawingPlayerSource != null) {
-            targetPlayerId = _drawingPlayerSource.getPlayerId(cardGame, context);
+            targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
         } else {
             targetPlayerId = context.getPerformingPlayerId();
         }
@@ -48,7 +48,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     public boolean isPlayableInFull(DefaultGame cardGame, ActionContext context) {
         try {
             final int count = (int) _countSource.evaluateExpression(cardGame, context);
-            final String targetPlayerId = _drawingPlayerSource.getPlayerId(cardGame, context);
+            final String targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
             Player targetPlayer = cardGame.getPlayer(targetPlayerId);
             return targetPlayer.getCardsInDrawDeck().size() >= count;
         } catch(PlayerNotFoundException | InvalidGameLogicException exp) {

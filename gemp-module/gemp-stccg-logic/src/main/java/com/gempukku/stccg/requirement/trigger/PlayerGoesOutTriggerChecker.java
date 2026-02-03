@@ -19,7 +19,7 @@ public class PlayerGoesOutTriggerChecker implements TriggerChecker {
             return false;
         } else {
             return playerGoesOut(cardGame.getCurrentActionResult(),
-                    _playerSource.getPlayerId(cardGame, actionContext));
+                    _playerSource.getPlayerName(cardGame, actionContext));
         }
     }
 

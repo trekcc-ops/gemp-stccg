@@ -4,5 +4,6 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 public interface PlayerSource {
-    String getPlayerId(DefaultGame cardGame, ActionContext actionContext);
+    boolean isPlayer(String playerName, DefaultGame cardGame, ActionContext actionContext);
+    String getPlayerName(DefaultGame cardGame, ActionContext actionContext);
 }

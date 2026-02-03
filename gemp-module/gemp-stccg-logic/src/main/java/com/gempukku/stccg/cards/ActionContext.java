@@ -93,4 +93,8 @@ public class ActionContext {
         return _thisCard;
     }
 
+    public String yourName() {
+        return _performingPlayerName;
+    }
+
 }

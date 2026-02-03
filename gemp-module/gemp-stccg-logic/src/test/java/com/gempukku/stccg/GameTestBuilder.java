@@ -18,7 +18,9 @@ import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.processes.st1e.ST1EPlayPhaseSegmentProcess;
+import com.gempukku.stccg.processes.GameProcess;
+import com.gempukku.stccg.processes.StartOfTurnGameProcess;
+import com.gempukku.stccg.processes.st1e.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +36,8 @@ public class GameTestBuilder {
     private static final String DEFAULT_MISSION = "101_174";
     private static final String DEFAULT_MISSION_TITLE = "Khitomer Research";
     private final ST1EGame _game;
+    private Phase _startingPhase;
+    private final List<String> _players;
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
                            List<String> playerNames) throws InvalidGameOperationException {
@@ -48,16 +52,39 @@ public class GameTestBuilder {
             decks.put(player, testDeck);
         }
         _game = new ST1EGame(format, decks, cardBlueprintLibrary, GameTimer.GLACIAL_TIMER);
+        _startingPhase = Phase.SEED_DOORWAY;
+        _players = playerNames;
+    }
 
+    public void startGame() throws InvalidGameOperationException {
         // Initialize player order
         _game.getGameState().getCurrentProcess().process(_game);
+
+        if (!_startingPhase.isSeedPhase()) {
+            // draw starting hand
+            GameProcess facilityProcess = new ST1EFacilitySeedPhaseProcess(_players.size());
+            facilityProcess.getNextProcess(_game);
+        }
+
+        GameProcess currentProcess = switch(_startingPhase) {
+            case START_OF_TURN -> new StartOfTurnGameProcess();
+            case END_OF_TURN -> new ST1EEndOfTurnProcess();
+            case SEED_DOORWAY -> new DoorwaySeedPhaseProcess(_players);
+            case SEED_MISSION -> new ST1EMissionSeedPhaseProcess(0);
+            case SEED_DILEMMA -> new DilemmaSeedPhaseOpponentsMissionsProcess(_players);
+            case SEED_FACILITY -> new ST1EFacilitySeedPhaseProcess(0);
+            case CARD_PLAY, EXECUTE_ORDERS -> new ST1EPlayPhaseSegmentProcess();
+            case BETWEEN_TURNS, TRIBBLES_TURN -> throw new InvalidGameOperationException(
+                    "Unequipped to create test game starting in phase '" + _startingPhase + "'");
+        };
+
+        _game.getGameState().setCurrentProcess(currentProcess);
+        _game.setCurrentPhase(_startingPhase);
+        _game.startGame();
     }
 
     public void setPhase(Phase phase) {
-        _game.setCurrentPhase(phase);
-        if (phase == Phase.EXECUTE_ORDERS) {
-            _game.getGameState().setCurrentProcess(new ST1EPlayPhaseSegmentProcess());
-        }
+        _startingPhase = phase;
     }
 
     public ST1EGame getGame() {
@@ -128,18 +155,18 @@ public class GameTestBuilder {
         }
     }
 
-    public <T extends PersonnelCard> T addCardAboardShip(String blueprintId, String cardTitle, String ownerName,
-                                                         ShipCard ship, Class<T> clazz)
+    public <T extends PersonnelCard> T addCardAboardShipOrFacility(String blueprintId, String cardTitle, String ownerName,
+                                                                   CardWithCrew cardWithCrew, Class<T> clazz)
             throws CardNotFoundException, InvalidGameOperationException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
 
-        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, ship);
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, cardWithCrew);
         reportAction.setAffiliation(cardToAdd.getCurrentAffiliations().getFirst());
         executeAction(reportAction);
 
         assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isAttachedTo(ship));
-        assertTrue(ship.hasCardInCrew(cardToAdd));
+        assertTrue(cardToAdd.isAttachedTo(cardWithCrew));
+        assertTrue(cardWithCrew.hasCardInCrew(cardToAdd));
         return cardToAdd;
     }
 

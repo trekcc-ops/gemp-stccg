@@ -29,13 +29,13 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
         _mission = builder.addMission("101_171", "Investigate Rogue Comet", P1);
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
         friendly = builder.addSeedCard("115_010", "Friendly Fire", P2, _mission);
-        builder.setPhase(Phase.EXECUTE_ORDERS);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
-        data = builder.addCardAboardShip("101_204", "Data", P1, runabout, PersonnelCard.class);
-        troi = builder.addCardAboardShip("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
-        hobson = builder.addCardAboardShip("101_202", "Christopher Hobson", P1, runabout, PersonnelCard.class);
-        picard = builder.addCardAboardShip("101_215", "Jean-Luc Picard", P1, runabout, PersonnelCard.class);
-        _game.startGame();
+        data = builder.addCardAboardShipOrFacility("101_204", "Data", P1, runabout, PersonnelCard.class);
+        troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
+        hobson = builder.addCardAboardShipOrFacility("101_202", "Christopher Hobson", P1, runabout, PersonnelCard.class);
+        picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, runabout, PersonnelCard.class);
+        builder.setPhase(Phase.EXECUTE_ORDERS);
+        builder.startGame();
     }
 
     @Test

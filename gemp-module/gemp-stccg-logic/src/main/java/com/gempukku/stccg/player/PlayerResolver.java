@@ -9,7 +9,7 @@ public class PlayerResolver {
         if (type.equalsIgnoreCase("you")) {
             return new YouPlayerSource();
         } else if (type.equalsIgnoreCase("opponent")) {
-            return new OpponentPlayerSource();
+            return new YourOpponentPlayerSource();
         } else if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
             return new PlayerSourceFromMemory(memory);

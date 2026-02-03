@@ -38,7 +38,7 @@ public class CountDiscardValueSource extends ValueSource {
     @Override
     public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         try {
-            String playerId = _playerSource.getPlayerId(cardGame, actionContext);
+            String playerId = _playerSource.getPlayerName(cardGame, actionContext);
             Player player = cardGame.getPlayer(playerId);
             final Filterable filterable = _filterBlueprint.getFilterable(cardGame, actionContext);
             int count = Filters.filter(player.getCardGroupCards(Zone.DISCARD), cardGame, filterable).size();

@@ -50,7 +50,7 @@ public class MiscRequirement implements Requirement {
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
 
         try {
-            final String playerId = _playerSource.getPlayerId(cardGame, actionContext);
+            final String playerId = _playerSource.getPlayerName(cardGame, actionContext);
             Player player = cardGame.getPlayer(playerId);
             final int count = (int) _valueSource.evaluateExpression(cardGame, actionContext);
             final Filterable filterable = _filterBlueprint.getFilterable(cardGame, actionContext);

@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -405,6 +406,29 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             });
             return playerActions;
         }
+    }
+
+    public boolean isBeingEncounteredBy(String playerName, DefaultGame cardGame) {
+        Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
+        for (Action action : actionStack) {
+            if (action instanceof EncounterSeedCardAction encounterAction &&
+                    encounterAction.getPerformingPlayerId().equals(playerName) &&
+                    encounterAction.getEncounteredCard() == this) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isBeingEncountered(DefaultGame cardGame) {
+        Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
+        for (Action action : actionStack) {
+            if (action instanceof EncounterSeedCardAction encounterAction &&
+                    encounterAction.getEncounteredCard() == this) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

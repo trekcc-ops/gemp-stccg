@@ -38,11 +38,11 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         _maglock = builder.addSeedCard("109_010", "Maglock", P2, _mission);
         builder.setPhase(Phase.EXECUTE_ORDERS);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
-        data = builder.addCardAboardShip("101_204", "Data", P1, runabout, PersonnelCard.class);
-        troi = builder.addCardAboardShip("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
-        hobson = builder.addCardAboardShip("101_202", "Christopher Hobson", P1, runabout, PersonnelCard.class);
-        picard = builder.addCardAboardShip("101_215", "Jean-Luc Picard", P1, runabout, PersonnelCard.class);
-        _game.startGame();
+        data = builder.addCardAboardShipOrFacility("101_204", "Data", P1, runabout, PersonnelCard.class);
+        troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
+        hobson = builder.addCardAboardShipOrFacility("101_202", "Christopher Hobson", P1, runabout, PersonnelCard.class);
+        picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, runabout, PersonnelCard.class);
+        builder.startGame();
     }
 
 

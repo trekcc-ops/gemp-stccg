@@ -35,7 +35,7 @@ public class PlaceCardsOnBottomOfDrawDeckSubactionBlueprint implements SubAction
     @Override
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        final String performingPlayerId = _performingPlayerSource.getPlayerId(cardGame, context);
+        final String performingPlayerId = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
         return List.of(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayerId, cardTarget));
     }
