@@ -35,7 +35,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         _game = builder.getGame();
         _mission = builder.addMission("101_171", "Investigate Rogue Comet", P1);
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        _maglock = builder.addSeedCard("109_010", "Maglock", P2, _mission);
+        _maglock = builder.addSeedCardUnderMission("109_010", "Maglock", P2, _mission);
         builder.setPhase(Phase.EXECUTE_ORDERS);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
         data = builder.addCardAboardShipOrFacility("101_204", "Data", P1, runabout, PersonnelCard.class);

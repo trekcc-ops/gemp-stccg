@@ -95,7 +95,7 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
     }
 
     public Collection<PhysicalCard> getCrew(DefaultGame cardGame) {
-        return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.or(Filters.personnel, Filters.equipment));
+        return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.your(getControllerName()), Filters.or(Filters.personnel, Filters.equipment));
     }
 
     public boolean isOutpost() {

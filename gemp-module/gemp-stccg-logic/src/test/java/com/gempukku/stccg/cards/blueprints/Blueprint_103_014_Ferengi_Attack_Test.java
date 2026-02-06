@@ -30,7 +30,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         _game = builder.getGame();
         _mission = builder.addMission("101_154", "Excavation", P1);
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        _ferengiAttack = builder.addSeedCard("103_014", "Ferengi Attack", P2, _mission);
+        _ferengiAttack = builder.addSeedCardUnderMission("103_014", "Ferengi Attack", P2, _mission);
         troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, outpost, PersonnelCard.class);
         hobson = builder.addCardAboardShipOrFacility("101_202", "Christopher Hobson", P1, outpost, PersonnelCard.class);
         picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);

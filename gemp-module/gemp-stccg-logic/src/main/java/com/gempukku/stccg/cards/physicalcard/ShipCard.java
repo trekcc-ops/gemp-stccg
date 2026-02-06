@@ -10,14 +10,21 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.CardIcon;
+import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.google.common.collect.Lists;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -107,7 +114,7 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
     }
 
     public Collection<PhysicalCard> getCrew(DefaultGame cardGame) {
-        return getAttachedCards(cardGame);
+        return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.your(getControllerName()));
     }
 
     public boolean isStaffed(DefaultGame cardGame) {

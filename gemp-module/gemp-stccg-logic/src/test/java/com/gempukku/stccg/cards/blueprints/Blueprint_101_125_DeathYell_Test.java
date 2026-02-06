@@ -1,82 +1,51 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
+    private FacilityCard outpost;
+    private MissionCard _mission;
+    private PhysicalCard _armus;
+    private PhysicalCard deathYell;
+    private PersonnelCard worf;
+
+    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        _mission = builder.addMission("101_154", "Excavation", P1);
+        outpost = builder.addFacility("101_104", P1, _mission); // Federation Outpost
+        _armus = builder.addSeedCardUnderMission("101_015", "Armus: Skin of Evil", P2, _mission);
+        worf = builder.addCardAboardShipOrFacility("101_251", "Worf", P1, outpost, PersonnelCard.class);
+        deathYell = builder.addCardInHand("101_125", "Klingon Death Yell", P1);
+        builder.setPhase(Phase.EXECUTE_ORDERS);
+        builder.startGame();
+    }
+
     @Test
     public void deathYellTest() throws Exception {
-        initializeGameToTestMissionAttempt();
+        initializeGame();
+        assertEquals(0, _game.getPlayer(P1).getScore());
 
-        // Figure out which player is going first
-        assertEquals(P1, _game.getCurrentPlayerId());
+        // Beam to the planet and attempt mission
+        beamCard(P1, outpost, worf, _mission);
+        attemptMission(P1, _game.getGameState().getAwayTeamForCard(worf), _mission);
 
-        autoSeedMissions();
-        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
-            skipDilemma();
-        }
-        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-
-        FacilityCard outpost = null;
-        MissionCard excavation = null;
-        PersonnelCard worf = (PersonnelCard) newCardForGame("101_251", P1);
-        PhysicalCard deathYell = newCardForGame("101_125", P1);
-
-        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
-            if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
-                outpost = facility;
-            if (Objects.equals(card.getTitle(), "Excavation") && card instanceof MissionCard mission)
-                excavation = mission;
-        }
-
-        assertNotNull(outpost);
-        assertNotNull(excavation);
-        assertNotNull(worf);
-        worf.removeFromCardGroup(_game);
-        deathYell.removeFromCardGroup(_game);
-        _game.getPlayer(P1).getDrawDeck().addCardToTop(worf);
-        _game.getPlayer(P1).getDrawDeck().addCardToTop(deathYell);
-
-        PhysicalCard armus = _game.addCardToGame("101_015", P2);
-        armus.setZone(Zone.VOID);
-
-        // Seed Armus under Excavation
-        seedCardsUnder(Collections.singleton(armus), excavation);
-
-        // Seed Federation Outpost at Excavation
-        seedFacility(P1, outpost, excavation);
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(_game), excavation.getLocationDeprecatedOnlyUseForTests(_game));
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-        assertTrue(deathYell.isInHand(_game));
-
-        // Report Worf to outpost
-        reportCard(P1, worf, outpost);
-        assertTrue(outpost.hasCardInCrew(worf));
-        skipCardPlay();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-
-        // Beam Worf to the planet
-        beamCard(P1, outpost, worf, excavation);
-        assertTrue(_game.getGameState().getAwayTeamForCard(worf).isOnSurface(excavation.getLocationId()));
-
-        // Attempt mission
-        attemptMission(P1, _game.getGameState().getAwayTeamForCard(worf), excavation);
-
-        // Confirm that Worf was killed
+        // Confirm that Worf was killed by Armus
         assertEquals(Zone.DISCARD, worf.getZone());
 
         // Play Klingon Death Yell as response

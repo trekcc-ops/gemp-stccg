@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
         _game = builder.getGame();
         _mission = builder.addMission("101_171", "Investigate Rogue Comet", P1);
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        friendly = builder.addSeedCard("115_010", "Friendly Fire", P2, _mission);
+        friendly = builder.addSeedCardUnderMission("115_010", "Friendly Fire", P2, _mission);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
         data = builder.addCardAboardShipOrFacility("101_204", "Data", P1, runabout, PersonnelCard.class);
         troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
@@ -43,15 +44,16 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
             CardNotFoundException, InvalidGameOperationException {
 
         initializeGame();
+        MissionLocation missionLocation = (MissionLocation) _mission.getGameLocation(_game);
 
         undockShip(P1, runabout);
         assertFalse(friendly.isPlacedOnMission());
-        assertTrue(missionHasCardsSeededUnderneath(_mission, friendly));
+        assertEquals(1, missionLocation.getSeedCards().size());
         assertFalse(friendly.isInPlay());
 
         attemptMission(P1, runabout, _mission);
         assertTrue(friendly.isPlacedOnMission());
-        assertFalse(missionHasCardsSeededUnderneath(_mission, friendly));
+        assertEquals(0, missionLocation.getSeedCards().size());
         assertTrue(friendly.isInPlay());
 
     }

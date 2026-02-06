@@ -1,50 +1,46 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
 
+    private FacilityCard outpost;
+    private ShipCard runabout;
+    private PersonnelCard geordi;
+    private MissionCard mission;
+
+    private void initializeGame(MissionType missionType) throws InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        mission = switch(missionType) {
+            case SPACE -> builder.addMission("101_171", "Investigate Rogue Comet", P1);
+            case PLANET -> builder.addMission("101_154", "Excavation", P1);
+            case DUAL -> throw new RuntimeException("Test is not set up for dual missions");
+            case HEADQUARTERS -> throw new RuntimeException("Test is not set up to use 2E headquarters missions");
+        };
+        outpost = builder.addFacility("101_104", P1, mission); // Federation Outpost
+        runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
+        geordi = builder.addCardAboardShipOrFacility("155_060", "Geordi La Forge", P1, runabout, PersonnelCard.class);
+        builder.setPhase(Phase.EXECUTE_ORDERS);
+        _game.startGame();
+    }
+
     @Test
-    public void planetSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
-        initializeQuickMissionAttempt("Excavation");
-
-        // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-
-        PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", P1);
-        ShipCard runabout =
-                (ShipCard) _game.addCardToGame("101_331", P1);
-
-        reportCardsToFacility(_outpost, geordi, runabout);
-
-        assertTrue(_outpost.hasCardInCrew(geordi));
-        assertFalse(_outpost.hasCardInCrew(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard(_game));
-        skipCardPlay();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-
-        beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
-        assertFalse(_outpost.hasCardInCrew(geordi));
-        assertTrue(runabout.hasCardInCrew(geordi));
-        assertEquals(MissionType.PLANET, geordi.getLocationDeprecatedOnlyUseForTests(_game).getMissionType());
+    public void planetSkillsTest() throws CardNotFoundException, InvalidGameOperationException {
+        initializeGame(MissionType.PLANET);
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.NAVIGATION));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.ASTROPHYSICS));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.STELLAR_CARTOGRAPHY));
@@ -54,31 +50,9 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
     }
 
     @Test
-    public void spaceSkillsTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
-        initializeQuickMissionAttempt("Investigate Rogue Comet");
+    public void spaceSkillsTest() throws CardNotFoundException, InvalidGameOperationException {
+        initializeGame(MissionType.SPACE);
 
-        // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission);
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(_game), _mission.getLocationDeprecatedOnlyUseForTests(_game));
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-
-        PersonnelCard geordi = (PersonnelCard) _game.addCardToGame("155_060", P1);
-        ShipCard runabout =
-                (ShipCard) _game.addCardToGame("101_331", P1);
-
-        reportCardsToFacility(_outpost, geordi, runabout);
-
-        assertTrue(_outpost.hasCardInCrew(geordi));
-        assertFalse(_outpost.hasCardInCrew(runabout));
-        assertEquals(_outpost, runabout.getDockedAtCard(_game));
-        skipCardPlay();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-
-        beamCards(P1, _outpost, Collections.singleton(geordi), runabout);
-        assertFalse(_outpost.hasCardInCrew(geordi));
-        assertTrue(runabout.hasCardInCrew(geordi));
-        assertEquals(MissionType.SPACE, geordi.getLocationDeprecatedOnlyUseForTests(_game).getMissionType());
         assertEquals(1, geordi.getSkillLevel(_game, SkillName.NAVIGATION));
         assertEquals(1, geordi.getSkillLevel(_game, SkillName.ASTROPHYSICS));
         assertEquals(1, geordi.getSkillLevel(_game, SkillName.STELLAR_CARTOGRAPHY));
@@ -86,6 +60,4 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.PHYSICS));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.COMPUTER_SKILL));
     }
-
-
 }

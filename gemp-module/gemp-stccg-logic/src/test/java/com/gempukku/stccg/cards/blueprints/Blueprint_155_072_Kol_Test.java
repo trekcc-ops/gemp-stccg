@@ -5,6 +5,7 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
@@ -21,22 +22,21 @@ public class Blueprint_155_072_Kol_Test extends AbstractAtTest {
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        outpost = builder.addFacility("101_105", P1); // Klingon Outpost
+        outpost = builder.addFacility("117_030", P1); // Ferengi Outpost
         arridor = builder.addCardInHand("155_069", "Dr. Arridor", P1, PersonnelCard.class);
-        kol = builder.addCardInHand("155_072", "Kol", P1, PersonnelCard.class);
+        kol = builder.addCardAboardShipOrFacility("155_072", "Kol", P1, outpost, PersonnelCard.class);
+        builder.setPhase(Phase.CARD_PLAY);
+        builder.startGame();
     }
 
     @Test
     public void attributeTest() throws Exception {
         initializeGame();
 
-        assertTrue(outpost.isInPlay());
-
-        reportCardToFacility(kol, outpost);
         assertTrue(personnelAttributesAre(kol, List.of(6, 6, 5)));
         assertTrue(personnelAttributesAre(arridor, List.of(4, 8, 5)));
 
-        reportCardToFacility(arridor, outpost);
+        reportCard(P1, arridor, outpost);
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(arridor, kol));
 
         assertTrue(personnelAttributesAre(kol, List.of(8, 8, 7)));

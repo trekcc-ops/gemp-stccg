@@ -25,7 +25,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         _game = builder.getGame();
         _mission = builder.addMission("101_171", "Investigate Rogue Comet", P1);
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        dedication = builder.addSeedCard("152_003", "Dedication to Duty", P2, _mission);
+        dedication = builder.addSeedCardUnderMission("152_003", "Dedication to Duty", P2, _mission);
         builder.setPhase(Phase.EXECUTE_ORDERS);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
         troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);

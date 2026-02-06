@@ -5,6 +5,7 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
@@ -24,8 +25,10 @@ public class Blueprint_155_079_CaptainWorf_Test extends AbstractAtTest {
         _game = builder.getGame();
         outpost = builder.addFacility("101_105", P1); // Klingon Outpost
         worf = builder.addCardInHand("155_079", "Captain Worf", P1, PersonnelCard.class);
-        kehleyr1 = builder.addCardInHand("155_080", "Commander K'Ehleyr", P1, PersonnelCard.class);
-        kehleyr2 = builder.addCardInHand("101_217", "K'Ehleyr", P2, PersonnelCard.class);
+        kehleyr1 = builder.addCardAboardShipOrFacility("155_080", "Commander K'Ehleyr", P1, outpost, PersonnelCard.class);
+        kehleyr2 = builder.addCardAboardShipOrFacility("101_217", "K'Ehleyr", P2, outpost, PersonnelCard.class);
+        builder.setPhase(Phase.CARD_PLAY);
+        builder.startGame();
     }
 
 
@@ -34,12 +37,11 @@ public class Blueprint_155_079_CaptainWorf_Test extends AbstractAtTest {
     public void captainWorfTest() throws Exception {
         initializeGame();
 
-        reportCardToFacility(worf, outpost);
         assertTrue(personnelAttributesAre(worf, List.of(8, 6, 10)));
         assertTrue(personnelAttributesAre(kehleyr1, List.of(7, 8, 7)));
         assertTrue(personnelAttributesAre(kehleyr2, List.of(8, 7, 7)));
 
-        reportCardsToFacility(outpost, kehleyr1, kehleyr2);
+        reportCard(P1, worf, outpost);
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr1));
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr2));
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(kehleyr1, worf));

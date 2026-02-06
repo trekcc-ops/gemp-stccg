@@ -5,21 +5,24 @@ import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
-import com.gempukku.stccg.AbstractLogicTest;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.SetDefinition;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.GameType;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("MagicNumber")
-public class CardBlueprintLibraryTest extends AbstractLogicTest {
+public class CardBlueprintLibraryTest {
 
+    private final CardBlueprintLibrary _cardLibrary = new CardBlueprintLibrary();
     // Commented out lackey validation so that it isn't run every single time the server is built
 
     // TODO - Add check that all card images are valid URLs

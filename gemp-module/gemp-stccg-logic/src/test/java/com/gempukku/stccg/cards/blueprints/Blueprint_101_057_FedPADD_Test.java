@@ -6,11 +6,12 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
 
@@ -23,17 +24,17 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         _game = builder.getGame();
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
         padd = builder.addCardInHand("101_057", "Federation PADD", P1, EquipmentCard.class);
-        picard = builder.addCardInHand("101_215", "Jean-Luc Picard", P1, PersonnelCard.class);
+        picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
+        builder.setPhase(Phase.CARD_PLAY);
+        builder.startGame();
     }
 
     @Test
     public void cunningTest() throws Exception {
         initializeGame();
 
-        reportCardsToFacility(outpost, picard);
         assertEquals(8, picard.getCunning(_game));
-
-        reportCardsToFacility(outpost, padd);
+        reportCard(P1, padd, outpost);
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, padd));
         assertEquals(10, picard.getCunning(_game));
     }

@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         geordi = builder.addCardAboardShipOrFacility("101_212", "Geordi La Forge", P1, outpost, PersonnelCard.class);
         tamal = builder.addCardAboardShipOrFacility("172_031", "Tamal", P1, outpost, PersonnelCard.class);
         deanna = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, outpost, PersonnelCard.class);
+        builder.setPhase(Phase.CARD_PLAY);
         builder.startGame();
     }
 
@@ -39,8 +41,8 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         assertFalse(deanna.hasSkill(SkillName.SCIENCE, _game));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.SCIENCE));
         assertEquals(1, tamal.getSkillLevel(_game, SkillName.SCIENCE));
+        reportCard(P1, tricorder, outpost);
 
-        reportCardToFacility(tricorder, outpost);
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(tricorder, geordi, tamal, deanna));
 
         assertTrue(geordi.hasSkill(SkillName.SCIENCE, _game));

@@ -30,7 +30,7 @@ public class Blueprint_101_015_Armus_Test extends AbstractAtTest {
         _game = builder.getGame();
         _mission = builder.addMission("101_154", "Excavation", P1);
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        _armus = builder.addSeedCard("101_015", "Armus: Skin of Evil", P2, _mission);
+        _armus = builder.addSeedCardUnderMission("101_015", "Armus: Skin of Evil", P2, _mission);
         picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
         builder.setPhase(Phase.EXECUTE_ORDERS);
         builder.startGame();
