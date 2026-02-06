@@ -72,7 +72,8 @@ export default class GameAnimations {
                 let cardId = "anim";
                 let emptyLocationIndex = "";
                 let upsideDown = false;
-                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
+                let title = element.getAttribute("title");
+                let card = new Card(blueprintId, zone, cardId, participantId, title, imageUrl, emptyLocationIndex, upsideDown);
                 let cardDiv = createSimpleCardDiv(card.imageUrl);
 
                 $("#main").queue(
@@ -149,7 +150,8 @@ export default class GameAnimations {
                             let cardId = `anim${i}`;
                             let emptyLocationIndex = "";
                             let upsideDown = false;
-                            let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
+                            let title = element.getAttribute("title");
+                            let card = new Card(blueprintId, zone, cardId, participantId, title, imageUrl, emptyLocationIndex, upsideDown);
                             let cardDiv = createSimpleCardDiv(card.imageUrl);
 
                             let targetCard = getCardDivFromId(targetCardId);
@@ -243,13 +245,13 @@ export default class GameAnimations {
         let locationIndex = "-1";
         let upsideDown = false;
         let controllerId = zoneOwner;
-        let cardTitle = (cardJson.title) ? cardJson.title : null;
+        let cardTitle = (cardJson.title) ? cardJson.title : "";
 
         $("#main").queue(
             function (next) {
 
-                let card = new Card(blueprintId, zone, cardId, controllerId, imageUrl, locationIndex, upsideDown);
-                let cardDiv = that.game.createCardDivWithData(card, cardTitle);
+                let card = new Card(blueprintId, zone, cardId, controllerId, cardTitle, imageUrl, locationIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card);
 
                 if (zone == "DISCARD")
                     that.game.discardPileDialogs[controllerId].append(cardDiv);
@@ -286,7 +288,7 @@ export default class GameAnimations {
         let locationIndex = spacelineIndex.toString();
         let upsideDown = (participantId != that.game.bottomPlayerId);
         let thisGame = this.game;
-        let cardTitle = (cardJson.title) ? cardJson.title : null;
+        let cardTitle = (cardJson.title) ? cardJson.title : "";
 
         $("#main").queue(
             function (next) {
@@ -299,8 +301,8 @@ export default class GameAnimations {
                     thisGame.addSharedMission(locationIndex, quadrant, region);
                 }
 
-                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
-                let cardDiv = thisGame.createCardDivWithData(card, cardTitle);
+                let card = new Card(blueprintId, zone, cardId, participantId, cardTitle, imageUrl, locationIndex, upsideDown);
+                let cardDiv = thisGame.createCardDivWithData(card);
 
                 $("#main").append(cardDiv);
                 next();
@@ -326,7 +328,7 @@ export default class GameAnimations {
         let attachedToCardId = cardJson.attachedToCardId;
         let isPlacedOnMission = cardJson.isPlacedOnMission
         let upsideDown = (performingPlayerId != that.game.bottomPlayerId);
-        let cardTitle = (cardJson.title) ? cardJson.title : null;
+        let cardTitle = (cardJson.title) ? cardJson.title : "";
 
         let zone;
         if (attachedToCardId != null) {
@@ -342,8 +344,8 @@ export default class GameAnimations {
         $("#main").queue(
             function (next) {
 
-                let card = new Card(blueprintId, zone, cardId, performingPlayerId, imageUrl, spacelineIndex, upsideDown);
-                let cardDiv = that.game.createCardDivWithData(card, cardTitle);
+                let card = new Card(blueprintId, zone, cardId, performingPlayerId, cardTitle, imageUrl, spacelineIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card);
 
                 $("#main").append(cardDiv);
 
@@ -609,13 +611,13 @@ export default class GameAnimations {
             let zone = "VOID";
             let cardId = card_json.cardId;
             let noOwner = "";
+            let title = (card_json.title) ? card_json.title : "";
             let imageUrl = card_json.imageUrl;
             let emptyLocationIndex = "";
             let upsideDown = false;
-            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-            let cardTitle = (card_json.title) ? card_json.title : null;
+            let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
 
-            let baseCardDiv = createCardDiv(card.imageUrl, cardTitle, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+            let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
             let pageWidth = document.body.clientWidth;
             let oneSixthWidthVal = (pageWidth / 6);
@@ -699,11 +701,11 @@ export default class GameAnimations {
                 let zone = "VOID";
                 let cardId = card_json.cardId;
                 let noOwner = "";
+                let title = (card_json.title) ? card_json.title : "";
                 let imageUrl = card_json.imageUrl;
                 let emptyLocationIndex = "";
                 let upsideDown = false;
-                let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-                let cardTitle = (card_json.title) ? card_json.title : null;
+                let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
 
                 if (card_json.isStopped) {
                     card.addStatusToken("STOPPED");
@@ -712,7 +714,7 @@ export default class GameAnimations {
                     card.removeStatusToken("STOPPED");
                 }
 
-                let baseCardDiv = createCardDiv(card.imageUrl, cardTitle, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+                let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
                 let pageWidth = document.body.clientWidth;
                 let oneSixthWidthVal = (pageWidth / 6);

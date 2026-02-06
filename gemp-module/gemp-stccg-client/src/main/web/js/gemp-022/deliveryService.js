@@ -52,10 +52,11 @@ export default function deliveryService(xml) {
                 let packElem = packs[j];
                 let blueprintId = packElem.getAttribute("blueprintId");
                 let count = packElem.getAttribute("count");
+                let title=""; // Do packs have titles? Are we keeping packs?
                 let imageUrl = packElem.getAttribute("imageUrl");
                 let emptyLocationIndex = "";
                 let upsideDown = false;
-                let card = new Card(blueprintId, "delivery", "deliveryPack" + i, "player", imageUrl, emptyLocationIndex, upsideDown);
+                let card = new Card(blueprintId, "delivery", "deliveryPack" + i, "player", title, imageUrl, emptyLocationIndex, upsideDown);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, true, false);
                 let cardDiv = $(baseCardDiv); // convert to jQuery object
@@ -68,10 +69,11 @@ export default function deliveryService(xml) {
                 let cardElem = cards[j];
                 let blueprintId = cardElem.getAttribute("blueprintId");
                 let count = cardElem.getAttribute("count");
+                let title= cardElem.getAttribute("title");
                 let imageUrl = cardElem.getAttribute("imageUrl");
                 let emptyLocationIndex = "";
                 let upsideDown = false;
-                let card = new Card(blueprintId, "delivery", "deliveryCard" + i, "player", imageUrl, emptyLocationIndex, upsideDown);
+                let card = new Card(blueprintId, "delivery", "deliveryCard" + i, "player", title, imageUrl, emptyLocationIndex, upsideDown);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
                 let cardDiv = $(baseCardDiv); // convert to jQuery object

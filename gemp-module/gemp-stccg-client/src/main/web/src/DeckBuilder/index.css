@@ -79,7 +79,7 @@
 
 .tooltip {
   border-bottom: 1px dotted black;
-  color:#0000FF;
+  color:#ceceff;
 }
 
 .tooltip span, .tooltip title {
@@ -90,6 +90,7 @@
     display:block;
     position:fixed;
     overflow:hidden;
+    color:blue;
     background-color: #FAEBD7;
     width:auto;
     z-index:9999;
