@@ -1,7 +1,27 @@
 import goldImg from '../../images/gold.png';
 import silverImg from '../../images/silver.png';
-
 import { createTheme } from '@mui/material/styles';
+import bajAffilIcon from "../../images/icons/affiliations/1E-BAJ.gif";
+import borgAffilIcon from "../../images/icons/affiliations/1E-BORG.gif";
+import cardAffilIcon from "../../images/icons/affiliations/1E-CARD.gif";
+import domAffilIcon from "../../images/icons/affiliations/1E-DOM.gif";
+import fedAffilIcon from "../../images/icons/affiliations/1E-FED.gif";
+import ferAffilIcon from "../../images/icons/affiliations/1E-FER.gif";
+import hirAffilIcon from "../../images/icons/affiliations/1E-HIR.gif";
+import kazAffilIcon from "../../images/icons/affiliations/1E-KAZ.gif";
+import klgAffilIcon from "../../images/icons/affiliations/1E-KLG.gif";
+import neuAffilIcon from "../../images/icons/affiliations/1E-NEU.gif";
+import nonAffilIcon from "../../images/icons/affiliations/1E-NON.gif";
+import romAffilIcon from "../../images/icons/affiliations/1E-ROM.gif";
+import stfAffilIcon from "../../images/icons/affiliations/1E-STF.gif";
+import vidAffilIcon from "../../images/icons/affiliations/1E-VID.gif";
+import vulAffilIcon from "../../images/icons/affiliations/1E-VUL.gif";
+import xinAffilIcon from "../../images/icons/affiliations/1E-XIN.png";
+
+export const softwareName = "Velara"; // See TNG s01e18 "Home Soil"
+export const versionNumber = "0.0.1";
+export const versionDescription = "Pre-alpha";
+export const userAgent = `${softwareName}/${versionNumber} (${versionDescription})`;
 
 export const theme = createTheme({
   palette: {
@@ -141,7 +161,7 @@ export function showLinkableCardTitle(cardNode) {
     let imageUrl = cardNode.imageUrl; // string
 
     let html = "";
-    html = html + "<div class='cardHint' value='" + blueprintId + "' card_img_url='" + imageUrl + "'>";
+    html = html + `<div class='cardHint' value='${blueprintId}' card_img_url='${imageUrl}' data-title='${title}'>`;
     if (hasUniversalIcon) {
         html = html + "&#x2756&nbsp;"; // unicode for universal symbol
     }
@@ -165,37 +185,37 @@ export function getAffiliationIcon(affiliationEnum) {
     // Receives the server enum name for an affiliation and provides the TrekCC icon URL
     switch(affiliationEnum) {
         case "BAJORAN":
-            return "https://www.trekcc.org/images/icons/1e/1E-BAJ.gif";
+            return bajAffilIcon;
         case "BORG":
-            return "https://www.trekcc.org/images/icons/1e/1E-BORG.gif";
+            return borgAffilIcon;
         case "CARDASSIAN":
-            return "https://www.trekcc.org/images/icons/1e/1E-CARD.gif";
+            return cardAffilIcon;
         case "DOMINION":
-            return "https://www.trekcc.org/images/icons/1e/1E-DOM.gif";
+            return domAffilIcon;
         case "FEDERATION":
-            return "https://www.trekcc.org/images/icons/1e/1E-FED.gif";
+            return fedAffilIcon;
         case "FERENGI":
-            return "https://www.trekcc.org/images/icons/1e/1E-FER.gif";
+            return ferAffilIcon;
         case "HIROGEN":
-            return "https://www.trekcc.org/images/icons/1e/1E-HIR.gif";
+            return hirAffilIcon;
         case "KAZON":
-            return "https://www.trekcc.org/images/icons/1e/1E-KAZ.gif";
+            return kazAffilIcon;
         case "KLINGON":
-            return "https://www.trekcc.org/images/icons/1e/1E-KLG.gif";
+            return klgAffilIcon;
         case "NEUTRAL":
-            return "https://www.trekcc.org/images/icons/1e/1E-NEU.gif";
+            return neuAffilIcon;
         case "NON_ALIGNED":
-            return "https://www.trekcc.org/images/icons/1e/1E-NON.gif";
+            return nonAffilIcon;
         case "ROMULAN":
-            return "https://www.trekcc.org/images/icons/1e/1E-ROM.gif";
+            return romAffilIcon;
         case "STARFLEET":
-            return "https://www.trekcc.org/images/icons/1e/1E-STF.gif";
+            return stfAffilIcon;
         case "VIDIIAN":
-            return "https://www.trekcc.org/images/icons/1e/1E-VID.gif";
+            return vidAffilIcon;
         case "VULCAN":
-            return "https://www.trekcc.org/images/icons/1e/1E-VUL.gif";
+            return vulAffilIcon;
         case "XINDI":
-            return "https://www.trekcc.org/images/icons/1e/1E-XIN.gif";
+            return xinAffilIcon;
         default:
             console.error("Cannot recognize affiliation " + affiliationEnum);
             return "";
@@ -233,7 +253,12 @@ export function getAffiliationHtml(affiliationEnum) {
     // Receives the server enum name for an affiliation and provides an in-line icon
     let iconURL = getAffiliationIcon(affiliationEnum);
     let userFriendlyName = getAffiliationName(affiliationEnum);
-    return "<img src='" + iconURL + "' class='inline-icon' title='" + userFriendlyName + "'>";
+
+    let affiliationImg = document.createElement("img");
+    affiliationImg.src = iconURL;
+    affiliationImg.classList.add("inline-icon");
+    affiliationImg.title = userFriendlyName;
+    return affiliationImg;
 }
 
 export function getFriendlyPhaseName(phaseEnum) {

@@ -101,6 +101,7 @@ public class CollectionRequestHandler implements UriRequestHandler {
         card.setAttribute("blueprintId", item.getBlueprintId());
         CardBlueprint blueprint = _cardBlueprintLibrary.getCardBlueprint(item.getBlueprintId());
         card.setAttribute("imageUrl", blueprint.getImageUrl());
+        card.setAttribute("title", blueprint.getTitle());
         collectionElem.appendChild(card);
     }
 
