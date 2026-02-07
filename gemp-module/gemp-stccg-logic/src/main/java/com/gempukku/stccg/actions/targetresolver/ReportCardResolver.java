@@ -10,7 +10,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.*;
@@ -105,7 +105,7 @@ public class ReportCardResolver implements ActionCardResolver {
 
     private Collection<FacilityCard> getDestinationOptions(ST1EGame game) {
         Collection<FacilityCard> availableFacilities = new HashSet<>();
-        for (MissionLocation location : game.getGameState().getSpacelineLocations()) {
+        for (GameLocation location : game.getGameState().getOrderedSpacelineLocations()) {
             Collection<PhysicalCard> facilities =
                     Filters.filterCardsInPlay(game, FacilityType.OUTPOST, Filters.atLocation(location));
             for (PhysicalCard card : facilities) {

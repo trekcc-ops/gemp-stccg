@@ -128,14 +128,28 @@
         },
         // etc.
     },
-    "spacelineLocations": [
-        /* List of spaceline locations for 1E game. This list in order from left to right.
-                    (As of 1/25/25, both players see the spaceline in the same left-to-right order.)
-            The locationId field is unique to each mission location and referenced by other objects, like cards
-                and away teams. If the spaceline is reorganized (for example, using Blade of Tkon), the locationId
-                values will not change, but the order of this list will.
+    "spacelineElements": [
+        /* List of elements in 1E spacelines. List is in order from left to right.
+            Contains two types of elements: locations and non-location cards.
+            Locations can be looked up by locationId in the gameLocations array, and non-location cards can be
+            looked up by cardId in the cardsInGame (or visibleCardsInGame) array.
             */
         {
+            "type": "location",
+            "locationId": 1
+        },
+        {
+            "type": "card",
+            "cardId": 1
+        }
+    ],
+    "gameLocations": [
+        /* Map of locations in the game by locationId.
+            The locationId field is unique to each mission location and referenced by other objects, like cards
+                and away teams. If the spaceline is reorganized (for example, using Blade of Tkon), the locationId
+                values will not change.
+            */
+        "1": {
             "locationId": 1,
             "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
             "locationName": "Gravesworld", // There may be multiple locations with the same name if universal
@@ -147,7 +161,7 @@
             "seedCardCount": 2,
             "seedCardIds": [27,28] // This property is not shown in player-specific game states
         },
-        {
+        "2": {
             "locationId": 2,
             "quadrant": "ALPHA",
             "region": "ROMULUS_SYSTEM", // There will not be a region item if the location is not in one

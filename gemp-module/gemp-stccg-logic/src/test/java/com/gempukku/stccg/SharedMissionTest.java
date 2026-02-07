@@ -39,7 +39,7 @@ public class SharedMissionTest extends AbstractAtTest {
         assertTrue(mission2.isInPlay());
 
         assertNotEquals(Phase.SEED_MISSION, _game.getCurrentPhase());
-        List<MissionLocation> locations = _game.getGameState().getSpacelineLocations();
+        List<MissionLocation> locations = _game.getGameState().getUnorderedMissionLocations();
         assertEquals(1, locations.size());
         MissionLocation onlyLocation = locations.getFirst();
         assertEquals(2, onlyLocation.getMissionCards().size());

@@ -34,10 +34,10 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = { "performedActions", "phasesInOrder" }, allowGetters = true)
-@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
-@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
+@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineElements",
+        "gameLocations", "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
+@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineElements",
+        "gameLocations", "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
 public abstract class GameState {
 
     Phase _currentPhase;

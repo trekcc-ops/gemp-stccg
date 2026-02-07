@@ -16,9 +16,9 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame",
-        "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
-@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
+        "spacelineElements", "gameLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
+@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineElements",
+        "gameLocations", "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
 public class GameStateView {
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
@@ -58,11 +58,24 @@ public class GameStateView {
         else return null;
     }
 
-    @JsonProperty("spacelineLocations")
+    @JsonProperty("spacelineElements")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<MissionLocation> getSpacelineLocations() {
+    private List<SpacelineIndex> getSpacelineElements() {
         if (_gameState instanceof ST1EGameState stGameState) {
-            return new LinkedList<>(stGameState.getSpacelineLocations());
+            return stGameState.getSpacelineElements();
+        }
+        else return null;
+    }
+
+    @JsonProperty("gameLocations")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, GameLocation> getGameLocations() {
+        if (_gameState instanceof ST1EGameState stGameState) {
+            Map<String, GameLocation> result = new HashMap<>();
+            for (GameLocation location : stGameState.getUnorderedGameLocations()) {
+                result.put(String.valueOf(location.getLocationId()), location);
+            }
+            return result;
         }
         else return null;
     }

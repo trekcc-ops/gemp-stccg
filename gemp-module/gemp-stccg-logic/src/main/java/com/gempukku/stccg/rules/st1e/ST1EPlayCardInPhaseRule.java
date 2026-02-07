@@ -93,7 +93,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
     }
 
     public boolean canFacilityBeSeeded(FacilityCard facility, ST1EGame game) {
-        for (MissionLocation location : game.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location : game.getGameState().getUnorderedMissionLocations()) {
             boolean canSeedHere = game.getRules().isLocationValidPlayCardDestinationPerRules(
                     game, facility, location, SeedCardAction.class, facility.getOwnerName(),
                     facility.getAffiliationOptions());

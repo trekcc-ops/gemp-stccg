@@ -27,11 +27,15 @@ import java.util.*;
 
 @JsonIgnoreProperties(value = { "performedActions", "phasesInOrder" }, allowGetters = true)
 public class ST1EGameState extends GameState {
-    @JsonProperty("spacelineLocations")
-    final List<MissionLocation> _spacelineLocations = new ArrayList<>();
+
+    @JsonProperty("spacelineElements")
+    final List<SpacelineIndex> _spacelineElements = new ArrayList<>();
+
     @JsonProperty("awayTeams")
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId = 1;
+
+    @JsonProperty("gameLocations")
     private final Map<Integer, GameLocation> _locationIds = new HashMap<>();
 
     @SuppressWarnings("unused")
@@ -52,8 +56,10 @@ public class ST1EGameState extends GameState {
                          List<Player> players,
                          @JsonProperty("awayTeams")
                          List<AwayTeam> awayTeams,
-                          @JsonProperty("spacelineLocations")
-                          List<MissionLocation> spacelineLocations,
+                          @JsonProperty("spacelineElements")
+                          List<SpacelineIndex> spacelineElements,
+                          @JsonProperty("gameLocations")
+                          Map<Integer, GameLocation> gameLocations,
                           @JsonProperty("modifiers")
                           List<Modifier> modifiers
     ) {
@@ -69,11 +75,8 @@ public class ST1EGameState extends GameState {
                 _nextAttemptingUnitId = awayTeam.getAwayTeamId() + 1;
             }
         }
-        for (MissionLocation location : spacelineLocations) {
-            _spacelineLocations.add(location);
-            int locationId = location.getLocationId();
-            _locationIds.put(locationId, location);
-        }
+        _spacelineElements.addAll(spacelineElements);
+        _locationIds.putAll(gameLocations);
         for (Modifier modifier : modifiers) {
             _modifiersLogic.addAlwaysOnModifier(modifier);
         }
@@ -160,8 +163,11 @@ public class ST1EGameState extends GameState {
 
 
     public boolean hasLocationsInQuadrant(Quadrant quadrant) {
-        for (MissionLocation location : _spacelineLocations) {
-            if (location.getQuadrant() == quadrant) return true;
+        for (SpacelineIndex spacelineItem : _spacelineElements) {
+            if (spacelineItem instanceof LocationSpacelineIndex location &&
+                    location.getQuadrant() == quadrant) {
+                return true;
+            }
         }
         return false;
     }
@@ -177,23 +183,25 @@ public class ST1EGameState extends GameState {
 
 
     public Integer indexOfLocation(String location, Quadrant quadrant) {
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            if (Objects.equals(_spacelineLocations.get(i).getLocationName(), location) &&
-                    _spacelineLocations.get(i).getQuadrant() == quadrant)
+        for (int i = 0; i < _spacelineElements.size(); i++) {
+            if (_spacelineElements.get(i) instanceof LocationSpacelineIndex locationIndex &&
+                    _locationIds.get(locationIndex.getLocationId()) instanceof MissionLocation missionLocation &&
+                Objects.equals(missionLocation.getLocationName(), location) &&
+                    _spacelineElements.get(i).getQuadrant() == quadrant)
                 return i;
         }
         return null;
     }
 
     public Integer firstInQuadrant(Quadrant quadrant) {
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant) return i;
+        for (int i = 0; i < _spacelineElements.size(); i++) {
+            if (_spacelineElements.get(i).getQuadrant() == quadrant) return i;
         }
         return null;
     }
     public Integer lastInQuadrant(Quadrant quadrant) {
-        for (int i = _spacelineLocations.size() - 1; i >= 0; i--) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant)
+        for (int i = _spacelineElements.size() - 1; i >= 0; i--) {
+            if (_spacelineElements.get(i).getQuadrant() == quadrant)
                 return i;
         }
         return null;
@@ -202,25 +210,54 @@ public class ST1EGameState extends GameState {
     public Integer firstInRegion(Region region, Quadrant quadrant) {
         if (quadrant == null || region == null)
             return null;
-        for (int i = 0; i < _spacelineLocations.size(); i++) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant &&
-                    (_spacelineLocations.get(i).getRegion() == region))
-                return i;
+        for (int i = 0; i < _spacelineElements.size(); i++) {
+            SpacelineIndex index = _spacelineElements.get(i);
+            if (index instanceof LocationSpacelineIndex locationIndex) {
+                GameLocation location = _locationIds.get(locationIndex.getLocationId());
+                if (location.isInQuadrant(quadrant) && location.isInRegion(region)) {
+                    return i;
+                }
+            }
         }
         return null;
     }
 
     public Integer lastInRegion(Region region, Quadrant quadrant) {
-        for (int i = _spacelineLocations.size() - 1; i >= 0; i--) {
-            if (_spacelineLocations.get(i).getQuadrant() == quadrant &&
-                    (_spacelineLocations.get(i).getRegion() == region))
-                return i;
+        if (quadrant == null || region == null)
+            return null;
+        for (int i = _spacelineElements.size() - 1; i >= 0; i--) {
+            SpacelineIndex index = _spacelineElements.get(i);
+            if (index instanceof LocationSpacelineIndex locationIndex) {
+                GameLocation location = _locationIds.get(locationIndex.getLocationId());
+                if (location.isInQuadrant(quadrant) && location.isInRegion(region)) {
+                    return i;
+                }
+            }
         }
         return null;
     }
 
-    public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
+    @JsonIgnore
+    public List<GameLocation> getOrderedSpacelineLocations() {
+        List<GameLocation> result = new ArrayList<>();
+        for (SpacelineIndex index : _spacelineElements) {
+            if (index instanceof LocationSpacelineIndex locationIndex) {
+                GameLocation location = _locationIds.get(locationIndex.getLocationId());
+                result.add(location);
+            }
+        }
+        return result;
+    }
 
+    public List<MissionLocation> getUnorderedMissionLocations() {
+        List<MissionLocation> result = new ArrayList<>();
+        for (GameLocation location : _locationIds.values()) {
+            if (location instanceof MissionLocation missionLocation) {
+                result.add(missionLocation);
+            }
+        }
+        return result;
+    }
 
     public List<AwayTeam> getAwayTeams() {
         return _awayTeams;
@@ -261,7 +298,7 @@ public class ST1EGameState extends GameState {
     }
 
     public void addSpacelineLocation(int indexNumber, MissionLocation location) {
-        _spacelineLocations.add(indexNumber, location);
+        _spacelineElements.add(indexNumber, new LocationSpacelineIndex(location));
         _locationIds.put(location.getLocationId(), location);
     }
 
@@ -272,7 +309,7 @@ public class ST1EGameState extends GameState {
                             card1.getGameLocation(this) instanceof MissionLocation missionLocation &&
                             card1.getAttachedToCardId() != null &&
                             card1.getAttachedToCardId().equals(card2.getAttachedToCardId()) &&
-                            _spacelineLocations.contains(missionLocation);
+                            _locationIds.containsValue(missionLocation);
                 if (!presentWithEachOther) {
                     return false;
                 }
@@ -321,4 +358,12 @@ public class ST1EGameState extends GameState {
         return null;
     }
 
+    @JsonIgnore
+    public List<SpacelineIndex> getSpacelineElements() {
+        return _spacelineElements;
+    }
+
+    public Collection<GameLocation> getUnorderedGameLocations() {
+        return _locationIds.values();
+    }
 }

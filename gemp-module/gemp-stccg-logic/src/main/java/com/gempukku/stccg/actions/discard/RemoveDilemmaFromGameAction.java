@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
@@ -34,8 +35,8 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
             ST1EGameState gameState = stGame.getGameState();
             PhysicalCard cardToRemove = _cardTarget.getCard();
 
-            for (MissionLocation mission : gameState.getSpacelineLocations()) {
-                if (mission.getSeedCards().contains(cardToRemove)) {
+            for (GameLocation location : gameState.getOrderedSpacelineLocations()) {
+                if (location instanceof MissionLocation mission && mission.getSeedCards().contains(cardToRemove)) {
                     mission.removeSeedCard(cardToRemove);
                 }
             }

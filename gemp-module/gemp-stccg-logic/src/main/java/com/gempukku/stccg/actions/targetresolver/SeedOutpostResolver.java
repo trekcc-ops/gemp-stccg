@@ -12,6 +12,7 @@ import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
@@ -59,13 +60,15 @@ public class SeedOutpostResolver implements ActionTargetResolver {
             if (_selectDestinationAction == null) {
                 ST1EGameState gameState = stGame.getGameState();
                 Set<PhysicalCard> availableMissions = new HashSet<>();
-                for (MissionLocation location : gameState.getSpacelineLocations()) {
-                    MissionCard missionCard = location.getMissionForPlayer(_performingPlayerName);
-                    boolean canPlayHere = stGame.getRules().isLocationValidPlayCardDestinationPerRules(
-                            stGame, _cardEnteringPlay, location, SeedCardAction.class, _performingPlayerName,
-                            _cardEnteringPlay.getAffiliationOptions());
-                    if (canPlayHere) {
-                        availableMissions.add(missionCard);
+                for (GameLocation location : gameState.getOrderedSpacelineLocations()) {
+                    if (location instanceof MissionLocation missionLocation) {
+                        MissionCard missionCard = missionLocation.getMissionForPlayer(_performingPlayerName);
+                        boolean canPlayHere = stGame.getRules().isLocationValidPlayCardDestinationPerRules(
+                                stGame, _cardEnteringPlay, location, SeedCardAction.class, _performingPlayerName,
+                                _cardEnteringPlay.getAffiliationOptions());
+                        if (canPlayHere) {
+                            availableMissions.add(missionCard);
+                        }
                     }
                 }
                 _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,

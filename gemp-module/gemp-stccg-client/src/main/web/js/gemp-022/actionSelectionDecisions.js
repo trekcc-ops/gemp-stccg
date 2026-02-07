@@ -329,10 +329,9 @@ export function getActionInitiationCardActionMap(action, gameState) {
 }
 
 export function getTopMissionCardIdForLocation(gameState, targetLocationId) {
-    for (let i = 0; i < gameState.spacelineLocations.length; i++) {
-        let spacelineLocation = gameState.spacelineLocations[i];
-        if (spacelineLocation.locationId === targetLocationId) {
-            let missionCards = spacelineLocation.missionCardIds;
+    for (const [locationId, location] of gameState.gameLocations.entries()) {
+        if (locationId == targetLocationId) {
+            let missionCards = location.missionCardIds;
             return missionCards[(missionCards.length - 1)];
         }
     }

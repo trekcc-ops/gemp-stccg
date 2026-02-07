@@ -12,9 +12,11 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,7 +68,12 @@ public class SeedMissionCardAction extends PlayCardAction {
                     !_cardEnteringPlay.getBlueprint().isUniversal();
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
-            List<MissionLocation> spaceline = gameState.getSpacelineLocations();
+            List<MissionLocation> spaceline = new ArrayList<>();
+            for (GameLocation location : gameState.getOrderedSpacelineLocations()) {
+                if (location instanceof MissionLocation missionLoc) {
+                    spaceline.add(missionLoc);
+                }
+            }
 
             try {
                 if (sharedMission) {

@@ -1153,7 +1153,7 @@ export default class GameTableUI {
                 }
             }
 
-            for (const location of gameState.spacelineLocations) {
+            for (const [locationId, location] of gameState.gameLocations.entries()) {
                 for (let i = 0; i < location.missionCardIds.length; i++) {
                     let missionCardId = location.missionCardIds[i];
                     let missionCard = gameState.visibleCardsInGame[missionCardId];

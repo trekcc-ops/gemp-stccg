@@ -8,7 +8,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let targetCard;
     let spacelineIndex;
 
-    for (const location of jsonGameState.spacelineLocations) {
+    for (const [locationId, location] of jsonGameState.gameLocations.entries()) {
         if (location.seedCardCount === 0) {
             for (const missionId of location.missionCardIds) {
                 getCardDivFromId(missionId).removeClass("seedCardCountBadge").removeAttr("seedCardCount");
@@ -99,7 +99,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
             if (targetCard.cardType == "MISSION") {
-                let spacelineLocation = jsonGameState.spacelineLocations[spacelineIndex];
+                let spacelineLocation = jsonGameState.gameLocations[spacelineIndex.toString()];
                 let missionCards = spacelineLocation.missionCardIds;
                 let firstMissionAtLocation = (missionCards[0] == targetCard.cardId);
                 gameAnimations.putMissionIntoPlay(targetCard, true, spacelineLocation, spacelineIndex, firstMissionAtLocation);
@@ -208,8 +208,8 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             let newLocationId = targetCard.locationId;
             let newLocationName;
-            for (const location of jsonGameState.spacelineLocations) {
-                if (location.locationId == newLocationId) {
+            for (const [locationId, location] of jsonGameState.gameLocations.entries()) {
+                if (locationId == newLocationId) {
                     newLocationName = location.locationName;
                 }
             }
@@ -287,13 +287,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "PLACE_CARD_ON_MISSION": {
             let cardId = jsonAction.targetCardId;
             targetCard = jsonGameState.visibleCardsInGame[cardId];
-            let location;
-            for (const spacelineLocation of jsonGameState.spacelineLocations) {
-                if (spacelineLocation.locationId == targetCard.locationId) {
-                    location = spacelineLocation;
-                    break;
-                }
-            }
+            let location = jsonGameState.gameLocations[targetCard.locationId.toString()];
             let missionId = location.missionCardIds[0]; // just get the first one
             message = showLinkableCardTitle(targetCard) + " was placed on " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[missionId]) + ".";
             gameChat.appendMessage(message, "gameMessage");
@@ -345,10 +339,11 @@ export function getActionTargetCard(jsonAction, jsonGameState) {
 
 export function getSpacelineIndexFromLocationId(locationId, gameState) {
 
-    for (let i = 0; i < gameState.spacelineLocations.length; i++) {
-        let spacelineLocation = gameState.spacelineLocations[i];
-        if (spacelineLocation.locationId == locationId) {
-            return i;
+    for (let i = 0; i < gameState.spacelineElements.length; i++) {
+        if (gameState.spacelineElements[i].type === "location") {
+            if (gameState.spacelineElements[i].locationId == locationId) {
+                return i;
+            }
         }
     }
     console.log("Spaceline index for locationId " + locationId + " not found"); // normal for core cards
