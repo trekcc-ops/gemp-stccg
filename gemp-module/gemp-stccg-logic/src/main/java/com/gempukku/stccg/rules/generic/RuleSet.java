@@ -4,8 +4,8 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ActionProxy;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.ArrayList;
@@ -15,11 +15,8 @@ public class RuleSet<T extends DefaultGame> {
 
     private void applyGenericRules(T cardGame) {
         applyActionProxiesAsRules(cardGame,
-                new RequiredTriggersRule(cardGame),
-                new DiscardedCardRule(cardGame),
-                new OptionalTriggersRule(cardGame),
-                new ActivatePhaseActionsRule(cardGame),
-                new ActivateResponseAbilitiesRule(cardGame) // Less sure about this one
+                new RequiredTriggersRule(),
+                new DiscardedCardRule()
         );
     }
 
@@ -31,9 +28,10 @@ public class RuleSet<T extends DefaultGame> {
         applySpecificRules(cardGame);
     }
 
-    protected void applyActionProxiesAsRules(T cardGame, ActionProxy... rules) {
+    protected final void applyActionProxiesAsRules(T cardGame, ActionProxy... rules) {
         for (ActionProxy rule : rules) {
-            cardGame.getActionsEnvironment().addAlwaysOnActionProxy(rule);
+            ActionsEnvironment actionsEnvironment = cardGame.getActionsEnvironment();
+            actionsEnvironment.addAlwaysOnActionProxy(rule);
         }
     }
 

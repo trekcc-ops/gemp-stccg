@@ -1,20 +1,21 @@
 package com.gempukku.stccg.actions.modifiers;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 
 public class AddUntilModifierAction extends ActionyAction {
-    private final Modifier _modifier;
+    private final ModifierBlueprint _modifier;
     private final TimeResolver.Time until;
 
-    public AddUntilModifierAction(PhysicalCard performingCard, Modifier modifier, TimeResolver.Time until) {
-        super(performingCard.getGame(), performingCard.getController(), ActionType.ADD_MODIFIER);
+    public AddUntilModifierAction(DefaultGame cardGame, String playerName, ModifierBlueprint modifier,
+                                  TimeResolver.Time until, ActionContext context) {
+        super(cardGame, playerName, ActionType.ADD_MODIFIER, context);
         _modifier = modifier;
         this.until = until;
     }
@@ -25,17 +26,18 @@ public class AddUntilModifierAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) {
+    protected void processEffect(DefaultGame cardGame) {
         Phase phase = until.getPhase();
         if (phase == null)
-            phase = cardGame.getGameState().getCurrentPhase();
+            phase = cardGame.getCurrentPhase();
+
+        Modifier modifier = _modifier.createModifier(cardGame, _actionContext.card(), _actionContext);
 
         if (until.isEndOfTurn())
-            cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(_modifier);
+            cardGame.getModifiersEnvironment().addUntilEndOfTurnModifier(modifier);
         else
-            cardGame.getModifiersEnvironment().addUntilEndOfPhaseModifier(_modifier, phase);
+            cardGame.getModifiersEnvironment().addUntilEndOfPhaseModifier(modifier, phase);
         setAsSuccessful();
-        return getNextAction();
     }
 
 }

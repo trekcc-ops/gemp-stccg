@@ -20,7 +20,7 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
     private final LeagueParticipationDAO _leagueParticipationDAO;
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
 
-    private final Map<String, Set<String>> _cachedParticipants = Collections.synchronizedMap(new LRUMap<>(5));
+    private final Map<Integer, Set<String>> _cachedParticipants = Collections.synchronizedMap(new LRUMap<>(5));
 
     public CachedLeagueParticipationDAO(DbAccess dbAccess) {
         _leagueParticipationDAO =
@@ -32,7 +32,7 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
     }
 
     @Override
-    public void userJoinsLeague(String leagueId, User player, String remoteAddress) {
+    public void userJoinsLeague(int leagueId, User player, String remoteAddress) {
         _readWriteLock.writeLock().lock();
         try {
             getLeagueParticipantsInWriteLock(leagueId).add(player.getName());
@@ -43,7 +43,7 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
     }
 
     @Override
-    public Collection<String> getUsersParticipating(String leagueId) {
+    public Collection<String> getUsersParticipating(int leagueId) {
         _readWriteLock.readLock().lock();
         try {
             Collection<String> leagueParticipants = _cachedParticipants.get(leagueId);
@@ -63,7 +63,8 @@ public class CachedLeagueParticipationDAO implements LeagueParticipationDAO, Cac
         }
     }
 
-    private Collection<String> getLeagueParticipantsInWriteLock(String leagueId) {
+
+    private Collection<String> getLeagueParticipantsInWriteLock(int leagueId) {
         Set<String> leagueParticipants;
         leagueParticipants = _cachedParticipants.get(leagueId);
         if (leagueParticipants == null) {

@@ -8,11 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.evaluator.Evaluator;
-import com.gempukku.stccg.evaluator.SingleMemoryEvaluator;
-import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.io.IOException;
@@ -43,7 +40,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             appendFilter(value);
         for (CardType value : CardType.values())
             appendFilter(value);
-        for (Affiliation value : Affiliation.values())
+        for (Characteristic value : Characteristic.values())
             appendFilter(value);
         for (Uniqueness value : Uniqueness.values())
             appendFilter(value);
@@ -53,26 +50,39 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             appendFilter(value);
         for (SkillName value : SkillName.values())
             appendFilter(value);
-
-        simpleFilters.put("another", (actionContext) -> Filters.not(actionContext.getSource()));
-        simpleFilters.put("any", (actionContext) -> Filters.any);
-        simpleFilters.put("cardyoucandownload", (actionContext) ->
-                Filters.cardsYouCanDownload(actionContext.getPerformingPlayer()));
-        simpleFilters.put("encounteringthiscard", (actionContext) ->
-                Filters.encounteringCard(actionContext.getSource()));
-        simpleFilters.put("inplay", (actionContext) -> Filters.inPlay);
-        simpleFilters.put("inyourdrawdeck", (actionContext) ->
-                Filters.inYourDrawDeck(actionContext.getPerformingPlayer()));
-        simpleFilters.put("nor", (actionContext) -> Filters.Nor);
-        simpleFilters.put("self", ActionContext::getSource);
-        simpleFilters.put("unique", (actionContext) -> Filters.unique);
-        simpleFilters.put("your", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yours", (actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("yoursevenifnotinplay", (actionContext) ->
+        
+        appendSimpleFilter("another", (cardGame, actionContext) ->
+                Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
+        appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
+        appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
+                Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
+                new EncounteringCardFilter(actionContext.getPerformingCardId()));
+        appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
+        appendSimpleFilter("inplay", (cardGame, actionContext) -> Filters.inPlay);
+        appendSimpleFilter("inYourHand", (cardGame, actionContext) ->
+                new InYourHandFilter(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("inYourDrawDeck", (cardGame, actionContext) ->
+                new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
+        appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
+        appendSimpleFilter("outpost", (cardGame, actionContext) -> Filters.changeToFilter(FacilityType.OUTPOST));
+        appendSimpleFilter("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
+        appendSimpleFilter("thisCard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
+        appendSimpleFilter("unique", (cardGame, actionContext) -> Filters.unique);
+        appendSimpleFilter("youOwnNoCopiesInPlay", (cardGame, actionContext) ->
+                Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("your", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("yours", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
+        appendSimpleFilter("yoursevenifnotinplay", (cardGame, actionContext) ->
                 Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
-        simpleFilters.put("you have no copies in play", (actionContext) ->
-                Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayer()));
-        simpleFilters.put("yourcardspresentwiththiscard", (actionContext) -> Filters.yourCardsPresentWithThisCard(actionContext.getSource()));
+        appendSimpleFilter("yourcardspresentwiththiscard", (cardGame, actionContext) ->
+                Filters.yourCardsPresentWithThisCard(actionContext.getPerformingPlayerId(), actionContext.getPerformingCardId()));
+    }
+    
+    private void appendSimpleFilter(String label, FilterBlueprint blueprint) {
+        String labelToUse = label.toLowerCase();
+        simpleFilters.put(labelToUse, blueprint);
     }
 
     private void loadParameterFilters() {
@@ -82,73 +92,39 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                     FilterBlueprint[] filterables = new FilterBlueprint[filters.length];
                     for (int i = 0; i < filters.length; i++)
                         filterables[i] = generateFilter(filters[i]);
-                    return (actionContext) -> {
-                        Filterable[] filters1 = new Filterable[filterables.length];
-                        for (int i = 0; i < filterables.length; i++)
-                            filters1[i] = filterables[i].getFilterable(actionContext);
-
-                        return Filters.and(filters1);
-                    };
-                });
-        parameterFilters.put("attachedto",
-                (parameter) -> {
-                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
-                    return (actionContext) -> Filters.attachedTo(filterBlueprint.getFilterable(actionContext));
+                    return new AndFilterBlueprint(filterables);
                 });
         parameterFilters.put("affiliation", (parameter) -> {
             final Affiliation affiliation = Affiliation.findAffiliation(parameter);
             if (affiliation == null)
                 throw new InvalidCardDefinitionException("Unable to find affiliation for: " + parameter);
-            return (actionContext) -> affiliation;
+            return (cardGame, actionContext) -> new AffiliationFilter(affiliation);
         });
-        parameterFilters.put("hasstacked",
-                (parameter) -> {
-                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
-                    return (actionContext) -> Filters.hasStacked(filterBlueprint.getFilterable(actionContext));
-                });
-        parameterFilters.put("hasstackedcount",
-                (parameter) -> {
-                    String[] parameterSplit = parameter.split(",", 2);
-                    int count = Integer.parseInt(parameterSplit[0]);
-                    final FilterBlueprint filterBlueprint = generateFilter(parameterSplit[1]);
-                    return (actionContext) -> Filters.hasStacked(count, filterBlueprint.getFilterable(actionContext));
-                });
+        parameterFilters.put("bottomcardsofyourdiscardpile", (parameter) -> {
+            final String[] filters = splitIntoFilters(parameter);
+            int cardCount = Integer.parseInt(filters[0]);
+            FilterBlueprint additionalFilter = parseSTCCGFilter(filters[1]);
+            return (cardGame, actionContext) -> new BottomCardsOfDiscardFilter(actionContext.getPerformingPlayerId(),
+                    cardCount, additionalFilter.getFilterable(cardGame, actionContext));
+        });
         parameterFilters.put("memory",
-                (parameter) -> (actionContext) -> Filters.in(actionContext.getCardsFromMemory(parameter)));
-
+                (parameter) -> new FilterBlueprint() {
+                    @Override
+                    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+                        Collection<Integer> cardIds = actionContext.getCardIdsFromMemory(parameter);
+                        List<Integer> cardIdList = cardIds.stream().toList();
+                        return new InCardListFilter(cardIdList);
+                    }
+                });
         parameterFilters.put("name",
                 (parameter) -> {
                     String name = Sanitize(parameter);
-                    return (actionContext) -> (CardFilter)
-                            (game, physicalCard) -> physicalCard.getBlueprint().getTitle() != null && name.equals(Sanitize(physicalCard.getBlueprint().getTitle()));
-                });
-        parameterFilters.put("namefrommemory",
-                (parameter) -> actionContext -> {
-                    Set<String> titles = new HashSet<>();
-                    for (PhysicalCard physicalCard : actionContext.getCardsFromMemory(parameter))
-                        titles.add(physicalCard.getBlueprint().getTitle());
-                    return (CardFilter) (game, physicalCard) -> titles.contains(physicalCard.getBlueprint().getTitle());
-                });
-        parameterFilters.put("nameinstackedon",
-                (parameter) -> {
-                    final FilterBlueprint filterBlueprint = generateFilter(parameter);
-                    return actionContext -> {
-                        final Filterable sourceFilterable = filterBlueprint.getFilterable(actionContext);
-                        return (CardFilter) (game, physicalCard) -> {
-                            for (PhysicalCard cardWithStack : Filters.filterActive(game, sourceFilterable)) {
-                                for (PhysicalCard stackedCard : cardWithStack.getStackedCards(game)) {
-                                    if (stackedCard.getBlueprint().getTitle().equals(physicalCard.getBlueprint().getTitle()))
-                                        return true;
-                                }
-                            }
-                            return false;
-                        };
-                    };
+                    return (cardGame, actionContext) -> new TitleFilter(name);
                 });
         parameterFilters.put("not",
                 (parameter) -> {
                     final FilterBlueprint filterBlueprint = generateFilter(parameter);
-                    return (actionContext) -> Filters.not(filterBlueprint.getFilterable(actionContext));
+                    return (cardGame, actionContext) -> Filters.not(filterBlueprint.getFilterable(cardGame, actionContext));
                 });
         parameterFilters.put("or",
                 (parameter) -> {
@@ -156,40 +132,22 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                     FilterBlueprint[] filterables = new FilterBlueprint[filters.length];
                     for (int i = 0; i < filters.length; i++)
                         filterables[i] = generateFilter(filters[i]);
-                    return (actionContext) -> {
-                        Filterable[] filters1 = new Filterable[filterables.length];
-                        for (int i = 0; i < filterables.length; i++)
-                            filters1[i] = filterables[i].getFilterable(actionContext);
+                    return new FilterBlueprint() {
+                        @Override
+                        public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+                            Filterable[] filters1 = new Filterable[filterables.length];
+                            for (int i = 0; i < filterables.length; i++)
+                                filters1[i] = filterables[i].getFilterable(cardGame, actionContext);
 
-                        return Filters.or(filters1);
+                            return Filters.or(filters1);
+                        }
                     };
-                });
-        parameterFilters.put("strengthlessthan",
-                (parameter) -> {
-                    final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
-
-                    return (actionContext) -> {
-                        float amount = valueSource.evaluateExpression(actionContext);
-                        return Filters.lessStrengthThan(amount);
-                    };
-                });
-        parameterFilters.put("strengthmorethan",
-                new FilterableSourceProducer() {
-                    @Override
-                    public FilterBlueprint createFilterableSource(String parameter) throws InvalidCardDefinitionException, JsonProcessingException {
-                        final ValueSource valueSource = _mapper.readValue(parameter, ValueSource.class);
-
-                        return (actionContext) -> {
-                            float amount = valueSource.evaluateExpression(actionContext);
-                            return Filters.moreStrengthThan(amount);
-                        };
-                    }
                 });
         parameterFilters.put("title",parameterFilters.get("name"));
         parameterFilters.put("zone",
                 (parameter) -> {
                     final Zone zone = _mapper.readValue(parameter, Zone.class);
-                    return actionContext -> zone;
+                    return (cardGame, actionContext) -> Filters.changeToFilter(zone);
                 });
 
     }
@@ -208,7 +166,15 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     }
 
     private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
-        // System.out.println(value); // Very useful for debugging
+//        System.out.println(value); // Very useful for debugging
+        if (value.startsWith("bottomCardsOfYourDiscardPile(") && value.endsWith(")")) {
+            String remainingText = value.substring("bottomCardsOfYourDiscardPile(".length(), value.length() - 1);
+            final String[] filters = splitIntoFilters(remainingText);
+            int cardCount = Integer.parseInt(filters[0]);
+            FilterBlueprint additionalFilter = parseSTCCGFilter(filters[1]);
+            return (cardGame, actionContext) -> new BottomCardsOfDiscardFilter(actionContext.getPerformingPlayerId(),
+                    cardCount, additionalFilter.getFilterable(cardGame, actionContext));
+        }
         if (value.split(OR_WITH_NO_PARENTHESES).length > 1)
             return createOrFilter(value);
         if (value.split(AND_WITH_NO_PARENTHESES).length > 1)
@@ -218,28 +184,36 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         }
         if (value.startsWith("not(") && value.endsWith(")")) {
             FilterBlueprint filterBlueprint = parseSTCCGFilter(value.substring(4, value.length() - 1));
-            return (actionContext) -> Filters.not(filterBlueprint.getFilterable(actionContext));
+            return (cardGame, actionContext) -> Filters.not(filterBlueprint.getFilterable(cardGame, actionContext));
         }
         if (value.startsWith("name(") && value.endsWith(")")) {
-            return (actionContext) -> Filters.name(value.substring(5, value.length() - 1));
+            String cardTitle = value.substring(5, value.length() - 1);
+            return new CardTitleFilterBlueprint(cardTitle);
+        }
+        if (value.startsWith("title(") && value.endsWith(")")) {
+            String cardTitle = value.substring(6, value.length() - 1);
+            return new CardTitleFilterBlueprint(cardTitle);
         }
         if (value.startsWith("affiliation=")) {
             String affiliationName = value.substring(12);
             Affiliation affiliation = Affiliation.findAffiliation(affiliationName);
-            return (actionContext) -> Filters.and(affiliation);
+            return (cardGame, actionContext) -> Filters.and(affiliation);
         }
         if (value.startsWith("classification=")) {
             String skillName = value.substring("classification=".length());
             SkillName skill = SkillName.valueOf(skillName.toUpperCase(Locale.ROOT));
-            return (actionContext) -> Filters.classification(skill);
+            return (cardGame, actionContext) -> new ClassificationFilter(skill);
         }
         if (value.startsWith("skill-dots<=")) {
             String[] stringSplit = value.split("<=");
-            return (actionContext) -> Filters.skillDotsLessThanOrEqualTo(Integer.parseInt(stringSplit[1]));
+            int skillDotCount = Integer.parseInt(stringSplit[1]);
+            return (cardGame, actionContext) ->
+                    new SkillDotFilter(skillDotCount, ComparatorType.LESS_THAN_OR_EQUAL_TO);
         }
         if (value.startsWith("sd-icons=")) {
             String[] stringSplit = value.split("=");
-            return (actionContext) -> Filters.specialDownloadIconCount(Integer.parseInt(stringSplit[1]));
+            int iconCount = Integer.parseInt(stringSplit[1]);
+            return (cardGame, actionContext) -> new SpecialDownloadIconCountFilter(iconCount, ComparatorType.EQUAL_TO);
         }
         FilterBlueprint result = simpleFilters.get(Sanitize(value));
         if (result == null)
@@ -252,12 +226,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         List<FilterBlueprint> filterBlueprints = new LinkedList<>();
         for (String string : stringSplit)
             filterBlueprints.add(parseSTCCGFilter(string));
-        return (actionContext) -> {
-            List<Filterable> filterables = new LinkedList<>();
-            for (FilterBlueprint filterBlueprint : filterBlueprints)
-                filterables.add(filterBlueprint.getFilterable(actionContext));
-            return Filters.or(filterables.toArray(new Filterable[0]));
-        };
+        return new OrFilterBlueprint(filterBlueprints);
     }
 
     private FilterBlueprint createAndFilter(String value) throws InvalidCardDefinitionException {
@@ -265,10 +234,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         List<FilterBlueprint> filterBlueprints = new LinkedList<>();
         for (String string : stringSplit)
             filterBlueprints.add(parseSTCCGFilter(string));
-        return (actionContext) -> {
+        return (cardGame, actionContext) -> {
             List<Filterable> filterables = new LinkedList<>();
             for (FilterBlueprint filterBlueprint : filterBlueprints)
-                filterables.add(filterBlueprint.getFilterable(actionContext));
+                filterables.add(filterBlueprint.getFilterable(cardGame, actionContext));
             return Filters.and(filterables.toArray(new Filterable[0]));
         };
     }
@@ -286,9 +255,9 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         final String optionalFilterName = value.toString().toLowerCase().replace("_", "-");
         if (simpleFilters.containsKey(filterName))
             throw new RuntimeException("Duplicate filter name: " + filterName);
-        simpleFilters.put(filterName, (actionContext) -> value);
+        simpleFilters.put(filterName, (cardGame, actionContext) -> Filters.changeToFilter(value));
         if (!optionalFilterName.equals(filterName))
-            simpleFilters.put(optionalFilterName, (actionContext -> value));
+            simpleFilters.put(optionalFilterName, (cardGame, actionContext) -> Filters.changeToFilter(value));
     }
 
     private FilterBlueprint generateFilter(String value) throws
@@ -298,17 +267,17 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 throw new InvalidCardDefinitionException("Filter not specified");
             String[] filterStrings = splitIntoFilters(value);
             if (filterStrings.length == 0)
-                return (actionContext) -> Filters.any;
+                return (cardGame, actionContext) -> Filters.any;
             if (filterStrings.length == 1)
                 return createFilter(filterStrings[0]);
 
             FilterBlueprint[] filters = new FilterBlueprint[filterStrings.length];
             for (int i = 0; i < filters.length; i++)
                 filters[i] = createFilter(filterStrings[i]);
-            return (actionContext) -> {
+            return (cardGame, actionContext) -> {
                 Filterable[] filter = new Filterable[filters.length];
                 for (int i = 0; i < filter.length; i++) {
-                    filter[i] = filters[i].getFilterable(actionContext);
+                    filter[i] = filters[i].getFilterable(cardGame, actionContext);
                 }
 
                 return Filters.and(filter);

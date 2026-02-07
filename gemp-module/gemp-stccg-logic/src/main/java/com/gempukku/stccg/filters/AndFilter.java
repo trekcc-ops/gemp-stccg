@@ -1,22 +1,25 @@
 package com.gempukku.stccg.filters;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
 
 public class AndFilter implements CardFilter {
 
-    private final List<CardFilter> _filters;
+    @JsonProperty("filters")
+    private final Collection<CardFilter> _filters;
 
     public AndFilter(CardFilter... filters) {
-        _filters = Arrays.asList(filters);
+        this(List.of(filters));
     }
 
-    public AndFilter(List<CardFilter> filters) {
+    @JsonCreator
+    public AndFilter(@JsonProperty("filters") Collection<CardFilter> filters) {
         _filters = filters;
     }
 
@@ -30,6 +33,22 @@ public class AndFilter implements CardFilter {
             }
         }
         return result;
+    }
+
+    @JsonIgnore
+    public Collection<CardFilter> getFilters() { return _filters; }
+
+    @JsonIgnore
+    public void appendCardFilter(CardFilter... filters) {
+        for (CardFilter filter : filters) {
+            if (filter != Filters.any && !_filters.contains(filter)) {
+                if (filter instanceof AndFilter andFilter) {
+                    appendCardFilter(andFilter.getFilters().toArray(new CardFilter[0]));
+                } else {
+                    _filters.add(filter);
+                }
+            }
+        }
     }
 
 }

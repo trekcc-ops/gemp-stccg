@@ -4,13 +4,21 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
+import java.util.List;
+
 public class DiscardCardFromPlayResult extends ActionResult {
-    private final PhysicalCard _card;
+    protected final PhysicalCard _discardedCard;
+
+    public DiscardCardFromPlayResult(PhysicalCard card, List<Type> types, Action action) {
+        super(types, action);
+        _discardedCard = card;
+    }
 
     public DiscardCardFromPlayResult(PhysicalCard card, Action action) {
-        super(ActionResult.Type.FOR_EACH_DISCARDED_FROM_PLAY, action);
-        _card = card;
+        this(card, List.of(Type.JUST_DISCARDED_FROM_PLAY), action);
     }
+
+
 
 
     public String getPerformingPlayer() {
@@ -18,7 +26,7 @@ public class DiscardCardFromPlayResult extends ActionResult {
     }
 
     public PhysicalCard getDiscardedCard() {
-        return _card;
+        return _discardedCard;
     }
 
 }

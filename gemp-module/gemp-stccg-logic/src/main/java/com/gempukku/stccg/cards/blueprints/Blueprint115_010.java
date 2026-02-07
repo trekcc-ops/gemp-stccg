@@ -25,7 +25,7 @@ public class Blueprint115_010 extends CardBlueprint {
 
         // TODO - This is a dummy card definition to test out the "place on mission" feature
         List<Action> result = new LinkedList<>();
-        result.add(new PlaceCardOnMissionAction(game, attemptingUnit.getPlayer(), thisCard, missionLocation));
+        result.add(new PlaceCardOnMissionAction(game, attemptingUnit.getControllerName(), thisCard, missionLocation));
         return result;
     }
 

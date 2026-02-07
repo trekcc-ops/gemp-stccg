@@ -2,20 +2,19 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.player.PlayerResolver;
-import com.gempukku.stccg.evaluator.ConstantEvaluator;
+import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerResolver;
+import com.gempukku.stccg.player.PlayerSource;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,39 +23,36 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     private final ValueSource _countSource;
     private final PlayerSource _drawingPlayerSource;
 
-    DrawCardsActionBlueprint(@JsonProperty(value = "count")
-                             ValueSource count,
-                             @JsonProperty(value = "player")
-                             String playerText) throws InvalidCardDefinitionException {
-        _drawingPlayerSource = (playerText == null) ?
-                ActionContext::getPerformingPlayerId : PlayerResolver.resolvePlayer(playerText);
-        _countSource = Objects.requireNonNullElse(count, new ConstantEvaluator(1));
+    public DrawCardsActionBlueprint(@JsonProperty(value = "count")
+                                    ValueSource count,
+                                    @JsonProperty(value = "player")
+                                    String playerText) throws InvalidCardDefinitionException {
+        _drawingPlayerSource = (playerText == null) ? null : PlayerResolver.resolvePlayer(playerText);
+        _countSource = Objects.requireNonNullElse(count, new ConstantValueSource(1));
     }
 
     @Override
-    public List<Action> createActions(CardPerformedAction action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        final String targetPlayerId = _drawingPlayerSource.getPlayerId(context);
-        DefaultGame cardGame = context.getGame();
-        Player targetPlayer = cardGame.getPlayer(targetPlayerId);
-        final int count = (int) _countSource.evaluateExpression(context);
-        List<Action> result = new LinkedList<>();
-        int numberOfEffects = 1;
-        for (int i = 0; i < numberOfEffects; i++) {
-            result.add(new DrawCardsAction(context.getSource(), targetPlayer, count));
+        final String targetPlayerId;
+        if (_drawingPlayerSource != null) {
+            targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
+        } else {
+            targetPlayerId = context.getPerformingPlayerId();
         }
-        return result;
+        final int count = (int) _countSource.evaluateExpression(cardGame, context);
+        return List.of(new DrawCardsAction(context.card(), targetPlayerId, count, cardGame));
     }
 
     @Override
-    public boolean isPlayableInFull(ActionContext context) {
+    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext context) {
         try {
-            final int count = (int) _countSource.evaluateExpression(context);
-            final String targetPlayerId = _drawingPlayerSource.getPlayerId(context);
-            Player targetPlayer = context.getGame().getPlayer(targetPlayerId);
+            final int count = (int) _countSource.evaluateExpression(cardGame, context);
+            final String targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
+            Player targetPlayer = cardGame.getPlayer(targetPlayerId);
             return targetPlayer.getCardsInDrawDeck().size() >= count;
-        } catch(PlayerNotFoundException exp) {
-            context.getGame().sendErrorMessage(exp);
+        } catch(PlayerNotFoundException | InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
             return false;
         }
     }

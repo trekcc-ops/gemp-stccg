@@ -1,37 +1,32 @@
 package com.gempukku.stccg.tournament;
 
-import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.formats.GameFormat;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 
-public class ScheduledTournamentQueue extends AbstractTournamentQueue {
+public class ScheduledTournamentQueue extends TournamentQueue {
     private static final long _signupTimeBeforeStart = 1000 * 60 * 60; // 60 minutes before start
     private final long _startTime;
     private final int _minimumPlayers;
     private final String _startCondition;
-    private final String _tournamentName;
-    private final Tournament.Stage _stage;
     private final String _scheduledTournamentId;
+    private boolean _shouldBeRemoved;
 
-    public ScheduledTournamentQueue(TournamentQueueInfo tournamentQueueInfo, String tournamentId, long startTime,
-                                    int minimumPlayers, String format, String tournamentName,
-                                    Tournament.Stage stage, ServerObjects objects) {
-        super(tournamentQueueInfo, objects);
+    public ScheduledTournamentQueue(TournamentQueueInfo queueInfo, String tournamentId, long startTime,
+                                    int minimumPlayers, String startCondition, String tournamentName,
+                                    Tournament.Stage stage, CardBlueprintLibrary cardBlueprintLibrary,
+                                    TournamentService tournamentService, GameFormat gameFormat) {
+        super(queueInfo, queueInfo.getPrizes(cardBlueprintLibrary), tournamentService, stage, tournamentName,
+                gameFormat);
         _scheduledTournamentId = tournamentId;
         _startTime = startTime;
         _minimumPlayers = minimumPlayers;
-        _startCondition = format;
-        _tournamentName = tournamentName;
-        _stage = stage;
+        _startCondition = startCondition;
     }
 
-    @Override
-    public String getTournamentQueueName() {
-        return _tournamentName;
-    }
 
     @Override
     public String getPairingDescription() {
@@ -44,30 +39,44 @@ public class ScheduledTournamentQueue extends AbstractTournamentQueue {
     }
 
     @Override
-    public synchronized boolean process(TournamentQueueCallback tournamentQueueCallback,
-                                        CollectionsManager collectionsManager) throws SQLException, IOException {
-        long now = System.currentTimeMillis();
-        if (now > _startTime) {
-            if (_players.size() >= _minimumPlayers) {
-
-                for (String player : _players)
-                    _tournamentService.addPlayer(_scheduledTournamentId, player, _playerDecks.get(player));
-
-                Tournament tournament = _tournamentService.addTournament(_scheduledTournamentId, null, _tournamentName, _format, _collectionType, _stage,
-                        _pairingMechanism.getRegistryRepresentation(), _tournamentPrizes.getRegistryRepresentation(), new Date());
-                tournamentQueueCallback.createTournament(tournament);
-            } else {
-                _tournamentService.updateScheduledTournamentStarted(_scheduledTournamentId);
-                leaveAllPlayers(collectionsManager);
-            }
-
-            return true;
+    public synchronized void process(TournamentQueueCallback tournamentQueueCallback,
+                                     CollectionsManager collectionsManager, TournamentService tournamentService)
+            throws SQLException, IOException {
+        if (isWaitingForStartTime()) {
+            _shouldBeRemoved = false;
+        } else if (hasEnoughPlayers()) {
+            Tournament tournament = tournamentService.addTournament(this, _scheduledTournamentId, _queueName);
+            tournamentQueueCallback.createTournament(tournament);
+            addPlayersToTournamentData(tournamentService, _scheduledTournamentId);
+            _shouldBeRemoved = true;
+        } else {
+            tournamentService.updateScheduledTournamentStarted(_scheduledTournamentId);
+            leaveAllPlayers(collectionsManager);
+            _shouldBeRemoved = true;
         }
-        return false;
+    }
+
+    private boolean isWaitingForStartTime() {
+        long now = System.currentTimeMillis();
+        return now < _startTime;
+    }
+
+    private boolean hasEnoughPlayers() {
+        return _players.size() >= _minimumPlayers;
+    }
+
+    private void addPlayersToTournamentData(TournamentService tournamentService, String tournamentId) {
+        _players.forEach(player -> tournamentService.addPlayer(tournamentId, player,
+                _playerDecks.get(player)));
     }
 
     @Override
     public boolean isJoinable() {
         return System.currentTimeMillis() >= _startTime - _signupTimeBeforeStart;
+    }
+
+    @Override
+    public boolean shouldBeRemovedFromHall() {
+        return _shouldBeRemoved;
     }
 }

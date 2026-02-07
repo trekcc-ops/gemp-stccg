@@ -31,12 +31,12 @@ public class Blueprint139_013 extends CardBlueprint {
 
         List<Action> result = new LinkedList<>();
         MissionRequirement condition = new OrMissionRequirement(SkillName.GEOLOGY, SkillName.COMPUTER_SKILL);
-        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel();
+        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel(game);
 
-        if (condition.canBeMetBy(attemptingUnit)) {
+        if (condition.canBeMetBy(attemptingUnit.getAttemptingPersonnel(game), game)) {
             Collection<PersonnelCard> allSuchPersonnel = new LinkedList<>();
             for (PersonnelCard card : attemptingPersonnel) {
-                if (card.hasSkill(SkillName.GEOLOGY) || card.hasSkill(SkillName.COMPUTER_SKILL)) {
+                if (card.hasSkill(SkillName.GEOLOGY, game) || card.hasSkill(SkillName.COMPUTER_SKILL, game)) {
                     allSuchPersonnel.add(card);
                 }
             }
@@ -44,10 +44,10 @@ public class Blueprint139_013 extends CardBlueprint {
                 PersonnelCard personnelToContinue = TextUtils.getRandomItemFromList(allSuchPersonnel);
                 allSuchPersonnel.remove(personnelToContinue);
             }
-            result.add(new StopCardsAction(game, thisCard.getOwner(), allSuchPersonnel));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
+            result.add(new StopCardsAction(game, thisCard.getOwnerName(), allSuchPersonnel));
+            result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         } else {
-            result.add(new FailDilemmaAction(game, attemptingUnit.getPlayer(), attemptingUnit, thisCard, action, false));
+            result.add(new FailDilemmaAction(game, attemptingUnit, thisCard, action, false));
         }
 
         return result;

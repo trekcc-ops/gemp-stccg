@@ -1,11 +1,10 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -25,14 +24,14 @@ public class SelectAttemptingUnitAction extends ActionyAction {
     public SelectAttemptingUnitAction(DefaultGame cardGame, Player player, Collection<AttemptingUnit> attemptingUnits,
                                       String selectionText)
             throws InvalidGameLogicException {
-        super(cardGame, player, selectionText, ActionType.SELECT_AWAY_TEAM);
+        super(cardGame, player, ActionType.SELECT_AWAY_TEAM);
         _decisionText = selectionText;
         _eligibleUnits = new LinkedList<>(attemptingUnits);
         for (AttemptingUnit unit : _eligibleUnits) {
             String decisionText;
             if (unit instanceof AwayTeam team) {
                 decisionText = team.concatenateAwayTeam();
-            } else if (unit instanceof PhysicalShipCard ship) {
+            } else if (unit instanceof ShipCard ship) {
                 decisionText = ship.getTitle();
             } else {
                 throw new InvalidGameLogicException(
@@ -47,31 +46,31 @@ public class SelectAttemptingUnitAction extends ActionyAction {
         return false;
     }
 
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        if (_presentedOptions.size() == 1) {
-            attemptingUnitChosen(_eligibleUnits.getFirst());
-        } else {
-            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-            cardGame.getUserFeedback().sendAwaitingDecision(
-                    new MultipleChoiceAwaitingDecision(performingPlayer, _decisionText, _presentedOptions, cardGame) {
-                        @Override
-                        protected void validDecisionMade(int index, String result) {
-                            attemptingUnitChosen(_eligibleUnits.get(index));
-                        }
-                    });
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            if (_presentedOptions.size() == 1) {
+                attemptingUnitChosen(_eligibleUnits.getFirst());
+            } else {
+                Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+                cardGame.sendAwaitingDecision(
+                        new MultipleChoiceAwaitingDecision(performingPlayer, _decisionText, _presentedOptions, cardGame) {
+                            @Override
+                            protected void validDecisionMade(int index, String result) {
+                                attemptingUnitChosen(_eligibleUnits.get(index));
+                            }
+                        });
+            }
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        return getNextAction();
     }
 
     private void attemptingUnitChosen(AttemptingUnit attemptingUnit) {
-        _wasCarriedOut = true;
         setAsSuccessful();
         _selectedResponse = attemptingUnit;
     }
 
     public AttemptingUnit getSelection() { return _selectedResponse; }
-
-    public boolean wasCarriedOut() { return _wasCarriedOut; }
 
 }

@@ -1,18 +1,33 @@
 package com.gempukku.stccg.modifiers;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.filters.CardFilter;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.requirement.Condition;
 
 public class GainIconModifier extends AbstractModifier implements IconAffectingModifier {
+
+    @JsonProperty("icon")
     private final CardIcon _icon;
 
-    public GainIconModifier(ActionContext context, Filterable affectFilter, Condition condition, CardIcon icon) {
-        super(context.getSource(), null, affectFilter, condition, ModifierEffect.GAIN_ICON_MODIFIER);
+    @JsonCreator
+    private GainIconModifier(@JsonProperty("performingCard") PhysicalCard performingCard,
+                                          @JsonProperty("affectedCards") CardFilter affectFilter,
+                                          @JsonProperty("condition") Condition condition,
+                                          @JsonProperty("effectType") ModifierEffect effectType,
+                             @JsonProperty("icon") CardIcon icon) {
+        super(performingCard, affectFilter, condition, effectType);
         _icon = icon;
+    }
+
+
+    public GainIconModifier(PhysicalCard performingCard, Filterable affectFilter, Condition condition, CardIcon icon) {
+        this(performingCard, Filters.changeToFilter(affectFilter), condition, ModifierEffect.GAIN_ICON_MODIFIER, icon);
     }
 
     @Override
@@ -22,7 +37,11 @@ public class GainIconModifier extends AbstractModifier implements IconAffectingM
 
     @Override
     public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
-        return "Gains " + _icon.toHTML() + " from " + _cardSource.getCardLink();
+        String message = "Gains " + _icon.toHTML();
+        if (_cardSource != null) {
+            message = message + " from " + _cardSource.getCardLink();
+        }
+        return message;
     }
 
     @Override

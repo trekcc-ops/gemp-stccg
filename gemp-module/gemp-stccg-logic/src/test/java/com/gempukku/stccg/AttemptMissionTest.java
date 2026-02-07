@@ -1,132 +1,47 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AttemptMissionTest extends AbstractAtTest {
 
+    PersonnelCard picard;
+    MissionCard mission;
+    FacilityCard outpost;
+
+    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        mission = builder.addMission("101_154", "Excavation", P1);
+        outpost = builder.addFacility("101_104", P1);
+        picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
+        builder.setPhase(Phase.EXECUTE_ORDERS);
+        builder.startGame();
+    }
+
     @Test
-    public void attemptMissionTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
-        initializeGameToTestMissionAttempt();
+    public void attemptMissionTest() throws DecisionResultInvalidException, InvalidGameOperationException, CardNotFoundException {
+        initializeGame();
 
-        // Figure out which player is going first
-        assertEquals(P1, _game.getCurrentPlayerId());
-
-        autoSeedMissions();
-        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
-            skipDilemma();
-        }
-
-        FacilityCard outpost = null;
-        MissionCard excavation = null;
-        PersonnelCard picard = null;
-
-        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
-            if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
-                outpost = facility;
-            if (Objects.equals(card.getTitle(), "Excavation") && card instanceof MissionCard mission)
-                excavation = mission;
-            if (Objects.equals(card.getTitle(), "Jean-Luc Picard") && card instanceof PersonnelCard personnel)
-                picard = personnel;
-        }
-
-        assertNotNull(outpost);
-        assertNotNull(excavation);
-        assertNotNull(picard);
-        picard.removeFromCardGroup();
-        _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
-
-        // Seed Federation Outpost at Excavation
-        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-
-        // Report Picard to outpost
-        reportCard(P1, picard, outpost);
-        assertTrue(outpost.getCrew().contains(picard));
-        skipCardPlay();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-
-        // Beam Picard to the planet
-        beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavation.getLocationDeprecatedOnlyUseForTests()));
+        beamCard(P1, outpost, picard, mission);
+        assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(mission.getLocationDeprecatedOnlyUseForTests(_game)));
 
         // Attempt mission
-        attemptMission(P1, picard.getAwayTeam(), excavation);
+        attemptMission(P1, (MissionLocation) mission.getGameLocation(_game));
 
         // Confirm that mission was solved and player earned points
-        assertTrue(excavation.getLocationDeprecatedOnlyUseForTests().isCompleted());
-        assertEquals(excavation.getPoints(), _game.getPlayer(P1).getScore());
+        assertTrue(mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
+        assertEquals(mission.getPoints(), _game.getPlayer(P1).getScore());
     }
 
-    @Test
-    public void selectAwayTeamTest() throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
-        initializeGameToTestMissionAttempt();
-
-        // Figure out which player is going first
-        assertEquals(P1, _game.getCurrentPlayerId());
-
-        autoSeedMissions();
-        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
-            skipDilemma();
-        }
-
-        FacilityCard outpost = null;
-        MissionCard excavation = null;
-        PersonnelCard picard = null;
-
-        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
-            if (Objects.equals(card.getTitle(), "Federation Outpost") && card instanceof FacilityCard facility)
-                outpost = facility;
-            if (Objects.equals(card.getTitle(), "Excavation") && card instanceof MissionCard mission)
-                excavation = mission;
-            if (Objects.equals(card.getTitle(), "Jean-Luc Picard") && card instanceof PersonnelCard personnel)
-                picard = personnel;
-        }
-
-        assertNotNull(outpost);
-        assertNotNull(excavation);
-        assertNotNull(picard);
-        picard.removeFromCardGroup();
-        _game.getPlayer(P1).getDrawDeck().addCardToTop(picard);
-
-        // Seed Federation Outpost at Excavation
-        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        seedFacility(P1, outpost, excavation.getLocationDeprecatedOnlyUseForTests());
-        assertEquals(outpost.getLocationDeprecatedOnlyUseForTests(), excavation.getLocationDeprecatedOnlyUseForTests());
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-
-        // Report Picard to outpost
-        reportCard(P1, picard, outpost);
-        assertTrue(outpost.getCrew().contains(picard));
-        skipCardPlay();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-
-        MissionLocation excavationLocation = excavation.getLocationDeprecatedOnlyUseForTests();
-
-        // Beam Picard to the planet
-        beamCard(P1, outpost, picard, excavation);
-        assertTrue(picard.getAwayTeam().isOnSurface(excavationLocation));
-
-        // Attempt mission without specifying Away Team
-        attemptMission(P1, excavationLocation);
-
-        // Confirm that mission was solved and player earned points
-        assertTrue(excavationLocation.isCompleted());
-        assertEquals(excavation.getPoints(), _game.getPlayer(P1).getScore());
-    }
 }

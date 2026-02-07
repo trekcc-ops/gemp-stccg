@@ -41,4 +41,9 @@ public class NullLocation implements GameLocation {
     public boolean hasCardSeededUnderneath(PhysicalCard card) {
         return false;
     }
+
+    @Override
+    public int getLocationId() {
+        return -999;
+    }
 }

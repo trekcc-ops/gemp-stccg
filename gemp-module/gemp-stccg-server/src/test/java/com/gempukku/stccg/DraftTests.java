@@ -1,10 +1,9 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.common.SetDefinition;
-import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.draft.DraftChoice;
-import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
+import com.gempukku.stccg.draft.SoloDraft;
 import com.gempukku.stccg.formats.FormatLibrary;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +14,6 @@ import java.util.TreeMap;
 public class DraftTests extends AbstractServerTest {
     @Test
     public void DraftTest() {
-        CollectionsManager collectionsManager =
-                new CollectionsManager(null, null, null, _cardLibrary);
         FormatLibrary formatLibrary = new FormatLibrary(_cardLibrary);
 
         DraftFormatLibrary draftFormatLibrary =
@@ -61,7 +58,7 @@ public class DraftTests extends AbstractServerTest {
             String set = blueprint.substring(0, blueprint.indexOf('_'));
             final SetDefinition setDefinition = _cardLibrary.getSetDefinitions().get(set);
             final String cardRarity = setDefinition.getCardRarity(blueprint);
-            System.out.println(blueprint + " (" + cardRarity + "): " + entry.getValue());
+//            System.out.println(blueprint + " (" + cardRarity + "): " + entry.getValue());
         }
     }
 
@@ -74,8 +71,8 @@ public class DraftTests extends AbstractServerTest {
     }
 
     private static void doRandomTest(int nextIntValue, boolean getFloatBeforeInt) {
-        System.out.println("Get float before int: " + getFloatBeforeInt);
-        System.out.println("Next int value: " + nextIntValue);
+/*        System.out.println("Get float before int: " + getFloatBeforeInt);
+        System.out.println("Next int value: " + nextIntValue); */
         int[] values = new int[nextIntValue];
         for (int i = 0; i < 1000; i++) {
             Random rnd = new Random(i);
@@ -83,9 +80,9 @@ public class DraftTests extends AbstractServerTest {
                 rnd.nextFloat();
             values[rnd.nextInt(nextIntValue)]++;
         }
-        for (int i = 0; i < values.length; i++) {
+/*        for (int i = 0; i < values.length; i++) {
             System.out.println(i + ": " + values[i]);
-        }
+        } */
     }
 
     private static long getSeed(String collectionType) {

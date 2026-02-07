@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.LongPollableResource;
 import com.gempukku.stccg.async.WaitingRequest;
-import com.gempukku.stccg.gameevent.*;
+import com.gempukku.stccg.gameevent.GameEvent;
+import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gameevent.SendMessageGameEvent;
 import com.gempukku.stccg.player.PlayerClock;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -15,7 +19,7 @@ import java.util.List;
 public class GameCommunicationChannel implements GameStateListener, LongPollableResource {
     private List<GameEvent> _events = Collections.synchronizedList(new LinkedList<>());
     private final String _playerId;
-    private long _lastConsumed = System.currentTimeMillis();
+    private ZonedDateTime _lastConsumed = ZonedDateTime.now(ZoneId.of("UTC"));
     private final int _channelNumber;
     private volatile WaitingRequest _waitingRequest;
     private final DefaultGame _game;
@@ -86,11 +90,11 @@ public class GameCommunicationChannel implements GameStateListener, LongPollable
     }
 
     private void updateLastAccess() {
-        _lastConsumed = System.currentTimeMillis();
+        _lastConsumed = ZonedDateTime.now(ZoneId.of("UTC"));
     }
 
     @JsonIgnore
-    public final long getLastAccessed() {
+    public final ZonedDateTime getLastAccessed() {
         return _lastConsumed;
     }
 

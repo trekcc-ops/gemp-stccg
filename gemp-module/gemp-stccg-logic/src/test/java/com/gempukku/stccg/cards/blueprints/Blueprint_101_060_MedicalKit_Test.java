@@ -1,80 +1,46 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
+import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
-    
-    // Unit tests for card definition of Medical Kit
+
+    private FacilityCard outpost;
+    private EquipmentCard medicalKit;
+    private PersonnelCard picard;
+    private PersonnelCard taris;
+
+    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        medicalKit = builder.addCardInHand("101_060", "Medical Kit", P1, EquipmentCard.class);
+        picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
+        taris = builder.addCardAboardShipOrFacility("105_085", "Taris", P1, outpost, PersonnelCard.class);
+        builder.setPhase(Phase.CARD_PLAY);
+        builder.startGame();
+    }
 
     @Test
-    @SuppressWarnings("SpellCheckingInspection")
-    public void medicalKitTest() throws CardNotFoundException, InvalidGameLogicException, PlayerNotFoundException {
-        initializeSimple1EGame(30);
-        Player player1 = _game.getPlayer(1);
-        ST1EGameState gameState = _game.getGameState();
-        
-        _game.addCardToGame("101_174", _cardLibrary, P1);
-        _game.addCardToGame("101_060", _cardLibrary, P1);
-        _game.addCardToGame("101_215", _cardLibrary, P1);
-        _game.addCardToGame("105_085", _cardLibrary, P1);
+    public void skillTest() throws Exception {
+        initializeGame();
 
-        MissionCard mission = null;
-        PhysicalReportableCard1E medicalKit = null;
-        PersonnelCard picard = null;
-        PersonnelCard taris = null;
-
-        for (PhysicalCard card : gameState.getAllCardsInGame()) {
-            switch(card.getBlueprintId()) {
-                case "101_174":
-                    mission = (MissionCard) card;
-                    break;
-                case "101_060":
-                    medicalKit = (PhysicalReportableCard1E) card;
-                    break;
-                case "101_215":
-                    picard = (PersonnelCard) card;
-                    break;
-                case "105_085":
-                    taris = (PersonnelCard) card;
-                    break;
-                default:
-            }
-        }
-
-        // Federation Outpost
-        final FacilityCard outpost = new FacilityCard(_game, 104, player1, _cardLibrary.get("101_104"));
-
-        assertFalse(outpost.isInPlay());
-        assertEquals("Jean-Luc Picard", picard.getTitle());
-        assertEquals("Taris", taris.getTitle());
-        assertEquals("Medical Kit", medicalKit.getTitle());
-
-        _game.getGameState().addMissionLocationToSpaceline(mission, 0);
-        _game.getGameState().seedFacilityAtLocation(outpost, mission.getLocationDeprecatedOnlyUseForTests());
-
-        assertTrue(outpost.isInPlay());
-
-        picard.reportToFacility(outpost);
-        taris.reportToFacility(outpost);
-
-        assertEquals(0, picard.getSkillLevel(SkillName.MEDICAL));
-        assertEquals(1, taris.getSkillLevel(SkillName.MEDICAL));
-
-        medicalKit.reportToFacility(outpost);
-        assertTrue(medicalKit.isPresentWith(picard));
-        assertTrue(medicalKit.isPresentWith(taris));
-
-        assertEquals(1, picard.getSkillLevel(SkillName.MEDICAL));
-        assertEquals(2, taris.getSkillLevel(SkillName.MEDICAL));
+        assertEquals(0, picard.getSkillLevel(_game, SkillName.MEDICAL));
+        assertEquals(1, taris.getSkillLevel(_game, SkillName.MEDICAL));
+        reportCard(P1, medicalKit, outpost);
+        assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, medicalKit, taris));
+        assertEquals(1, picard.getSkillLevel(_game, SkillName.MEDICAL));
+        assertEquals(2, taris.getSkillLevel(_game, SkillName.MEDICAL));
     }
 }

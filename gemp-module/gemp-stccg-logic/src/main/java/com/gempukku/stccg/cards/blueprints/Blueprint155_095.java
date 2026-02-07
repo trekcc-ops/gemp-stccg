@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
+import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 
 
@@ -10,7 +10,7 @@ public class Blueprint155_095 extends CardBlueprint {
     }
 
     @Override
-    public boolean doesNotWorkWithPerRestrictionBox(PhysicalNounCard1E thisCard, PhysicalNounCard1E otherCard) {
-        return (otherCard.getCurrentAffiliation() == Affiliation.FEDERATION && thisCard.getCardId() != otherCard.getCardId());
+    public boolean doesNotWorkWithPerRestrictionBox(AffiliatedCard thisCard, AffiliatedCard otherCard) {
+        return (!otherCard.isAffiliation(Affiliation.FEDERATION) && thisCard.getCardId() != otherCard.getCardId());
     }
 }

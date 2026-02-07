@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.st1e.*;
 
@@ -36,7 +37,7 @@ public abstract class GameProcess {
         _isFinished = isFinished;
     }
 
-    public abstract void process(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException;
+    public abstract void process(DefaultGame cardGame) throws InvalidGameOperationException;
 
     @JsonIgnore
     public abstract GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException;
@@ -48,7 +49,7 @@ public abstract class GameProcess {
         _isFinished = isFinished;
     }
 
-    public void continueProcess(DefaultGame cardGame) throws PlayerNotFoundException, InvalidGameLogicException {
+    public void continueProcess(DefaultGame cardGame) throws InvalidGameOperationException {
         if (_isFinished) {
             cardGame.getGameState().setCurrentProcess(getNextProcess(cardGame));
         } else {

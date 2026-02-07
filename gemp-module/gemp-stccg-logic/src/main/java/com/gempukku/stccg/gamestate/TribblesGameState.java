@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -12,6 +11,7 @@ import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
@@ -26,8 +26,8 @@ public final class TribblesGameState extends GameState {
     private int _currentRound;
     private boolean _currentRoundIsOver;
 
-    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, GameTimer gameTimer) {
-        super(game, playerIds, gameTimer);
+    public TribblesGameState(Iterable<String> playerIds, GameTimer gameTimer) throws InvalidGameOperationException {
+        super(playerIds, gameTimer);
         _currentRound = 0;
         _chainBroken = false;
         setNextTribbleInSequence(1);
@@ -35,8 +35,9 @@ public final class TribblesGameState extends GameState {
             _playPiles.put(player, new LinkedList<>());
     }
 
-    public TribblesGameState(Iterable<String> playerIds, TribblesGame game, Map<String, PlayerClock> clocks) {
-        super(game, playerIds, clocks);
+    public TribblesGameState(Iterable<String> playerIds, Map<String, PlayerClock> clocks)
+            throws InvalidGameOperationException {
+        super(playerIds, clocks);
         _currentRound = 0;
         _chainBroken = false;
         setNextTribbleInSequence(1);
@@ -66,7 +67,7 @@ public final class TribblesGameState extends GameState {
                     for (String blueprintId : entry.getValue()) {
                         try {
                             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
-                            PhysicalCard card = new TribblesPhysicalCard(game, _nextCardId, player, blueprint);
+                            PhysicalCard card = blueprint.createPhysicalCard(_nextCardId, player.getPlayerId());
                             subDeck.add(card);
                             _nextCardId++;
                         } catch (CardNotFoundException e) {
@@ -136,6 +137,11 @@ public final class TribblesGameState extends GameState {
     @Override
     public List<Phase> getPhasesInOrder() {
         return List.of(getCurrentPhase());
+    }
+
+    @Override
+    public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
+        return false;
     }
 
     public void advanceRound() {

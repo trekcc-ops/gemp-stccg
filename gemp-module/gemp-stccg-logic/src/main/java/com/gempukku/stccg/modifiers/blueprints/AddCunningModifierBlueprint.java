@@ -4,17 +4,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.condition.RequirementCondition;
-import com.gempukku.stccg.condition.TrueCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.CunningModifier;
+import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AddCunningModifierBlueprint implements ModifierBlueprint {
 
@@ -27,7 +25,9 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
                                 @JsonProperty(value = "amount", required = true)
                              int amount,
                                 @JsonProperty(value = "ifCondition")
-                                Requirement ifRequirement) {
+                                Requirement ifRequirement,
+                                @JsonProperty(value = "cumulative")
+                                boolean isCumulative) {
         _amount = amount;
         _modifiedCardFilterBlueprint = modifiedCardFilterBlueprint;
         if (ifRequirement != null) {
@@ -35,11 +35,11 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
         }
     }
 
-    public Modifier getModifier(ActionContext actionContext) {
-        PhysicalCard thisCard = actionContext.getSource();
-        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(actionContext);
-        Condition ifCondition = new RequirementCondition(_requirements, actionContext);
+    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
+        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
+        Condition ifCondition = convertRequirementListToCondition(_requirements, actionContext, thisCard, cardGame);
         return new CunningModifier(thisCard, affectFilter, ifCondition, _amount);
     }
+
 
 }

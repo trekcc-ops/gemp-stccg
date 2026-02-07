@@ -1,8 +1,8 @@
 package com.gempukku.stccg.async.handler.decks;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.SortAndFilterCards;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.SubDeck;
+import com.gempukku.stccg.formats.FormatLibrary;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -21,20 +22,25 @@ import java.util.regex.Pattern;
 public class ImportDeckRequestHandler extends DeckRequestHandler implements UriRequestHandler {
 
     private final String _rawDeckList;
+    private final CardBlueprintLibrary _cardBlueprintLibrary;
+    private final FormatLibrary _formatLibrary;
 
     ImportDeckRequestHandler(
             @JsonProperty(value = "deckList", required = true)
-            String deckList
-    ) {
+            String deckList,
+            @JacksonInject CardBlueprintLibrary cardBlueprintLibrary,
+            @JacksonInject FormatLibrary formatLibrary) {
         _rawDeckList = deckList;
+        _cardBlueprintLibrary = cardBlueprintLibrary;
+        _formatLibrary = formatLibrary;
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
-        Map<SubDeck, List<String>> importResult = processImport(_rawDeckList, serverObjects.getCardBlueprintLibrary());
+        Map<SubDeck, List<String>> importResult = processImport(_rawDeckList, _cardBlueprintLibrary);
         CardDeck deck = new CardDeck(importResult);
-        JsonSerializedDeck serializedDeck = new JsonSerializedDeck(deck, serverObjects);
+        JsonSerializedDeck serializedDeck = new JsonSerializedDeck(deck, _cardBlueprintLibrary, _formatLibrary);
         responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(serializedDeck));
     }
 

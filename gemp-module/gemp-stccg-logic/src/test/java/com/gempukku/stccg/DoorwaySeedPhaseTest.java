@@ -1,11 +1,10 @@
 package com.gempukku.stccg;
 
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,14 +12,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class DoorwaySeedPhaseTest extends AbstractAtTest {
 
     @Test
-    public void doorwayTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException {
-        initializeSimple1EGameWithDoorways(30);
-        assertEquals(Phase.SEED_DOORWAY, _game.getCurrentPhase());
-        Player player1 = _game.getPlayer(P1);
-        Player player2 = _game.getPlayer(P2);
+    public void doorwayTest() throws DecisionResultInvalidException, InvalidGameOperationException,
+            CardNotFoundException {
 
-        selectCard(P1, player1.getCardsInGroup(Zone.SEED_DECK).getFirst());
-        selectCard(P2, player2.getCardsInGroup(Zone.SEED_DECK).getFirst());
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        builder.addMissionToDeck("101_154", "Excavation", P1);
+        PhysicalCard flash = builder.addSeedDeckCard("105_015", "Q-Flash", P1);
+        builder.startGame();
+
+        assertEquals(Phase.SEED_DOORWAY, _game.getCurrentPhase());
+
+        selectCard(P1, flash);
 
         assertEquals(Phase.SEED_MISSION, _game.getCurrentPhase());
     }

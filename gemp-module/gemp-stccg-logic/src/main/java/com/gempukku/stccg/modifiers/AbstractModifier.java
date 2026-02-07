@@ -1,103 +1,68 @@
 package com.gempukku.stccg.modifiers;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionCardResolver;
-import com.gempukku.stccg.actions.CardFilterResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.condition.TrueCondition;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.requirement.Condition;
+import com.gempukku.stccg.requirement.TrueCondition;
+
+import java.util.Objects;
 
 public abstract class AbstractModifier implements Modifier {
+
+    @JsonProperty("performingCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     protected final PhysicalCard _cardSource;
-    private final String _text;
-    protected String _playerId;
-    protected final ActionCardResolver _cardResolver;
+    @JsonProperty("affectedCards")
+    private final CardFilter _affectedCardsFilter;
+    @JsonProperty("condition")
     protected final Condition _condition;
+    @JsonProperty("effectType")
     private final ModifierEffect _effect;
 
-    protected AbstractModifier(ModifierEffect effect) {
-        _cardSource = null;
-        _text = null;
-        _cardResolver = new CardFilterResolver(Filters.any);
-        _condition = null;
-        _effect = effect;
-    }
-
-    protected AbstractModifier(String text, Filterable affectFilter, ModifierEffect effect) {
-        this(null, text, affectFilter, new TrueCondition(), effect);
-    }
-
-
-    protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter, ModifierEffect effect) {
-        this(source, text, affectFilter, null, effect);
-    }
-
-    protected AbstractModifier(PhysicalCard source, Filterable affectFilter, Condition condition,
-                               ModifierEffect effect) {
-        this(source, null, affectFilter, condition, effect);
-    }
-
-    protected AbstractModifier(PhysicalCard source, ActionCardResolver affectedCards, Condition condition,
+    protected AbstractModifier(PhysicalCard source, CardFilter affectedCards, Condition condition,
                                ModifierEffect effect) {
         _cardSource = source;
-        _text = null;
-        _cardResolver = affectedCards;
-        _condition = condition;
+        _affectedCardsFilter = Objects.requireNonNullElse(affectedCards, Filters.any);
+        _condition = Objects.requireNonNullElse(condition, new TrueCondition());
         _effect = effect;
     }
 
 
-    protected AbstractModifier(PhysicalCard source, String text, Filterable affectFilter,
-                               Condition condition, ModifierEffect effect) {
-        _cardSource = source;
-        _text = text;
-        CardFilter affectedFilter = (affectFilter == null) ? Filters.any : Filters.and(affectFilter);
-        _cardResolver = new CardFilterResolver(affectedFilter);
-        _condition = condition;
-        _effect = effect;
+    protected AbstractModifier(CardFilter affectFilter, Condition condition, ModifierEffect effect) {
+        this(null, affectFilter, condition, effect);
     }
 
-    @Override
-    public boolean isNonCardTextModifier() {
-        return false;
-    }
 
+    @JsonIgnore
     @Override
     public Condition getCondition() {
         return _condition;
     }
 
+    @JsonIgnore
     @Override
     public PhysicalCard getSource() {
         return _cardSource;
     }
 
-    @Override
-    public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
-        return _text;
-    }
+    abstract public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard);
 
+    @JsonIgnore
     @Override
-    public ModifierEffect getModifierEffect() {
+    public ModifierEffect getModifierType() {
         return _effect;
     }
 
     @Override
     public boolean affectsCard(DefaultGame cardGame, PhysicalCard physicalCard) {
-        try {
-            return _cardResolver.getCards(cardGame).contains(physicalCard);
-        } catch(InvalidGameLogicException exp) {
-            cardGame.sendErrorMessage(exp);
-            return false;
-        }
+        return _affectedCardsFilter.accepts(cardGame, physicalCard);
     }
 
 
@@ -117,17 +82,6 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean cancelsStrengthBonusModifier(DefaultGame game, PhysicalCard modifierSource,
-                                                PhysicalCard modifierTarget) {
-        return false;
-    }
-
-    @Override
-    public boolean isAdditionalCardTypeModifier(DefaultGame game, PhysicalCard physicalCard, CardType cardType) {
-        return false;
-    }
-
-    @Override
     public boolean canPerformAction(DefaultGame game, String performingPlayer, Action action) {
         return true;
     }
@@ -138,49 +92,12 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @Override
-    public boolean canPayExtraCostsToPlay(DefaultGame game, PhysicalCard card) {
-        return true;
-    }
-
-    @Override
     public void appendExtraCosts(DefaultGame game, Action action, PhysicalCard card) {
 
     }
 
     @Override
-    public boolean canHavePlayedOn(DefaultGame game, PhysicalCard playedCard, PhysicalCard target) {
-        return true;
-    }
-
-    @Override
-    public boolean shouldSkipPhase(DefaultGame game, Phase phase, String playerId) {
-        return false;
-    }
-
-    @Override
-    public boolean canBeDiscardedFromPlay(DefaultGame game, String performingPlayer, PhysicalCard card,
-                                          PhysicalCard source) {
-        return true;
-    }
-
-    @Override
-    public boolean canBeReturnedToHand(DefaultGame game, PhysicalCard card, PhysicalCard source) {
-        return true;
-    }
-
-    @Override
-    public boolean canLookOrRevealCardsInHand(DefaultGame game, String revealingPlayerId, String actingPlayerId) {
-        return true;
-    }
-
-    @Override
     public boolean canDiscardCardsFromHand(DefaultGame game, String playerId, PhysicalCard source) {
-        return true;
-    }
-
-    public boolean canPlayCardOutOfSequence(PhysicalCard source) { return false; }
-    @Override
-    public boolean canDiscardCardsFromTopOfDeck(DefaultGame game, String playerId, PhysicalCard source) {
         return true;
     }
 
@@ -189,13 +106,44 @@ public abstract class AbstractModifier implements Modifier {
         return false;
     }
 
+    @JsonIgnore
     public boolean isCumulative() { return true; }
 
-    public boolean isForPlayer(String playerId) {
-        return _playerId == null || _playerId.equals(playerId);
+    public final boolean isConditionFulfilled(DefaultGame cardGame) {
+        return _condition == null || _condition.isFulfilled(cardGame);
     }
 
-    public String getForPlayer() { return _playerId; }
-    public String getText() { return _text; }
+    public final boolean foundNoCumulativeConflict(Iterable<Modifier> modifierList) {
+        // If modifier is not cumulative, then check if modifiers from another copy
+        // card of same title is already in the list
+        if (!isCumulative() && _cardSource != null) {
+
+            ModifierEffect modifierEffect = getModifierType();
+            String cardTitle = _cardSource.getTitle();
+
+            for (Modifier otherModifier : modifierList) {
+                // check for the same effect from a copy of the same card
+                if (otherModifier.getModifierType() == modifierEffect && otherModifier.getSource() != null &&
+                        otherModifier.getSource().getTitle().equals(cardTitle)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @JsonIgnore
+    public boolean isSuspended(DefaultGame cardGame) {
+        if (_cardSource == null) {
+            return false;
+        } else {
+            return _cardSource.hasTextRemoved(cardGame);
+        }
+    }
+
+    public boolean isEffectType(ModifierEffect effectType) {
+        return _effect == effectType;
+    }
+
 
 }

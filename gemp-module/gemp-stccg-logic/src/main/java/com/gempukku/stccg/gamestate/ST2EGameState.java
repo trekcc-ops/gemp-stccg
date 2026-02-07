@@ -1,19 +1,20 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.game.ST2EGame;
 import com.gempukku.stccg.player.PlayerClock;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class ST2EGameState extends GameState {
 
-    public ST2EGameState(Iterable<String> playerIds, ST2EGame game, Map<String, PlayerClock> clocks) {
-        super(game, playerIds, clocks);
+    public ST2EGameState(Iterable<String> playerIds, Map<String, PlayerClock> clocks)
+            throws InvalidGameOperationException {
+        super(playerIds, clocks);
         _currentPhase = Phase.SEED_DOORWAY;
     }
 
@@ -30,6 +31,11 @@ public class ST2EGameState extends GameState {
     @Override
     public List<Phase> getPhasesInOrder() {
         return List.of(getCurrentPhase());
+    }
+
+    @Override
+    public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
+        return false;
     }
 
 }

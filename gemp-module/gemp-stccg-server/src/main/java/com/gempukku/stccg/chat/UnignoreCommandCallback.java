@@ -1,17 +1,16 @@
 package com.gempukku.stccg.chat;
 
-import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.database.IgnoreDAO;
+import com.gempukku.stccg.service.AdminService;
 
 public class UnignoreCommandCallback extends ChatCommandWithMessage {
     
-    private final IgnoreDAO _ignoreDAO;
+    private final AdminService _adminService;
     private static final int MAX_PLAYER_ID_LENGTH = 30;
 
 
-    UnignoreCommandCallback(ChatRoomMediator mediator, ServerObjects serverObjects) {
+    UnignoreCommandCallback(ChatRoomMediator mediator, AdminService adminService) {
         super(mediator);
-        _ignoreDAO = serverObjects.getIgnoreDAO();
+        _adminService = adminService;
     }
 
     
@@ -20,7 +19,7 @@ public class UnignoreCommandCallback extends ChatCommandWithMessage {
         final String playerName = parameters.strip();
         if (playerName.length() >= 2 && playerName.length() <= MAX_PLAYER_ID_LENGTH) {
             String userString = ChatStrings.user(playerName);
-            if (_ignoreDAO.removeIgnoredUser(from, playerName)) {
+            if (_adminService.removeIgnoredUser(from, playerName)) {
                 sendChatMessage(ChatStrings.SYSTEM_USER_ID, from,
                         userString + " removed from ignore list");
             } else {

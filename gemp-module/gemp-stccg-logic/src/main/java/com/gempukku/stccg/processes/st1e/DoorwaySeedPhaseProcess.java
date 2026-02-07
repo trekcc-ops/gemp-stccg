@@ -39,7 +39,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
             }
             if (!doorwaySeeds.isEmpty()) {
                 String message = "Select cards to seed during doorway phase";
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new ArbitraryCardsSelectionDecision(player, message, doorwaySeeds,
                                 cardGame) {
                             @Override
@@ -47,7 +47,8 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                                 try {
                                     List<PhysicalCard> cards = getSelectedCardsByResponse(result);
                                     for (PhysicalCard card : cards) {
-                                        List<TopLevelSelectableAction> seedActions = card.createSeedCardActions();
+                                        List<TopLevelSelectableAction> seedActions =
+                                                card.createSeedCardActions(cardGame);
                                         if (seedActions.size() != 1) {
                                             throw new InvalidGameLogicException("Could not create a seed action");
                                         } else {

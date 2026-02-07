@@ -21,8 +21,51 @@
             mission-type: space
             lore: "Starship work is hazardous. When danger arises, one must place the good of the crew ahead of one's own life."
             property-logo: st2-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/homefront2/3.jpg
+            actions: [
+                {
+                    type: encounter
+                    effect: [
+                        {
+                            type: stop
+                            target: {
+                                type: select
+                                filter: unique + personnel + encounteringThisCard
+                                count: 1
+                                random: true
+                            }
+                            saveToMemoryId: stoppedPersonnel
+                        }
+                        {
+                            type: selectAndPerformSubAction
+                            actionDescriptions: [
+                                "Kill personnel"
+                                "Draw cards"
+                            ]
+                            subActions: [
+                                {
+                                    type: kill
+                                    target: {
+                                        type: memory
+                                        memoryId: stoppedPersonnel
+                                    }
+                                }
+                                {
+                                    type: drawCards
+                                    player: opponent
+                                    count: {
+                                        type: skillDotCount
+                                        personnel: {
+                                            type: memory
+                                            memoryId: stoppedPersonnel
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
             rarity: V
         }
         {

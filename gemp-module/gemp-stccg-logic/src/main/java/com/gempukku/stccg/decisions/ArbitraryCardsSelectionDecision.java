@@ -33,11 +33,9 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         this(player, text, physicalCards, physicalCards, 0, physicalCards.size(), cardGame);
     }
 
-
-
-    public ArbitraryCardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
+    public ArbitraryCardsSelectionDecision(String playerName, String text, Collection<? extends PhysicalCard> physicalCards,
                                            int minimum, int maximum, DefaultGame cardGame) {
-        this(player, text, physicalCards, physicalCards, minimum, maximum, cardGame);
+        this(playerName, text, physicalCards, physicalCards, minimum, maximum, cardGame);
     }
 
 
@@ -45,7 +43,14 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
                                            Collection<? extends PhysicalCard> physicalCards,
                                            Collection<? extends PhysicalCard> selectable, int minimum, int maximum,
                                            DefaultGame cardGame) {
-        super(player, text, cardGame);
+        this(player.getPlayerId(), text, physicalCards, selectable, minimum, maximum, cardGame);
+    }
+
+    public ArbitraryCardsSelectionDecision(String playerName, String text,
+                                           Collection<? extends PhysicalCard> physicalCards,
+                                           Collection<? extends PhysicalCard> selectable, int minimum, int maximum,
+                                           DefaultGame cardGame) {
+        super(playerName, text, cardGame);
         _physicalCards.addAll(physicalCards);
         _selectable = selectable;
         _minimum = minimum;
@@ -53,6 +58,31 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         _cardIds = getCardIds(physicalCards);
         _independentlySelectable = true;
     }
+
+    public ArbitraryCardsSelectionDecision(String playerName, String text,
+                                           Collection<? extends PhysicalCard> physicalCards,
+                                           Map<PersonnelCard, List<PersonnelCard>> validCombinations,
+                                           int minimum, int maximum, DefaultGame cardGame) {
+        super(playerName, text, cardGame);
+        _physicalCards.addAll(physicalCards);
+        _selectable = physicalCards;
+        _minimum = minimum;
+        _maximum = maximum;
+        _validCombinations = new HashMap<>();
+
+        for (PersonnelCard personnel : validCombinations.keySet()) {
+            List<Integer> pairingsList = new LinkedList<>();
+            for (PersonnelCard pairing : validCombinations.get(personnel)) {
+                pairingsList.add(pairing.getCardId());
+            }
+            _validCombinations.put(personnel, pairingsList);
+        }
+
+        _cardIds = getCardIds(physicalCards);
+        _independentlySelectable = false;
+    }
+
+
 
     public ArbitraryCardsSelectionDecision(Player player, String text,
                                            Collection<? extends PhysicalCard> physicalCards,

@@ -64,7 +64,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                 }
             }
 
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(cardGame.getPlayer(playerId),
                             DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame, false) {
                         @Override
@@ -73,11 +73,15 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {
-                                if (action instanceof AddCardsToSeedCardStackAction seedCardsAction)
-                                    selectCardsToSeed(player, cardGame, seedCardsAction);
-                                else if (action instanceof RemoveCardsFromSeedCardStackAction seedCardsAction)
+                                if (action instanceof AddCardsToSeedCardStackAction seedCardsAction) {
+                                    try {
+                                        selectCardsToSeed(player, cardGame, seedCardsAction);
+                                    } catch(InvalidGameLogicException exp) {
+                                        throw new DecisionResultInvalidException(exp.getMessage());
+                                    }
+                                } else if (action instanceof RemoveCardsFromSeedCardStackAction seedCardsAction) {
                                     selectCardsToRemove(player, cardGame, seedCardsAction);
-                                else {
+                                } else {
                                     throw new DecisionResultInvalidException("Game error - invalid action selected");
                                 }
                             }
@@ -86,17 +90,18 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
         }
     }
 
-    private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToSeedCardStackAction seedCardsAction) {
+    private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToSeedCardStackAction seedCardsAction)
+            throws InvalidGameLogicException {
         Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK);
-        cardGame.getUserFeedback().sendAwaitingDecision(
-                new CardsSelectionDecision(player, "Select cards to seed under " + seedCardsAction.getLocationName(),
+        cardGame.sendAwaitingDecision(
+                new CardsSelectionDecision(player, "Select cards to seed under " + seedCardsAction.getLocationName(cardGame),
                         availableCards, cardGame) {
                     @Override
                     public void decisionMade (String result) throws DecisionResultInvalidException {
                         try {
                             Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                             seedCardsAction.setSeedCards(selectedCards);
-                            seedCardsAction.processEffect(player, cardGame);
+                            seedCardsAction.processEffect(cardGame);
                             cardGame.getActionsEnvironment().logCompletedActionNotInStack(seedCardsAction);
                             cardGame.sendActionResultToClient();
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);
@@ -112,7 +117,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
         Collection<PhysicalCard> availableCards;
         MissionLocation mission = removeAction.getLocation();
         availableCards = mission.getPreSeedCardsForPlayer(player);
-        cardGame.getUserFeedback().sendAwaitingDecision(
+        cardGame.sendAwaitingDecision(
                 new ArbitraryCardsSelectionDecision(player, "Select cards to remove from " + mission.getLocationName(),
                         availableCards, cardGame) {
                     @Override
@@ -120,7 +125,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                         Collection<PhysicalCard> selectedCards = getSelectedCardsByResponse(result);
                         try {
                             removeAction.setCardsToRemove(selectedCards);
-                            removeAction.processEffect(player, cardGame);
+                            removeAction.processEffect(cardGame);
                             cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
                             cardGame.sendActionResultToClient();
                             selectMissionToSeedUnder(player.getPlayerId(), cardGame);

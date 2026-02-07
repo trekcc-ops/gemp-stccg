@@ -1,9 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.missionattempt.FailDilemmaAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -14,7 +12,6 @@ import com.gempukku.stccg.condition.missionrequirements.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -44,7 +41,8 @@ public class Blueprint152_004 extends CardBlueprint {
         );
         MissionRequirement fullCondition = new OrMissionRequirement(condition1, condition2, condition3, condition4);
 
-        Action overcomeAction = new OvercomeDilemmaConditionAction(thisCard, action, fullCondition, attemptingUnit);
+        Action overcomeAction =
+                new OvercomeDilemmaConditionAction(game, thisCard, action, fullCondition, attemptingUnit);
         return List.of(overcomeAction);
     }
 

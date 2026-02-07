@@ -6,15 +6,18 @@ import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.condition.FacingDilemmaCondition;
+import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.attributes.CunningModifier;
+import com.gempukku.stccg.requirement.FacingDilemmaCondition;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Blueprint155_061 extends CardBlueprint {
 
     // Kosinski
@@ -30,11 +33,11 @@ public class Blueprint155_061 extends CardBlueprint {
     }
 
     @Override
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame, PhysicalCard thisCard)
             throws InvalidGameLogicException {
         // TODO - Need some additional work here to check skill for usability
         List<Modifier> modifiers = new LinkedList<>();
-        for (Skill skill : getSkills(thisCard.getGame(), thisCard))
+        for (Skill skill : getSkills(cardGame, thisCard))
             if (skill instanceof ModifierSkill modifierSkill)
                 modifiers.add(modifierSkill.getModifier(thisCard));
         return modifiers;
@@ -44,7 +47,7 @@ public class Blueprint155_061 extends CardBlueprint {
         return new ModifierSkill("X=4 when facing a dilemma.") {
             @Override
             public Modifier getModifier(PhysicalCard thisCard) throws InvalidGameLogicException {
-                return new CunningModifier(thisCard, thisCard, new FacingDilemmaCondition(thisCard), -4);
+                return new CunningModifier(thisCard, Filters.card(thisCard), new FacingDilemmaCondition(thisCard), -4);
             }
         };
     }

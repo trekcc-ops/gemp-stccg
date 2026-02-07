@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -35,19 +34,21 @@ public class PlaceTopCardOfDrawDeckOnTopOfPlayPileAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        int drawn = 0;
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
-        while ((drawn < _count) && (!performingPlayer.getCardsInDrawDeck().isEmpty())) {
-            PhysicalCard card = performingPlayer.getCardsInDrawDeck().getFirst();
-            cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
-            cardGame.getGameState().addCardToZoneWithoutSendingToClient(card, Zone.PLAY_PILE);
-            drawn++;
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            int drawn = 0;
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+            while ((drawn < _count) && (!performingPlayer.getCardsInDrawDeck().isEmpty())) {
+                PhysicalCard card = performingPlayer.getCardsInDrawDeck().getFirst();
+                cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(card));
+                cardGame.getGameState().addCardToZone(cardGame, card, Zone.PLAY_PILE, _actionContext);
+                drawn++;
+            }
+            setAsSuccessful();
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-
-        setAsSuccessful();
-        return getNextAction();
     }
     
 }

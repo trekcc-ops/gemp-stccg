@@ -1,41 +1,49 @@
 package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
-import com.gempukku.stccg.cards.cardgroup.CardPile;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.FixedCardsResolver;
+import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
+import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gameevent.GameStateListener;
-import com.gempukku.stccg.modifiers.ModifierFlag;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
-import java.util.List;
 
 public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
-    private SelectCardsAction _selectionAction;
+    private final ActionCardResolver _resolver;
     private Collection<PhysicalCard> _cardsToPlace;
-    private enum Progress { cardsSelected }
+
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
+                                              ActionCardResolver resolver) {
+        super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
+        _resolver = resolver;
+        _cardTargets.add(_resolver);
+    }
+
+
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
+                                              SelectCardsAction selectionAction) {
+        this(cardGame, performingPlayerName, new SelectCardsResolver(selectionAction));
+    }
+
 
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
                                               SelectCardsAction selectionAction) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK, Progress.values());
-        _selectionAction = selectionAction;
+        this(cardGame, performingPlayer.getPlayerId(), new SelectCardsResolver(selectionAction));
     }
 
-    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
+    public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
                                               Collection<PhysicalCard> cardsToPlace) {
-        super(cardGame, performingPlayer, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
-        _cardsToPlace = cardsToPlace;
+        this(cardGame, performingPlayerName, new FixedCardsResolver(cardsToPlace));
     }
 
 
@@ -45,30 +53,26 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!getProgress(Progress.cardsSelected)) {
-            if (_selectionAction != null && !_selectionAction.wasCarriedOut()) {
-                return _selectionAction;
-            } else if (_selectionAction != null) {
-                _cardsToPlace = _selectionAction.getSelectedCards();
-                setProgress(Progress.cardsSelected);
-            } else {
-                throw new InvalidGameLogicException("Unable to identify cards to place on bottom of deck");
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            _cardsToPlace = _resolver.getCards(cardGame);
+            GameState gameState = cardGame.getGameState();
+            gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, _cardsToPlace);
+
+            for (PhysicalCard card : _cardsToPlace) {
+                Player cardOwner = cardGame.getPlayer(card.getOwnerName());
+                DrawDeck drawDeck = cardOwner.getDrawDeck();
+                drawDeck.addCardToBottom(card);
+                card.setZone(Zone.DRAW_DECK);
+                setAsSuccessful();
             }
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-
-        GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, _cardsToPlace);
-
-        for (PhysicalCard card : _cardsToPlace) {
-            CardPile drawDeck = card.getOwner().getDrawDeck();
-            drawDeck.addCardToBottom(card);
-            card.setZone(Zone.DRAW_DECK);
-            setAsSuccessful();
-        }
-        return getNextAction();
     }
 
+    @SuppressWarnings("unused")
     @JsonProperty("targetCardIds")
     private Collection<PhysicalCard> getTargetCards() {
         return _cardsToPlace;

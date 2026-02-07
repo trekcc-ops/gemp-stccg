@@ -1,163 +1,127 @@
 package com.gempukku.stccg.async;
 
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.chat.ChatRoomMediator;
 import com.gempukku.stccg.chat.ChatServer;
+import com.gempukku.stccg.chat.HallChatRoomMediator;
 import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.collection.TransferDAO;
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.*;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.game.GameChatCreationListener;
 import com.gempukku.stccg.game.GameHistoryService;
-import com.gempukku.stccg.game.GameRecorder;
+import com.gempukku.stccg.game.GameRecordingCreationListener;
 import com.gempukku.stccg.game.GameServer;
+import com.gempukku.stccg.hall.GameCreationListener;
 import com.gempukku.stccg.hall.HallServer;
-import com.gempukku.stccg.league.CachedLeagueMatchDAO;
-import com.gempukku.stccg.league.CachedLeagueParticipationDAO;
+import com.gempukku.stccg.hall.TableHolder;
+import com.gempukku.stccg.league.LeagueMapper;
 import com.gempukku.stccg.league.LeagueService;
-import com.gempukku.stccg.merchant.MerchantService;
 import com.gempukku.stccg.packs.ProductLibrary;
 import com.gempukku.stccg.service.AdminService;
-import com.gempukku.stccg.service.LoggedUserHolder;
-import com.gempukku.stccg.tournament.TournamentDAO;
-import com.gempukku.stccg.tournament.TournamentMatchDAO;
-import com.gempukku.stccg.tournament.TournamentPlayerDAO;
 import com.gempukku.stccg.tournament.TournamentService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerObjects {
     private static final Logger LOGGER = LogManager.getLogger(ServerObjects.class);
     private final CardBlueprintLibrary _cardBlueprintLibrary;
-    private final ProductLibrary _productLibrary;
-    private final LoggedUserHolder _loggedUserHolder;
-    private CachedLeagueParticipationDAO _leagueParticipationDAO;
-    private CachedLeagueMatchDAO _leagueMatchDAO;
-    private TournamentDAO _tournamentDAO;
-    private TournamentPlayerDAO _tournamentPlayerDAO;
-    private TournamentMatchDAO _tournamentMatchDAO;
-    private LeagueDAO _leagueDAO;
-    private CacheManager _cacheManager;
-    private GameHistoryDAO _gameHistoryDAO;
-    private IgnoreDAO _ignoreDAO;
-    private CachedDeckDAO _deckDAO;
-    private CachedCollectionDAO _collectionDAO;
-    private CachedPlayerDAO _playerDAO;
-    private CachedTransferDAO _transferDAO;
-    private CachedIpBanDAO _ipBanDAO;
-    private FormatLibrary _formatLibrary;
-    private GameHistoryService _gameHistoryService;
-    private GameRecorder _gameRecorder;
-    private CollectionsManager _collectionsManager;
-    private DraftFormatLibrary _DraftFormatLibrary;
-    private LeagueService _leagueService;
+    private final CachedCollectionDAO _collectionDAO;
+    private final CachedPlayerDAO _playerDAO;
+    private final CachedTransferDAO _transferDAO;
+    private final CachedIpBanDAO _ipBanDAO;
+    private final FormatLibrary _formatLibrary;
+    private final DraftFormatLibrary _draftFormatLibrary;
     private AdminService _adminService;
-    private TournamentService _tournamentService;
-    private MerchantService _merchantService;
-    private ChatServer _chatServer;
-    private GameServer _gameServer;
-    private HallServer _hallServer;
-    private final LongPollingSystem _longPollingSystem;
+
+    // Injectable server objects to be called when constructing client request handlers
+    private final InjectableValues.Std _injectables = new InjectableValues.Std();
 
     public ServerObjects() {
-        //Libraries and other important prerequisite managers that are used by lots of other managers
+        // Libraries
         LOGGER.info("GempukkuServer loading prerequisites...");
         _cardBlueprintLibrary = new CardBlueprintLibrary();
-        _productLibrary = new ProductLibrary();
-        _loggedUserHolder = new LoggedUserHolder();
-        _loggedUserHolder.start();
-        _longPollingSystem = new LongPollingSystem();
+        _formatLibrary = new FormatLibrary(_cardBlueprintLibrary);
+        _draftFormatLibrary = new DraftFormatLibrary(_cardBlueprintLibrary, _formatLibrary);
 
-        //Now bulk initialize various managers
+        _injectables.addValue(LongPollingSystem.class, new LongPollingSystem());
+        _injectables.addValue(CardBlueprintLibrary.class, _cardBlueprintLibrary);
+        _injectables.addValue(ProductLibrary.class, new ProductLibrary());
+        _injectables.addValue(FormatLibrary.class, _formatLibrary);
+        _injectables.addValue(DraftFormatLibrary.class, _draftFormatLibrary);
+
+        // Database objects
         LOGGER.info("GempukkuServer loading DAOs...");
-        createDatabaseObjects();
-        LOGGER.info("GempukkuServer loading services...");
-        createServices();
-        LOGGER.info("GempukkuServer starting servers...");
-        startServers();
-        LOGGER.info("GempukkuServer startup complete.");
-    }
-
-    private final void createDatabaseObjects() {
         DbAccess dbAccess = new DbAccess();
 
-        _leagueParticipationDAO = new CachedLeagueParticipationDAO(dbAccess);
-        _leagueMatchDAO = new CachedLeagueMatchDAO(dbAccess);
-        _tournamentDAO =
-                LoggingProxy.createLoggingProxy(TournamentDAO.class, new DbTournamentDAO(dbAccess));
-        _tournamentPlayerDAO =
-                LoggingProxy.createLoggingProxy(TournamentPlayerDAO.class, new DbTournamentPlayerDAO(this, dbAccess));
-        _tournamentMatchDAO =
-                LoggingProxy.createLoggingProxy(TournamentMatchDAO.class, new DbTournamentMatchDAO(dbAccess));
-        _leagueDAO =
-                LoggingProxy.createLoggingProxy(LeagueDAO.class, new DbLeagueDAO(dbAccess));
-        _gameHistoryDAO =
-                LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess));
-        _ignoreDAO = new CachedIgnoreDAO(dbAccess);
-        _deckDAO = new CachedDeckDAO(this, dbAccess);
+        CachedDeckDAO _deckDAO = new CachedDeckDAO(dbAccess);
         _collectionDAO = new CachedCollectionDAO(dbAccess);
         _playerDAO = new CachedPlayerDAO(dbAccess);
         _transferDAO = new CachedTransferDAO(dbAccess);
         _ipBanDAO = new CachedIpBanDAO(dbAccess);
-        _cacheManager = new CacheManager(_deckDAO, _collectionDAO, _playerDAO, _transferDAO, _ipBanDAO);
+
+        _injectables.addValue(DeckDAO.class, _deckDAO);
+        _injectables.addValue(CacheManager.class,
+                new CacheManager(_deckDAO, _collectionDAO, _playerDAO, _transferDAO, _ipBanDAO));
+
+        LOGGER.info("GempukkuServer loading services...");
+        createServices(dbAccess);
+
+        LOGGER.info("GempukkuServer startup complete.");
     }
 
-    private final void createServices() {
-        _formatLibrary = new FormatLibrary(_cardBlueprintLibrary);
-        _gameHistoryService = new GameHistoryService(_gameHistoryDAO);
-        _gameRecorder = new GameRecorder(_gameHistoryService, _playerDAO);
-        _collectionsManager = new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO, _cardBlueprintLibrary);
-        _DraftFormatLibrary = new DraftFormatLibrary(_cardBlueprintLibrary, _formatLibrary);
-        _leagueService = new LeagueService(this, _leagueMatchDAO, _leagueParticipationDAO);
-        _adminService = new AdminService(_playerDAO, _ipBanDAO, _loggedUserHolder);
-        _tournamentService = new TournamentService(
-                _tournamentDAO, _tournamentPlayerDAO, _tournamentMatchDAO, _cardBlueprintLibrary);
-        _merchantService = new MerchantService(_cardBlueprintLibrary, _collectionsManager);
-        _chatServer = new ChatServer(this);
-        _gameServer = new GameServer(_deckDAO, _cardBlueprintLibrary, _chatServer, _gameRecorder);
-        _hallServer = new HallServer(this);
+    private void createServices(DbAccess dbAccess) {
+        // Services for multiple database access
+        _adminService = new AdminService(_playerDAO, _ipBanDAO, dbAccess);
+        GameHistoryService gameHistoryService = new GameHistoryService(_playerDAO, dbAccess);
+        CollectionsManager collectionsManager =
+                new CollectionsManager(_playerDAO, _collectionDAO, _transferDAO);
+        LeagueMapper leagueMapper = new LeagueMapper(_cardBlueprintLibrary, _formatLibrary, _draftFormatLibrary);
+        LeagueService leagueService = new LeagueService(collectionsManager, leagueMapper, dbAccess);
+        TournamentService tournamentService = new TournamentService(_cardBlueprintLibrary, _formatLibrary, dbAccess);
+
+        // Chat server
+        ChatServer chatServer = new ChatServer();
+
+        // Game server
+        List<GameCreationListener> listeners = new ArrayList<>();
+        listeners.add(new GameRecordingCreationListener(gameHistoryService));
+        listeners.add(new GameChatCreationListener(chatServer));
+        GameServer gameServer = new GameServer(_cardBlueprintLibrary, listeners);
+
+        // Hall server
+        TableHolder tableHolder = new TableHolder(_adminService, leagueService);
+        ChatRoomMediator hallChat = new HallChatRoomMediator(_adminService);
+        chatServer.addChatRoom(hallChat);
+        HallServer hallServer =
+                new HallServer(collectionsManager, tournamentService, gameServer, hallChat, tableHolder);
+
+        // Add services and servers to injectables for client request methods
+        _injectables.addValue(AdminService.class, _adminService);
+        _injectables.addValue(GameHistoryService.class, gameHistoryService);
+        _injectables.addValue(CollectionsManager.class, collectionsManager);
+        _injectables.addValue(LeagueService.class, leagueService);
+        _injectables.addValue(TournamentService.class, tournamentService);
+        _injectables.addValue(ChatServer.class, chatServer);
+        _injectables.addValue(GameServer.class, gameServer);
+        _injectables.addValue(HallServer.class, hallServer);
+
+        hallServer.startServer();
+        gameServer.startServer();
+        chatServer.startServer();
     }
 
-    private final void startServers() {
-        LOGGER.debug("Function StartServers - starting HallServer");
-        _hallServer.startServer();
-        LOGGER.debug("Function StartServers - starting GameServer");
-        _gameServer.startServer();
-        LOGGER.debug("Function StartServers - starting ChatServer");
-        _chatServer.startServer();
+
+    ServerChannelInitializer getChannelInitializer() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setInjectableValues(_injectables);
+        return new ServerChannelInitializer(mapper, _adminService);
     }
-
-
-    public final CardBlueprintLibrary getCardBlueprintLibrary() { return _cardBlueprintLibrary; }
-    public final ProductLibrary getProductLibrary() { return _productLibrary; }
-    public final LoggedUserHolder getLoggedUserHolder() { return _loggedUserHolder; }
-    public final LeagueDAO getLeagueDAO() { return _leagueDAO; }
-    public final IgnoreDAO getIgnoreDAO() { return _ignoreDAO; }
-    public final DeckDAO getDeckDAO() { return _deckDAO; }
-    public final PlayerDAO getPlayerDAO() { return _playerDAO; }
-    public final GameHistoryDAO getGameHistoryDAO() { return _gameHistoryDAO; }
-    public final TransferDAO getTransferDAO() { return _transferDAO; }
-    final IpBanDAO getIpBanDAO() { return _ipBanDAO; }
-    public final CacheManager getCacheManager() { return _cacheManager; }
-    public final FormatLibrary getFormatLibrary() { return _formatLibrary; }
-    public final GameHistoryService getGameHistoryService() { return _gameHistoryService; }
-    public final GameRecorder getGameRecorder() { return _gameRecorder; }
-    public final CollectionsManager getCollectionsManager() { return _collectionsManager; }
-    public final DraftFormatLibrary getSoloDraftDefinitions() { return _DraftFormatLibrary; }
-    public final LeagueService getLeagueService() { return _leagueService; }
-    public final AdminService getAdminService() { return _adminService; }
-    public final TournamentService getTournamentService() { return _tournamentService; }
-    public final MerchantService getMerchantService() { return _merchantService; }
-    public final ChatServer getChatServer() { return _chatServer; }
-    public final GameServer getGameServer() { return _gameServer; }
-    public final HallServer getHallServer() { return _hallServer; }
-
-    public LongPollingSystem getLongPollingSystem() {
-        return _longPollingSystem;
-    }
-
 }

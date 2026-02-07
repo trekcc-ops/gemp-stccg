@@ -1,5 +1,8 @@
 package com.gempukku.stccg.collection;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +30,9 @@ public final class CollectionType {
         return DEFINED_COLLECTION_TYPES.get(code);
     }
 
-    public CollectionType(String code, String fullName) {
+    @JsonCreator
+    public CollectionType(@JsonProperty(value = "code", required = true) String code,
+                          @JsonProperty(value = "fullName", required = true) String fullName) {
         _code = code;
         _fullName = fullName;
     }
@@ -55,5 +60,9 @@ public final class CollectionType {
     @Override
     public int hashCode() {
         return _code != null ? _code.hashCode() : 0;
+    }
+
+    public boolean hasCode(String code) {
+        return _code.equals(code);
     }
 }

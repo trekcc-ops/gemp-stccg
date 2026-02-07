@@ -114,10 +114,83 @@
         {
             blueprintId: 155_026
             title: Get It Done
-            java-blueprint: true
             type: incident
             property-logo: tng-logo
             image-url: https://www.trekcc.org/1e/cardimages/tng/26V.jpg
+            actions: [
+                {
+                    type: activate
+                    limitPerTurn: 1
+                    requires: {
+                        type: phase
+                        phase: execute_orders
+                    }
+                    cost: {
+                        type: placeCardsOnBottomOfDrawDeck
+                        cards: {
+                            type: select
+                            filter: inYourHand + tng-icon
+                            count: 2
+                        }
+                        player: you
+                    }
+                    effect: [
+                        {
+                            type: selectAndPerformSubAction
+                            actionDescriptions: [
+                                "Make a personnel attributes +2 until end of turn"
+                                "Make a ship RANGE +2 until end of turn"
+                                "Shuffle the three bottom personnel and/or ships from your discard pile into your draw deck"
+                            ]
+                            subActions: [
+                                {
+                                    type: increaseAttributes
+                                    attributes: [
+                                        integrity
+                                        cunning
+                                        strength
+                                    ]
+                                    until: endOfThisTurn
+                                    cardModified: {
+                                        type: select
+                                        filter: inPlay + unique + tng-icon + personnel
+                                        count: 1
+                                    }
+                                    amount: 2
+                                }
+                                {
+                                    type: increaseAttributes
+                                    attributes: range
+                                    until: endOfThisTurn
+                                    cardModified: {
+                                        type: select
+                                        filter: inPlay + tng-icon + ship
+                                        count: 1
+                                    }
+                                    amount: 2
+                                }
+                                {
+                                    type: shuffleCardsIntoDrawDeck
+                                    cards: {
+                                        type: select
+                                        filter: bottomCardsOfYourDiscardPile(3, tng-icon + (ship OR personnel))
+                                        count: 3
+                                    }
+                                    player: you
+                                }
+                            ]
+                        }
+                        {
+                            type: discard
+                            cards: {
+                                type: select
+                                filter: thisCard OR (inYourHand + tng-icon)
+                                count: 1
+                            }
+                        }
+                    ]
+                }
+            ]
         }
         {
             blueprintId: 155_035

@@ -1,14 +1,15 @@
 package com.gempukku.stccg.async.handler.decks;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.formats.DefaultGameFormat;
+import com.gempukku.stccg.formats.FormatLibrary;
 
 import java.util.List;
 
@@ -19,16 +20,20 @@ public class DeckStatsRequestHandler extends DeckRequestHandler implements UriRe
     private static final String GREEN = "green";
     private final String _targetFormat;
     private final String _deckContents;
+    private final CardBlueprintLibrary _cardBlueprintLibrary;
+    private final FormatLibrary _formatLibrary;
 
     DeckStatsRequestHandler(
             @JsonProperty("targetFormat")
             String targetFormat,
             @JsonProperty("deckContents")
-            String deckContents
-    ) {
+            String deckContents,
+            @JacksonInject CardBlueprintLibrary cardBlueprintLibrary,
+            @JacksonInject FormatLibrary formatLibrary) {
         _targetFormat = targetFormat;
         _deckContents = deckContents;
-
+        _cardBlueprintLibrary = cardBlueprintLibrary;
+        _formatLibrary = formatLibrary;
     }
 
     static String makeColor(String text, String color) {
@@ -74,10 +79,10 @@ public class DeckStatsRequestHandler extends DeckRequestHandler implements UriRe
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
 
-        DefaultGameFormat format = validateFormat(_targetFormat, serverObjects.getFormatLibrary());
+        DefaultGameFormat format = validateFormat(_targetFormat, _formatLibrary);
         CardDeck deck = new CardDeck("tempDeck", _deckContents, format);
         if(format == null || _targetFormat == null)
         {
@@ -85,7 +90,7 @@ public class DeckStatsRequestHandler extends DeckRequestHandler implements UriRe
         }
 
         assert format != null;
-        String response = getDeckValidation(serverObjects.getCardBlueprintLibrary(), deck, format);
+        String response = getDeckValidation(_cardBlueprintLibrary, deck, format);
         responseWriter.writeHtmlResponse(response);
     }
 

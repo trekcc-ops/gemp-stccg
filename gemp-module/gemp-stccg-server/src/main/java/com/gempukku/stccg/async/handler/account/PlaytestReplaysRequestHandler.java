@@ -1,9 +1,9 @@
 package com.gempukku.stccg.async.handler.account;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.DBData;
@@ -13,25 +13,22 @@ import java.util.List;
 
 public class PlaytestReplaysRequestHandler implements UriRequestHandler {
 
-    private final String _format;
-    private final int _count;
+    private final List<DBData.GameHistory> _gameHistory;
 
     public PlaytestReplaysRequestHandler(
             @JsonProperty(value = "format", required = true)
             String format,
             @JsonProperty(value = "count", required = true)
-            int count
+            int count,
+            @JacksonInject GameHistoryService gameHistoryService
     ) {
-        _format = format;
-        _count = count;
+        _gameHistory = gameHistoryService.getGameHistoryForFormat(format, count);
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest gempRequest, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest gempRequest, ResponseWriter responseWriter)
             throws Exception {
-        GameHistoryService historyService = serverObjects.getGameHistoryService();
-        final List<DBData.GameHistory> gameHistory = historyService.getGameHistoryForFormat(_format, _count);
-        String jsonString = new ObjectMapper().writeValueAsString(gameHistory);
+        String jsonString = new ObjectMapper().writeValueAsString(_gameHistory);
         responseWriter.writeJsonResponse(jsonString);
     }
 

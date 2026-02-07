@@ -3,14 +3,10 @@ package com.gempukku.stccg.actions.playcard;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.*;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.google.common.collect.Iterables;
 
 public class DownloadCardAction extends ActionyAction implements TopLevelSelectableAction {
@@ -23,61 +19,35 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
 
     private final ActionCardResolver _cardToDownloadTarget;
 
-    public DownloadCardAction(DefaultGame cardGame, Zone fromZone, Player player, Filterable playableCardFilter,
+    public DownloadCardAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardTarget,
                               PhysicalCard performingCard) {
-        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(),
-                ActionType.DOWNLOAD_CARD);
-        _cardToDownloadTarget = new SelectCardsResolver(
-                new SelectCardsFromDialogAction(cardGame, player, "Select a card to download",
-                        Filters.and(playableCardFilter, fromZone)));
-        _performingCard = performingCard;
-    }
-
-    public DownloadCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
-                              PhysicalCard performingCard) {
-        super(cardGame, player, "Download card", ActionType.DOWNLOAD_CARD);
+        super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
+        _cardTargets.add(cardTarget);
     }
 
-
-    protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
-        _playCardAction = selectedCard.getPlayCardAction(true);
-        selectedCard.getGame().getActionsEnvironment().addActionToStack(_playCardAction);
+    protected void playCard(DefaultGame cardGame, final PhysicalCard selectedCard) throws InvalidGameLogicException {
+        _playCardAction = selectedCard.getPlayCardAction(cardGame, true);
+        cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
     }
 
-    @Override
-    public boolean wasCarriedOut() {
-        if (_playCardAction == null)
-            return false;
-        if (_playCardAction instanceof PlayCardAction)
-            return _playCardAction.wasCarriedOut();
-        return true;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardToDownloadTarget.willProbablyBeEmpty(cardGame);
+        return !_cardToDownloadTarget.cannotBeResolved(cardGame);
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (!_cardToDownloadTarget.isResolved()) {
-            if (_cardToDownloadTarget instanceof SelectCardsResolver selectTarget) {
-                if (selectTarget.getSelectionAction().wasCompleted()) {
-                    _cardToDownloadTarget.resolve(cardGame);
-                } else {
-                    return selectTarget.getSelectionAction();
-                }
-            } else {
-                _cardToDownloadTarget.resolve(cardGame);
-            }
+    protected void processEffect(DefaultGame cardGame) {
+        try {
+            // The playCard method determines valid destinations
+            playCard(cardGame, Iterables.getOnlyElement(_cardToDownloadTarget.getCards()));
+            setAsSuccessful();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-
-        // The playCard method determines valid destinations
-        playCard(Iterables.getOnlyElement(_cardToDownloadTarget.getCards(cardGame)));
-        setAsSuccessful();
-        return null;
     }
 
     protected Action getPlayCardAction() { return _playCardAction; }

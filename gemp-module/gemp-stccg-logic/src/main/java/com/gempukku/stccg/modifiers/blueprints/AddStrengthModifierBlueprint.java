@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.condition.Condition;
-import com.gempukku.stccg.condition.RequirementCondition;
 import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
-import com.gempukku.stccg.modifiers.attributes.CunningModifier;
 import com.gempukku.stccg.modifiers.attributes.StrengthModifier;
+import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
@@ -33,10 +32,10 @@ public class AddStrengthModifierBlueprint implements ModifierBlueprint {
             _requirements.add(ifRequirement);
     }
 
-    public Modifier getModifier(ActionContext actionContext) {
-        PhysicalCard thisCard = actionContext.getSource();
-        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(actionContext);
-        Condition ifCondition = new RequirementCondition(_requirements, actionContext);
+    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
+        Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
+        Condition ifCondition = convertRequirementListToCondition(_requirements, actionContext, thisCard, cardGame);
         return new StrengthModifier(thisCard, affectFilter, ifCondition, _amount);
     }
+
 }

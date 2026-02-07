@@ -28,20 +28,16 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
         final List<TopLevelSelectableAction> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(cardGame.getCurrentPlayer(), DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    cardGame.getActionsEnvironment().addActionToStack(action);
-                                } else {
-                                    _consecutivePasses++;
-                                }
-                            } catch (InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
+                            Action action = getSelectedAction(result);
+                            if (action != null) {
+                                cardGame.getActionsEnvironment().addActionToStack(action);
+                            } else {
+                                _consecutivePasses++;
                             }
                         }
                     });

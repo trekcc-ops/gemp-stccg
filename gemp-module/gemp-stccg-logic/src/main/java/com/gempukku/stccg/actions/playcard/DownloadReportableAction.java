@@ -2,18 +2,24 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class DownloadReportableAction extends ActionyAction implements TopLevelSelectableAction {
@@ -23,62 +29,50 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
     private Action _playCardAction;
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardToDownloadTarget;
-    private final MatchingFilterBlueprint _destinationFilterBlueprint;
+    private final FilterBlueprint _destinationFilterBlueprint;
 
-    public DownloadReportableAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
-                                    PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
-        super(cardGame, player, "Download card", ActionType.DOWNLOAD_CARD);
+    public DownloadReportableAction(DefaultGame cardGame, String playerName, ActionCardResolver cardTarget,
+                                    PhysicalCard performingCard, FilterBlueprint destinationFilterBlueprint,
+                                    ActionContext context) {
+        super(cardGame, playerName, ActionType.DOWNLOAD_CARD, context);
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;
+        _cardTargets.add(cardTarget);
     }
 
 
-    protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {
-        Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
-        Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
-
-        _playCardAction = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                true, eligibleDestinations);
-        selectedCard.getGame().getActionsEnvironment().addActionToStack(_playCardAction);
+    public DownloadReportableAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
+                                    PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
+        this(cardGame, player.getPlayerId(), cardTarget, performingCard, destinationFilterBlueprint,
+                new ActionContext(performingCard, player.getPlayerId()));
     }
 
-    @Override
-    public boolean wasCarriedOut() {
-        if (_playCardAction == null)
-            return false;
-        if (_playCardAction instanceof PlayCardAction)
-            return _playCardAction.wasCarriedOut();
-        return true;
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardToDownloadTarget.willProbablyBeEmpty(cardGame);
+        return !_cardToDownloadTarget.cannotBeResolved(cardGame);
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Action nextCost = getNextCost();
-        if (nextCost != null)
-            return nextCost;
-
-        if (!_cardToDownloadTarget.isResolved()) {
-            if (_cardToDownloadTarget instanceof SelectCardsResolver selectTarget) {
-                if (selectTarget.getSelectionAction().wasCompleted()) {
-                    _cardToDownloadTarget.resolve(cardGame);
-                } else {
-                    return selectTarget.getSelectionAction();
+    protected void processEffect(DefaultGame cardGame) {
+        Collection<PhysicalCard> cardsToDownload = _cardToDownloadTarget.getCards(cardGame);
+        if (cardsToDownload.size() == 1 &&
+                Iterables.getOnlyElement(cardsToDownload) instanceof ReportableCard reportable) {
+            Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame, _actionContext);
+            Collection<FacilityCard> eligibleDestinations = new ArrayList<>();
+            for (PhysicalCard card : Filters.filter(cardGame, outpostFilter)) {
+                if (card instanceof FacilityCard facility) {
+                    eligibleDestinations.add(facility);
                 }
-            } else {
-                _cardToDownloadTarget.resolve(cardGame);
             }
+            _playCardAction = new ReportCardAction(cardGame, reportable, true, eligibleDestinations);
+            cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
+            setAsSuccessful();
+        } else {
+            cardGame.sendErrorMessage("Unable to process effect for multiple cards at once");
+            setAsFailed();
         }
-
-        // The playCard method determines valid destinations
-        playCard(cardGame, Iterables.getOnlyElement(_cardToDownloadTarget.getCards(cardGame)));
-        setAsSuccessful();
-        return null;
     }
 
     @Override

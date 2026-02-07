@@ -41,21 +41,17 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
         if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase())) {
             _consecutivePasses++;
         } else {
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    _consecutivePasses = 0;
-                                    cardGame.getActionsEnvironment().addActionToStack(action);
-                                } else {
-                                    _consecutivePasses++;
-                                }
-                            } catch(InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
+                            Action action = getSelectedAction(result);
+                            if (action != null) {
+                                _consecutivePasses = 0;
+                                cardGame.getActionsEnvironment().addActionToStack(action);
+                            } else {
+                                _consecutivePasses++;
                             }
                         }
                     });
@@ -74,7 +70,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
                 Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeedCards) {
                     RemoveCardFromPlayAction removeAction =
-                            new RemoveCardFromPlayAction(cardGame, card.getOwner(), card);
+                            new RemoveCardFromPlayAction(cardGame, card.getOwnerName(), card);
                     removeAction.processEffect(cardGame);
                     cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
                     cardGame.sendActionResultToClient();

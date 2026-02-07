@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -39,24 +38,21 @@ public class RemoveCardsFromSeedCardStackAction extends ActionyAction implements
         return true;
     }
 
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws PlayerNotFoundException {
-        Action nextAction = getNextAction();
-        if (nextAction == null) {
-            processEffect(cardGame.getPlayer(_performingPlayerId), cardGame);
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
+            for (PhysicalCard card : _cardsBeingRemoved) {
+                _location.removePreSeedCard(card, _performingPlayerId);
+                cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(card));
+                List<PhysicalCard> zoneCards = performingPlayer.getCardGroupCards(Zone.SEED_DECK);
+                zoneCards.add(card);
+                card.setZone(Zone.SEED_DECK);
+            }
+            setAsSuccessful();
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-        return nextAction;
-    }
-
-    public void processEffect(Player performingPlayer, DefaultGame cardGame) {
-        for (PhysicalCard card : _cardsBeingRemoved) {
-            _location.removePreSeedCard(card, performingPlayer);
-            cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(card));
-            List<PhysicalCard> zoneCards = performingPlayer.getCardGroupCards(Zone.SEED_DECK);
-            zoneCards.add(card);
-            card.setZone(Zone.SEED_DECK);
-        }
-        setAsSuccessful();
     }
 
     @Override

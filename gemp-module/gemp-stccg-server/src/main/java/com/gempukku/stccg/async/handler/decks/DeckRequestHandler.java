@@ -3,7 +3,6 @@ package com.gempukku.stccg.async.handler.decks;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -30,10 +29,10 @@ public abstract class DeckRequestHandler {
         private final CardBlueprintLibrary _library;
         private final FormatLibrary _formatLibrary;
 
-        JsonSerializedDeck(CardDeck cardDeck, ServerObjects serverObjects) {
+        JsonSerializedDeck(CardDeck cardDeck, CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary) {
             _cardDeck = cardDeck;
-            _library = serverObjects.getCardBlueprintLibrary();
-            _formatLibrary = serverObjects.getFormatLibrary();
+            _library = cardBlueprintLibrary;
+            _formatLibrary = formatLibrary;
         }
 
         @JsonProperty("deckName")

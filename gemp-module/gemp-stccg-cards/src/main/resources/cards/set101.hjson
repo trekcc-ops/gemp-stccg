@@ -368,21 +368,53 @@
             blueprintId: 101_108
             title: Amanda Rogers
             type: interrupt
-            java-blueprint: true
+            java-blueprint: false
             property-logo: tng-logo
             lore: Female Q raised as a human on Earth. Was taken to the Q continuum by Q after she could not resist the benevolent use of her powers.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR108.jpg
             rarity: U
+            actions: [
+                {
+                    type: playThisAsResponse
+                    trigger: {
+                        type: played
+                        filter: interrupt
+                        saveToMemoryId: playedInterrupt
+                    }
+                    immediateEffect: {
+                        type: nullify
+                        target: {
+                            type: memory
+                            memoryId: playedInterrupt
+                        }
+                    }
+                    discardAfter: true
+                }
+            ]
         }
         {
             blueprintId: 101_125
             title: Klingon Death Yell
-            java-blueprint: true
+            java-blueprint: false
             type: interrupt
             property-logo: tng-logo
             lore: Warning for the dead to beware; a Klingon warrior is about to arrive. In Klingon myth, killed warriors with honor go to Sto-Vo-Kor. Dishonored dead go to Gre-thor.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR125.jpg
             rarity: R
+            actions: [
+                {
+                    type: playThisAsResponse
+                    trigger: {
+                        type: killed
+                        filter: Klingon + personnel + Honor
+                    }
+                    immediateEffect: {
+                        type: scorePoints
+                        points: 5
+                    }
+                    discardAfter: true
+                }
+            ]
         }
         {
             blueprintId: 101_131

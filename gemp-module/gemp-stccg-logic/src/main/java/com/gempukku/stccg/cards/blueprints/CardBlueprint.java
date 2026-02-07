@@ -1,28 +1,31 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.turn.RequiredTriggerAction;
 import com.gempukku.stccg.cards.*;
-import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.requirement.PlayOutOfSequenceCondition;
-import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
-import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.PlayOutOfSequenceRequirement;
+import com.gempukku.stccg.requirement.Requirement;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @JsonIgnoreProperties({"headquarters", "playable", "java-blueprint"})
@@ -146,8 +149,6 @@ public class CardBlueprint {
     private final Map<RequiredType, List<ActionBlueprint>> _beforeTriggers = new HashMap<>();
     private final Map<RequiredType, List<ActionBlueprint>> _afterTriggers = new HashMap<>();
     private final Map<RequiredType, ActionBlueprint> _discardedFromPlayTriggers = new HashMap<>();
-    private final List<ActionBlueprint> _optionalInHandTriggers = new ArrayList<>();
-    private final List<ActionBlueprint> _activatedTriggers = new ArrayList<>();
 
     private List<ActionBlueprint> inDiscardPhaseActions;
 
@@ -159,10 +160,10 @@ public class CardBlueprint {
 
     @JsonProperty("playOutOfSequenceCondition")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-    private List<PlayOutOfSequenceCondition> playOutOfSequenceConditions;
+    private List<PlayOutOfSequenceRequirement> playOutOfSequenceConditions;
 
     @JsonProperty("actions")
-    private List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
+    protected List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
 
     public CardBlueprint() {
         for (RequiredType requiredType : RequiredType.values()) {
@@ -356,29 +357,26 @@ public class CardBlueprint {
         playInOtherPhaseConditions.add(requirement);
     }
 
-    public void appendOptionalInHandTrigger(ActionBlueprint actionBlueprint) {
-        _optionalInHandTriggers.add(actionBlueprint);
-    }
-
-    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(PhysicalCard thisCard, Player player, ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame,
+                                                                                PhysicalCard thisCard, Player player,
+                                                                                ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        for (ActionBlueprint trigger : _optionalInHandTriggers) {
-            TopLevelSelectableAction action = trigger.createActionWithNewContext(thisCard, actionResult);
-            if (action != null) result.add(action);
+        for (ActionBlueprint blueprint : _actionBlueprints) {
+            if (blueprint instanceof PlayThisCardAsResponseActionBlueprint responseBlueprint) {
+                TopLevelSelectableAction action = responseBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
+                if (action != null) {
+                    result.add(action);
+                }
+            }
         }
         return result;
     }
+
 
     public void appendPlayRequirement(Requirement requirement) {
         if (_playRequirements == null)
             _playRequirements = new LinkedList<>();
         _playRequirements.add(requirement);
-    }
-
-    public void appendSeedRequirement(Requirement requirement) {
-        if (_seedRequirements == null)
-            _seedRequirements = new LinkedList<>();
-        _seedRequirements.add(requirement);
     }
 
     public void appendTargetFilter(FilterBlueprint targetFilter) {
@@ -405,9 +403,7 @@ public class CardBlueprint {
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
 
     public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
-    public List<ActionBlueprint> getActivatedTriggers() {
-        return _activatedTriggers;
-    }
+
     public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player,
                                                                      DefaultGame cardGame) {
         return new ArrayList<>();
@@ -415,41 +411,20 @@ public class CardBlueprint {
     public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
-    public List<ActionBlueprint> getTriggers(RequiredType requiredType) {
-        List<ActionBlueprint> sourceResult = new ArrayList<>();
+    public List<TriggerActionBlueprint> getTriggers(RequiredType requiredType) {
+        List<TriggerActionBlueprint> sourceResult = new ArrayList<>();
         for (ActionBlueprint source : _actionBlueprints) {
-            if (requiredType == RequiredType.REQUIRED) {
-                if (source instanceof RequiredTriggerActionBlueprint)
-                    sourceResult.add(source);
-            } else {
-                if (source instanceof OptionalTriggerActionBlueprint)
-                    sourceResult.add(source);
+            if (source instanceof TriggerActionBlueprint triggerBlueprint) {
+                if (requiredType == RequiredType.REQUIRED) {
+                    if (source instanceof RequiredTriggerActionBlueprint)
+                        sourceResult.add(triggerBlueprint);
+                } else {
+                    if (source instanceof OptionalTriggerActionBlueprint)
+                        sourceResult.add(triggerBlueprint);
+                }
             }
         }
         return sourceResult;
-    }
-
-
-    public Filterable getValidTargetFilter() {
-        if (targetFilters == null)
-            return null;
-
-        Filterable[] result = new Filterable[targetFilters.size()];
-        for (int i = 0; i < result.length; i++) {
-            final FilterBlueprint filterBlueprint = targetFilters.get(i);
-            result[i] = filterBlueprint.getFilterable(null);
-        }
-
-        return Filters.and(result);
-    }
-
-
-    // Helper methods
-
-
-
-    public void throwException(String message) throws InvalidCardDefinitionException {
-        throw new InvalidCardDefinitionException(message);
     }
 
 
@@ -471,26 +446,25 @@ public class CardBlueprint {
                 (hasUniversalIcon() ? "&#x2756&nbsp;" : "") + getFullName() + "</div>";
     }
 
-    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(PhysicalCard thisCard)
+    protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame, PhysicalCard thisCard)
             throws InvalidGameLogicException {
         return new LinkedList<>();
     }
 
-    public List<Modifier> getGameTextWhileActiveInPlayModifiers(PhysicalCard card) {
+
+    public List<Modifier> getGameTextWhileActiveInPlayModifiers(DefaultGame cardGame, PhysicalCard thisCard,
+                                                                ActionContext actionContext) {
         List<Modifier> result = new LinkedList<>();
 
         // Add in-play modifiers created through JSON definitions
-        for (ModifierBlueprint modifierSource : inPlayModifiers) {
-            ActionContext context =
-                    new DefaultActionContext(card.getOwnerName(), card.getGame(), card, null);
-            result.add(modifierSource.getModifier(context));
-        }
+        inPlayModifiers.forEach(modifierSource ->
+                result.add(modifierSource.createModifier(cardGame, thisCard, actionContext)));
 
         // Add in-play modifiers created through Java definitions
         try {
-            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(card));
+            result.addAll(getGameTextWhileActiveInPlayModifiersFromJava(cardGame, thisCard));
         } catch(InvalidGameLogicException exp) {
-            card.getGame().sendErrorMessage(exp);
+            cardGame.sendErrorMessage(exp);
         }
 
         return result;
@@ -500,20 +474,19 @@ public class CardBlueprint {
         return _characteristics.contains(characteristic);
     }
 
-    public void addCharacteristic(Characteristic characteristic) {
-        _characteristics.add(characteristic);
-    }
-
-    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(ActionResult actionResult, PhysicalCard card) {
+    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(DefaultGame cardGame,
+                                                                         ActionResult actionResult, PhysicalCard card) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
         getTriggers(RequiredType.REQUIRED).forEach(actionSource -> {
             if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
-                RequiredTriggerAction action = triggerSource.createActionWithNewContext(card, actionResult);
+                TopLevelSelectableAction action =
+                        triggerSource.createAction(cardGame, card.getControllerName(), card);
                 if (action != null) result.add(action);
             }
         });
         return result;
     }
+
 
     public List<Skill> getSkills(DefaultGame game, PhysicalCard thisCard) {
         return _skillBox.getSkillList();
@@ -527,7 +500,7 @@ public class CardBlueprint {
         else return _persona;
     }
 
-    public boolean doesNotWorkWithPerRestrictionBox(PhysicalNounCard1E thisCard, PhysicalNounCard1E otherCard) {
+    public boolean doesNotWorkWithPerRestrictionBox(AffiliatedCard thisCard, AffiliatedCard otherCard) {
         return false;
     }
 
@@ -548,13 +521,13 @@ public class CardBlueprint {
         List<Action> result = new LinkedList<>();
         for (ActionBlueprint blueprint : _actionBlueprints) {
             if (blueprint instanceof EncounterSeedCardActionBlueprint encounterBlueprint) {
-                result.add(encounterBlueprint.createAction(game, attemptingUnit.getPlayer(), thisCard, attemptingUnit,
+                result.add(encounterBlueprint.createAction(game, attemptingUnit.getControllerName(), thisCard, attemptingUnit,
                         missionLocation, attemptAction));
             }
         }
         if (result.isEmpty()) {
-            EncounterSeedCardAction action = new EncounterSeedCardAction(game, attemptingUnit.getPlayer(), thisCard,
-                    attemptingUnit, attemptAction, missionLocation);
+            EncounterSeedCardAction action = new EncounterSeedCardAction(game, attemptingUnit.getControllerName(), thisCard,
+                    attemptingUnit, attemptAction, missionLocation.getLocationId());
             List<Action> javaActions =
                     getEncounterActionsFromJava(thisCard, game, attemptingUnit, action, missionLocation);
             if (!javaActions.isEmpty()) {
@@ -580,27 +553,17 @@ public class CardBlueprint {
         _specialEquipment.addAll(specialEquipment);
     }
 
-    public List<TopLevelSelectableAction> getActionsFromActionSources(String playerId, PhysicalCard card,
-                                                                      ActionResult actionResult, List<ActionBlueprint> actionBlueprints) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
-        actionBlueprints.forEach(actionSource -> {
-            if (actionSource != null) {
-                TopLevelSelectableAction action = actionSource.createActionWithNewContext(card, playerId, actionResult);
-                if (action != null) result.add(action);
-            }
-        });
-        return result;
-    }
-
 
     public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame cardGame) {
-        List<ActionBlueprint> resultSources = new ArrayList<>();
+        List<TopLevelSelectableAction> result = new ArrayList<>();
         for (ActionBlueprint actionBlueprint : _actionBlueprints) {
-            if (actionBlueprint instanceof ActivateCardActionBlueprint)
-                resultSources.add(actionBlueprint);
+            if (actionBlueprint instanceof ActivateCardActionBlueprint) {
+                TopLevelSelectableAction action = actionBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
+                if (action != null) result.add(action);
+            }
         }
-        return getActionsFromActionSources(player.getPlayerId(), thisCard, null, resultSources);
+        return result;
     }
 
 
@@ -620,15 +583,50 @@ public class CardBlueprint {
         return _shipClass;
     }
 
-    public PhysicalCard createPhysicalCard(ST1EGame st1egame, int cardId, Player player) {
-        return switch(_cardType) {
-            case EQUIPMENT -> new PhysicalReportableCard1E(st1egame, cardId, player, this);
-            case FACILITY -> new FacilityCard(st1egame, cardId, player, this);
-            case MISSION -> new MissionCard(st1egame, cardId, player, this);
-            case PERSONNEL -> new PersonnelCard(st1egame, cardId, player, this);
-            case SHIP -> new PhysicalShipCard(st1egame, cardId, player, this);
-            default -> new ST1EPhysicalCard(st1egame, cardId, player, this);
+    public Class<? extends PhysicalCard> getPhysicalCardClass() {
+        return switch(_gameType) {
+            case FIRST_EDITION -> switch (_cardType) {
+                case EQUIPMENT -> EquipmentCard.class;
+                case FACILITY -> FacilityCard.class;
+                case MISSION -> MissionCard.class;
+                case PERSONNEL -> PersonnelCard.class;
+                case SHIP -> ShipCard.class;
+                default -> ST1EPhysicalCard.class;
+            };
+            case SECOND_EDITION -> ST1EPhysicalCard.class;
+            case TRIBBLES -> TribblesPhysicalCard.class;
         };
+    }
+
+    public PhysicalCard createPhysicalCard(int cardId, String playerName) {
+        try {
+            Class<? extends PhysicalCard> clazz = getPhysicalCardClass();
+            Constructor<?> parameterizedConstructor = clazz.getConstructor(int.class, String.class, CardBlueprint.class);
+            if (parameterizedConstructor.newInstance(cardId, playerName, this) instanceof PhysicalCard physicalCard) {
+                return physicalCard;
+            } else {
+                return null;
+            }
+        } catch(NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException exp) {
+            return null;
+        }
+    }
+    
+
+    public PhysicalCard createPhysicalCard(int cardId, Player player) {
+        return createPhysicalCard(cardId, player.getPlayerId());
+    }
+
+    public Collection<ActionBlueprint> getActionBlueprintsForTestingOnly() {
+        return _actionBlueprints;
+    }
+
+    public ActionBlueprint getActionBlueprintForId(int id) {
+        return _actionBlueprints.get(id);
+    }
+
+    public int getIdForActionBlueprint(ActionBlueprint blueprint) {
+        return _actionBlueprints.indexOf(blueprint);
     }
 
 }

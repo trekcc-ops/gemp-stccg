@@ -1,62 +1,75 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.ActionResultGameEvent;
 import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.modifiers.ModifiersEnvironment;
+import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.ModifierEffect;
+import com.gempukku.stccg.modifiers.ModifierFlag;
+import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
-public abstract class DefaultGame {
+public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying, UserFeedback {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
 
     // Game parameters
     protected final GameFormat _format;
     protected final CardBlueprintLibrary _library;
+
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
     final List<String> _lastMessages = new LinkedList<>();
 
-    // Endgame operations
-    protected final Set<String> _requestedCancel = new HashSet<>();
+    private final Collection<Modifier> _modifierSkipSet = new HashSet<>();
     protected boolean _cancelled;
     protected boolean _finished;
     protected String _winnerPlayerId;
     protected final Map<String, String> _losers = new HashMap<>();
     // Game code infrastructure
-    protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
-    protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
-    protected final UserFeedback _userFeedback;
+
+    // Only has one listener, to send data back to CardGameMediator when the game is finished
+    private final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final GameType _gameType;
 
-    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
-                       GameType gameType) {
+    protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                       GameType gameType, GameResultListener listener) {
         _format = format;
-        _userFeedback = new DefaultUserFeedback(this);
         _library = library;
         _allPlayerIds = decks.keySet();
         _gameType = gameType;
+        if (listener != null) {
+            _gameResultListeners.add(listener);
+        }
+    }
+
+
+    public DefaultGame getGame() {
+        return this;
     }
 
     public abstract GameState getGameState();
-    public abstract RuleSet getRules();
+    public abstract RuleSet<? extends DefaultGame> getRules();
     public boolean shouldAutoPass(Phase phase) {
         return false;
     }
@@ -69,36 +82,12 @@ public abstract class DefaultGame {
 
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
 
-    public void addGameResultListener(GameResultListener listener) {
-        _gameResultListeners.add(listener);
-    }
+    public Collection<PhysicalCard> getAllCardsInPlay() { return getGameState().getAllCardsInPlay(); }
+
     public void addGameStateListener(GameStateListener listener) {
         _gameStateListeners.add(listener);
     }
 
-    public Collection<GameStateListener> getAllGameStateListeners() {
-        return Collections.unmodifiableSet(_gameStateListeners);
-    }
-
-
-    public void requestCancel(String playerId) {
-        _requestedCancel.add(playerId);
-        if (_requestedCancel.size() == _allPlayerIds.size() && !_finished) {
-            _cancelled = true;
-
-            if (getGameState() != null)
-                sendMessage("Game was cancelled, as requested by all parties.");
-
-            for (GameResultListener gameResultListener : _gameResultListeners)
-                gameResultListener.gameCancelled();
-
-            _finished = true;
-        }
-    }
-
-    public UserFeedback getUserFeedback() {
-        return _userFeedback;
-    }
 
     public String getWinnerPlayerId() {
         return _winnerPlayerId;
@@ -108,23 +97,14 @@ public abstract class DefaultGame {
         return _finished;
     }
 
-    public void cancelGame() {
-        if (!_finished) {
-            _cancelled = true;
-
-            if (getGameState() != null) {
-                sendMessage(
-                        "Game was cancelled due to an error, the error was logged and will be fixed soon.");
-                sendMessage(
-                        "Please post the replay game link and description of what happened on the tech support forum.");
-            }
-
-            for (GameResultListener gameResultListener : _gameResultListeners)
-                gameResultListener.gameCancelled();
-
-            _finished = true;
-        }
+    public void setCancelled(boolean cancelled) {
+        _cancelled = cancelled;
     }
+
+    public void setFinished(boolean finished) {
+        _finished = finished;
+    }
+
 
     public void setCurrentPhase(Phase phase) {
         getGameState().setCurrentPhase(phase);
@@ -165,9 +145,7 @@ public abstract class DefaultGame {
         if (!_finished) {
             if (_losers.get(playerId) == null) {
                 _losers.put(playerId, reason);
-                if (getGameState() != null)
-                    sendMessage(playerId + " lost due to: " + reason);
-
+                sendMessage(playerId + " lost due to: " + reason);
                 if (_losers.size() + 1 == _allPlayerIds.size()) {
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
@@ -181,18 +159,11 @@ public abstract class DefaultGame {
         _gameStateListeners.remove(gameStateListener);
     }
 
-    public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
-        _autoPassConfiguration.put(playerId, phases);
-    }
-    public CardBlueprintLibrary getBlueprintLibrary() {
-        return _library;
-    }
-
     public ActionsEnvironment getActionsEnvironment() {
         return getGameState().getActionsEnvironment();
     }
 
-    public ModifiersEnvironment getModifiersEnvironment() {
+    public ModifiersLogic getModifiersEnvironment() {
         return getGameState().getModifiersLogic();
     }
 
@@ -205,36 +176,32 @@ public abstract class DefaultGame {
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() throws InvalidGameOperationException {
-        try {
-            if (!_cancelled) {
-                int numSinceDecision = 0;
-                ActionsEnvironment actionsEnvironment = getActionsEnvironment();
+        if (!_cancelled) {
+            int numSinceDecision = 0;
+            ActionsEnvironment actionsEnvironment = getActionsEnvironment();
 
-                while (isCarryingOutEffects()) {
-                    numSinceDecision++;
-                    actionsEnvironment.carryOutPendingActions(this);
-                    sendActionResultToClient();
+            while (isCarryingOutEffects()) {
+                numSinceDecision++;
+                actionsEnvironment.carryOutPendingActions(this);
+                sendActionResultToClient();
 
-                    // Check if an unusually large number loops since user decision, which means game is probably in a loop
-                    if (numSinceDecision >= 5000)
-                        breakExcessiveLoop(numSinceDecision);
-                }
+                // Check if an unusually large number loops since user decision, which means game is probably in a loop
+                if (numSinceDecision >= 5000)
+                    breakExcessiveLoop(numSinceDecision);
             }
-        } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
-            throw new InvalidGameOperationException(exp);
         }
     }
 
-    private void breakExcessiveLoop(int numSinceDecision) {
+    private void breakExcessiveLoop(int numSinceDecision) throws InvalidGameLogicException {
         String errorMessage = "There's been " + numSinceDecision +
                 " actions/effects since last user decision. Game is probably looping, so ending game.";
-        sendErrorMessage(errorMessage);
 
         Stack<Action> actionStack = getActionsEnvironment().getActionStack();
-        sendErrorMessage("Action stack size: " + actionStack.size());
-        actionStack.forEach(action -> sendErrorMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
-                action.getClass().getSimpleName()));
-        throw new UnsupportedOperationException(errorMessage);
+        errorMessage = errorMessage + " Action stack size: " + actionStack.size();
+        for (Action action : actionStack) {
+            errorMessage = errorMessage + "Action " + actionStack.indexOf(action) + 1 + ": " + action.getClass().getSimpleName();
+        }
+        throw new InvalidGameLogicException(errorMessage);
     }
     
 
@@ -264,13 +231,9 @@ public abstract class DefaultGame {
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
     }
 
-    public Player getOpponent(Player player) throws PlayerNotFoundException {
-        return getPlayer(getOpponent(player.getPlayerId()));
-    }
-
     public void sendMessage(String message) {
         addMessage(message);
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendMessageEvent(message);
     }
 
@@ -278,16 +241,8 @@ public abstract class DefaultGame {
 
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 
-    public AwaitingDecision getAwaitingDecision(String playerName) {
-        return _userFeedback.getAwaitingDecision(playerName);
-    }
-
-    public Set<String> getUsersPendingDecision() {
-        return _userFeedback.getUsersPendingDecision();
-    }
-
-    public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
-        _userFeedback.sendAwaitingDecision(awaitingDecision);
+    public void addPendingDecision(AwaitingDecision decision) {
+        getGameState().addPendingDecision(decision);
     }
 
     public String getStatus() {
@@ -303,12 +258,8 @@ public abstract class DefaultGame {
         return gameStatus;
     }
 
-    public boolean isDiscardPilePublic() {
-        return _format.discardPileIsPublic();
-    }
-
     public boolean isCarryingOutEffects() {
-        return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null;
+        return getGameState().hasNoPendingDecisions() && _winnerPlayerId == null;
     }
 
     public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
@@ -338,12 +289,12 @@ public abstract class DefaultGame {
 
 
     public void sendWarning(String player, String warning) {
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendWarning(player, warning);
     }
 
     public void sendActionResultToClient() {
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));
     }
 
@@ -352,7 +303,91 @@ public abstract class DefaultGame {
         return _gameType;
     }
 
-    public void continueCurrentProcess() throws PlayerNotFoundException, InvalidGameLogicException {
+    public void continueCurrentProcess() throws InvalidGameOperationException {
         getGameState().continueCurrentProcess(this);
+    }
+
+    public boolean processUserDecision(String playerName, int decisionId, String answer) {
+        AwaitingDecision awaitingDecision = getAwaitingDecision(playerName);
+
+        if (awaitingDecision != null) {
+            if (awaitingDecision.getDecisionId() == decisionId && !isFinished()) {
+                try {
+                    removeDecision(playerName);
+                    awaitingDecision.decisionMade(answer);
+                    return true;
+                } catch (DecisionResultInvalidException exp) {
+                        /* Participant provided wrong answer - send a warning message,
+                        and ask again for the same decision */
+                    sendWarning(playerName, exp.getWarningMessage());
+                    sendAwaitingDecision(awaitingDecision);
+                }
+            }
+        }
+        return false;
+    }
+
+    public PhysicalCard createPhysicalCard(String blueprintId, int cardId, String playerId) throws CardNotFoundException {
+        CardBlueprint blueprint = _library.get(blueprintId);
+        if (blueprint != null) {
+            return blueprint.createPhysicalCard(cardId, playerId);
+        } else {
+            throw new CardNotFoundException("Unable to find card matching blueprint id " + blueprintId);
+        }
+    }
+
+    public void addCardToTopOfDiscardPile(PhysicalCard card) {
+        String cardOwnerName = card.getOwnerName();
+        Zone zone = hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD) ? Zone.REMOVED : Zone.DISCARD;
+        List<PhysicalCard> zoneCardList = getGameState().getZoneCards(cardOwnerName, zone);
+        zoneCardList.addFirst(card);
+        card.setZone(zone);
+    }
+
+
+    public List<Modifier> getAllModifiersByEffect(ModifierEffect modifierEffect) {
+        return Collections.unmodifiableList(getModifiersEnvironment().getAllModifiersByEffect(modifierEffect));
+    }
+
+    public List<Modifier> getAllModifiers() {
+        return Collections.unmodifiableList(getModifiersEnvironment().getAllModifiers());
+    }
+
+    public void addToSkipSet(Modifier modifier) {
+        _modifierSkipSet.add(modifier);
+    }
+    public void removeFromSkipSet(Modifier modifier) {
+        _modifierSkipSet.remove(modifier);
+    }
+    public boolean modifierIsInSkipSet(Modifier modifier) {
+        return _modifierSkipSet.contains(modifier);
+    }
+
+    public Collection<ActionProxy> getAllActionProxies() {
+        return getActionsEnvironment().getAllActionProxies();
+    }
+
+    public Action getCurrentAction() {
+        return getActionsEnvironment().getCurrentAction();
+    }
+    public void addActionToStack(Action action) { getActionsEnvironment().addActionToStack(action); }
+
+    public void removeCardsFromZone(Collection<PhysicalCard> cards) {
+        getGameState().removeCardsFromZoneWithoutSendingToClient(this, cards);
+    }
+
+    public String serializeCompleteGameState() throws JsonProcessingException {
+        return getGameState().serializeComplete();
+    }
+
+    public boolean isCancelled() {
+        return _cancelled;
+    }
+
+    public ST1EGame get1EGame() throws InappropriateGameTypeException {
+        if (this instanceof ST1EGame stGame) {
+            return stGame;
+        }
+        throw new InappropriateGameTypeException("Attempted to convert a non-1E game into a ST1EGame object");
     }
 }

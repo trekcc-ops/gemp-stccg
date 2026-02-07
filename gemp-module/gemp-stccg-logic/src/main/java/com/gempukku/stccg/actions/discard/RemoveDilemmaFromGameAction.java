@@ -2,29 +2,24 @@ package com.gempukku.stccg.actions.discard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.FixedCardResolver;
+import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collections;
 
 public class RemoveDilemmaFromGameAction extends ActionyAction {
     private final FixedCardResolver _cardTarget;
 
-    public RemoveDilemmaFromGameAction(Player performingPlayer, PhysicalCard cardToRemove) {
-        super(cardToRemove.getGame(), performingPlayer, ActionType.REMOVE_CARD_FROM_GAME);
+    public RemoveDilemmaFromGameAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardToRemove) {
+        super(cardGame, performingPlayerName, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);
+        _cardTargets.add(_cardTarget);
     }
 
 
@@ -34,7 +29,7 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
+    protected void processEffect(DefaultGame cardGame) {
         if (cardGame instanceof ST1EGame stGame) {
             ST1EGameState gameState = stGame.getGameState();
             PhysicalCard cardToRemove = _cardTarget.getCard();
@@ -46,18 +41,18 @@ public class RemoveDilemmaFromGameAction extends ActionyAction {
             }
 
             gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(cardToRemove));
-            gameState.addCardToZoneWithoutSendingToClient(cardToRemove, Zone.REMOVED);
-            cardToRemove.setLocation(new NullLocation());
+            gameState.addCardToRemovedPile(cardToRemove);
+            cardToRemove.setLocationId(cardGame, -999);
 
             setAsSuccessful();
-            return getNextAction();
         } else {
+            cardGame.sendErrorMessage("Tried to remove a dilemma from underneath a mission in a non-1E game");
             setAsFailed();
-            throw new InvalidGameLogicException("Tried to remove a dilemma from underneath a mission in a non-1E game");
         }
     }
 
     @JsonProperty("targetCardId")
+    @SuppressWarnings("unused")
     @JsonIdentityReference(alwaysAsId=true)
     private PhysicalCard getTargetCard() {
         return _cardTarget.getCard();

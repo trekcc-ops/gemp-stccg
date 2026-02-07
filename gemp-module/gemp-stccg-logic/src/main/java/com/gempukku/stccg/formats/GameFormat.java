@@ -51,4 +51,7 @@ public interface GameFormat extends AbstractGameFormat {
     GameType getGameType();
 
     boolean hallVisible();
+
+    @Override
+    String toString();
 }

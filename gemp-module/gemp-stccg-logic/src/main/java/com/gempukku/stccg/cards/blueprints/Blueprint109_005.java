@@ -28,25 +28,25 @@ public class Blueprint109_005 extends CardBlueprint {
         List<Action> result = new LinkedList<>();
         Collection<PersonnelCard> targetPersonnel = new ArrayList<>();
 
-        boolean hasEmpathyOrDiplomacy = attemptingUnit.hasSkill(SkillName.EMPATHY) ||
-                attemptingUnit.hasSkill(SkillName.DIPLOMACY);
+        boolean hasEmpathyOrDiplomacy = attemptingUnit.hasSkill(SkillName.EMPATHY, game) ||
+                attemptingUnit.hasSkill(SkillName.DIPLOMACY, game);
 
-        for (PersonnelCard personnel : attemptingUnit.getAttemptingPersonnel()) {
-            if (personnel.hasSkill(SkillName.EMPATHY) || personnel.hasSkill(SkillName.DIPLOMACY) ||
+        for (PersonnelCard personnel : attemptingUnit.getAttemptingPersonnel(game)) {
+            if (personnel.hasSkill(SkillName.EMPATHY, game) || personnel.hasSkill(SkillName.DIPLOMACY, game) ||
                     Objects.equals(personnel.getTitle(), "Morn") ||
                     personnel.hasCharacteristic(Characteristic.SCOTTY))
                 targetPersonnel.add(personnel);
         }
 
         if (!hasEmpathyOrDiplomacy && targetPersonnel.isEmpty()) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(game, attemptingUnit, thisCard, action));
         } else {
             if (targetPersonnel.size() >= 2) {
                 PersonnelCard cardToContinue = TextUtils.getRandomItemFromList(targetPersonnel);
                 targetPersonnel.remove(cardToContinue);
             }
-            result.add(new StopCardsAction(game, thisCard.getOwner(), targetPersonnel));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
+            result.add(new StopCardsAction(game, thisCard.getOwnerName(), targetPersonnel));
+            result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         }
 
         return result;

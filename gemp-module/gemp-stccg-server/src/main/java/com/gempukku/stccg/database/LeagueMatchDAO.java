@@ -5,7 +5,8 @@ import com.gempukku.stccg.competitive.LeagueMatchResult;
 import java.util.Collection;
 
 public interface LeagueMatchDAO {
-    Collection<LeagueMatchResult> getLeagueMatches(String leagueId);
+    Collection<LeagueMatchResult> getLeagueMatches(int leagueId);
 
-    void addPlayedMatch(String leagueId, String seriesId, String winner, String loser);
+    void addPlayedMatch(int leagueId, String seriesId, String winner, String loser);
+
 }

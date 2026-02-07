@@ -1,89 +1,70 @@
 package com.gempukku.stccg.async.handler.admin;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.collection.CollectionType;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.league.LeagueData;
-import com.gempukku.stccg.league.LeagueSeriesData;
-import com.gempukku.stccg.league.NewSealedLeagueData;
+import com.gempukku.stccg.league.League;
+import com.gempukku.stccg.league.SealedLeague;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
-@JsonIgnoreProperties("cost")
-public class PreviewSealedLeagueRequestHandler implements UriRequestHandler, AdminRequestHandler {
-    private final long _creationTime;
-    private final int _start;
+public class PreviewSealedLeagueRequestHandler implements AdminRequestHandler, NewLeagueHandler {
     private final String _leagueTemplateName;
-    private final int _maxMatches;
     private final String _name;
+    private final int _cost;
+    private final CardBlueprintLibrary _cardBlueprintLibrary;
+    private final FormatLibrary _formatLibrary;
+    private final ZonedDateTime _startTime;
     private final int _seriesDuration;
+    private final int _seriesCount;
+    private final int _maxMatches;
+    private final Clock _systemClock = Clock.systemUTC();
 
     PreviewSealedLeagueRequestHandler(
         @JsonProperty(value = "format", required = true)
         String format,
+        @JsonProperty(value = "cost", required = true)
+        int cost,
         @JsonProperty(value = "start", required = true)
-        int start,
-        @JsonProperty(value = "seriesDuration", required = true)
-        int seriesDuration,
+        String start,
+        @JsonProperty(value = "name", required = true)
+        String name,
+        @JsonProperty(value = "duration", required = true)
+        int duration,
         @JsonProperty(value = "maxMatches", required = true)
         int maxMatches,
-        @JsonProperty(value = "name", required = true)
-        String name
+        @JsonProperty(value = "seriesCount", required = true)
+        int seriesCount,
+        @JacksonInject CardBlueprintLibrary cardBlueprintLibrary,
+        @JacksonInject FormatLibrary formatLibrary
     ) {
-        _creationTime = System.currentTimeMillis();
         _leagueTemplateName = format;
-        _start = start;
-        _seriesDuration = seriesDuration;
-        _maxMatches = maxMatches;
         _name = name;
+        _cost = cost;
+        _seriesDuration = duration;
+        _maxMatches = maxMatches;
+        _cardBlueprintLibrary = cardBlueprintLibrary;
+        _formatLibrary = formatLibrary;
+        _seriesCount = seriesCount;
+        LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyyMMdd"));
+        _startTime = startDate.atStartOfDay(_systemClock.getZone());
     }
 
     @Override
-    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         validateLeagueAdmin(request);
-        CardBlueprintLibrary cardBlueprintLibrary = serverObjects.getCardBlueprintLibrary();
-        FormatLibrary formatLibrary = serverObjects.getFormatLibrary();
-        LeagueData leagueData = new NewSealedLeagueData(cardBlueprintLibrary, formatLibrary, _leagueTemplateName,
-                _start, _seriesDuration, _maxMatches, _creationTime, _name);
-        responseWriter.writeJsonResponse(getSerializedLeagueData(leagueData));
+        League league = new SealedLeague(_leagueTemplateName, CollectionType.ALL_CARDS, _cardBlueprintLibrary,
+                _startTime, _formatLibrary, _cost, _name, 0, _seriesDuration, _maxMatches, -999,
+                _seriesCount, _systemClock);
+        responseWriter.writeJsonResponse(getSerializedLeagueData(league));
     }
 
-    private String getSerializedLeagueData(LeagueData leagueData) throws JsonProcessingException {
-        List<LeagueSeriesData> allSeries = leagueData.getSeries();
-        int end = allSeries.getLast().getEnd();
-        Map<Object, Object> result = new HashMap<>();
-        result.put("name", _leagueTemplateName);
-        result.put("start", convertIntDateToString(allSeries.getFirst().getStart()));
-        result.put("end", convertIntDateToString(end));
-        List<Map<Object, Object>> seriesParameters = new ArrayList<>();
-        for (LeagueSeriesData series : allSeries) {
-            Map<Object, Object> map = new HashMap<>();
-            map.put("type", series.getName());
-            map.put("maxMatches", series.getMaxMatches());
-            map.put("start", convertIntDateToString(series.getStart()));
-            map.put("end", convertIntDateToString(series.getEnd()));
-            map.put("format", series.getFormat().getName());
-            map.put("collection", series.getCollectionType().getFullName());
-            map.put("limited", series.isLimited());
-            seriesParameters.add(map);
-        }
-        result.put("series", seriesParameters);
-        return new ObjectMapper().writeValueAsString(result);
-    }
-
-    private String convertIntDateToString(int date) {
-        String fullDateString = String.valueOf(date);
-        return fullDateString.substring(0,4) + "-" + fullDateString.substring(4,6) + "-" + fullDateString.substring(6,8);
-    }
 }

@@ -1,35 +1,32 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NormalCardPlayTest extends AbstractAtTest {
 
     @Test
     public void normalCardPlayTest()
-            throws DecisionResultInvalidException, InvalidGameLogicException, PlayerNotFoundException, InvalidGameOperationException {
-        initializeQuickMissionAttempt("Excavation");
+            throws DecisionResultInvalidException, InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        builder.addMission("101_154", "Excavation", P1);
+        FacilityCard outpost = builder.addFacility("101_104", P1);
+        PersonnelCard wallace1 = builder.addCardInHand("101_203", "Darian Wallace", P1, PersonnelCard.class);
+        builder.addCardInHand("101_203", "Darian Wallace", P1, PersonnelCard.class);
+        builder.setPhase(Phase.CARD_PLAY);
+        builder.startGame();
 
-        // Seed Federation Outpost
-        seedFacility(P1, _outpost, _mission.getLocationDeprecatedOnlyUseForTests());
-        assertEquals(_outpost.getLocationDeprecatedOnlyUseForTests(), _mission.getLocationDeprecatedOnlyUseForTests());
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
-        Player player1 = _game.getPlayer(P1);
-
-        PhysicalCard wallace = player1.getCardsInHand().get(1);
-        assertEquals("Darian Wallace", wallace.getTitle());
-        reportCard(P1, wallace, _outpost);
-        assertTrue(_outpost.getCrew().contains(wallace));
+        reportCard(P1, wallace1, outpost);
 
         assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
     }

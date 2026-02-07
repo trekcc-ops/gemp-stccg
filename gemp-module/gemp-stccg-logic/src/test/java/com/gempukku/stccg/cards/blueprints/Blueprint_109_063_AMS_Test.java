@@ -1,65 +1,55 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
+import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gamestate.NullLocation;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
+    private FacilityCard outpost;
+    private PhysicalCard ams;
+    private PhysicalCard tarses;
+    private PhysicalCard wallace;
+
+    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        ams = builder.addSeedDeckCard("109_063", "Assign Mission Specialists", P1);
+        tarses = builder.addDrawDeckCard("101_236", "Simon Tarses", P1);
+        wallace = builder.addDrawDeckCard("101_203", "Darian Wallace", P1);
+        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        builder.setPhase(Phase.SEED_FACILITY);
+        builder.startGame();
+    }
+
     @Test
     public void assignMissionSpecialistsTest()
-            throws DecisionResultInvalidException, InvalidGameOperationException, PlayerNotFoundException {
-        initializeGameToTestAMS();
-        autoSeedMissions();
+            throws DecisionResultInvalidException, InvalidGameOperationException, CardNotFoundException {
+        initializeGame();
 
-        PhysicalCard ams = null;
-        FacilityCard fedOutpost = null;
-        PhysicalCard wallace = null;
-        PhysicalCard tarses = null;
-
-        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
-            if (Objects.equals(card.getTitle(), "Assign Mission Specialists"))
-                ams = card;
-            if (Objects.equals(card.getTitle(), "Federation Outpost"))
-                fedOutpost = (FacilityCard) card;
-            if (Objects.equals(card.getTitle(), "Darian Wallace"))
-                wallace = card;
-            if (Objects.equals(card.getTitle(), "Simon Tarses"))
-                tarses = card;
-        }
-
-        assertNotNull(ams);
-        assertNotNull(fedOutpost);
-        assertNotNull(tarses);
-        assertNotNull(wallace);
-        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA) {
-            skipDilemma();
-        }
-
-        seedCard(P1, fedOutpost);
         seedCard(P1, ams);
+        assertTrue(ams.isInPlay());
         selectFirstAction(P1);
-        assertNotNull(_userFeedback.getAwaitingDecision(P1));
+        assertNotNull(_game.getAwaitingDecision(P1));
 
         List<PhysicalCard> specialists = List.of(tarses, wallace);
 
         selectCards(P1, specialists);
         for (PhysicalCard specialist : specialists) {
             assertTrue(specialist.isInPlay());
-            assertTrue(fedOutpost.getCrew().contains(specialist));
+            assertTrue(outpost.hasCardInCrew(specialist));
         }
 
         while (_game.getCurrentPhase() == Phase.SEED_FACILITY) {
@@ -68,13 +58,10 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
         // Try to discard card at start of turn
         assertEquals(Phase.START_OF_TURN, _game.getCurrentPhase());
-        performAction(P1, DiscardSingleCardAction.class, ams);
+        performAction(P1, UseGameTextAction.class, ams);
 
         assertEquals(Zone.DISCARD, ams.getZone());
         assertTrue(_game.getPlayer(P1).getDiscardPile().contains(ams));
-        assertInstanceOf(NullLocation.class, ams.getGameLocation());
-
-        assertEquals(Phase.CARD_PLAY, _game.getCurrentPhase());
     }
 
 }

@@ -24,7 +24,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
 
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
-        Player currentPlayer = _game.getCurrentPlayer();
+        Player currentPlayer = cardGame.getCurrentPlayer();
         if (currentPlayer.getCardsInDrawDeck().isEmpty()) {
             _game.getGameState().setPlayerDecked(currentPlayer, true);
         } else {
@@ -36,27 +36,23 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             List<? extends PhysicalCard> playerHand = currentPlayer.getCardsInHand();
             PhysicalCard cardDrawn = playerHand.getLast();
             final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
-            if (cardDrawn.canBePlayed(_game)) {
-                TribblesPlayCardAction action = new TribblesPlayCardAction((TribblesPhysicalCard) cardDrawn);
+            if (cardDrawn.canBePlayed(cardGame)) {
+                TribblesPlayCardAction action = new TribblesPlayCardAction(cardGame, (TribblesPhysicalCard) cardDrawn);
                 playableActions.add(action);
             }
 
-            if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
+            if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase())) {
                 playerPassed();
             } else {
-                _game.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, _game, false) {
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
-                                try {
-                                    Action action = getSelectedAction(result);
-                                    if (action != null) {
-                                        thisGame.getActionsEnvironment().addActionToStack(action);
-                                    } else
-                                        playerPassed();
-                                } catch(InvalidGameLogicException exp) {
-                                    throw new DecisionResultInvalidException(exp.getMessage());
-                                }
+                                Action action = getSelectedAction(result);
+                                if (action != null) {
+                                    thisGame.getActionsEnvironment().addActionToStack(action);
+                                } else
+                                    playerPassed();
                             }
                         });
             }

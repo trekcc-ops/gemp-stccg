@@ -1,6 +1,8 @@
 package com.gempukku.stccg.player;
 
-public class PlayerNotFoundException extends Exception {
+import com.gempukku.stccg.game.InvalidGameOperationException;
+
+public class PlayerNotFoundException extends InvalidGameOperationException {
     public PlayerNotFoundException(String message) {
         super(message);
     }

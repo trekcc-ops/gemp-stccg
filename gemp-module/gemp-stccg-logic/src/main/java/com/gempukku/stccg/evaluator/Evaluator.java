@@ -1,11 +1,10 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.game.DefaultGame;
 
-public abstract class Evaluator implements ValueSource {
-    @Override
-    public Evaluator getEvaluator(ActionContext actionContext) { return this; }
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "type")
+public abstract class Evaluator {
     public abstract float evaluateExpression(DefaultGame cardGame);
+
 }
