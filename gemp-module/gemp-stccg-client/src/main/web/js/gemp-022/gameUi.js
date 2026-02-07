@@ -1104,7 +1104,7 @@ export default class GameTableUI {
             let cardsStillToAdd = Object.keys(gameState.visibleCardsInGame);
             let cardToAdd;
 
-            if (gameState.players != null && gameState.players.length > 0) {
+            if (gameState.players != null && gameState.players.size > 0) {
                 // console.log("Calling initializePlayerOrder from initializeGameState");
                 this.initializePlayerOrder(gameState);
                 this.updateGameStats(gameState);
@@ -1112,7 +1112,7 @@ export default class GameTableUI {
 
             this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
 
-            for (const player of gameState.players) {
+            for (const [playerName, player] of gameState.players) {
                 for (const cardId of player.cardGroups["CORE"].cardIds) {
                     cardToAdd = gameState.visibleCardsInGame[cardId];
                     if (cardToAdd == null) {
@@ -1333,16 +1333,16 @@ export default class GameTableUI {
         this.bottomPlayerId = gameState.requestingPlayer;
         this.allPlayerIds = new Array();
 
-        for (var i =0; i < gameState.players.length; i++) {
-            let playerId = gameState.players[i].playerId;
-            this.allPlayerIds.push(playerId);
-            this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
-            this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
+        for (var i =0; i < gameState.playerOrder.turnOrder.length; i++) {
+            let playerName = gameState.playerOrder.turnOrder[i];
+            this.allPlayerIds.push(playerName);
+            this.createPile(playerName, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
+            this.createPile(playerName, "Discard Pile", "discardPileDialogs", "discardPileGroups");
         }
 
         var index = this.getPlayerIndex(this.bottomPlayerId);
         if (index == -1) {
-            this.bottomPlayerId = gameState.players[1].playerId;
+            this.bottomPlayerId = gameState.playerOrder.turnOrder[1];
             this.spectatorMode = true;
         } else {
             this.spectatorMode = false;
@@ -2047,8 +2047,7 @@ export class ST1EGameTableUI extends GameTableUI {
         var that = this;
         $("#main").queue(
             function (next) {
-                for (const player of gameState.players) {
-                    let playerId = player.playerId;
+                for (const [playerId, player] of gameState.players) {
                     let drawDeckSize = player.cardGroups["DRAW_DECK"].cardCount;
                     let handSize = player.cardGroups["HAND"].cardCount;
                     let discardSize = player.cardGroups["DISCARD"].cardCount;

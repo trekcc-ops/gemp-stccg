@@ -53,7 +53,7 @@ public class ST1EGameState extends GameState {
                          @JsonProperty("actionLimits")
                          ActionLimitCollection actionLimitCollection,
                          @JsonProperty("players")
-                         List<Player> players,
+                         Map<String, Player> players,
                          @JsonProperty("awayTeams")
                          List<AwayTeam> awayTeams,
                           @JsonProperty("spacelineElements")
@@ -63,7 +63,7 @@ public class ST1EGameState extends GameState {
                           @JsonProperty("modifiers")
                           List<Modifier> modifiers
     ) {
-        super(players, playerClocks, actionLimitCollection);
+        super(players.values(), playerClocks, actionLimitCollection);
         _currentPhase = currentPhase;
         setCurrentProcess(currentProcess);
         _playerOrder = playerOrder;
@@ -88,7 +88,7 @@ public class ST1EGameState extends GameState {
             throws InvalidGameOperationException {
         super(playerIds, clocks);
         _currentPhase = Phase.SEED_DOORWAY;
-        for (Player player : _players) {
+        for (Player player : _players.values()) {
             player.addCardGroup(Zone.CORE);
             player.addCardGroup(Zone.MISSIONS_PILE);
             player.addCardGroup(Zone.SEED_DECK);
@@ -99,7 +99,7 @@ public class ST1EGameState extends GameState {
             throws InvalidGameOperationException {
         super(playerIds, gameTimer);
         _currentPhase = Phase.SEED_DOORWAY;
-        for (Player player : _players) {
+        for (Player player : _players.values()) {
             player.addCardGroup(Zone.CORE);
             player.addCardGroup(Zone.MISSIONS_PILE);
             player.addCardGroup(Zone.SEED_DECK);

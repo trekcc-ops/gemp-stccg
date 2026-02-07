@@ -81,10 +81,10 @@ public class GameStateView {
     }
 
     @JsonProperty("players")
-    private List<PlayerView> getPlayers() {
-        List<PlayerView> result = new LinkedList<>();
+    private Map<String, PlayerView> getPlayers() {
+        Map<String, PlayerView> result = new HashMap<>();
         for (Player player : _gameState.getPlayers()) {
-            result.add(new PlayerView(player, _requestingPlayerId));
+            result.put(player.getPlayerId(), new PlayerView(player, _requestingPlayerId));
         }
         return result;
     }

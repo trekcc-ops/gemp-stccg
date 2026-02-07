@@ -53,8 +53,9 @@ public abstract class GameState {
     @JsonProperty("turnNumber")
     private int _currentTurnNumber;
     private final Map<String, PlayerClock> _playerClocks;
+
     @JsonProperty("players")
-    List<Player> _players = new ArrayList<>();
+    Map<String, Player> _players = new HashMap<>();
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
     private int nextDecisionId = 1;
 
@@ -69,7 +70,7 @@ public abstract class GameState {
             for (Zone zone : cardGroupList) {
                 player.addCardGroup(zone);
             }
-            _players.add(player);
+            _players.put(playerId, player);
             _playerClocks.put(playerId, new PlayerClock(playerId, gameTimer));
         }
         _actionLimitCollection = new ActionLimitCollection();
@@ -85,16 +86,17 @@ public abstract class GameState {
             for (Zone zone : cardGroupList) {
                 player.addCardGroup(zone);
             }
-            _players.add(player);
+            _players.put(playerId, player);
         }
         _actionLimitCollection = new ActionLimitCollection();
         _playerClocks = clocks;
     }
 
-    protected GameState(List<Player> players, PlayerClock[] playerClocks, ActionLimitCollection actionLimitCollection) {
+    protected GameState(Collection<Player> players, PlayerClock[] playerClocks, ActionLimitCollection actionLimitCollection) {
         _playerClocks = new HashMap<>();
-        _players.addAll(players);
-
+        for (Player player : players) {
+            _players.put(player.getPlayerId(), player);
+        }
         for (PlayerClock clock : playerClocks) {
             _playerClocks.put(clock.getPlayerId(), clock);
         }
@@ -251,16 +253,16 @@ public abstract class GameState {
 
 
     public Player getPlayer(String playerId) throws PlayerNotFoundException {
-        for (Player player : _players) {
-            if (player.getPlayerId().equals(playerId)) {
-                return player;
-            }
+        Player result = _players.get(playerId);
+        if (result == null) {
+            throw new PlayerNotFoundException("Player " + playerId + " not found");
+        } else {
+            return result;
         }
-        throw new PlayerNotFoundException("Player " + playerId + " not found");
     }
 
     @JsonIgnore
-    public Collection<Player> getPlayers() { return _players; }
+    public Collection<Player> getPlayers() { return _players.values(); }
 
     public Player getCurrentPlayer() throws PlayerNotFoundException {
         return getPlayer(getCurrentPlayerId());

@@ -35,9 +35,9 @@
                 at the same time. If player2 has signaled they are finished, playersParticipating will only have
                 player1. */
     },
-    "players": [
-        // Information specific to a player. This array will have a similar JSON object for each player in the game.
-        {
+    "players": {
+        // Information specific to a player. Map using the "playerId" field as a key.
+        "player2": {
             "playerId": "player2",
             "score": 0, // Player score. As of 1/25/25, no distinction between bonus and non-bonus points.
             "decked": false, // Tribbles only
