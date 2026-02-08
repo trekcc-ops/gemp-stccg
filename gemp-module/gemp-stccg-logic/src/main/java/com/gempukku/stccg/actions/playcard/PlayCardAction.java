@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -21,6 +22,7 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
     protected final PhysicalCard _cardEnteringPlay;
     @JsonProperty("destinationZone")
     protected Zone _destinationZone;
+    private boolean _played;
 
     public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType, ActionContext context) {
@@ -76,17 +78,23 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
         cardGame.removeCardsFromZone(List.of(_cardEnteringPlay));
         gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
         saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
+        _played = true;
     }
 
     protected void processEffect(DefaultGame cardGame) {
-        super.processEffect(cardGame);
-        try {
-            putCardIntoPlay(cardGame);
-            setAsSuccessful();
-        } catch(PlayerNotFoundException exp) {
-            cardGame.sendErrorMessage(exp);
-            setAsFailed();
+        if (!_played) {
+            try {
+                putCardIntoPlay(cardGame);
+            } catch (PlayerNotFoundException exp) {
+                cardGame.sendErrorMessage(exp);
+                setAsFailed();
+            }
+        } else {
+            super.processEffect(cardGame);
         }
     }
 
+    public void removeNormalCardPlayCost() {
+        _costs.removeIf(cost -> cost instanceof UseNormalCardPlayAction);
+    }
 }

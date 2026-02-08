@@ -9,6 +9,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
@@ -354,8 +355,8 @@ public class CardBlueprint {
         playInOtherPhaseConditions.add(requirement);
     }
 
-    public TopLevelSelectableAction getPlayThisCardAction(DefaultGame cardGame, String performingPlayerName,
-                                                          PhysicalCard thisCard) {
+    public PlayCardAction getPlayThisCardAction(DefaultGame cardGame, String performingPlayerName,
+                                                PhysicalCard thisCard) {
         if (_playThisCardActionBlueprint == null) {
             return null;
         } else {

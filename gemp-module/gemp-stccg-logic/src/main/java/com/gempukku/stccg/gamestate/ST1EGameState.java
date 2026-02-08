@@ -89,6 +89,7 @@ public class ST1EGameState extends GameState {
             player.addCardGroup(Zone.CORE);
             player.addCardGroup(Zone.MISSIONS_PILE);
             player.addCardGroup(Zone.SEED_DECK);
+            player.addCardGroup(Zone.POINT_AREA);
         }
     }
 
@@ -100,6 +101,7 @@ public class ST1EGameState extends GameState {
             player.addCardGroup(Zone.CORE);
             player.addCardGroup(Zone.MISSIONS_PILE);
             player.addCardGroup(Zone.SEED_DECK);
+            player.addCardGroup(Zone.POINT_AREA);
         }
     }
 

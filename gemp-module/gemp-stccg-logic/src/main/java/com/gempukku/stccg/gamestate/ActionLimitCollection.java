@@ -50,7 +50,7 @@ public class ActionLimitCollection {
     }
 
     public int getNormalCardPlaysAvailable(String playerName) {
-        return _normalCardPlaysAvailable.get(playerName);
+        return _normalCardPlaysAvailable.computeIfAbsent(playerName, k -> 0);
     }
 
     public void useNormalCardPlay(String playerName) {

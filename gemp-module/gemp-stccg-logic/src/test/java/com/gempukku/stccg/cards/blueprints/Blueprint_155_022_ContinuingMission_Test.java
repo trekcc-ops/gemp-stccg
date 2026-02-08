@@ -14,7 +14,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
-    public void introTwoPlayerGameWithSeedCardsTest() throws DecisionResultInvalidException, InvalidGameOperationException, CardNotFoundException {
+    public void downloadCardTest() throws DecisionResultInvalidException, InvalidGameOperationException,
+            CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         PhysicalCard continuing = builder.addSeedDeckCard("155_022", "Continuing Mission", P1);

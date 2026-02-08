@@ -5,8 +5,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -14,9 +14,9 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -50,16 +50,16 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
-        if (this instanceof ReportableCard reportable) {
-            return new ReportCardAction(cardGame, reportable, forFree);
-        } else if (this instanceof FacilityCard) {
-            return _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
-        } else {
-            // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-            STCCGPlayCardAction action = new STCCGPlayCardAction(cardGame, this, Zone.CORE, _ownerName, forFree);
-            action.appendExtraCostsFromModifiers(this, cardGame);
-            return action;
+        PlayCardAction action = (this instanceof ReportableCard reportable) ?
+            new ReportCardAction(cardGame, reportable, forFree) :
+            _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
+        if (forFree) {
+            action.removeNormalCardPlayCost();
         }
+        if (action != null) {
+            action.appendExtraCostsFromModifiers(this, cardGame);
+        }
+        return action;
     }
 
     @Override
@@ -112,6 +112,24 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public boolean isActive() {
         // TODO - account for other inactive states
         return !_isStopped;
+    }
+
+    public boolean isOnPlanetSurface(DefaultGame cardGame) {
+        if (cardGame instanceof ST1EGame stGame &&
+                getAttachedTo(cardGame) instanceof MissionCard mission &&
+                mission.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
+            return missionLocation.isPlanet();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isOnPlanet(DefaultGame cardGame) {
+        if (getAttachedTo(cardGame) instanceof CardWithCrew cardWithCrew) {
+            return cardWithCrew.isOnPlanet(cardGame);
+        } else {
+            return isOnPlanetSurface(cardGame);
+        }
     }
 
 }

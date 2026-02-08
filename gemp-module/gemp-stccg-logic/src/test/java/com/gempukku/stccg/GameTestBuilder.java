@@ -138,6 +138,26 @@ public class GameTestBuilder {
         return shipCard;
     }
 
+    public <T extends ReportableCard> T addCardOnPlanetSurface(String blueprintId, String cardTitle, String ownerName,
+                                               MissionCard mission, Class<T> clazz)
+            throws CardNotFoundException, InvalidGameOperationException {
+        T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
+        GameLocation location = mission.getGameLocation(_game);
+        if (!location.isPlanet()) {
+            throw new InvalidGameOperationException("Location is not a planet");
+        }
+        ReportCardAction playAction = new ReportCardAction(_game, cardToAdd, true, mission);
+        if (cardToAdd instanceof AffiliatedCard affiliatedCard) {
+            playAction.setAffiliation(affiliatedCard.getCurrentAffiliations().getFirst());
+        }
+        executeAction(playAction);
+        assertTrue(cardToAdd.isInPlay());
+        assertTrue(cardToAdd.isAtSameLocationAsCard(mission));
+        assertTrue(cardToAdd.isOnPlanet(_game));
+        return cardToAdd;
+    }
+
+
     public FacilityCard addFacility(String facilityBlueprintId, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
         if (_missions.isEmpty()) {

@@ -16,7 +16,8 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
         @JsonSubTypes.Type(value = CountDiscardValueSource.class, name = "forEachInDiscard"),
         @JsonSubTypes.Type(value = MaximumValueSource.class, name = "max"),
         @JsonSubTypes.Type(value = MinimumValueSource.class, name = "min"),
-        @JsonSubTypes.Type(value = SkillDotCountValueSource.class, name = "skillDotCount")
+        @JsonSubTypes.Type(value = SkillDotCountValueSource.class, name = "skillDotCount"),
+        @JsonSubTypes.Type(value = ThisCardPointBoxValueSource.class, name = "thisCardPointBoxValue")
 })
 public abstract class ValueSource {
 
