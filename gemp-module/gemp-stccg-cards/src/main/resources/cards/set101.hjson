@@ -325,18 +325,16 @@
             shields: 30
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg
             rarity: C
-/*            actions: [
+            actions: [
                 {
                     type: seedThis
                     limit: 1
                 }
-                {
-                    type: playThis
-                    targetLocation: {
-                        filter: whereYouControl(federation engineer)
-                    }
-                }
-            ] */
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(affiliation=federation)
+            }
         }
         {
             blueprintId: 101_105
@@ -349,6 +347,16 @@
             lore: "The Klingon Homeworld is Qo'noS. The Klingon Empire establishes outposts throughout its territory."
             shields: 32
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR105.jpg
+            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(affiliation=klingon)
+            }
             rarity: C
        }
         {
@@ -363,6 +371,16 @@
             shields: 32
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR106.jpg
             rarity: C
+            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(affiliation=romulan)
+            }
         }
         {
             blueprintId: 101_108

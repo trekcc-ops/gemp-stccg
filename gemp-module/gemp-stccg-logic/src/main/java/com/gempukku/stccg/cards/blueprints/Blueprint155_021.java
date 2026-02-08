@@ -86,7 +86,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 DownloadReportableAction action2 =
                         new DownloadReportableAction(cardGame, player, cardTarget, thisCard, destinationFilterBlueprint);
                 action2.setCardActionPrefix("2");
-                action2.appendCost(new UseOncePerGameAction(cardGame, action2, thisCard, player));
+                action2.appendCost(new UseOncePerGameAction(cardGame, thisCard, player.getPlayerId(), _dummyBlueprint));
                 action2.appendCost(new UseNormalCardPlayAction(cardGame, player));
                 if (action2.canBeInitiated(cardGame))
                     actions.add(action2);

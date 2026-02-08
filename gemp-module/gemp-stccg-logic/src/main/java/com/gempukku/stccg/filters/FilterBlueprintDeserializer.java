@@ -67,6 +67,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
         appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
         appendSimpleFilter("outpost", (cardGame, actionContext) -> Filters.changeToFilter(FacilityType.OUTPOST));
+        appendSimpleFilter("romulan", (cardGame, actionContext) -> Filters.Romulan);
         appendSimpleFilter("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         appendSimpleFilter("thisCard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         appendSimpleFilter("unique", (cardGame, actionContext) -> Filters.unique);
@@ -193,6 +194,11 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         if (value.startsWith("title(") && value.endsWith(")")) {
             String cardTitle = value.substring(6, value.length() - 1);
             return new CardTitleFilterBlueprint(cardTitle);
+        }
+        if (value.startsWith("facilityEngineerRequirement(") && value.endsWith(")")) {
+            String engineerFilter = value.substring("facilityEngineerRequirement(".length(), value.length() - 1);
+            FilterBlueprint engineerBlueprint = parseSTCCGFilter(engineerFilter);
+            return new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);
         }
         if (value.startsWith("affiliation=")) {
             String affiliationName = value.substring(12);

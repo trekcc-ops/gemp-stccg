@@ -34,6 +34,12 @@ public class ReportCardAction extends STCCGPlayCardAction {
     }
 
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
+                            MissionCard mission) {
+        this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay, mission));
+    }
+
+
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
                             CardWithCrew facilityCard) {
         this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay, facilityCard));
     }
@@ -55,13 +61,18 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 }
                 setAsSuccessful();
 
-                CardWithCrew destination = _targetResolver.getDestination();
+                PhysicalCard destination = _targetResolver.getDestination();
                 GameState gameState = cardGame.getGameState();
 
                 cardGame.removeCardsFromZone(Collections.singleton(reportable));
                 reportable.setLocationId(cardGame, destination.getLocationId());
-                reportable.attachTo(destination);
-                gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
+
+                if (destination instanceof CardWithCrew cardWithCrew) {
+                    reportable.attachTo(destination);
+                    gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
+                } else {
+                    gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
+                }
 
                 if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
                     ship.dockAtFacility(facility);

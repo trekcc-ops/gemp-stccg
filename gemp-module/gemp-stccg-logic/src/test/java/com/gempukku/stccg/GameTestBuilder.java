@@ -127,6 +127,17 @@ public class GameTestBuilder {
         return mission;
     }
 
+    public ShipCard addShipInSpace(String shipBlueprintId, String cardTitle, String ownerName, MissionCard mission)
+            throws CardNotFoundException, InvalidGameOperationException {
+        ShipCard shipCard = addCardToGame(shipBlueprintId, cardTitle, ownerName, ShipCard.class);
+        ReportCardAction playAction = new ReportCardAction(_game, shipCard, true, mission);
+        playAction.setAffiliation(shipCard.getCurrentAffiliations().getFirst());
+        executeAction(playAction);
+        assertTrue(shipCard.isInPlay());
+        assertTrue(shipCard.isAtSameLocationAsCard(mission));
+        return shipCard;
+    }
+
     public FacilityCard addFacility(String facilityBlueprintId, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
         if (_missions.isEmpty()) {

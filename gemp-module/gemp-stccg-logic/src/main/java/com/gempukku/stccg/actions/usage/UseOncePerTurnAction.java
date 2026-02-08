@@ -35,6 +35,6 @@ public class UseOncePerTurnAction extends ActionyAction {
 
     private LimitCounter getLimitCounter(DefaultGame cardGame) {
         GameState gameState = cardGame.getGameState();
-        return gameState.getUntilEndOfTurnLimitCounter(_performingCard, _blueprint);
+        return gameState.getUntilEndOfTurnLimitCounter(_performingPlayerId, _performingCard, _blueprint);
     }
 }

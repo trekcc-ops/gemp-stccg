@@ -18,7 +18,7 @@ import java.util.*;
 public class ReportCardResolver implements ActionCardResolver {
 
     private final ReportableCard _cardEnteringPlay;
-    private CardWithCrew _destinationCard;
+    private PhysicalCard _destinationCard;
     private Affiliation _affiliationToReportAs;
     private final String _performingPlayerName;
     private SelectCardsAction _selectDestinationAction;
@@ -29,6 +29,11 @@ public class ReportCardResolver implements ActionCardResolver {
     public ReportCardResolver(ReportableCard cardEnteringPlay) {
         _cardEnteringPlay = cardEnteringPlay;
         _performingPlayerName = cardEnteringPlay.getOwnerName();
+    }
+
+    public ReportCardResolver(ReportableCard cardEnteringPlay, MissionCard destination) {
+        this(cardEnteringPlay);
+        _destinationCard = destination;
     }
 
     public ReportCardResolver(ReportableCard cardEnteringPlay, CardWithCrew destination) {
@@ -84,8 +89,12 @@ public class ReportCardResolver implements ActionCardResolver {
         } else if (_affiliationSelectionAction == null) {
             Set<Affiliation> affiliationOptions = new HashSet<>();
             for (Affiliation affiliation : affiliatedCard.getAffiliationOptions()) {
-                if (affiliatedCard.canReportToCrewAsAffiliation(_destinationCard, affiliation, stGame))
+                if (_destinationCard instanceof CardWithCrew destinationWithCrew &&
+                        affiliatedCard.canReportToCrewAsAffiliation(destinationWithCrew, affiliation, stGame)) {
                     affiliationOptions.add(affiliation);
+                } else if (!(_destinationCard instanceof CardWithCrew)) {
+                    affiliationOptions.add(affiliation);
+                }
             }
             if (affiliationOptions.size() == 1) {
                 _affiliationToReportAs = Iterables.getOnlyElement(affiliationOptions);
@@ -137,7 +146,7 @@ public class ReportCardResolver implements ActionCardResolver {
         }
     }
 
-    public CardWithCrew getDestination() {
+    public PhysicalCard getDestination() {
         return _destinationCard;
     }
 

@@ -165,6 +165,9 @@ public class CardBlueprint {
     @JsonProperty("actions")
     protected List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
 
+    @JsonProperty("playThisCardAction")
+    protected PlayThisCardActionBlueprint _playThisCardActionBlueprint;
+
     public CardBlueprint() {
         for (RequiredType requiredType : RequiredType.values()) {
             _beforeTriggers.put(requiredType, new LinkedList<>());
@@ -355,6 +358,15 @@ public class CardBlueprint {
         if (playInOtherPhaseConditions == null)
             playInOtherPhaseConditions = new LinkedList<>();
         playInOtherPhaseConditions.add(requirement);
+    }
+
+    public TopLevelSelectableAction getPlayThisCardAction(DefaultGame cardGame, String performingPlayerName,
+                                                          PhysicalCard thisCard) {
+        if (_playThisCardActionBlueprint == null) {
+            return null;
+        } else {
+            return _playThisCardActionBlueprint.createAction(cardGame, performingPlayerName, thisCard);
+        }
     }
 
     public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame,

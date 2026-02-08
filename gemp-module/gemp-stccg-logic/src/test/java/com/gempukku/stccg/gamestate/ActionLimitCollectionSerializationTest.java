@@ -24,7 +24,7 @@ public class ActionLimitCollectionSerializationTest extends AbstractAtTest {
         assertNotNull(getItDoneAction);
 
         ActionLimitCollection actionLimits = new ActionLimitCollection();
-        LimitCounter limitCounter = actionLimits.getUntilEndOfTurnLimitCounter(getItDone, getItDoneAction);
+        LimitCounter limitCounter = actionLimits.getUntilEndOfTurnLimitCounter(P1, getItDone, getItDoneAction);
         assertEquals(limitCounter.getUsedLimit(), 0);
         limitCounter.incrementToLimit(1, 1);
         assertEquals(limitCounter.getUsedLimit(), 1);
@@ -44,7 +44,7 @@ public class ActionLimitCollectionSerializationTest extends AbstractAtTest {
         assertNotNull(getItDoneAction);
 
         ActionLimitCollection actionLimits = new ActionLimitCollection();
-        LimitCounter limitCounter = actionLimits.getUntilEndOfTurnLimitCounter(getItDone, getItDoneAction);
+        LimitCounter limitCounter = actionLimits.getUntilEndOfTurnLimitCounter(P1, getItDone, getItDoneAction);
         assertEquals(limitCounter.getUsedLimit(), 0);
         limitCounter.incrementToLimit(1, 1);
         assertEquals(limitCounter.getUsedLimit(), 1);
@@ -52,7 +52,7 @@ public class ActionLimitCollectionSerializationTest extends AbstractAtTest {
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = mapper.writeValueAsString(actionLimits);
         ActionLimitCollection collectionCopy = mapper.readValue(jsonString, ActionLimitCollection.class);
-        LimitCounter limitCounterCopy = collectionCopy.getUntilEndOfTurnLimitCounter(getItDone, getItDoneAction);
+        LimitCounter limitCounterCopy = collectionCopy.getUntilEndOfTurnLimitCounter(P1, getItDone, getItDoneAction);
         assertEquals(limitCounterCopy.getUsedLimit(), 1);
 
     }

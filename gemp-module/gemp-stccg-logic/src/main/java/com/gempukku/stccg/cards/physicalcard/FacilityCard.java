@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
-import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -83,12 +82,6 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
         actions.removeIf(action -> !action.canBeInitiated(cardGame));
         return actions;
     }
-
-    public List<TopLevelSelectableAction> createSeedCardActions(DefaultGame cardGame) {
-        return List.of(new SeedOutpostAction(cardGame, this));
-        // TODO - Add actions for non-outposts
-    }
-
 
     public Collection<PhysicalCard> getDockedShips(DefaultGame cardGame) {
         return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.ship);
