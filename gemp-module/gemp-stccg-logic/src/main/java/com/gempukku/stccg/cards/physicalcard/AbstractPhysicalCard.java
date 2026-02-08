@@ -148,6 +148,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public boolean canEnterPlay(DefaultGame game, List<Requirement> enterPlayRequirements) {
         if (cannotEnterPlayPerUniqueness(game))
             return false;
+        if (game instanceof ST1EGame stGame &&
+                this.hasIcon(game, CardIcon.AU_ICON) &&
+                !stGame.getRules().canAUCardBePlayed(stGame, this)) {
+            return false;
+        }
         if (enterPlayRequirements != null && !allRequirementsAreTrue(game, enterPlayRequirements))
             return false;
         return !game.canNotPlayCard(getOwnerName(), this);
@@ -176,7 +181,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return Objects.equals(_ownerName, playerName);
     }
 
-    public boolean canBePlayed(DefaultGame game) { return canEnterPlay(game, _blueprint.getPlayRequirements()); }
+    public boolean canBePlayed(DefaultGame game) {
+        return canEnterPlay(game, _blueprint.getPlayRequirements());
+    }
 
 
     public boolean isControlledBy(String playerId) {

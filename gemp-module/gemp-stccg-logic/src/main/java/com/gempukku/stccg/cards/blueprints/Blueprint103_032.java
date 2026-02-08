@@ -21,7 +21,7 @@ public class Blueprint103_032 extends CardBlueprint {
     protected List<Modifier> getGameTextWhileActiveInPlayModifiersFromJava(DefaultGame cardGame,
                                                                            PhysicalCard thisCard) {
         List<Modifier> result = new LinkedList<>();
-        result.add(new YouCanPlayAUIconCardsModifier());
+        result.add(new YouCanPlayAUIconCardsModifier(thisCard));
         result.add(new YouCanSeedAUIconCardsModifier(thisCard));
         return result;
     }
