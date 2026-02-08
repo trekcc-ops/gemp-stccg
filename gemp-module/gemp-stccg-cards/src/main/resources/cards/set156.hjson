@@ -30,6 +30,10 @@
                     count: 1
                 }
             ]
+            playThisCardAction: {
+                type: playThis
+                forFree: false
+            }
             rarity: V
         }
     ]
