@@ -14,7 +14,7 @@
             title: Dummy 1E AU Dilemma
             type: dilemma
             mission-type: dual
-            icon: au-icon
+            icons: au-icon
             property-logo: tng-logo
         }
     ]

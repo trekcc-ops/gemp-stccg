@@ -21,7 +21,9 @@ import java.util.List;
         @JsonSubTypes.Type(value = AddCunningModifierBlueprint.class, name = "addCunning"),
         @JsonSubTypes.Type(value = AddStrengthModifierBlueprint.class, name = "addStrength"),
         @JsonSubTypes.Type(value = GainIconModifierBlueprint.class, name = "gainIcon"),
-        @JsonSubTypes.Type(value = GainSkillModifierBlueprint.class, name = "gainSkill")
+        @JsonSubTypes.Type(value = GainSkillModifierBlueprint.class, name = "gainSkill"),
+        @JsonSubTypes.Type(value = YouCanPlayAUCardsModifierBlueprint.class, name = "youCanPlayAUCards"),
+        @JsonSubTypes.Type(value = YouCanSeedAUCardsModifierBlueprint.class, name = "youCanSeedAUCards")
 })
 public interface ModifierBlueprint {
     Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext);

@@ -93,7 +93,6 @@
             title: Alternate Universe Door
             type: doorway
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg
             rarity: C
             actions: [
@@ -101,6 +100,14 @@
                     type: seedThis
                     limit: 1
                     where: core
+                }
+            ]
+            modifiers: [
+                {
+                    type: youCanPlayAUCards
+                }
+                {
+                    type: youCanSeedAUCards
                 }
             ]
         }
