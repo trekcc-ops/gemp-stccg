@@ -57,4 +57,8 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
         return (cardValue == cardGame.getGameState().getNextTribbleInSequence());
     }
 
+    public boolean isOnPlanet(DefaultGame cardGame) {
+        return false;
+    }
+
 }

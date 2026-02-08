@@ -66,6 +66,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
         appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
+        appendSimpleFilter("onPlanet(missionSeededByYourOpponent)", (cardGame, actionContext) -> {
+                String opponentName = cardGame.getOpponent(actionContext.yourName());
+                return new OnPlanetMissionFilter(opponentName);
+        });
         appendSimpleFilter("outpost", (cardGame, actionContext) -> Filters.changeToFilter(FacilityType.OUTPOST));
         appendSimpleFilter("romulan", (cardGame, actionContext) -> Filters.Romulan);
         appendSimpleFilter("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));

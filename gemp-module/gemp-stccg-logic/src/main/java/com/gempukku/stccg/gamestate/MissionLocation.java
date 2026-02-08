@@ -423,4 +423,13 @@ public class MissionLocation implements GameLocation {
     public boolean isInSameQuadrantAs(GameLocation currentLocation) {
         return currentLocation.isInQuadrant(_quadrant);
     }
+
+    public boolean wasSeededBy(String playerName) {
+        for (MissionCard mission : _missionCards.getCards()) {
+            if (mission.isOwnedBy(playerName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -17,6 +17,7 @@ import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -112,6 +113,24 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public boolean isActive() {
         // TODO - account for other inactive states
         return !_isStopped;
+    }
+
+    public boolean isOnPlanetSurface(DefaultGame cardGame) {
+        if (cardGame instanceof ST1EGame stGame &&
+                getAttachedTo(cardGame) instanceof MissionCard mission &&
+                mission.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
+            return missionLocation.isPlanet();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isOnPlanet(DefaultGame cardGame) {
+        if (getAttachedTo(cardGame) instanceof CardWithCrew cardWithCrew) {
+            return cardWithCrew.isOnPlanet(cardGame);
+        } else {
+            return isOnPlanetSurface(cardGame);
+        }
     }
 
 }

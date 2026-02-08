@@ -192,4 +192,12 @@ public interface PhysicalCard {
 
     boolean isBeingEncounteredBy(String playerName, DefaultGame cardGame);
     boolean isBeingEncountered(DefaultGame cardGame);
+
+    @JsonIgnore
+    boolean isOnPlanet(DefaultGame cardGame);
+
+    @JsonIgnore
+    default int getPointBoxValue() {
+        return getBlueprint().getPointsShown();
+    }
 }
