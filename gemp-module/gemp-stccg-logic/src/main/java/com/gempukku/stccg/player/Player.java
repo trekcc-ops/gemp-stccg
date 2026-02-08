@@ -142,7 +142,7 @@ public class Player {
                 _missionsPile = new CardPile<>();
                 yield _missionsPile;
             }
-            case PLAY_PILE, REMOVED -> new CardPile<>();
+            case PLAY_PILE, REMOVED, POINT_AREA -> new CardPile<>();
             default -> throw new InappropriateZoneException("Unable to create a card group for zone " + zone);
         };
         _cardGroups.put(zone, group);

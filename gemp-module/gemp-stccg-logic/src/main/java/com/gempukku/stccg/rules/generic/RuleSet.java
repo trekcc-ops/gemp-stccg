@@ -1,12 +1,15 @@
 package com.gempukku.stccg.rules.generic;
 
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,4 +52,13 @@ public class RuleSet<T extends DefaultGame> {
         return new ArrayList<>();
     }
 
+    public Zone getDiscardZone(boolean cardWorthPoints) {
+        return Zone.DISCARD;
+    }
+
+    public PhysicalCardGroup getDiscardToScorePointsGroup(DefaultGame cardGame,
+                                                          PhysicalCard card, String performingPlayerId)
+            throws PlayerNotFoundException {
+        return cardGame.getPlayer(card.getOwnerName()).getCardGroup(Zone.DISCARD);
+    }
 }

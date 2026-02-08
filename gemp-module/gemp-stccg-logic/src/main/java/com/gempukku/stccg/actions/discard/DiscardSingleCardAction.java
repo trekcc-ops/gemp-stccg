@@ -2,7 +2,9 @@ package com.gempukku.stccg.actions.discard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -33,6 +35,7 @@ public class DiscardSingleCardAction extends ActionyAction implements DiscardAct
                                    PhysicalCard cardToDiscard) {
         this(cardGame, performingCard, performingPlayerName, new FixedCardResolver(cardToDiscard));
     }
+
 
     @Override
     public PhysicalCard getPerformingCard() {

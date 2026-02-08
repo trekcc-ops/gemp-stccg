@@ -1,14 +1,17 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.CardWithCompatibility;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
@@ -86,6 +89,21 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
             result.add(DockingRules.getExtendedShieldsModifier(facility));
         }
         return result;
+    }
+
+    @Override
+    public Zone getDiscardZone(boolean cardWorthPoints) {
+        if (cardWorthPoints) {
+            return Zone.POINT_AREA;
+        } else {
+            return Zone.DISCARD;
+        }
+    }
+
+    @Override
+    public PhysicalCardGroup getDiscardToScorePointsGroup(DefaultGame cardGame, PhysicalCard card,
+                                                          String performingPlayerId) throws PlayerNotFoundException {
+        return cardGame.getPlayer(performingPlayerId).getCardGroup(Zone.POINT_AREA);
     }
 
     public List<Modifier> getGlobalRulesBasedModifiersForCardsInPlay() {

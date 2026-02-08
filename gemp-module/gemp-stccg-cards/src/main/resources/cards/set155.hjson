@@ -50,11 +50,11 @@
                 }
                 immediateEffect: {
                     type: scorePoints
+                    discardThisCard: true
                     points: {
                         type: thisCardPointBoxValue
                     }
                 }
-                discardAfter: true
             }
             point-box: 5
         }

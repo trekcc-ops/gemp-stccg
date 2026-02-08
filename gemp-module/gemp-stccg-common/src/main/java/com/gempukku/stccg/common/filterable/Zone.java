@@ -12,6 +12,7 @@ public enum Zone implements Filterable {
     ATTACHED("play", true, true, true, false),
 
     REMOVED("removed", true, true, false, true),
+    POINT_AREA("point area", true, true, false, true),
 
     PLAY_PILE("play pile", true, true,true, true),
 
