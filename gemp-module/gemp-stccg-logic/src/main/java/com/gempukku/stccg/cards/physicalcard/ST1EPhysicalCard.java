@@ -52,6 +52,8 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
         if (this instanceof ReportableCard reportable) {
             return new ReportCardAction(cardGame, reportable, forFree);
+        } else if (this instanceof FacilityCard) {
+            return _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
         } else {
             // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
             STCCGPlayCardAction action = new STCCGPlayCardAction(cardGame, this, Zone.CORE, _ownerName, forFree);

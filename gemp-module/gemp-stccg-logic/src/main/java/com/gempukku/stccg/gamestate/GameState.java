@@ -371,12 +371,14 @@ public abstract class GameState {
 
     public abstract boolean cardsArePresentWithEachOther(PhysicalCard... cards);
 
-    public LimitCounter getUntilEndOfGameLimitCounter(PhysicalCard card, String prefix) {
-        return _actionLimitCollection.getUntilEndOfGameLimitCounter(card, prefix);
+    public LimitCounter getUntilEndOfGameLimitCounter(String playerName, PhysicalCard card,
+                                                      ActionBlueprint actionBlueprint) {
+        return _actionLimitCollection.getUntilEndOfGameLimitCounter(playerName, card, actionBlueprint);
     }
 
-    public LimitCounter getUntilEndOfTurnLimitCounter(PhysicalCard card, ActionBlueprint actionBlueprint) {
-        return _actionLimitCollection.getUntilEndOfTurnLimitCounter(card, actionBlueprint);
+    public LimitCounter getUntilEndOfTurnLimitCounter(String playerName, PhysicalCard card,
+                                                      ActionBlueprint actionBlueprint) {
+        return _actionLimitCollection.getUntilEndOfTurnLimitCounter(playerName, card, actionBlueprint);
     }
 
 

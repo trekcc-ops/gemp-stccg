@@ -17,6 +17,20 @@
             rarity: C
         }
         {
+            blueprintId: 117_046
+            title: Deliver Message
+            type: mission
+            mission-type: planet
+            location: Ferenginar
+            homeworld: ferengi
+            lore: Convey documents to Grand Nagus Zek on the Ferengi homeworld; beware enemy patrols.
+            affiliation-icons: federation,klingon,dominion
+            mission-requirements: V.I.P. + Diplomacy + Acquisition OR Quark Son of Keldar OR Nog
+            point-box: 30
+            span: 4
+            image-url: https://www.trekcc.org/1e/cardimages/homefront/HMF_31V.jpg
+        }
+        {
             blueprintId: 117_083
             title: Krunk
             type: personnel

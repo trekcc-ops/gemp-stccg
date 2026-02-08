@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.targetresolver.SeedOutpostResolver;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -12,21 +13,14 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
-public class SeedOutpostAction extends SeedCardAction {
-    private final SeedOutpostResolver _targetResolver;
+public class PlayFacilityAction extends PlayCardAction {
+    private final PlayFacilityResolver _targetResolver;
 
-    private SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed, SeedOutpostResolver targetResolver) {
-        super(cardGame, cardToSeed, Zone.AT_LOCATION);
+    public PlayFacilityAction(DefaultGame cardGame, FacilityCard cardToSeed, PlayFacilityResolver targetResolver) {
+        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), Zone.AT_LOCATION,
+                ActionType.PLAY_CARD);
         _targetResolver = targetResolver;
         _cardTargets.add(_targetResolver);
-    }
-
-    public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed) {
-        this(cardGame, cardToSeed, new SeedOutpostResolver(cardToSeed));
-    }
-
-    public SeedOutpostAction(DefaultGame cardGame, FacilityCard cardToSeed, MissionCard destinationCard) {
-        this(cardGame, cardToSeed, new SeedOutpostResolver(cardToSeed, destinationCard));
     }
 
     public void processEffect(DefaultGame cardGame) {
@@ -46,7 +40,7 @@ public class SeedOutpostAction extends SeedCardAction {
                 saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
                 setAsSuccessful();
             } else {
-                cardGame.sendErrorMessage("Unable to process seed outpost action in a non-1E game");
+                cardGame.sendErrorMessage("Unable to process play outpost action in a non-1E game");
                 setAsFailed();
             }
         } catch(PlayerNotFoundException exp) {

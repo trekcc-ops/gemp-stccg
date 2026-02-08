@@ -263,6 +263,42 @@ public interface UserInputSimulator {
         }
     }
 
+    default void playFacility(String playerId, PhysicalCard cardToSeed)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        PlayFacilityAction choice = null;
+        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
+        if (decision instanceof ActionSelectionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof PlayFacilityAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
+                    choice = seedAction;
+                }
+            }
+            actionDecision.decisionMade(choice);
+            getGame().removeDecision(playerId);
+            getGame().carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+    }
+
+    default void seedFacility(String playerId, PhysicalCard cardToSeed)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        SeedOutpostAction choice = null;
+        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
+        if (decision instanceof ActionSelectionDecision actionDecision) {
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
+                    choice = seedAction;
+                }
+            }
+            actionDecision.decisionMade(choice);
+            getGame().removeDecision(playerId);
+            getGame().carryOutPendingActionsUntilDecisionNeeded();
+        }
+        if (choice == null)
+            throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+    }
+
     default void seedFacility(String playerId, PhysicalCard cardToSeed, MissionCard destination)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         SeedOutpostAction choice = null;

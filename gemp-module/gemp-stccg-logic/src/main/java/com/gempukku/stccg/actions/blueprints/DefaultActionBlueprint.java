@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.blueprints;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
@@ -20,6 +19,10 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     private final PlayerSource _performingPlayer;
     private int _blueprintId;
 
+    protected DefaultActionBlueprint(PlayerSource performingPlayer) {
+        _performingPlayer = performingPlayer;
+    }
+
     protected DefaultActionBlueprint(int limitPerTurn, PlayerSource performingPlayer) {
         if (limitPerTurn > 0) {
             costs.add(new UsePerTurnLimitActionBlueprint(this, limitPerTurn));
@@ -29,11 +32,8 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
 
     protected DefaultActionBlueprint(int limitPerTurn, List<SubActionBlueprint> costs,
                                   List<SubActionBlueprint> effects,
-                                  PlayerSource playerSource) throws InvalidCardDefinitionException {
+                                  PlayerSource playerSource) {
         this(limitPerTurn, playerSource);
-
-        if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
-            throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
 
         if (costs != null && !costs.isEmpty()) {
             for (SubActionBlueprint costBlueprint : costs) {

@@ -55,8 +55,7 @@ public class PlayCardDestinationRules {
             return location instanceof MissionLocation mission &&
                     mission.hasMatchingAffiliationIcon(performingPlayer, affiliationOptions);
         } else {
-            // TODO - No specific rules for where outposts can be played, because this is on the gametext
-            throw new UndefinedRuleException("No rule defined yet for where outposts can be played");
+            return location instanceof MissionLocation missionLocation && !missionLocation.isHomeworld();
         }
     }
 }
