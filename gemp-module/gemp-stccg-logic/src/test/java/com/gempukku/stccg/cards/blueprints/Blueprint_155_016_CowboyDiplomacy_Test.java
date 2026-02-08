@@ -19,13 +19,18 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
     private PersonnelCard picard;
     private PhysicalCard diplomacy;
 
-    private void initializeGame(boolean diplomacyAtMission) throws InvalidGameOperationException, CardNotFoundException {
+    private void initializeGame(boolean diplomacyAtOpponentsMission)
+            throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         MissionCard mission = builder.addMission("101_154", "Excavation", P2);
-        if (diplomacyAtMission) {
+        MissionCard homeworld = builder.addMission("117_046", "Deliver Message", P1);
+        if (diplomacyAtOpponentsMission) {
             picard = builder.addCardOnPlanetSurface(
                     "101_215", "Jean-Luc Picard", P1, mission, PersonnelCard.class);
+        } else {
+            picard = builder.addCardOnPlanetSurface(
+                    "101_215", "Jean-Luc Picard", P1, homeworld, PersonnelCard.class);
         }
         diplomacy = builder.addCardInHand("155_016", "Cowboy Diplomacy", P1);
         builder.setPhase(Phase.CARD_PLAY);
