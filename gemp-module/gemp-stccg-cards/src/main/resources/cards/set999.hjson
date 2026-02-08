@@ -9,5 +9,13 @@
             type: dilemma
             property-logo: tng-logo
         }
+        {
+            blueprintId: 991_002
+            title: Dummy 1E AU Dilemma
+            type: dilemma
+            mission-type: dual
+            icon: au-icon
+            property-logo: tng-logo
+        }
     ]
 }
