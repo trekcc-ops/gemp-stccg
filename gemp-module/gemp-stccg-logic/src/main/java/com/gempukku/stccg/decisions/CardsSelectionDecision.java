@@ -125,4 +125,8 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
         return result;
     }
 
+    public List<? extends PhysicalCard> getSelectableCards() {
+        return _physicalCards;
+    }
+
 }

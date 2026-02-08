@@ -53,6 +53,9 @@ public class CardBlueprint {
     @JsonProperty("image-url")
     protected String imageUrl;
 
+    @JsonProperty("homeworld")
+    protected Affiliation homeworldAffiliation;
+
     @JsonProperty("rarity")
     protected String _rarity;
     @JsonProperty("property-logo")
@@ -330,18 +333,9 @@ public class CardBlueprint {
     public boolean canInsertIntoSpaceline() { return _canInsertIntoSpaceline; }
     public boolean canAnyAttempt() { return _anyCanAttempt; }
 
-    public Affiliation homeworldAffiliation() {
-        if (this._cardType != CardType.MISSION)
-            return null;
-        for (Affiliation affiliation : Affiliation.values()) {
-            String homeworldString = affiliation.name().toLowerCase() + " homeworld";
-            if (_lore != null)
-                if (_lore.toLowerCase().contains(homeworldString))
-                    return affiliation;
-        }
-        return null;
+    public boolean isHomeworld() {
+        return homeworldAffiliation != null;
     }
-    public boolean isHomeworld() { return homeworldAffiliation() != null; }
 
 
     public List<ActionBlueprint> getSeedCardActionSources() {

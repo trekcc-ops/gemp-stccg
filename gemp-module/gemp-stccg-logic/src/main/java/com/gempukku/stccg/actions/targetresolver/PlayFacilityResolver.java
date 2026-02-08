@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.InCardListFilter;
@@ -14,7 +13,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.google.common.collect.Iterables;
 
 import java.util.*;
@@ -34,9 +32,16 @@ public class PlayFacilityResolver implements ActionTargetResolver {
         _cardEnteringPlay = facilityCard;
         _performingPlayerName = _cardEnteringPlay.getOwnerName();
         for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-            MissionCard missionCard = location.getTopMissionCard();
-            if (additionalDestinationFilter.accepts(stGame, missionCard)) {
-                _destinationMap.put(missionCard, facilityCard.getAffiliationOptions());
+            try {
+                MissionCard missionCard = location.getMissionForPlayer(facilityCard.getOwnerName());
+                boolean canPlayHere = stGame.getRules().isLocationValidPlayCardDestinationPerRules(
+                        stGame, _cardEnteringPlay, location, PlayFacilityAction.class, _performingPlayerName,
+                        _cardEnteringPlay.getAffiliationOptions());
+                if (canPlayHere && additionalDestinationFilter.accepts(stGame, missionCard)) {
+                    _destinationMap.put(missionCard, facilityCard.getAffiliationOptions());
+                }
+            } catch(InvalidGameLogicException ignored) {
+
             }
         }
         if (_destinationMap.size() == 1) {
@@ -58,34 +63,18 @@ public class PlayFacilityResolver implements ActionTargetResolver {
     }
 
     private void selectDestination(ST1EGame stGame) {
-        try {
-            if (_selectDestinationAction == null) {
-                ST1EGameState gameState = stGame.getGameState();
-                Set<PhysicalCard> availableMissions = new HashSet<>();
-                for (MissionLocation location : gameState.getSpacelineLocations()) {
-                    MissionCard missionCard = location.getMissionForPlayer(_performingPlayerName);
-                    boolean canPlayHere = stGame.getRules().isLocationValidPlayCardDestinationPerRules(
-                            stGame, _cardEnteringPlay, location, PlayFacilityAction.class, _performingPlayerName,
-                            _cardEnteringPlay.getAffiliationOptions());
-                    if (canPlayHere) {
-                        availableMissions.add(missionCard);
-                    }
-                }
-                _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                        "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
-                        new InCardListFilter(availableMissions));
-                stGame.addActionToStack(_selectDestinationAction);
-            } else if (_selectDestinationAction.wasSuccessful()) {
-                if (_selectDestinationAction.getSelectedCard() instanceof MissionCard mission) {
-                    _destinationMission = mission;
-                } else {
-                    _isFailed = true;
-                }
-            } else if (_selectDestinationAction.wasFailed()) {
+        if (_selectDestinationAction == null) {
+            _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
+                    "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
+                    new InCardListFilter(_destinationMap.keySet()));
+            stGame.addActionToStack(_selectDestinationAction);
+        } else if (_selectDestinationAction.wasSuccessful()) {
+            if (_selectDestinationAction.getSelectedCard() instanceof MissionCard mission) {
+                _destinationMission = mission;
+            } else {
                 _isFailed = true;
             }
-        } catch(InvalidGameLogicException exp) {
-            stGame.sendErrorMessage(exp);
+        } else if (_selectDestinationAction.wasFailed()) {
             _isFailed = true;
         }
     }
