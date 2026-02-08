@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
@@ -56,18 +57,21 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
     public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
-        CardFilter additionalFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
+        PlayCardAction action = null;
         if (cardGame instanceof ST1EGame stGame && actionContext.card() instanceof FacilityCard facility) {
+            CardFilter additionalFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
             PlayFacilityResolver resolver = new PlayFacilityResolver(stGame, facility, additionalFilter);
             if (!resolver.cannotBeResolved(cardGame)) {
-                PlayFacilityAction action = new PlayFacilityAction(cardGame, facility, resolver);
+                action = new PlayFacilityAction(cardGame, facility, resolver);
                 action.appendCost(new UseNormalCardPlayAction(cardGame, performingPlayerName));
-                return action;
             }
         } else if (cardGame instanceof ST1EGame && _destinationBlueprint == null) {
-            return new STCCGPlayCardAction(cardGame, thisCard, Zone.CORE, performingPlayerName, _forFree);
+            action = new STCCGPlayCardAction(cardGame, thisCard, Zone.CORE, performingPlayerName, _forFree);
         }
-        return null;
+        if (action != null) {
+            appendActionToContext(cardGame, action, actionContext);
+        }
+        return action;
     }
 
 }

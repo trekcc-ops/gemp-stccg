@@ -3,10 +3,13 @@ package com.gempukku.stccg.actions.playcard;
 import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -68,14 +71,25 @@ public class ReportCardAction extends STCCGPlayCardAction {
                 reportable.setLocationId(cardGame, destination.getLocationId());
 
                 if (destination instanceof CardWithCrew cardWithCrew) {
+                    // if reporting to a ship or facility
                     reportable.attachTo(destination);
                     gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
-                } else {
+                    if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
+                        ship.dockAtFacility(facility);
+                    }
+                } else if (reportable.getCardType() == CardType.SHIP) {
+                    // if reporting a ship in space at a location
                     gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
-                }
-
-                if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
-                    ship.dockAtFacility(facility);
+                } else {
+                    // if reporting another reportable to a location
+                    reportable.setZone(Zone.ATTACHED);
+                    reportable.attachTo(destination);
+                    reportable.setLocationId(cardGame, destination.getLocationId());
+                    if (destination instanceof MissionCard missionDestination &&
+                            cardGame instanceof ST1EGame stGame &&
+                            missionDestination.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
+                        stGame.getGameState().addCardToEligibleAwayTeam(stGame, reportable, missionLocation);
+                    }
                 }
 
                 saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);

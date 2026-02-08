@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -14,7 +13,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -51,16 +49,13 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
-        if (this instanceof ReportableCard reportable) {
-            return new ReportCardAction(cardGame, reportable, forFree);
-        } else if (this instanceof FacilityCard) {
-            return _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
-        } else {
-            // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-            STCCGPlayCardAction action = new STCCGPlayCardAction(cardGame, this, Zone.CORE, _ownerName, forFree);
+        TopLevelSelectableAction action = (this instanceof ReportableCard reportable) ?
+            new ReportCardAction(cardGame, reportable, forFree) :
+            _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
+        if (action != null) {
             action.appendExtraCostsFromModifiers(this, cardGame);
-            return action;
         }
+        return action;
     }
 
     @Override
