@@ -82,7 +82,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
                     gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
                 } else {
                     // if reporting another reportable to a location
-                    reportable.setZone(Zone.ATTACHED);
+                    gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
                     reportable.attachTo(destination);
                     reportable.setLocationId(cardGame, destination.getLocationId());
                     if (destination instanceof MissionCard missionDestination &&

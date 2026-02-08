@@ -12,20 +12,21 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
 
     private PersonnelCard picard;
     private PhysicalCard diplomacy;
 
-    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+    private void initializeGame(boolean diplomacyAtMission) throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         MissionCard mission = builder.addMission("101_154", "Excavation", P2);
-        picard = builder.addCardOnPlanetSurface(
-                "101_215", "Jean-Luc Picard", P1, mission, PersonnelCard.class);
+        if (diplomacyAtMission) {
+            picard = builder.addCardOnPlanetSurface(
+                    "101_215", "Jean-Luc Picard", P1, mission, PersonnelCard.class);
+        }
         diplomacy = builder.addCardInHand("155_016", "Cowboy Diplomacy", P1);
         builder.setPhase(Phase.CARD_PLAY);
         builder.startGame();
@@ -34,11 +35,25 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
     @Test
     public void scorePointsTest() throws InvalidGameOperationException, CardNotFoundException,
             DecisionResultInvalidException {
-        initializeGame();
+        initializeGame(true);
+
+        // Play Cowboy Diplomacy; verify that it played for free
         playCard(P1, diplomacy);
+        assertEquals(1, _game.getGameState().getNormalCardPlaysAvailable(P1));
+
+        // Verify that player scored points
         assertEquals(5, _game.getPlayer(P1).getScore());
+
+        // Verify that Cowboy Diplomacy was discarded
         assertFalse(diplomacy.isInPlay());
         assertEquals(Zone.DISCARD, diplomacy.getZone());
     }
+
+    @Test
+    public void cannotPlayTest() throws InvalidGameOperationException, CardNotFoundException {
+        initializeGame(false);
+        assertThrows(DecisionResultInvalidException.class, () -> playCard(P1, diplomacy));
+    }
+
 
 }

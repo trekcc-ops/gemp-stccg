@@ -60,6 +60,9 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
     public PlayCardAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
+        if (!isValid(cardGame, actionContext)) {
+            return null;
+        }
         PlayCardAction action = null;
         if (cardGame instanceof ST1EGame stGame && actionContext.card() instanceof FacilityCard facility) {
             CardFilter additionalFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
