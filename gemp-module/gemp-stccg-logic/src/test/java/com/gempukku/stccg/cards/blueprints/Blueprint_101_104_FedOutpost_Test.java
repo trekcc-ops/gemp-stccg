@@ -26,6 +26,7 @@ public class Blueprint_101_104_FedOutpost_Test extends AbstractAtTest {
     private MissionCard nonFedMission;
     private FacilityCard outpostPlayerTwo;
     private MissionCard noEngineerMission;
+    private FacilityCard outpost3;
 
     private void initializeGame(Zone secondOutpostZone, Phase startingPhase) throws InvalidGameOperationException,
             CardNotFoundException {
@@ -44,6 +45,7 @@ public class Blueprint_101_104_FedOutpost_Test extends AbstractAtTest {
             outpostPlayerTwo = builder.addSeedDeckCard("101_104", "Federation Outpost", P2, FacilityCard.class);
         } else if (secondOutpostZone == Zone.HAND) {
             outpost2 = builder.addCardInHand("101_104", "Federation Outpost", P1, FacilityCard.class);
+            outpost3 = builder.addCardInHand("101_104", "Federation Outpost", P1, FacilityCard.class);
         }
 
         // Put Fed ENGINEERS at all missions
@@ -93,6 +95,11 @@ public class Blueprint_101_104_FedOutpost_Test extends AbstractAtTest {
         assertTrue(selectableCards.contains(nonFedMission));
         assertTrue(selectableCards.contains(gammaMission));
         assertTrue(selectableCards.contains(rogueComet));
+        selectCard(P1, gammaMission);
+        assertTrue(outpost2.isAtSameLocationAsCard(gammaMission));
+
+        // Can't play another facility because the normal card play has been used
+        assertThrows(DecisionResultInvalidException.class, () -> playFacility(P1, outpost3));
     }
 
 }
