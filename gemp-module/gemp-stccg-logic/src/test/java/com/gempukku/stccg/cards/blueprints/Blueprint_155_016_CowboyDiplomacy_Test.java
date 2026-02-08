@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,7 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
         playCard(P1, diplomacy);
         assertEquals(5, _game.getPlayer(P1).getScore());
         assertFalse(diplomacy.isInPlay());
+        assertEquals(Zone.DISCARD, diplomacy.getZone());
     }
 
 }

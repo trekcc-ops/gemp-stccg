@@ -11,13 +11,6 @@ import com.gempukku.stccg.player.Player;
 
 public class STCCGPlayCardAction extends PlayCardAction {
 
-    public STCCGPlayCardAction(DefaultGame cardGame, ST1EPhysicalCard card, Zone zone, String performingPlayerName,
-                               boolean forFree) {
-        super(cardGame, card, card, performingPlayerName, zone, ActionType.PLAY_CARD);
-        if (!forFree)
-            appendCost(new UseNormalCardPlayAction(cardGame, performingPlayerName));
-    }
-
     public STCCGPlayCardAction(DefaultGame cardGame, ST1EPhysicalCard card, Zone zone, Player player, boolean forFree) {
         super(cardGame, card, card, player.getPlayerId(), zone, ActionType.PLAY_CARD);
         if (!forFree)

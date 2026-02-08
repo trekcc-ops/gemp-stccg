@@ -1,14 +1,15 @@
 package com.gempukku.stccg.cards.blueprints;
 
-import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.ActivateCardActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.PlayThisCardActionBlueprint;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadReportableAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
@@ -35,6 +36,9 @@ public class Blueprint155_021 extends CardBlueprint {
     );
 
     public Blueprint155_021() throws InvalidCardDefinitionException {
+        _playThisCardActionBlueprint = new PlayThisCardActionBlueprint(
+                null, null, false, null, null, false
+        );
     }
 
     // Attention All Hands

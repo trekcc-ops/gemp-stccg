@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
@@ -26,19 +25,19 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
     boolean _forFree;
 
     @JsonCreator
-    protected PlayThisCardActionBlueprint(@JsonProperty(value = "destination")
-                                          FilterBlueprint destinationBlueprint,
-                                          @JsonProperty(value = "perGameLimit")
-                                          Integer perGameLimit,
-                                          @JsonProperty(value = "forFree")
-                                          boolean forFree,
-                                          @JsonProperty(value = "requirement")
-                                          Requirement requirement,
-                                          @JsonProperty(value = "immediateEffect")
-                                          SubActionBlueprint immediateEffect,
-                                          @JsonProperty(value = "discardAfter")
-                                          boolean discardAfter
-     )
+    public PlayThisCardActionBlueprint(@JsonProperty(value = "destination")
+                                       FilterBlueprint destinationBlueprint,
+                                       @JsonProperty(value = "perGameLimit")
+                                       Integer perGameLimit,
+                                       @JsonProperty(value = "forFree")
+                                       boolean forFree,
+                                       @JsonProperty(value = "requirement")
+                                       Requirement requirement,
+                                       @JsonProperty(value = "immediateEffect")
+                                       SubActionBlueprint immediateEffect,
+                                       @JsonProperty(value = "discardAfter")
+                                       boolean discardAfter
+    )
             throws InvalidCardDefinitionException {
         super(new YouPlayerSource());
         _destinationBlueprint = destinationBlueprint;
@@ -46,15 +45,19 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
             costs.add(new UsePerGameLimitActionBlueprint(this, perGameLimit));
         }
         _forFree = forFree;
-        _requirements.add(requirement);
-        _effects.add(immediateEffect);
+        if (requirement != null) {
+            _requirements.add(requirement);
+        }
+        if (immediateEffect != null) {
+            _effects.add(immediateEffect);
+        }
         if (discardAfter) {
             _effects.add(new DiscardThisCardSubActionBlueprint());
         }
     }
 
     @Override
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
+    public PlayCardAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         PlayCardAction action = null;

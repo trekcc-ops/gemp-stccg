@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -49,9 +50,12 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
 
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
-        TopLevelSelectableAction action = (this instanceof ReportableCard reportable) ?
+        PlayCardAction action = (this instanceof ReportableCard reportable) ?
             new ReportCardAction(cardGame, reportable, forFree) :
             _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
+        if (forFree) {
+            action.removeNormalCardPlayCost();
+        }
         if (action != null) {
             action.appendExtraCostsFromModifiers(this, cardGame);
         }
