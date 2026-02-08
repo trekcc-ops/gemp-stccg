@@ -90,6 +90,8 @@ public interface UserInputSimulator {
             arbitrary.decisionMade(cards);
             getGame().removeDecision(playerId);
             getGame().carryOutPendingActionsUntilDecisionNeeded();
+        } else {
+            throw new DecisionResultInvalidException("No current decision allows selecting of cards");
         }
     }
 

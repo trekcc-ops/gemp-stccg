@@ -10,14 +10,16 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_103_032_AUDoor_Test extends AbstractAtTest {
 
     private PhysicalCard doorway;
     private PersonnelCard syrus;
     private PhysicalCard doorwayInHand;
+    private PhysicalCard doorway2;
 
     private void initializeGame(boolean includeDoorway) throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
@@ -34,15 +36,18 @@ public class Blueprint_103_032_AUDoor_Test extends AbstractAtTest {
     }
 
     @Test
-    public void canBeSeeded() throws InvalidGameOperationException, CardNotFoundException,
+    public void canOnlySeedOneTest() throws InvalidGameOperationException, CardNotFoundException,
             DecisionResultInvalidException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         doorway = builder.addSeedDeckCard("103_032", "Alternate Universe Door", P1);
+        doorway2 = builder.addSeedDeckCard("103_032", "Alternate Universe Door", P1);
         builder.setPhase(Phase.SEED_DOORWAY);
         builder.startGame();
+        assertThrows(DecisionResultInvalidException.class, () -> selectCards(P1, List.of(doorway, doorway2)));
         selectCard(P1, doorway);
         assertTrue(doorway.isInPlay());
+        assertFalse(doorway2.isInPlay());
     }
 
     @Test
