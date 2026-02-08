@@ -17,12 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
 
     private PhysicalCard diplomacy;
+    private PersonnelCard larson;
 
     private void initializeGame(boolean diplomacyAtOpponentsMission)
             throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         MissionCard mission = builder.addMission("101_154", "Excavation", P2);
+        builder.addFacility("101_104", P1, mission);
         MissionCard homeworld = builder.addMission("117_046", "Deliver Message", P1);
         if (diplomacyAtOpponentsMission) {
             builder.addCardOnPlanetSurface(
@@ -32,6 +34,8 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
                     "101_215", "Jean-Luc Picard", P1, homeworld, PersonnelCard.class);
         }
         diplomacy = builder.addCardInHand("155_016", "Cowboy Diplomacy", P1);
+        diplomacy = builder.addCardInHand("155_016", "Cowboy Diplomacy", P1);
+        larson = builder.addCardInHand("101_220", "Linda Larson", P1, PersonnelCard.class);
         builder.setPhase(Phase.CARD_PLAY);
         builder.startGame();
     }
@@ -52,6 +56,18 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
         assertFalse(diplomacy.isInPlay());
         assertEquals(Zone.POINT_AREA, diplomacy.getZone());
         assertTrue(_game.getGameState().getCardGroup(P1, Zone.POINT_AREA).getCards().contains(diplomacy));
+
+        // Can't play twice
+        assertThrows(DecisionResultInvalidException.class, () -> playCard(P1, diplomacy));
+    }
+
+    @Test
+    public void playForFreeTest() throws InvalidGameOperationException, CardNotFoundException,
+            DecisionResultInvalidException {
+        // Checking that Cowboy Diplomacy can still be played if it's following a normal card play
+        initializeGame(true);
+        playCard(P1, larson);
+        playCard(P1, diplomacy);
     }
 
     @Test
