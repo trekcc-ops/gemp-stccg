@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -21,6 +22,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
     private final AttemptingUnit _attemptingUnit;
 
     private final int _locationId;
+    private boolean _subActionFailed;
 
     public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
@@ -60,14 +62,25 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
 
     @Override
     protected final void processEffect(DefaultGame cardGame) {
-        super.processEffect(cardGame);
-        if (_actionEffects.isEmpty()) {
+        if (!_actionEffects.isEmpty()) {
+            Action subAction = _actionEffects.getFirst();
+            if (subAction.wasSuccessful()) {
+                _actionEffects.remove(subAction);
+                _processedActions.add(subAction);
+            } else if (subAction.wasFailed() && !(subAction instanceof OvercomeDilemmaConditionAction)) {
+                setAsSuccessful();
+            } else {
+                cardGame.getActionsEnvironment().addActionToStack(subAction);
+            }
+        } else {
+            setAsSuccessful();
+        }
+        if (wasSuccessful()) {
             PhysicalCard card = _cardTarget.getCard();
             if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
                 cardGame.addActionToStack(
                         new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard()));
             }
-            setAsSuccessful();
         }
     }
 

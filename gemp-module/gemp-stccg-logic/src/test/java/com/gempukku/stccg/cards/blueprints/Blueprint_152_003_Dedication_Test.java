@@ -18,9 +18,10 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
     private MissionCard _mission;
     private PhysicalCard dedication;
     private PersonnelCard troi;
+    private PersonnelCard larson;
     private ShipCard runabout;
 
-    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+    private void initializeGame(boolean uniquePersonnel) throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         _mission = builder.addMission("101_171", "Investigate Rogue Comet", P1);
@@ -28,13 +29,30 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         dedication = builder.addSeedCardUnderMission("152_003", "Dedication to Duty", P2, _mission);
         builder.setPhase(Phase.EXECUTE_ORDERS);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
-        troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
+        if (uniquePersonnel) {
+            troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
+        } else {
+            larson = builder.addCardAboardShipOrFacility("101_220", "Linda Larson", P1, runabout, PersonnelCard.class);
+        }
         builder.startGame();
     }
 
     @Test
+    public void noUniquePersonnel() throws Exception {
+        initializeGame(false);
+
+        undockShip(P1, runabout);
+        assertFalse(runabout.isDocked());
+
+        attemptMission(P1, runabout, _mission);
+        assertFalse(larson.isStopped());
+
+        assertEquals(Zone.REMOVED, dedication.getZone());
+    }
+
+    @Test
     public void firstOptionTest() throws Exception {
-        initializeGame();
+        initializeGame(true);
 
         undockShip(P1, runabout);
         assertFalse(runabout.isDocked());
@@ -50,7 +68,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
 
     @Test
     public void secondOptionTest() throws Exception {
-        initializeGame();
+        initializeGame(true);
 
         undockShip(P1, runabout);
         assertFalse(runabout.isDocked());
