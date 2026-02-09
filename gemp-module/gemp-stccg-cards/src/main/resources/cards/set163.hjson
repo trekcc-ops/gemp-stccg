@@ -20,6 +20,54 @@
             image-url: https://www.trekcc.org/1e/cardimages/tstl/26.jpg
         }
         {
+            blueprintId: 163_027
+            title: Nador
+            type: personnel
+            uniqueness: unique
+            affiliation: cardassian
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command,au-icon
+            lore: Elder gul encountered by the U.S.S. Enterprise in multiple realities. Commanded the Rokassa. Investigated espionage uses of the Argus Array.
+            skill-box: "[*] Treachery [*] Stellar Cartography [*] Law [*] Leadership [*] Anthropology"
+            integrity: 4
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/27.jpg
+        }
+        {
+            blueprintId: 163_029
+            title: D.C. Franklin
+            type: personnel
+            uniqueness: universal
+            affiliation: federation
+            property-logo: generations-logo
+            classification: SECURITY
+            icons: staff,au-icon,classic-films-icon
+            lore: Human tactical officer typical of those serving in the late 23rd century. Directed efforts to transport the S.S. Lakul survivors aboard the U.S.S. Enterprise-B.
+            skill-box: "[*] Astrophysics [*] Transporter Skill"
+            integrity: 6
+            cunning: 6
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/29.jpg
+        }
+        {
+            blueprintId: 163_031
+            title: Marruu
+            type: personnel
+            uniqueness: universal
+            affiliation: federation
+            property-logo: generations-logo
+            classification: OFFICER
+            icons: staff,au-icon,classic-films-icon
+            lore: Human navigator typical of U.S.S. Enterprise-B staff officers. Befriended Demora Sulu. Enjoys strategy games and tales of the ancient American West.
+            skill-box: "[*] Navigation [*] Computer Skill"
+            integrity: 6
+            cunning: 6
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/31.jpg
+        }
+        {
             blueprintId: 163_032
             title: Martinez
             type: personnel
@@ -111,6 +159,22 @@
             cunning: 6
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
+        }
+        {
+            blueprintId: 163_045
+            title: Millin
+            type: personnel
+            uniqueness: universal
+            affiliation: non-aligned
+            property-logo: generations-logo
+            classification: CIVILIAN
+            icons: au-icon,classic-films-icon
+            lore: Male El-Aurian representative of refugees rescued by the U.S.S. Enterprise-B from the S.S. Lakul before it was destroyed by the Nexus.
+            skill-box: "[*] Honor [*] Anthropology"
+            integrity: 7
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/45.jpg
         }
         {
             blueprintId: 163_050
