@@ -20,6 +20,17 @@ import java.util.List;
 
 public interface ModifiersQuerying {
 
+    default boolean isCardAllowingPlayerToPlayAUCards(String playerName) {
+        for (Modifier modifier : getModifiersInEffect(ModifierEffect.AU_CARDS_ENTER_PLAY)) {
+            if (modifier instanceof YouCanPlayAUIconCardsModifier auModifier) {
+                if (auModifier.canPlayerPlayAUCards(playerName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     default boolean hasIcon(PhysicalCard physicalCard, CardIcon icon) {
         if (physicalCard.getBlueprint().hasIcon(icon))
             return true;

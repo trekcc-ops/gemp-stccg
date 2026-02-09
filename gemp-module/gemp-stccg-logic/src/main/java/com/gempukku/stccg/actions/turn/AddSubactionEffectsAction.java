@@ -50,4 +50,8 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
             return true;
         }
     }
+
+    public SubActionBlueprint getSubAction() {
+        return _blueprint;
+    }
 }

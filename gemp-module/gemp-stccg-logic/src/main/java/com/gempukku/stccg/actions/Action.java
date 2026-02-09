@@ -64,4 +64,6 @@ public interface Action {
     void cancel();
 
     void setAsInitiated();
+
+    boolean hasOncePerGameLimit();
 }

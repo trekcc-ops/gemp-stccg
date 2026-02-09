@@ -4,6 +4,7 @@ package com.gempukku.stccg.common.filterable;
 public enum CardIcon implements Filterable {
     AU_ICON("Alternate Universe", "https://www.trekcc.org/forum/images/smilies/icon_1e_au.jpg"),
     AU_ICON_2E("Alternate Universe", "https://www.trekcc.org/images/icons/au.gif"),
+    CLASSIC_FILMS_ICON("Classic Films", "https://www.trekcc.org/forum/images/smilies/icon_classicfilms.png"),
     COMMAND("Command", "https://www.trekcc.org/forum/images/smilies/icon_command.gif"),
     COMMUNICATIONS_SUBCOMMAND("Communications", "https://www.trekcc.org/forum/images/smilies/icon_sc_comm.png"),
     DEFENSE_SUBCOMMAND("Defense", "https://www.trekcc.org/forum/images/smilies/icon_sc_def.png"),

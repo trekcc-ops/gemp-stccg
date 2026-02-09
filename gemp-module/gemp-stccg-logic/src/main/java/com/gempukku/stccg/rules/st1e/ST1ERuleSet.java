@@ -120,4 +120,8 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
         return result;
     }
 
+    public boolean canAUCardBePlayed(ST1EGame stGame, PhysicalCard cardToPlay) {
+        return stGame.isCardAllowingPlayerToPlayAUCards(cardToPlay.getOwnerName());
+    }
+
 }

@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.blueprints.UsePerGameLimitActionBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
+import com.gempukku.stccg.actions.turn.AddSubactionEffectsAction;
+import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
 import com.gempukku.stccg.game.DefaultGame;
@@ -229,6 +232,19 @@ public abstract class ActionyAction implements Action {
 
     public void setAsInitiated() {
         _actionStatus = ActionStatus.initiation_complete;
+    }
+
+    public boolean hasOncePerGameLimit() {
+        for (Action costAction : _costs) {
+            if (costAction instanceof UseOncePerGameAction) {
+                return true;
+            } else if (costAction instanceof AddSubactionEffectsAction addAction &&
+                    addAction.getSubAction() instanceof UsePerGameLimitActionBlueprint
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

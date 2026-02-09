@@ -19,13 +19,17 @@ public class YouCanPlayAUIconCardsModifier extends AbstractModifier {
         super(performingCard, affectFilter, condition, effectType);
     }
 
-    public YouCanPlayAUIconCardsModifier() {
-        this(null, Filters.any, new TrueCondition(), ModifierEffect.AU_CARDS_ENTER_PLAY);
+    public YouCanPlayAUIconCardsModifier(PhysicalCard performingCard) {
+        this(performingCard, Filters.any, new TrueCondition(), ModifierEffect.AU_CARDS_ENTER_PLAY);
     }
 
 
     @Override
     public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         return "Can play [AU] cards";
+    }
+
+    public boolean canPlayerPlayAUCards(String playerName) {
+        return _cardSource.isControlledBy(playerName);
     }
 }
