@@ -438,7 +438,6 @@
             blueprintId: 101_131
             title: "Palor Toff: Alien Trader"
             type: interrupt
-            java-blueprint: true
             property-logo: tng-logo
             lore: Rich merchant and trader from an unknown race. Friend of Kivas Fajo. Snappy dresser.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR131.jpg
