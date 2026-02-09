@@ -200,4 +200,9 @@ public interface PhysicalCard {
     default int getPointBoxValue() {
         return getBlueprint().getPointsShown();
     }
+
+    @JsonIgnore
+    default boolean hasPropertyLogo(PropertyLogo propertyLogo) {
+        return getBlueprint().getPropertyLogo() == propertyLogo;
+    }
 }
