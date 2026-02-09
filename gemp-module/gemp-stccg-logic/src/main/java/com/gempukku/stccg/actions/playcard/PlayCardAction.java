@@ -24,7 +24,7 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
     protected Zone _destinationZone;
     private boolean _played;
 
-    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType, ActionContext context) {
         super(cardGame, performingPlayerName, actionType, context);
         _performingCard = actionSource;
@@ -44,7 +44,7 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
 
 
 
-    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType) {
         super(cardGame, performingPlayerName, actionType);
         _performingCard = actionSource;
