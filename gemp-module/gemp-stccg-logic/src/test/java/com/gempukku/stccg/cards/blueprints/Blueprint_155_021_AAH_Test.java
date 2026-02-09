@@ -9,15 +9,13 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.decisions.CardSelectionDecision;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
@@ -71,32 +69,19 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         initializeGame(larsonInPlay);
 
         selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
-
-        assertTrue(CardSelectionDecision.class.isAssignableFrom(_game.getAwaitingDecision(P1).getClass()));
-        CardSelectionDecision cardDecision = (CardSelectionDecision) _game.getAwaitingDecision(P1);
-
-        List<String> selectableCards = List.of(cardDecision.getCardIds());
-
         for (PhysicalCard card : playableCards) {
-            assertTrue(selectableCards.contains(String.valueOf(card.getCardId())));
+            assertTrue(getSelectableCards(P1).contains(card));
         }
 
         for (PhysicalCard card : unplayableCards) {
-            assertFalse(selectableCards.contains(String.valueOf(card.getCardId())));
+            assertFalse(getSelectableCards(P1).contains(card));
         }
 
         // Select a card for normal card play
         selectCard(P1, lopez1);
         assertTrue(lopez1.isInPlay());
 
-        // Verify that it can't be used twice
-        boolean errorThrown = false;
-        try {
-            selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
-        } catch(Exception exp) {
-            errorThrown = true;
-        }
-        assertTrue(errorThrown);
+        assertThrows(DecisionResultInvalidException.class, () -> selectAction(SelectAndReportForFreeCardAction.class, attention, P1));
     }
 
 }

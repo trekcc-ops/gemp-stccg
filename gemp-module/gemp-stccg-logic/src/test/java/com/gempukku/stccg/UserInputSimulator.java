@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.movecard.UndockAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToSeedCardStackAction;
 import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
 import com.gempukku.stccg.actions.playcard.*;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -58,6 +59,11 @@ public interface UserInputSimulator {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
                 if (clazz.isAssignableFrom(action.getClass())) {
                     if (action.getPerformingCard() == card) {
+                        choice = (T) action;
+                    }
+                } else if (action instanceof UseGameTextAction useTextAction) {
+                    if (useTextAction.getPerformingCard() == card &&
+                            clazz.isAssignableFrom(useTextAction.getSubActions().getFirst().getClass())) {
                         choice = (T) action;
                     }
                 }

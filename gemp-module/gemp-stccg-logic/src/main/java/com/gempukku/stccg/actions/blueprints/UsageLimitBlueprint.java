@@ -6,7 +6,7 @@ import com.gempukku.stccg.requirement.YourTurnRequirement;
 
 public class UsageLimitBlueprint {
 
-    private enum LimitType {
+    public enum LimitType {
         eachOfYourTurns
     }
 

@@ -319,8 +319,8 @@ public class Filters {
         );
     }
 
-    public static CardFilter youControlAMatchingOutpost(Player player) {
-        return new YouControlAMatchingOutpostFilter(player);
+    public static CardFilter youControlAMatchingOutpost(String yourPlayerName) {
+        return new YouControlAMatchingOutpostFilter(yourPlayerName);
     }
 
 

@@ -61,7 +61,7 @@
         {
             blueprintId: 155_021
             title: Attention All Hands
-            java-blueprint: true
+            java-blueprint: false
             type: incident
             icons: warp-core
             property-logo: tng-logo
@@ -71,7 +71,19 @@
                     type: seedThis
                     where: core
                 }
+                {
+                    type: playCardForFree
+                    limit: {
+                        type: eachOfYourTurns
+                        count: 1
+                    }
+                    filter: personnel + universal + tng-icon + youOwnNoCopiesInPlay + not(android) + not(hologram) + not(au-icon) + youControlAMatchingOutpost
+                    destination: yourMatchingOutpost
+                }
             ]
+            playThisCardAction: {
+                type: playThis
+            }
         }
         {
             blueprintId: 155_022

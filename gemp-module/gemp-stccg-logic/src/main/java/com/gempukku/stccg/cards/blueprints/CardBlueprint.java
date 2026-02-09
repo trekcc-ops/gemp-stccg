@@ -558,6 +558,10 @@ public class CardBlueprint {
             if (actionBlueprint instanceof ActivateCardActionBlueprint) {
                 TopLevelSelectableAction action = actionBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
                 if (action != null) result.add(action);
+            } else if (actionBlueprint instanceof PlayCardForFreeActionBlueprint playCardBlueprint &&
+                    cardGame.getCurrentPhase() == Phase.CARD_PLAY) {
+                TopLevelSelectableAction action = playCardBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
+                if (action != null) result.add(action);
             }
         }
         return result;

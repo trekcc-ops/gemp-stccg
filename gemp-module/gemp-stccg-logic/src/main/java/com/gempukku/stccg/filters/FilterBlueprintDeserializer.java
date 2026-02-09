@@ -50,7 +50,9 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             appendFilter(value);
         for (SkillName value : SkillName.values())
             appendFilter(value);
-        
+
+        appendSimpleFilter("android", (cardGame, actionContext) ->
+                Filters.and(Species.ANDROID));
         appendSimpleFilter("another", (cardGame, actionContext) ->
                 Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
         appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
@@ -59,6 +61,8 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.getPerformingCardId()));
         appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
+        appendSimpleFilter("hologram", (cardGame, actionContext) ->
+                Filters.and(Species.HOLOGRAM));
         appendSimpleFilter("inplay", (cardGame, actionContext) -> Filters.inPlay);
         appendSimpleFilter("inYourHand", (cardGame, actionContext) ->
                 new InYourHandFilter(actionContext.getPerformingPlayerId()));
@@ -75,6 +79,9 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         appendSimpleFilter("thisCard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         appendSimpleFilter("unique", (cardGame, actionContext) -> Filters.unique);
+        appendSimpleFilter("universal", (cardGame, actionContext) -> Filters.universal);
+        appendSimpleFilter("youControlAMatchingOutpost", (cardGame, actionContext) ->
+                new YouControlAMatchingOutpostFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("youOwnNoCopiesInPlay", (cardGame, actionContext) ->
                 Filters.youHaveNoCopiesInPlay(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("your", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
