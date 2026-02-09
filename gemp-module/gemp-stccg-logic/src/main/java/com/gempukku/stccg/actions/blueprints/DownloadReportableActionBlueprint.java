@@ -5,8 +5,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.playcard.DownloadMultipleReportablesActionNew;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.ReportCardsResolverBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ReportMultipleCardsResolver;
-import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -19,11 +19,12 @@ import java.util.List;
 
 public class DownloadReportableActionBlueprint implements SubActionBlueprint {
 
-    private final TargetResolverBlueprint _cardTarget;
+    private final ReportCardsResolverBlueprint _cardTarget;
 
     DownloadReportableActionBlueprint(@JsonProperty(value = "target")
-                                      TargetResolverBlueprint cardTarget) {
+                                      ReportCardsResolverBlueprint cardTarget) {
         _cardTarget = cardTarget;
+
     }
 
     @Override

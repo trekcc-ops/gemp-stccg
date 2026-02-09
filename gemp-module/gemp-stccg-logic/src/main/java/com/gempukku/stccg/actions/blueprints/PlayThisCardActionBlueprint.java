@@ -60,7 +60,8 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
     public PlayCardAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
-        if (!isValid(cardGame, actionContext)) {
+        if (!isValid(cardGame, actionContext) ||
+                !cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, PlayCardAction.EnterPlayActionType.PLAY)) {
             return null;
         }
         PlayCardAction action = null;
