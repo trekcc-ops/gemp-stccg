@@ -18,10 +18,10 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="cardId")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -65,8 +65,6 @@ public interface PhysicalCard {
 
     String getTitle();
     boolean canInsertIntoSpaceline();
-
-    boolean canBePlayed(DefaultGame game);
 
     boolean isControlledBy(String playerId);
     boolean isControlledBy(Player player);
@@ -176,8 +174,6 @@ public interface PhysicalCard {
 
     boolean isActive();
 
-    boolean canEnterPlay(DefaultGame cardGame, List<Requirement> enterPlayRequirements);
-
     boolean isAttachedTo(PhysicalCard card);
 
     @JsonProperty("locationId")
@@ -204,5 +200,10 @@ public interface PhysicalCard {
     @JsonIgnore
     default boolean hasPropertyLogo(PropertyLogo propertyLogo) {
         return getBlueprint().getPropertyLogo() == propertyLogo;
+    }
+
+    default boolean isPersonaVersionOf(PhysicalCard otherCard) {
+        String thisCardPersona = getBlueprint().getPersona();
+        return (thisCardPersona != null && Objects.equals(thisCardPersona, otherCard.getBlueprint().getPersona()));
     }
 }

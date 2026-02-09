@@ -1,5 +1,6 @@
 package com.gempukku.stccg.filters;
 
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -312,7 +313,10 @@ public class Filters {
 
 
     public static CardFilter cardsYouCanDownload(String performingPlayerName) {
-        return new InYourDrawDeckFilter(performingPlayerName);
+        return and(
+            new InYourDrawDeckFilter(performingPlayerName),
+                new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.PLAY)
+        );
     }
 
     public static CardFilter youControlAMatchingOutpost(Player player) {

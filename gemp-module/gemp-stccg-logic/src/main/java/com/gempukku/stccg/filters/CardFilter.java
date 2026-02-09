@@ -13,6 +13,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = AnyCardFilter.class, name = "any"),
         @JsonSubTypes.Type(value = AtLocationFilter.class, name = "atLocation"),
         @JsonSubTypes.Type(value = BottomCardsOfDiscardFilter.class, name = "bottomCardsOfDiscard"),
+        @JsonSubTypes.Type(value = CanEnterPlayFilter.class, name = "canEnterPlay"),
         @JsonSubTypes.Type(value = CardTypeFilter.class, name = "cardType"),
         @JsonSubTypes.Type(value = CharacteristicFilter.class, name = "characteristic"),
         @JsonSubTypes.Type(value = ClassificationFilter.class, name = "classification"),

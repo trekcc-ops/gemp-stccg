@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CardFilter;
@@ -122,6 +123,44 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
 
     public boolean canAUCardBePlayed(ST1EGame stGame, PhysicalCard cardToPlay) {
         return stGame.isCardAllowingPlayerToPlayAUCards(cardToPlay.getOwnerName());
+    }
+
+    private boolean canAUCardEnterPlay(ST1EGame stGame, PhysicalCard cardToPlay,
+                                       PlayCardAction.EnterPlayActionType actionType) {
+        return switch(actionType) {
+            case DOWNLOAD, PLAY -> stGame.isCardAllowingPlayerToPlayAUCards(cardToPlay.getOwnerName());
+            case SEED -> stGame.isCardAllowingPlayerToSeedAUCards(cardToPlay.getOwnerName());
+        };
+    }
+
+    public boolean cardCanEnterPlay(DefaultGame cardGame, PhysicalCard card,
+                                    PlayCardAction.EnterPlayActionType actionType) {
+        if (cardGame instanceof ST1EGame stGame) {
+            if (card.hasIcon(cardGame, CardIcon.AU_ICON) &&
+                    !canAUCardEnterPlay(stGame, card, actionType)) {
+                return false;
+            }
+            if (actionType == PlayCardAction.EnterPlayActionType.PLAY && card.getCardType() == CardType.DILEMMA) {
+                return false;
+            }
+            return !cannotEnterPlayPerUniqueness(cardGame, card);
+        } else {
+            return false;
+        }
+    }
+
+    protected boolean cannotEnterPlayPerUniqueness(DefaultGame cardGame, PhysicalCard cardToEnterPlay) {
+        if (cardToEnterPlay.isUniversal()) {
+            return false;
+        }
+        for (PhysicalCard cardInPlay : cardGame.getAllCardsInPlay()) {
+            if (cardInPlay.isCopyOf(cardToEnterPlay) || cardInPlay.isPersonaVersionOf(cardToEnterPlay)) {
+                if (cardInPlay.isOwnedBy(cardToEnterPlay.getOwnerName())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

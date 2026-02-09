@@ -61,4 +61,8 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
         return false;
     }
 
+    public boolean canBePlayed(DefaultGame game) {
+        return !game.canNotPlayCard(getOwnerName(), this);
+    }
+
 }

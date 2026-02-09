@@ -144,8 +144,6 @@ public class CardBlueprint {
 
     @JsonProperty("tribble-power")
     protected TribblePower tribblePower;
-    private List<Requirement> _seedRequirements;
-    private List<Requirement> _playRequirements;
     private List<FilterBlueprint> targetFilters;
 
     @JsonProperty("image-options")
@@ -380,12 +378,6 @@ public class CardBlueprint {
     }
 
 
-    public void appendPlayRequirement(Requirement requirement) {
-        if (_playRequirements == null)
-            _playRequirements = new LinkedList<>();
-        _playRequirements.add(requirement);
-    }
-
     public void appendTargetFilter(FilterBlueprint targetFilter) {
         if (targetFilters == null)
             targetFilters = new LinkedList<>();
@@ -404,8 +396,6 @@ public class CardBlueprint {
     public ActionBlueprint getDiscardedFromPlayTrigger(RequiredType requiredType) {
         return _discardedFromPlayTriggers.get(requiredType);
     }
-    public List<Requirement> getSeedRequirements() { return _seedRequirements; }
-    public List<Requirement> getPlayRequirements() { return _playRequirements; }
 
     public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
 

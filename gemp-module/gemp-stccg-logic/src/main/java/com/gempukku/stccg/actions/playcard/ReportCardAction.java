@@ -50,7 +50,7 @@ public class ReportCardAction extends STCCGPlayCardAction {
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return _cardEnteringPlay.canBePlayed(cardGame) && !_targetResolver.cannotBeResolved(cardGame);
+        return super.requirementsAreMet(cardGame) && !_targetResolver.cannotBeResolved(cardGame);
     }
 
     public void processEffect(DefaultGame cardGame) {

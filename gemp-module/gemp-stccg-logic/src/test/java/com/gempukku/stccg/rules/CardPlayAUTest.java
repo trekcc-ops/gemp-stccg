@@ -78,11 +78,7 @@ public class CardPlayAUTest extends AbstractAtTest {
 
         // Verify that both copies of Attention All Hands are in selectable cards, but can't select both
         assertTrue(getSelectableCards(P1).containsAll(List.of(attention, attention2)));
-//        assertFalse(getSelectableCards(P1).contains(altUnivEvent));
-
-        // Select card to download
-        selectCard(P1, altUnivEvent);
-        assertTrue(altUnivEvent.isInPlay());
+        assertFalse(getSelectableCards(P1).contains(altUnivEvent));
     }
 
 

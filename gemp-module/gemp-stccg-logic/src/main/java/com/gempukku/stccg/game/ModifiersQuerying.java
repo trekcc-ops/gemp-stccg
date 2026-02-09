@@ -19,6 +19,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public interface ModifiersQuerying {
+    default boolean isCardAllowingPlayerToSeedAUCards(String playerName) {
+        for (Modifier modifier : getModifiersInEffect(ModifierEffect.AU_CARDS_ENTER_PLAY)) {
+            if (modifier instanceof YouCanSeedAUIconCardsModifier auModifier) {
+                if (auModifier.canPlayerSeedAUCards(playerName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     default boolean isCardAllowingPlayerToPlayAUCards(String playerName) {
         for (Modifier modifier : getModifiersInEffect(ModifierEffect.AU_CARDS_ENTER_PLAY)) {

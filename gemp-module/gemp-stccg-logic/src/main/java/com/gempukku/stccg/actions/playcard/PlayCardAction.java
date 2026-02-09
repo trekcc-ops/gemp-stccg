@@ -18,8 +18,12 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.List;
 
 public abstract class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
+    public enum EnterPlayActionType {
+        DOWNLOAD, PLAY, SEED
+    }
     private final PhysicalCard _performingCard;
     protected final PhysicalCard _cardEnteringPlay;
+    private final EnterPlayActionType _type;
     @JsonProperty("destinationZone")
     protected Zone _destinationZone;
     private boolean _played;
@@ -30,6 +34,12 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
+        _type = switch(actionType) {
+            case DOWNLOAD_CARD -> EnterPlayActionType.DOWNLOAD;
+            case PLAY_CARD -> EnterPlayActionType.PLAY;
+            case SEED_CARD -> EnterPlayActionType.SEED;
+            default -> null;
+        };
     }
 
     protected PlayCardAction(int actionId, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
@@ -39,10 +49,13 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
+        _type = switch(actionType) {
+            case DOWNLOAD_CARD -> EnterPlayActionType.DOWNLOAD;
+            case PLAY_CARD -> EnterPlayActionType.PLAY;
+            case SEED_CARD -> EnterPlayActionType.SEED;
+            default -> null;
+        };
     }
-
-
-
 
     protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType) {
@@ -50,11 +63,17 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
+        _type = switch(actionType) {
+            case DOWNLOAD_CARD -> EnterPlayActionType.DOWNLOAD;
+            case PLAY_CARD -> EnterPlayActionType.PLAY;
+            case SEED_CARD -> EnterPlayActionType.SEED;
+            default -> null;
+        };
     }
 
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return _cardEnteringPlay.canBePlayed(cardGame);
+        return cardGame.getRules().cardCanEnterPlay(cardGame, _cardEnteringPlay, _type);
     }
 
     @Override

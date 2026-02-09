@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.SelectCardTargetBlueprint;
-import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.filters.YouCanDownloadFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,14 +15,12 @@ import java.util.List;
 
 public class DownloadActionBlueprint implements SubActionBlueprint {
 
-    private final TargetResolverBlueprint _cardTarget;
+    private final SelectCardTargetBlueprint _cardTarget;
 
     DownloadActionBlueprint(@JsonProperty(value = "target")
-                            TargetResolverBlueprint cardTarget) {
+                            SelectCardTargetBlueprint cardTarget) {
         _cardTarget = cardTarget;
-        if (_cardTarget instanceof SelectCardTargetBlueprint selectBlueprint) {
-            selectBlueprint.addFilter(new YouCanDownloadFilterBlueprint());
-        }
+        _cardTarget.addFilter(new YouCanDownloadFilterBlueprint());
     }
 
     @Override
