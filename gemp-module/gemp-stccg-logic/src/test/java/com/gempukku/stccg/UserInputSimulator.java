@@ -12,10 +12,7 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.decisions.ActionSelectionDecision;
-import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.CardsSelectionDecision;
+import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -79,15 +76,20 @@ public interface UserInputSimulator {
         selectCards(playerId, List.of(card));
     }
 
-    default void selectCards(String playerId, List<PhysicalCard> cards) 
+    default List<? extends PhysicalCard> getSelectableCards(String playerId) throws DecisionResultInvalidException {
+        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
+        if (decision instanceof CardSelectionDecision cardSelection) {
+            return cardSelection.getSelectableCards();
+        } else {
+            throw new DecisionResultInvalidException("No current decision allows selecting of cards");
+        }
+    }
+
+    default void selectCards(String playerId, List<PhysicalCard> cards)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof CardsSelectionDecision cardSelection) {
+        if (decision instanceof CardSelectionDecision cardSelection) {
             cardSelection.decisionMade(cards);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
-        } else if (decision instanceof ArbitraryCardsSelectionDecision arbitrary) {
-            arbitrary.decisionMade(cards);
             getGame().removeDecision(playerId);
             getGame().carryOutPendingActionsUntilDecisionNeeded();
         } else {
@@ -349,6 +351,14 @@ public interface UserInputSimulator {
                 if (action instanceof PlayCardAction playCardAction &&
                         playCardAction.getCardEnteringPlay() == cardToPlay) {
                     choice = playCardAction;
+                    break;
+                } else if (
+                        action instanceof SelectAndReportForFreeCardAction reportAction &&
+                                reportAction.getSelectableReportables(getGame()).size() == 1 &&
+                        reportAction.getSelectableReportables(getGame()).contains(cardToPlay)
+                ) {
+                    choice = reportAction;
+                    break;
                 }
             }
             actionDecision.decisionMade(choice);

@@ -1,5 +1,6 @@
 package com.gempukku.stccg.decisions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -187,6 +188,12 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     public String[] getCardIds() {
         return _cardIds;
+    }
+
+    @JsonIgnore
+    @Override
+    public List<? extends PhysicalCard> getSelectableCards() {
+        return new ArrayList<>(_selectable);
     }
 
 }

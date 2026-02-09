@@ -17,5 +17,15 @@
             icons: au-icon
             property-logo: tng-logo
         }
+        {
+            blueprintId: 991_003
+            title: Dummy 1E AU Warp Core Event
+            type: event
+            icons: au-icon,warp-core
+            property-logo: tng-logo
+            playThisCardAction: {
+                type: playThis
+            }
+        }
     ]
 }

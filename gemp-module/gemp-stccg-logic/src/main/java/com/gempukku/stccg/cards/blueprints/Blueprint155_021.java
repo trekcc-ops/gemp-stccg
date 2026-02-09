@@ -62,7 +62,7 @@ public class Blueprint155_021 extends CardBlueprint {
 
                 SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, playerName,
                         "Select a card to report", playableCards);
-                ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+                SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
                 MatchingFilterBlueprint destinationFilterBlueprint =
                         new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
                 SelectAndReportForFreeCardAction action1 =
