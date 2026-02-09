@@ -35,12 +35,17 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
     private PhysicalCard tarses;
     private PhysicalCard wallace;
     private PhysicalCard worfPlayerTwo;
+    private PhysicalCard continuingPlayerTwo;
 
-    private ST1EGame initializeGame(boolean includeWarpCoreCards, boolean includeMissionSpecialists)
+    private ST1EGame initializeGame(boolean includeWarpCoreCards, boolean includeMissionSpecialists,
+                                    boolean includeContinuingMissionForBothPlayers)
             throws Exception {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         continuing = builder.addSeedDeckCard("155_022", "Continuing Mission", P1);
         continuing2 = builder.addSeedDeckCard("155_022", "Continuing Mission", P1);
+        if (includeContinuingMissionForBothPlayers) {
+            continuingPlayerTwo = builder.addSeedDeckCard("155_022", "Continuing Mission", P2);
+        }
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
         builder.addFacility("101_104", P2); // Federation Outpost
         if (includeWarpCoreCards) {
@@ -66,7 +71,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void seedOneTest() throws Exception {
-        _game = initializeGame(false, false);
+        _game = initializeGame(false, false, false);
         seedCard(P1, continuing);
 
         // Verify that second copy of Continuing Mission can't be seeded; game has moved on past seed phase
@@ -76,7 +81,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void downloadCardTest() throws Exception {
-        _game = initializeGame(true, false);
+        _game = initializeGame(true, false, false);
         seedCard(P1, continuing);
         useGameText(continuing, P1);
 
@@ -92,7 +97,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void addIconTest() throws Exception {
-        _game = initializeGame(false, false);
+        _game = initializeGame(false, false, false);
         List<PhysicalCard> tngCards = List.of(worf, millin, runabout);
         for (PhysicalCard card : tngCards) {
             assertFalse(card.hasIcon(_game, CardIcon.TNG_ICON));
@@ -109,7 +114,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void drawCardTest() throws Exception {
-        _game = initializeGame(false, false);
+        _game = initializeGame(false, false, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
         int initialHandSize = hand.size();
@@ -122,7 +127,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void cannotDrawCardTest() throws Exception {
-        _game = initializeGame(true, false);
+        _game = initializeGame(true, false, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
         useGameText(continuing, P1);
@@ -146,7 +151,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void cannotDrawDuringSeedTest() throws Exception {
-        _game = initializeGame(false, true);
+        _game = initializeGame(false, true, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         int initialHandSize = hand.size();
         seedCard(P1, continuing);
@@ -161,7 +166,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void cannotDrawTwiceTest() throws Exception {
-        _game = initializeGame(true, false);
+        _game = initializeGame(true, false, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
         useGameText(continuing, P1);
@@ -185,9 +190,10 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
     @Test
     public void cannotDrawWhenOpponentPlays() throws Exception {
-        _game = initializeGame(false, false);
+        _game = initializeGame(false, false, true);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
+        seedCard(P2, continuingPlayerTwo);
 
         // skip player one turn
         skipCardPlay();
@@ -196,6 +202,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
 
         assertEquals(P2, _game.getCurrentPlayerId());
         playCard(P2, worfPlayerTwo);
+        assertTrue(worfPlayerTwo.hasIcon(_game, CardIcon.TNG_ICON));
         assertThrows(DecisionResultInvalidException.class, () -> useGameText(continuing, P1));
         assertEquals(initialHandSize, hand.size());
     }
