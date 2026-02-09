@@ -88,7 +88,7 @@ public class Blueprint155_021 extends CardBlueprint {
                 MatchingFilterBlueprint destinationFilterBlueprint =
                         new MatchingFilterBlueprint(cardTarget, Filters.your(player), FacilityType.OUTPOST);
                 DownloadReportableAction action2 =
-                        new DownloadReportableAction(cardGame, player, cardTarget, thisCard, destinationFilterBlueprint);
+                        new DownloadReportableAction(cardGame, playerName, cardTarget, thisCard, destinationFilterBlueprint);
                 action2.setCardActionPrefix("2");
                 action2.appendCost(new UseOncePerGameAction(cardGame, thisCard, player.getPlayerId(), _dummyBlueprint));
                 action2.appendCost(new UseNormalCardPlayAction(cardGame, player));
