@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SelectAndReportForFreeCardAction extends STCCGPlayCardAction {
+public class SelectAndReportForFreeCardAction extends PlayCardAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
@@ -31,7 +32,7 @@ public class SelectAndReportForFreeCardAction extends STCCGPlayCardAction {
     public SelectAndReportForFreeCardAction(DefaultGame cardGame, String performingPlayerName,
                                             SelectCardsResolver playableCardTarget, PhysicalCard performingCard,
                                             MatchingFilterBlueprint destinationFilterBlueprint) {
-        super(cardGame, null, null, performingPlayerName, true);
+        super(cardGame, performingCard, null, performingPlayerName, null, ActionType.PLAY_CARD);
         _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;

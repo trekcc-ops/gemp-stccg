@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.turn.PlayThisCardAsResponseAction;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -43,8 +44,8 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
             @Override
             public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action,
                                               ActionContext actionContext) {
-                Action playCardAction = new STCCGPlayCardAction(cardGame, actionContext.card(), Zone.CORE,
-                        actionContext.card().getOwnerName(), true, actionContext);
+                Action playCardAction = new PlayCardAction(cardGame, actionContext.card(), actionContext.card(),
+                    actionContext.card().getOwnerName(), Zone.CORE, ActionType.PLAY_CARD, actionContext);
                 return List.of(playCardAction);
             }
         });
@@ -57,7 +58,8 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
     public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
-        if (isValid(cardGame, actionContext)) {
+        if (isValid(cardGame, actionContext) &&
+                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, PlayCardAction.EnterPlayActionType.PLAY)) {
             UseGameTextAction action = new PlayThisCardAsResponseAction(cardGame, thisCard, actionContext);
             appendActionToContext(cardGame, action, actionContext);
             return action;

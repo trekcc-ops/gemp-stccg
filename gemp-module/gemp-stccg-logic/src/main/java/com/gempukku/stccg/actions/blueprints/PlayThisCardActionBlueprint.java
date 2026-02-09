@@ -2,9 +2,9 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -73,7 +73,10 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
                 action.appendCost(new UseNormalCardPlayAction(cardGame, performingPlayerName));
             }
         } else if (cardGame instanceof ST1EGame && _destinationBlueprint == null) {
-            action = new STCCGPlayCardAction(cardGame, thisCard, Zone.CORE, performingPlayerName, _forFree);
+            action = new PlayCardAction(cardGame, thisCard, thisCard, performingPlayerName, Zone.CORE,
+                ActionType.PLAY_CARD);
+            if (!_forFree)
+                action.appendCost(new UseNormalCardPlayAction(cardGame, performingPlayerName));
         }
         if (action != null) {
             appendActionToContext(cardGame, action, actionContext);

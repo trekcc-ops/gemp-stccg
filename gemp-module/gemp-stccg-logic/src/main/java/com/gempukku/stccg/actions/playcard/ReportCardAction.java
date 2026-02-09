@@ -1,6 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
+import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -16,13 +18,15 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.Collection;
 import java.util.Collections;
 
-public class ReportCardAction extends STCCGPlayCardAction {
+public class ReportCardAction extends PlayCardAction {
     private final ReportCardResolver _targetResolver;
 
     private ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
                              ReportCardResolver targetResolver) {
         // TODO - Zone is null because these will be attached and the implementation is weird
-        super(cardGame, cardToPlay, null, cardToPlay.getOwnerName(), forFree);
+        super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
+        if (!forFree)
+            appendCost(new UseNormalCardPlayAction(cardGame, _performingPlayerId));
         _targetResolver = targetResolver;
         _cardTargets.add(targetResolver);
     }

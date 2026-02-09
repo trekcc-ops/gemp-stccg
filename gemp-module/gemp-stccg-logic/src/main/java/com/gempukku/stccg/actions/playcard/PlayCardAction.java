@@ -17,7 +17,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
-public abstract class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
+public class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
     public enum EnterPlayActionType {
         DOWNLOAD, PLAY, SEED
     }
@@ -28,7 +28,7 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
     protected Zone _destinationZone;
     private boolean _played;
 
-    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType, ActionContext context) {
         super(cardGame, performingPlayerName, actionType, context);
         _performingCard = actionSource;
@@ -57,7 +57,7 @@ public abstract class PlayCardAction extends ActionWithSubActions implements Top
         };
     }
 
-    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType) {
         super(cardGame, performingPlayerName, actionType);
         _performingCard = actionSource;
