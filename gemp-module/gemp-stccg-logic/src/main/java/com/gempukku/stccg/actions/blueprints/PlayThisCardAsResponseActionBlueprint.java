@@ -32,7 +32,7 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
                                                     @JsonProperty(value = "discardAfter", required = true)
                                                     boolean discardAfter)
             throws InvalidCardDefinitionException {
-        super(0, new ArrayList<>(), effects, new YouPlayerSource());
+        super(new ArrayList<>(), effects, new YouPlayerSource());
         if (triggerChecker != null) {
             _requirements.add(triggerChecker);
             _requirements.add(new ThisCardIsInHandRequirement());

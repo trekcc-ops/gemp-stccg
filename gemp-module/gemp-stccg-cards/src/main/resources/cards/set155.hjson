@@ -148,7 +148,10 @@
             actions: [
                 {
                     type: activate
-                    limitPerTurn: 1
+                    limit: {
+                        type: eachOfYourTurns
+                        count: 1
+                    }
                     requires: {
                         type: phase
                         phase: execute_orders

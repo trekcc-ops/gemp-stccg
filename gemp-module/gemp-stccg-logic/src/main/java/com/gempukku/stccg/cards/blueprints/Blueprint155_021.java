@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.ActivateCardActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.PlayThisCardActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.UsageLimitBlueprint;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadReportableAction;
@@ -31,7 +32,7 @@ import java.util.List;
 public class Blueprint155_021 extends CardBlueprint {
 
     private final ActionBlueprint _dummyBlueprint = new ActivateCardActionBlueprint(
-            1, new ArrayList<>(), new ArrayList<>(),
+            new UsageLimitBlueprint("eachOfYourTurns", 1), new ArrayList<>(), new ArrayList<>(),
             List.of((cardGame, action, actionContext) -> new ArrayList<>())
     );
 

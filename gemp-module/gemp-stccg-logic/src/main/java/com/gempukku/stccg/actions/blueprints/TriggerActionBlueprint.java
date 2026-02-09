@@ -17,7 +17,7 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
     protected TriggerActionBlueprint(TriggerChecker triggerChecker, List<Requirement> requirements,
                                      List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
                                      boolean triggerDuringSeed, PlayerSource player) {
-        super(0, costs, effects, player);
+        super(costs, effects, player);
         if (requirements != null) {
             _requirements.addAll(requirements);
         }

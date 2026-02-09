@@ -467,6 +467,18 @@ public interface UserInputSimulator {
         }
     }
 
+    default void skipToNextTurnAndPhase(String turnPlayerName, Phase phase)
+            throws InvalidGameOperationException, DecisionResultInvalidException {
+        do {
+            skipCardPlay();
+            skipExecuteOrders();
+        } while (!getGame().getCurrentPlayerId().equals(turnPlayerName));
+
+        if (phase == Phase.EXECUTE_ORDERS) {
+            skipCardPlay();
+        }
+    }
+
 
     default void skipCardPlay() throws DecisionResultInvalidException, InvalidGameOperationException {
         String playerId = getGame().getCurrentPlayerId();

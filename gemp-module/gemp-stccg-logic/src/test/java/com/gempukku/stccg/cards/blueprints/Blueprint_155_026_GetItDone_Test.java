@@ -98,9 +98,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(10, picard.getCunning(_game));
         assertEquals(8, picard.getStrength(_game));
         assertFalse(canUseCardAgain());
-        skipExecuteOrders();
-        assertEquals(P1, _game.getCurrentPlayerId());
-        skipCardPlay();
+        skipToNextTurnAndPhase(P1, Phase.EXECUTE_ORDERS);
         assertTrue(canUseCardAgain());
         String gameStateString = _game.getGameState().serializeComplete();
     }
@@ -114,9 +112,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         selectCard(P1, cardToDiscard);
         assertEquals(9, runabout.getFullRange(_game));
         assertFalse(canUseCardAgain());
-        skipExecuteOrders();
-        assertEquals(P1, _game.getCurrentPlayerId());
-        skipCardPlay();
+        skipToNextTurnAndPhase(P1, Phase.EXECUTE_ORDERS);
         assertEquals(7, runabout.getFullRange(_game)); // confirm that runabout's range is back to normal
         assertTrue(canUseCardAgain());
         String gameStateString = _game.getGameState().serializeComplete();
@@ -124,7 +120,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
 
     @Test
     public void actionOption3() throws DecisionResultInvalidException, CardNotFoundException,
-            InvalidGameLogicException, JsonProcessingException, PlayerNotFoundException, InvalidGameOperationException {
+            JsonProcessingException, InvalidGameOperationException {
         initializeGame(true);
         initiateGetItDoneAction();
         playerDecided(P1, "2");
@@ -133,9 +129,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
             assertEquals(Zone.DRAW_DECK, wallace.getZone());
         }
         assertFalse(canUseCardAgain());
-        skipExecuteOrders();
-        assertEquals(P1, _game.getCurrentPlayerId());
-        skipCardPlay();
+        skipToNextTurnAndPhase(P1, Phase.EXECUTE_ORDERS);
         assertTrue(canUseCardAgain());
         String gameStateString = _game.getGameState().serializeComplete();
     }
