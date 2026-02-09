@@ -17,6 +17,7 @@ import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class SelectAndReportForFreeCardAction extends STCCGPlayCardAction {
 
@@ -80,5 +81,9 @@ public class SelectAndReportForFreeCardAction extends STCCGPlayCardAction {
     @JsonIgnore
     public Collection<? extends PhysicalCard> getSelectableReportables(DefaultGame cardGame) {
         return _cardToPlayTarget.getSelectableCards(cardGame);
+    }
+
+    public void setCardReporting(PhysicalCard cardToPlay) {
+        _cardToPlayTarget.setSelectedCards(List.of(cardToPlay));
     }
 }

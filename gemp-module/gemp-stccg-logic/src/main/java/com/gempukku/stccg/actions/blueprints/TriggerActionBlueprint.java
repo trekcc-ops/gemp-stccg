@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.blueprints;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
@@ -15,12 +14,10 @@ import java.util.List;
 
 public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
 
-    protected TriggerActionBlueprint(int limitPerTurn,
-                                     TriggerChecker triggerChecker, List<Requirement> requirements,
+    protected TriggerActionBlueprint(TriggerChecker triggerChecker, List<Requirement> requirements,
                                      List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
-                                     boolean triggerDuringSeed, PlayerSource player)
-            throws InvalidCardDefinitionException {
-        super(limitPerTurn, costs, effects, player);
+                                     boolean triggerDuringSeed, PlayerSource player) {
+        super(0, costs, effects, player);
         if (requirements != null) {
             _requirements.addAll(requirements);
         }

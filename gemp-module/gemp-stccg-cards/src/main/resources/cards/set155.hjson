@@ -114,7 +114,10 @@
                 }
                 {
                     type: optionalTrigger
-                    limitPerTurn: 1
+                    limit: {
+                        type: eachOfYourTurns
+                        count: 1
+                    }
                     trigger: {
                         type: played
                         player: you

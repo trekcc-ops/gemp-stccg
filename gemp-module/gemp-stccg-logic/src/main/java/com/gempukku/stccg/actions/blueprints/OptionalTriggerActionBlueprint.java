@@ -14,8 +14,8 @@ import java.util.List;
 public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
 
     @JsonCreator
-    private OptionalTriggerActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
-                                       int limitPerTurn,
+    private OptionalTriggerActionBlueprint(@JsonProperty(value="limit")
+                                            UsageLimitBlueprint usageLimit,
                                           @JsonProperty(value="triggerDuringSeed", required = true)
                                       boolean triggerDuringSeed,
                                           @JsonProperty("trigger")
@@ -30,8 +30,11 @@ public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
                                           List<SubActionBlueprint> effects,
                                            @JsonProperty("player")
                                            String playerText) throws InvalidCardDefinitionException {
-        super(limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed,
+        super(triggerChecker, requirements, costs, effects, triggerDuringSeed,
                 (playerText == null) ? new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText));
+        if (usageLimit != null) {
+            usageLimit.applyLimitToActionBlueprint(this);
+        }
     }
 
 

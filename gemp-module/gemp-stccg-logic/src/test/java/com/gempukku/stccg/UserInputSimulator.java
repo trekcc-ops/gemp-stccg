@@ -12,12 +12,14 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.decisions.*;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.CardSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -354,9 +356,9 @@ public interface UserInputSimulator {
                     break;
                 } else if (
                         action instanceof SelectAndReportForFreeCardAction reportAction &&
-                                reportAction.getSelectableReportables(getGame()).size() == 1 &&
                         reportAction.getSelectableReportables(getGame()).contains(cardToPlay)
                 ) {
+                    reportAction.setCardReporting(cardToPlay);
                     choice = reportAction;
                     break;
                 }
@@ -476,11 +478,12 @@ public interface UserInputSimulator {
 
     default void skipExecuteOrders() throws DecisionResultInvalidException, InvalidGameOperationException {
         String currentPlayerId = getGame().getCurrentPlayerId();
+        String selectingPlayerId = currentPlayerId;
         while (getGame().getCurrentPhase() == Phase.EXECUTE_ORDERS && getGame().getCurrentPlayerId().equals(currentPlayerId)) {
-            for (Player player : getGame().getPlayers()) {
-                if (getGame().getAwaitingDecision(player.getPlayerId()) != null)
-                    playerDecided(player.getPlayerId(), "");
+            if (getGame().getAwaitingDecision(selectingPlayerId) != null) {
+                playerDecided(selectingPlayerId, "");
             }
+            selectingPlayerId = getGame().getOpponent(selectingPlayerId);
         }
     }
 

@@ -390,4 +390,9 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         }
         throw new InappropriateGameTypeException("Attempted to convert a non-1E game into a ST1EGame object");
     }
+
+    public boolean isPlayersTurn(String playerName) {
+        return getGameState().getCurrentTurnNumber() > 0 &&
+                Objects.equals(getCurrentPlayerId(), playerName);
+    }
 }

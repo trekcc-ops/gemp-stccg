@@ -53,4 +53,8 @@ public class SelectCardsResolver implements ActionCardResolver {
         return _selectAction.getSelectableCards(cardGame);
     }
 
+    public void setSelectedCards(Collection<PhysicalCard> cardsToSelect) {
+        _selectedCards = cardsToSelect;
+        _resolved = true;
+    }
 }
