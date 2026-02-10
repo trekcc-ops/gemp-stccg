@@ -36,14 +36,14 @@ public class Blueprint106_014 extends CardBlueprint {
         List<Modifier> modifiers = new LinkedList<>();
         for (Skill skill : getSkills(cardGame, thisCard))
             if (skill instanceof ModifierSkill modifierSkill)
-                modifiers.add(modifierSkill.getModifier(thisCard));
+                modifiers.add(modifierSkill.getModifierOld(thisCard));
         return modifiers;
     }
 
     private ModifierSkill specialSkill() {
         return new ModifierSkill("Other MEDICAL are CUNNING +3 where present.") {
             @Override
-            public Modifier getModifier(PhysicalCard thisCard) {
+            public Modifier getModifierOld(PhysicalCard thisCard) {
                 return new CunningModifier(thisCard,
                         Filters.and(Filters.otherCardPresentWith(thisCard), SkillName.MEDICAL, CardType.PERSONNEL), 3);
             }

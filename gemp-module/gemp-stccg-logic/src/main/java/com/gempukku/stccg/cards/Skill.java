@@ -1,16 +1,12 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.common.filterable.SkillType;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-public class Skill {
-    protected final SkillType _skillType;
-    private final String _text;
-
-    public Skill(SkillType skillType, String text) {
-        _skillType = skillType;
-        _text = text;
-    }
-
-    // TODO - This may need to be different for 1E vs. 2E
-    public String getSkillText() { return _text; }
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = RegularSkill.class, name = "regular"),
+        @JsonSubTypes.Type(value = ModifierSkill.class, name = "specialModifier")
+})
+public abstract class Skill {
 }

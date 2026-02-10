@@ -38,14 +38,14 @@ public class Blueprint155_072 extends CardBlueprint {
         List<Modifier> modifiers = new LinkedList<>();
         for (Skill skill : getSkills(cardGame, thisCard))
             if (skill instanceof ModifierSkill modifierSkill)
-                modifiers.add(modifierSkill.getModifier(thisCard));
+                modifiers.add(modifierSkill.getModifierOld(thisCard));
         return modifiers;
     }
 
     private ModifierSkill specialSkill() {
         return new ModifierSkill("Attributes all +2 if with Goss or Dr. Arridor.") {
             @Override
-            public Modifier getModifier(PhysicalCard thisCard) {
+            public Modifier getModifierOld(PhysicalCard thisCard) {
                 Filterable usageFilter = Filters.or(Filters.name("Goss"), Filters.name("Dr. Arridor"));
                 return Modifiers.allPersonnelAttributes(thisCard, Filters.card(thisCard),
                         new PresentWithYourCardCondition(thisCard, usageFilter), 2,

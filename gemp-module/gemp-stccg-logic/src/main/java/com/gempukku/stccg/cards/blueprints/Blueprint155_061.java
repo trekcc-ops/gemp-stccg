@@ -39,14 +39,14 @@ public class Blueprint155_061 extends CardBlueprint {
         List<Modifier> modifiers = new LinkedList<>();
         for (Skill skill : getSkills(cardGame, thisCard))
             if (skill instanceof ModifierSkill modifierSkill)
-                modifiers.add(modifierSkill.getModifier(thisCard));
+                modifiers.add(modifierSkill.getModifierOld(thisCard));
         return modifiers;
     }
 
     private ModifierSkill specialSkill() {
         return new ModifierSkill("X=4 when facing a dilemma.") {
             @Override
-            public Modifier getModifier(PhysicalCard thisCard) throws InvalidGameLogicException {
+            public Modifier getModifierOld(PhysicalCard thisCard) throws InvalidGameLogicException {
                 return new CunningModifier(thisCard, Filters.card(thisCard), new FacingDilemmaCondition(thisCard), -4);
             }
         };

@@ -4,8 +4,10 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -13,10 +15,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.modifiers.*;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public interface ModifiersQuerying {
     default boolean isCardAllowingPlayerToSeedAUCards(String playerName) {
@@ -30,8 +29,18 @@ public interface ModifiersQuerying {
         return false;
     }
 
+    default Collection<Affiliation> getAffiliationsAddedToMissionForPlayer(MissionCard missionCard, String playerName) {
+        List<Affiliation> affiliationsAdded = new ArrayList<>();
+        for (Modifier modifier : getModifiersInEffect(ModifierEffect.ADD_ICON_TO_MISSION)) {
+            if (modifier instanceof AddAffiliationIconToMissionModifier missionModifier) {
+                affiliationsAdded.addAll(missionModifier.getAffiliationsAddedForPlayer(missionCard, getGame(), playerName));
+            }
+        }
+        return affiliationsAdded;
+    }
 
-    default boolean isCardAllowingPlayerToPlayAUCards(String playerName) {
+
+     default boolean isCardAllowingPlayerToPlayAUCards(String playerName) {
         for (Modifier modifier : getModifiersInEffect(ModifierEffect.AU_CARDS_ENTER_PLAY)) {
             if (modifier instanceof YouCanPlayAUIconCardsModifier auModifier) {
                 if (auModifier.canPlayerPlayAUCards(playerName)) {

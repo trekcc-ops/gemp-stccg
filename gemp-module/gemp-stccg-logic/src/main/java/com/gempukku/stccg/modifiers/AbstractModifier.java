@@ -20,7 +20,7 @@ public abstract class AbstractModifier implements Modifier {
     @JsonIdentityReference(alwaysAsId=true)
     protected final PhysicalCard _cardSource;
     @JsonProperty("affectedCards")
-    private final CardFilter _affectedCardsFilter;
+    protected final CardFilter _affectedCardsFilter;
     @JsonProperty("condition")
     protected final Condition _condition;
     @JsonProperty("effectType")

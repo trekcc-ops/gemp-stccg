@@ -41,14 +41,14 @@ public class Blueprint155_079 extends CardBlueprint {
         List<Modifier> modifiers = new LinkedList<>();
         for (Skill skill : getSkills(cardGame, thisCard))
             if (skill instanceof ModifierSkill modifierSkill)
-                modifiers.add(modifierSkill.getModifier(thisCard));
+                modifiers.add(modifierSkill.getModifierOld(thisCard));
         return modifiers;
     }
 
     private ModifierSkill specialSkill() {
         return new ModifierSkill("If with any K'Ehleyr, both are attributes all +2.") {
             @Override
-            public Modifier getModifier(PhysicalCard thisCard) {
+            public Modifier getModifierOld(PhysicalCard thisCard) {
                 Filterable usageFilter = new CharacteristicFilter(Characteristic.K_EHLEYR);
                 CardFilter affectFilter = Filters.or(Filters.card(thisCard),
                         Filters.and(Filters.presentWith(thisCard), Characteristic.K_EHLEYR));

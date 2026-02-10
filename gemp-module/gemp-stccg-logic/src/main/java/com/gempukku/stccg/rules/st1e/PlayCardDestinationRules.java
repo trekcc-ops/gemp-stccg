@@ -53,7 +53,7 @@ public class PlayCardDestinationRules {
             // (No need to check for native quadrant again; that was performed above)
             // TODO - This may not be a sufficient check for multi-affiliation cards under special reporting
             return location instanceof MissionLocation mission &&
-                    mission.hasMatchingAffiliationIcon(performingPlayer, affiliationOptions);
+                    mission.hasMatchingAffiliationIcon(cardGame, performingPlayer.getPlayerId(), affiliationOptions);
         } else {
             return location instanceof MissionLocation missionLocation && !missionLocation.isHomeworld();
         }

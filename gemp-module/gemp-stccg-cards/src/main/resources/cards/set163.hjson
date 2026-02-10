@@ -181,6 +181,50 @@
             image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
         }
         {
+            blueprintId: 163_044
+            title: Lieutenant Crosis
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            uniqueness: unique
+            classification: OFFICER
+            lore: "Renegade Borg who commanded the initial phase of raids on Federation outposts. Loyal aide to The One. Recruited Data to their cause."
+            species: borg,human
+            gender: male
+            icons: defense-subcommand
+            skill-box: {
+                skill-dots: 4
+                skills: [
+                    {
+                        type: regular
+                        name: Treachery
+                    }
+                    {
+                        type: regular
+                        name: Computer Skill
+                    }
+                    {
+                        type: regular
+                        name: SECURITY
+                    }
+                    {
+                        type: specialModifier
+                        text: "Investigate Raid has [NON], [non]."
+                        modifier: {
+                            type: addAffiliationIconToMission
+                            modifiedCards: name(Investigate Raid)
+                            affiliation: non-aligned
+                            bothSides: true
+                        }
+                    }
+                ]
+            }
+            integrity: 3
+            cunning: 9
+            strength: 9
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/44.jpg
+        }
+        {
             blueprintId: 163_045
             title: Millin
             type: personnel

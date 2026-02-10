@@ -39,14 +39,14 @@ public class Blueprint112_167 extends CardBlueprint {
         List<Modifier> modifiers = new LinkedList<>();
         for (Skill skill : getSkills(cardGame, thisCard))
             if (skill instanceof ModifierSkill modifierSkill)
-                modifiers.add(modifierSkill.getModifier(thisCard));
+                modifiers.add(modifierSkill.getModifierOld(thisCard));
         return modifiers;
     }
 
     private ModifierSkill specialSkill() {
         return new ModifierSkill("Other Bajorans present are STRENGTH +2.") {
             @Override
-            public Modifier getModifier(PhysicalCard thisCard) {
+            public Modifier getModifierOld(PhysicalCard thisCard) {
                 return new StrengthModifier(thisCard, Filters.and(
                         Filters.otherCardPresentWith(thisCard),
                         CardType.PERSONNEL, Filters.or(Species.BAJORAN, Affiliation.BAJORAN)), 2);

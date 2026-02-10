@@ -41,7 +41,7 @@ public class MissionAttemptRules {
             if (card.matchesAffiliationOf(ship)) {
                 matchesShip = true;
             }
-            for (Affiliation affiliation : missionLocation.getAffiliationIcons(performingPlayerName)) {
+            for (Affiliation affiliation : missionLocation.getAffiliationIcons(cardGame, performingPlayerName)) {
                 if (card.isAffiliation(affiliation)) {
                     matchesMission = true;
                 }

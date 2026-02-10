@@ -466,6 +466,13 @@ public class CardBlueprint {
         // Add in-play modifiers created through JSON definitions
         inPlayModifiers.forEach(modifierSource ->
                 result.add(modifierSource.createModifier(cardGame, thisCard, actionContext)));
+        if (_skillBox != null) {
+            for (Skill skill : _skillBox.getSkillList()) {
+                if (skill instanceof ModifierSkill modifier) {
+                    result.add(modifier.createModifierNew(cardGame, actionContext));
+                }
+            }
+        }
 
         // Add in-play modifiers created through Java definitions
         try {

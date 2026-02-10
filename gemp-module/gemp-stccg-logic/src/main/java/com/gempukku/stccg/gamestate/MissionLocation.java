@@ -208,28 +208,20 @@ public class MissionLocation implements GameLocation {
         return false;
     }
 
-    public Set<Affiliation> getAffiliationIcons(String playerId) {
+    public Set<Affiliation> getAffiliationIcons(DefaultGame cardGame, String playerId) {
+        Set<Affiliation> result = new HashSet<>();
         try {
             MissionCard card = getMissionForPlayer(playerId);
             CardBlueprint blueprint = card.getBlueprint();
             if (Objects.equals(playerId, card.getOwnerName())) {
-                return blueprint.getOwnerAffiliationIcons();
-            } else if (blueprint.getOpponentAffiliationIcons() == null) {
-                return blueprint.getOwnerAffiliationIcons();
+                result.addAll(blueprint.getOwnerAffiliationIcons());
             } else {
-                return blueprint.getOwnerAffiliationIcons();
+                result.addAll(blueprint.getOpponentAffiliationIcons());
             }
-        } catch(InvalidGameLogicException exp) {
-            return new HashSet<>();
+            result.addAll(cardGame.getAffiliationsAddedToMissionForPlayer(card, playerId));
+        } catch(InvalidGameLogicException ignored) {
         }
-    }
-
-    public Set<Affiliation> getAffiliationIconsForPlayer(String playerName) {
-        return getAffiliationIcons(playerName);
-    }
-
-    public Set<Affiliation> getAffiliationIconsForPlayer(Player player) {
-        return getAffiliationIcons(player.getPlayerId());
+        return result;
     }
 
     public MissionType getMissionType() {
@@ -369,13 +361,15 @@ public class MissionLocation implements GameLocation {
         newMission.setLocation(cardGame, this);
     }
 
-    public boolean hasMatchingAffiliationIcon(Player contextPlayer, Collection<Affiliation> affiliationOptions) {
-        for (Affiliation affiliation : getAffiliationIconsForPlayer(contextPlayer)) {
+    public boolean hasMatchingAffiliationIcon(DefaultGame cardGame, String playerName,
+                                              Collection<Affiliation> affiliationOptions) {
+        for (Affiliation affiliation : getAffiliationIcons(cardGame, playerName)) {
             if (affiliationOptions.contains(affiliation))
                 return true;
         }
         return false;
     }
+
 
     public void seedCardUnderMission(DefaultGame cardGame, PhysicalCard card) {
         _seedCards.addCardToBottom(card);
