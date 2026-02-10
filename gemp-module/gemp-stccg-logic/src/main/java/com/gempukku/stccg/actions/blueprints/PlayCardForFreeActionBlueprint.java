@@ -11,11 +11,15 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
+import com.gempukku.stccg.requirement.PhaseRequirement;
+import com.gempukku.stccg.requirement.YourTurnRequirement;
 
 import java.util.Collection;
+import java.util.List;
 
 public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
 
@@ -41,6 +45,7 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
             usageLimit.applyLimitToActionBlueprint(this);
         }
         _filterBlueprint = filterBlueprint;
+        _requirements.addAll(List.of(new PhaseRequirement(Phase.CARD_PLAY), new YourTurnRequirement()));
     }
 
     @Override

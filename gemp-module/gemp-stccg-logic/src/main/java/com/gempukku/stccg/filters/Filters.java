@@ -314,7 +314,10 @@ public class Filters {
 
     public static CardFilter cardsYouCanDownload(String performingPlayerName) {
         return and(
-            new InYourDrawDeckFilter(performingPlayerName),
+                or(
+                    new InYourDrawDeckFilter(performingPlayerName),
+                    new InYourHandFilter(performingPlayerName)
+                ),
                 new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.PLAY)
         );
     }

@@ -555,12 +555,10 @@ public class CardBlueprint {
                                                                         DefaultGame cardGame) {
         List<TopLevelSelectableAction> result = new ArrayList<>();
         for (ActionBlueprint actionBlueprint : _actionBlueprints) {
-            if (actionBlueprint instanceof ActivateCardActionBlueprint) {
+            if (actionBlueprint instanceof ActivateCardActionBlueprint ||
+                    actionBlueprint instanceof PlayCardForFreeActionBlueprint ||
+                    actionBlueprint instanceof DownloadCardActionBlueprint) {
                 TopLevelSelectableAction action = actionBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
-                if (action != null) result.add(action);
-            } else if (actionBlueprint instanceof PlayCardForFreeActionBlueprint playCardBlueprint &&
-                    cardGame.getCurrentPhase() == Phase.CARD_PLAY) {
-                TopLevelSelectableAction action = playCardBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
                 if (action != null) result.add(action);
             }
         }

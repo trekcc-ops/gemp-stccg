@@ -2,11 +2,13 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.actions.playcard.DownloadReportableCardToDestinationAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -23,6 +25,9 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
     private List<PhysicalCard> playableCards;
     private List<PhysicalCard> unplayableCards;
     private PhysicalCard attention;
+    private ShipCard runabout;
+    private PhysicalCard galaxy;
+    private FacilityCard outpost;
 
     @SuppressWarnings("SpellCheckingInspection")
     public void initializeGame(boolean larsonInPlay) throws CardNotFoundException, DecisionResultInvalidException,
@@ -31,7 +36,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         _game = builder.getGame();
         builder.addCardToCoreAsSeeded("155_022", "Continuing Mission", P1);
         attention = builder.addCardToCoreAsSeeded("155_021", "Attention All Hands", P1);
-        FacilityCard outpost = builder.addFacility("101_104", P1);
+        outpost = builder.addFacility("101_104", P1);
 
         // playable
         lopez1 = builder.addCardInHand("155_063", "Lopez", P1, PersonnelCard.class);
@@ -47,6 +52,8 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         unplayableCards.addAll(List.of(picard, jace, rmal));
 
         PhysicalCard larsonInHand = builder.addCardInHand("101_220", "Linda Larson", P1, PersonnelCard.class);
+        runabout = builder.addCardInHand("101_331", "Runabout", P1, ShipCard.class);
+        galaxy = builder.addDrawDeckCard("101_336", "U.S.S. Galaxy", P1);
 
         if (larsonInPlay) {
             builder.addCardAboardShipOrFacility("101_220", "Linda Larson", P1, outpost, PersonnelCard.class);
@@ -82,6 +89,17 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         assertTrue(lopez1.isInPlay());
 
         assertThrows(DecisionResultInvalidException.class, () -> selectAction(SelectAndReportForFreeCardAction.class, attention, P1));
+    }
+
+    @Test
+    public void downloadShipTest() throws Exception {
+        initializeGame(false);
+        assertEquals(1, _game.getGameState().getNormalCardPlaysAvailable(P1));
+        selectAction(DownloadReportableCardToDestinationAction.class, attention, P1);
+        assertTrue(getSelectableCards(P1).containsAll(List.of(galaxy, runabout)));
+        selectCard(P1, runabout);
+        assertTrue(runabout.isDockedAtCardId(outpost.getCardId()));
+        assertEquals(0, _game.getGameState().getNormalCardPlaysAvailable(P1));
     }
 
 }
