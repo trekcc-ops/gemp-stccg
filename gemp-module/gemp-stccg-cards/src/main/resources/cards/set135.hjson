@@ -13,6 +13,7 @@
             icons: command,communications-subcommand,navigation-subcommand,defense-subcommand
             lore: Rescued Borg counterpart. After returning to his command of the <i>U.S.S. Enterprise</i>, Picard developed a violent vendetta against the Borg.
             species: borg,human
+            gender: male
             skill-box: "[*] Leadership x2 [*] Archaeology [*] Navigation"
             integrity: 8
             cunning: 8

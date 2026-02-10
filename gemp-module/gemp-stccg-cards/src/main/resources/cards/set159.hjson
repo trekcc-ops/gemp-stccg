@@ -57,6 +57,7 @@
             characteristic: admiral
             lore: "Typical Vulcan admiral. She presided over Worf's extradition hearing in 2372. Threatened to hold both Worf and Ch'Pok in contempt of court."
             species: vulcan
+            gender: female
             skill-box: "[*] Leadership [*] Law [*] Exobiology [*] Mindmeld"
             integrity: 7
             cunning: 8
@@ -73,6 +74,7 @@
             icons: staff
             lore: Yridian informant. Told Worf of the secret prison camp in the Carraya system. Likes to tinker with his warp drive. Commanded a Yridian Shuttle.
             species: yridian
+            gender: male
             skill-box: "[*] Navigation [*] Physics [*] Transporter Skill [*] Greed [DL] Jaglom Shrek: Information Broker"
             integrity: 4
             cunning: 7
@@ -89,6 +91,7 @@
             classification: V.I.P.
             lore: Representative of the many senators navigating the perilous and delicate political landscape on Romulus. Seeks to better the Star Empire for his two sons.
             species: romulan
+            gender: male
             skill-box: "[*] Law [*] Diplomacy [*] Exobiology"
             integrity: 5
             cunning: 7

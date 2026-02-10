@@ -39,6 +39,7 @@
             icons: staff
             lore: "Representative of Bajoran engineering apprentices serving on Deep Space 9. Assisted Miles O'Brien with computer \"pup\" in 2369."
             species: bajoran
+            gender: female
             skill-box: "[*] Physics [*] Transporter Skill"
             integrity: 6
             cunning: 7
@@ -55,6 +56,7 @@
             icons: staff,orb
             lore: Vedek. Follows springball religiously. Romantically involved with Kira Nerys. Began spiritual service as a gardener; still enjoys tending the grounds.
             species: bajoran
+            gender: male
             skill-box: "[*] Anthropology [*] Diplomacy x2 [*] Honor [*] SCIENCE [*] Biology"
             integrity: 8
             cunning: 7
@@ -71,6 +73,7 @@
             uniqueness: universal
             lore: Bajoran nurse representative of medical assistants on Deep Space 9. Helped Dr. Julian Bashir extend the life of Bareil Antos in 2371.
             species: bajoran
+            gender: female
             skill-box: "[*] Exobiology [*] Youth"
             integrity: 7
             cunning: 6
@@ -88,6 +91,7 @@
             icons: staff
             lore: One of the Bajoran deputies serving on Deep Space 9. During Cardassian occupation, helped chart Badlands and served as pilot on raids against Cardassian forces.
             species: bajoran
+            gender: male
             skill-box: "[*] Navigation [*] Computer Skill"
             integrity: 6
             cunning: 5
@@ -104,6 +108,7 @@
             icons: staff
             lore: "Member of Bajoran Institute of Science. Odo's foster father. Dr. Mora encouraged Odo to adopt humanoid form. Reconciled with his estranged \"son\" in 2373."
             species: bajoran
+            gender: male
             skill-box: "[*] SCIENCE [*] Exobiology x2"
             integrity: 6
             cunning: 8
@@ -120,6 +125,7 @@
             classification: SCIENCE
             lore: "Astrophysicist. Characteristic of Bajoran scientists now free of Cardassian rule. Had a brief encounter with Jem'Hadar on Deep Space 9 in 2371."
             species: bajoran
+            gender: male
             skill-box: "[*] Astrophysics [*] Navigation"
             integrity: 5
             cunning: 8
@@ -136,6 +142,7 @@
             icons: staff
             lore: Religious activist. Assassin. Sabotaged systems and planted a bomb on Deep Space 9 in 2369. Believed she was following the will of the Prophets.
             species: bajoran
+            gender: female
             skill-box: "[*] Computer Skill [*] Archaeology [*] Treachery [DL] Bajoran Phaser"
             integrity: 4
             cunning: 7
@@ -152,6 +159,7 @@
             uniqueness: universal
             lore: Representative of Bajoran Prylars. Interested in science. Escorted Benjamin Sisko to see Kai Opaka in 2369.
             species: bajoran
+            gender: male
             skill-box: "[*] Anthropology [*] Exobiology"
             integrity: 8
             cunning: 7
@@ -169,6 +177,7 @@
             icons: staff
             lore: Characteristic of young, eager Bajorans serving on Deep Space 9. Assigned to security detachment under command of Odo.
             species: bajoran
+            gender: male
             skill-box: "[*] Geology [*] Youth"
             integrity: 6
             cunning: 7
@@ -186,6 +195,7 @@
             icons: staff
             lore: Representative of Bajorans entering science and medical studies after the Cardassian occupation. Serves in the infirmary on Deep Space 9.
             species: bajoran
+            gender: male
             skill-box: "[*] Biology [*] Music [*] Youth"
             integrity: 7
             cunning: 5
@@ -202,6 +212,7 @@
             icons: staff
             lore: Ex-resistance fighter pilot. Down on his luck. Deals in scrap metal. Sometime smuggler. Enjoys listening to classical Bajoran music such as Varani.
             species: bajoran
+            gender: male
             skill-box: "[*] Navigation x2 [*] Smuggling [*] Music [*] Resistance"
             integrity: 5
             cunning: 6
@@ -219,6 +230,7 @@
             icons: staff
             lore: Leader of Shakaar resistance cell. Farmer. Refused to return soil reclamators to provisional government in 2371. Old friend of Kira Nerys.
             species: bajoran
+            gender: male
             integrity: 8
             cunning: 8
             strength: 8
@@ -235,6 +247,7 @@
             icons: staff
             lore: Member of Kohn-Ma terrorist group. Wanted for crimes against the Cardassian people. Tried to collapse the entrance to the Bajoran wormhole in 2369.
             species: bajoran
+            gender: male
             skill-box: "[*] Resistance [*] Treachery [*] Physics [*] ENGINEER"
             integrity: 3
             cunning: 7
@@ -251,6 +264,7 @@
             icons: staff
             lore: Hireling used by Pallra during her extortion plan. Assassin. Recovered secret list of collaborators. Attempted to kill Quark - twice.
             species: bajoran
+            gender: male
             skill-box: "[*] Greed [*] Computer Skill [*] Stellar Cartography"
             integrity: 2
             cunning: 7
@@ -266,6 +280,7 @@
             classification: V.I.P.
             lore: Orphan of parents killed by Cardassians. Succeeded her father as tetrarch of the Paqu. Compromised with rival village of Navot. Friend of Jake Sisko and Nog.
             species: bajoran
+            gender: female
             skill-box: "[*] Youth [*] Leadership [*] Diplomacy [*] Geology"
             integrity: 6
             cunning: 5
@@ -282,6 +297,7 @@
             classification: V.I.P.
             lore: Bajoran Vedek. Typical member of Vedek Assembly. Accompanied Minister Rozahn to Deep Space 9 in 2370 to deny Skrreean request to settle on Bajor.
             species: bajoran
+            gender: male
             skill-box: "[*] Diplomacy [*] MEDICAL"
             integrity: 6
             cunning: 6
@@ -298,6 +314,7 @@
             icons: command
             lore: Gul. Ex-prefect of Bajor. Commander of the Prakesh. Father of Ziyal. Cardassian Union liaison with Dominion. Desires to regain command of Terok Nor.
             species: cardassian
+            gender: male
             skill-box: "[*] Leadership x2 [*] Navigation x2 [*] Treachery [*] Diplomacy [*] Computer Skill"
             integrity: 4
             cunning: 8
@@ -315,6 +332,7 @@
             icons: staff
             lore: Student of Natima Lang. Dissident. Member of Cardassian underground sentenced to death by Central Command. Sought refuge at Deep Space 9.
             species: cardassian
+            gender: male
             skill-box: "[*] Youth [*] SCIENCE [*] Navigation [*] Honor"
             integrity: 7
             cunning: 6
@@ -332,6 +350,7 @@
             icons: command
             lore: Typical Cardassian officer. Proud, dedicated and constantly seeking to advance his rank. Posted to Cardassian Central Command in 2370.
             species: cardassian
+            gender: male
             skill-box: "[*] Astrophysics [*] SCIENCE"
             integrity: 5
             cunning: 6
@@ -348,6 +367,7 @@
             uniqueness: universal
             lore: Young dissident. Forced to flee Cardassia with Natima Lang and Hogue because of her political views. Member of Cardassian underground.
             species: cardassian
+            gender: female
             skill-box: "[*] Youth [*] Computer Skill [*] Geology"
             integrity: 7
             cunning: 7
@@ -364,6 +384,7 @@
             uniqueness: universal
             lore: "Representative of Starfleet engineers stationed aboard Deep Space 9. Assisted Miles O'Brien during repair and retrofit of the station."
             species: human
+            gender: male
             skill-box: "[*] Astrophysics [*] Computer Skill"
             integrity: 7
             cunning: 6
@@ -381,6 +402,7 @@
             uniqueness: universal
             lore: "Representative of first officers serving in Starfleet. Assigned to the U.S.S. Odyssey. Courageously fought against the Jem'Hadar in 2370."
             species: human
+            gender: male
             skill-box: "[*] Diplomacy [*] Physics [*] Honor"
             integrity: 6
             cunning: 7
@@ -397,6 +419,7 @@
             icons: command
             lore: "Lt. Commander Jadzia Dax is the eighth Trill host of the Dax symbiont. Underwent zhian'tara closure rite in 2371. Level 3 pilot. Married to Worf. Likes tongo."
             species: trill
+            gender: female
             skill-box: "[*] Archaeology [*] Astrophysics [*] Exobiology [*] Navigation x2 [*] Anthropology"
             integrity: 7
             cunning: 9
@@ -413,6 +436,7 @@
             classification: MEDICAL
             lore: Starfleet psychiatrist representative of Federation medical personnel. Came to Deep Space 9 in 2374 with a group of genetically engineered misfits.
             species: human
+            gender: female
             skill-box: "[*] Biology [*] Anthropology"
             integrity: 7
             cunning: 6
@@ -429,6 +453,7 @@
             uniqueness: universal
             lore: Stellar cartographer characteristic of Starfleet science personnel. Served aboard Deep Space 9 in 2372. Studied effects of the wormhole on the Denorios Belt.
             species: human
+            gender: male
             skill-box: "[*] Navigation [*] Stellar Cartography"
             integrity: 6
             cunning: 6
@@ -446,6 +471,7 @@
             uniqueness: universal
             lore: Typical of Federation security specialists serving aboard Deep Space 9. Had an encounter with an alien entity personifying Rumpelstiltskin. Likes dabo.
             species: human
+            gender: male
             skill-box: "[*] Leadership [*] Archaeology"
             integrity: 7
             cunning: 6
@@ -462,6 +488,7 @@
             icons: staff
             lore: "Operative sent to Deep Space 9 in 2371 to spy on Romulan delegates. Modified a replicator to beam a surveillance device near the Romulans' quarters."
             species: klingon
+            gender: male
             skill-box: "[*] Cybernetics [*] Transporter Skill [*] Astrophysics [*] Klingon Intelligence"
             integrity: 5
             cunning: 7
@@ -478,6 +505,7 @@
             icons: staff
             lore: Klingon mercenary used by Verad. Helped capture Jadzia in an attempt to steal the Dax symbiont.
             species: klingon
+            gender: male
             skill-box: "[*] Navigation x2 [*] ENGINEER [*] Treachery"
             integrity: 3
             cunning: 7
@@ -494,6 +522,7 @@
             icons: staff
             lore: "Particularly brusque Klingon who aided Verad's takeover of Deep Space 9 in 2370. Immobilized Odo in a containment device."
             species: klingon
+            gender: male
             skill-box: "[*] Treachery [*] Stellar Cartography [*] Transporter Skill"
             integrity: 4
             cunning: 5
@@ -510,6 +539,7 @@
             icons: staff
             lore: Lethean male. Attempted to steal biomimetic gel from Deep Space 9 infirmary in 2371. Attacked Julian Bashir, causing telepathically induced coma.
             species: lethean
+            gender: male
             skill-box: "[*] Exobiology [*] Empathy [*] Greed"
             integrity: 2
             cunning: 8
@@ -527,6 +557,7 @@
             uniqueness: universal
             lore: "Maquis terrorist. Cal Hudson's co-pilot. Helped abduct Gul Dukat, blaming him for supplying illegal weapons to Cardassians in the Demilitarized Zone."
             species: human
+            gender: male
             skill-box: "[*] Navigation [*] Physics"
             integrity: 6
             cunning: 6
@@ -543,6 +574,7 @@
             icons: staff
             lore: 'Flaxian. Posed as a perfume salesman. In reality an assassin who mixes his "fragrances" to create deadly toxins. Hired to kill Garak in 2371.'
             species: flaxian
+            gender: male
             skill-box: "[*] SCIENCE [*] Biology [*] Treachery [*] Physics"
             integrity: 2
             cunning: 8
@@ -559,6 +591,7 @@
             icons: maquis,staff
             lore: Female Vulcan. Gunrunner. Bought weapons from Quark in 2370. Helped the Maquis abduct Gul Dukat, but failed to establish a forced mindmeld with him.
             species: vulcan
+            gender: female
             skill-box: "[*] Treachery [*] Mindmeld [*] Physics [*] Acquisition"
             integrity: 5
             cunning: 8
@@ -575,6 +608,7 @@
             icons: staff
             lore: "Kellerun ambassador. Helped negotiate cease fire with the T'Lani. Worked on project to eliminate harvester virus and associated technology in 2370."
             species: kellerun
+            gender: male
             skill-box: "[*] Diplomacy [*] Exobiology [*] Treachery [*] Computer Skill"
             integrity: 4
             cunning: 5
@@ -591,6 +625,7 @@
             icons: command
             lore: Tal Shiar agent. Aware of assassination plot against Elim Garak. Unhappy to discover that her records mischaracterized him as a cobbler, not a tailor.
             species: romulan
+            gender: female
             skill-box: "[*] Tal Shiar [*] MEDICAL [*] Biology [*] Treachery"
             integrity: 5
             cunning: 8

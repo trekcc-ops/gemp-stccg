@@ -400,6 +400,7 @@
             classification: CIVILIAN
             lore: Typical civilian researcher studying pre-warp civilizations throughout Federation space. Supervised an anthropological study on Mintaka III.
             species: human
+            gender: male
             skill-box: "[*] Anthropology [*] Archaeology [*] Geology"
             integrity: 6
             cunning: 6
@@ -417,6 +418,7 @@
             persona: Beverly Crusher
             lore: While hosting an experimental metaphasic shield test, <b>Beverly Crusher</b> took on the roles of diplomat, detective, coroner, and test pilot.
             species: human
+            gender: female
             skill-box: "[*] Diplomacy [*] Law [*] Navigation [*] Exobiology [DL] Starfleet Type II Phaser"
             integrity: 7
             cunning: 8
@@ -434,6 +436,7 @@
             icons: staff
             lore: 1/2 Napean, 1/2 human representative of Starfleet engineers. Inherited his empathic sense from his mother. Formerly served at Utopia Planitia Yards.
             species: human,napean
+            gender: male
             skill-box: "[*] Physics [*] Empathy"
             integrity: 7
             cunning: 6
@@ -451,6 +454,7 @@
             icons: command
             lore: 'Pinocchio-like in his desire, the Soong-type android would gladly trade his superior abilities to be human. Learning to whistle "Pop Goes the Weasel."'
             species: android
+            gender: male
             integrity: 7
             cunning: 12
             strength: 12
@@ -467,6 +471,7 @@
             icons: staff
             lore: Geochemist representative of science specialists assigned to <i>Galaxy</i>-class starships. Intrigued by the symbiotic nature of the Trill species.
             species: human
+            gender: male
             skill-box: "[*] Physics [*] Geology"
             integrity: 6
             cunning: 7
@@ -483,6 +488,7 @@
             icons: staff
             lore: "Ship's counselor and occasional ambassador. 1/2 Betazoid, 1/2 human. Formerly romantically involved with William T. Riker as his <i>imzadi</i>."
             species: human,betazoid
+            gender: female
             skill-box: "[*] Empathy [*] Anthropology [*] Diplomacy [*] Honor [DL] Intuition [DL] Life-form Scan"
             integrity: 7
             cunning: 7
@@ -498,6 +504,7 @@
             classification: SCIENCE
             lore: "Subspace theoretician and husband of T'Pan. Invited to participate in a metaphasic shield test. Doubted Dr. Reyga's new technology."
             species: human
+            gender: male
             skill-box: "[*] SCIENCE"
             integrity: 6
             cunning: 8
@@ -515,6 +522,7 @@
             icons: staff
             lore: Conn officer of the <i>U.S.S. Enterprise</i> in 2364. Son of two Starfleet officers. Blind at birth, he has used the VISOR to see since the age of five.
             species: human
+            gender: male
             integrity: 7
             cunning: 7
             strength: 6
@@ -534,6 +542,7 @@
             strength: 5
             lore: Arrogant engineer believed to have improved engine performance on several ships in 2364. Finds problem solving highly therapeutic.
             species: human
+            gender: male
             image-url: https://www.trekcc.org/1e/cardimages/tng/61V.jpg
             rarity: V
         }
@@ -548,6 +557,7 @@
             icons: staff
             lore: Typical relief operations officer in the 24th century. Relishes the chance to explore new frontiers. Originally considered a security career.
             species: human
+            gender: female
             skill-box: "[*] Navigation [*] Transporter Skill [*] Astrophysics"
             integrity: 7
             cunning: 6
@@ -565,6 +575,7 @@
             icons: staff
             lore: Representative of talented junior security officers aboard the <i>U.S.S. Enterprise</i>. Assigned to compile the duty roster for his department.
             species: human
+            gender: male
             skill-box: "[*] Biology [*] Honor [DL] Federation PADD"
             integrity: 7
             cunning: 6
@@ -582,6 +593,7 @@
             icons: staff
             lore: One of many staff doctors assigned to the <i>U.S.S. Enterprise</i>. Took charge of sickbay in 2368 after Beverly Crusher was incapacitated.
             species: human
+            gender: male
             skill-box: "[*] Exobiology [*] Computer Skill"
             integrity: 7
             cunning: 6
@@ -598,6 +610,7 @@
             classification: V.I.P.
             lore: One of many ambassadors serving in the Federation Diplomatic Corps. Distant relative of Earth politician. Gambler and poker player.
             species: human
+            gender: male
             skill-box: "[*] Anthropology [*] Diplomacy [*] Law"
             integrity: 6
             cunning: 6
@@ -615,6 +628,7 @@
             icons: staff
             lore: Conspired with Goss during the Barzan negotiations. Explored the wormhole with Kol. Prefers analysis to speculation.
             species: ferengi
+            gender: male
             skill-box: "[*] Anthropology [*] Transporter Skill"
             integrity: 6
             cunning: 6
@@ -631,6 +645,7 @@
             icons: staff
             lore: Conspired with Goss during the Barzan negotiations. Explored the wormhole with Kol. Prefers analysis to speculation.
             species: ferengi
+            gender: male
             skill-box: "[*] Acquisition [*] Greed [*] Exobiology [*] Biology [*] Leadership [*] Treachery"
             integrity: 4
             cunning: 8
@@ -647,6 +662,7 @@
             icons: command
             lore: Talented Ferengi officer. Recruited by Bok to help in the capture and ransom of Jason Vigo. Devotee of the Rules of Acquisition.
             species: ferengi
+            gender: male
             skill-box: "[*] Acquisition [*] Exobiology [*] Leadership [*] Navigation [*] Treachery [*] Diplomacy"
             integrity: 3
             cunning: 7
@@ -664,6 +680,7 @@
             icons: staff
             lore: "One of many junior crew members often found on <i>D'Kora</i> marauders. Part of Letek's landing party. Berik's nephew. Former assay assistant on Lappa IV."
             species: ferengi
+            gender: male
             skill-box: "[*] SCIENCE"
             integrity: 5
             cunning: 7
@@ -681,6 +698,7 @@
             icons: staff
             lore: "Ferengi scientist serving under Goss. Studied the Barzan wormhole with Dr. Arridor. Didn't realize the significance of the meson and lepton fluctuations."
             species: ferengi
+            gender: male
             integrity: 6
             cunning: 6
             strength: 5
@@ -696,6 +714,7 @@
             classification: MEDICAL
             lore: Typical nurse found throughout the Ferengi Alliance. Now working with the privateer Lurin. Cousin of Broik. Collects antique musical recordings.
             species: ferengi
+            gender: male
             skill-box: "[*] Exobiology [*] Biology [*] Music"
             integrity: 7
             cunning: 6
@@ -713,6 +732,7 @@
             icons: staff
             lore: Representative Ferengi security officer. Often part of away teams to strange, new worlds. Helped steal an energy converter. Disgusted by clothed females.
             species: ferengi
+            gender: male
             skill-box: "[*] Stellar Cartography [*] Treachery [*] Transporter Skill"
             integrity: 4
             cunning: 6
@@ -730,6 +750,7 @@
             icons: staff
             lore: Typical Ferengi soldier. Aspiring inventor and employee of Lurin. Tired of Klingon rations.
             species: ferengi
+            gender: male
             skill-box: "[*] ENGINEER [*] Greed"
             integrity: 4
             cunning: 7
@@ -745,6 +766,7 @@
             classification: CIVILIAN
             lore: "Opportunistic bartender on Deep Space 9. Traded information about the Sisters of Duras in exchange for erasing William T. Riker's gambling winnings."
             species: ferengi
+            gender: male
             skill-box: "[*] Computer Skill x2 [*] Acquisition [*] Greed [*] Diplomacy [*] Anthropology"
             integrity: 5
             cunning: 8
@@ -762,6 +784,7 @@
             icons: staff
             lore: "Profiteer representative of Ferengi second officers. Opposed Bok's decision to give away the salvaged <i>U.S.S. Stargazer</i> at no cost."
             species: ferengi
+            gender: male
             skill-box: "[*] Treachery [*] Acquisition [*] Greed [*] Geology [*] Astrophysics"
             integrity: 5
             cunning: 7
@@ -779,6 +802,7 @@
             icons: staff
             lore: Warp drive specialist aboard the <i>I.K.S. Pagh</i>, representative of engineers in the Klingon Defense Force. Considered a gourmand by shipmates.
             species: klingon
+            gender: male
             skill-box: "[*] Exobiology [*] Physics [*] Astrophysics [*] Biology"
             integrity: 7
             cunning: 6
@@ -797,6 +821,7 @@
             persona: Worf
             lore: "To persuade K'Temoc not to attack, <b>Worf</b> served as acting captain of the <i>U.S.S. Enterprise</i>. Mate of K'Ehleyr. Finds the command chair \"comfortable\"."
             species: klingon
+            gender: male
             integrity: 8
             cunning: 6
             strength: 10
@@ -814,6 +839,7 @@
             characteristic: "k'ehleyr"
             lore: "1/2 Klingon, 1/2 human romantically involved with Worf. <b>K'Ehleyr</b> posed as first officer of the <i>U.S.S. Enterprise</i> in 2365. She left Worf incomplete."
             species: klingon,human
+            gender: female
             skill-box: "[*] OFFICER [*] Honor [*] Anthropology [*] Diplomacy [*] Law"
             integrity: 7
             cunning: 8
@@ -829,6 +855,7 @@
             classification: V.I.P.
             lore: "Appointed by K'mpec to serve as Arbiter of Succession. Asked to discover the Chancellor's poisoner and stave off a Klingon civil war."
             species: human
+            gender: male
             skill-box: "[*] Diplomacy x2 [*] Anthropology [*] Honor [*] Law"
             integrity: 8
             cunning: 9
@@ -844,6 +871,7 @@
             classification: V.I.P.
             lore: '"The greatest warrior of them all." Clone of the unforgettable Klingon leader. Fulfilled prophecy. Installed as ceremonial Emperor in 2369.'
             species: klingon
+            gender: male
             skill-box: "[*] Honor x2 [*] Anthropology [*] Leadership x3 [DL] Warrior's Birthright"
             integrity: 10
             cunning: 5
@@ -860,6 +888,7 @@
             icons: staff
             lore: "\"The Tyrant Molor\" in the <i>Kot'baval</i> Festival. Eager to help warriors deepen their understanding of Klingon heritage. Researcher on Maranga IV outpost."
             species: klingon
+            gender: male
             skill-box: "[*] SCIENCE [*] Geology [*] Computer Skill"
             integrity: 7
             cunning: 6
@@ -876,6 +905,7 @@
             icons: staff
             lore: Former lieutenant in the Klingon Defense Force. Deserted with Korris and Kunivas to restore glory to the Empire. Expert at concealing weaponry.
             species: klingon
+            gender: male
             skill-box: "[*] Honor [*] Computer Skill [*] Stellar Cartography"
             integrity: 8
             cunning: 5
@@ -891,6 +921,7 @@
             classification: SCIENCE
             lore: High cleric of Boreth. Responsible for cloning Kahless in an attempt to restore hope to his people.
             species: klingon
+            gender: male
             skill-box: "[*] Archaeology [*] Biology [*] MEDICAL"
             integrity: 7
             cunning: 7
@@ -908,6 +939,7 @@
             icons: staff
             lore: Follower of Kahless. Representative of young male Klingons eager to study the teachings of Kahless at the sacred Boreth monastery.
             species: klingon
+            gender: male
             skill-box: "[*] Geology [*] Navigation [*] Youth [DL] Lower Decks (if present with Kahless or on Boreth)"
             integrity: 6
             cunning: 6
@@ -924,6 +956,7 @@
             uniqueness: universal
             lore: Representative of low-level technicians throughout the Klingon Empire. Before serving on the I.K.S. Pagh, worked as a supply agent on Rura Penthe.
             species: klingon
+            gender: male
             skill-box: "[*] Acquisition"
             integrity: 5
             cunning: 8
@@ -940,6 +973,7 @@
             icons: command
             lore: The first Starfleet officer to serve on a Klingon ship as part of an exchange program. Commanded the <i>I.K.S. Pagh</i> after relieving Kargan of duty.
             species: human
+            gender: male
             skill-box: "[*] Leadership [*] Navigation [*] Anthropology [*] Honor [*] Transporter Skill [DL] Emergency Transport Unit"
             integrity: 7
             cunning: 7
@@ -957,6 +991,7 @@
             icons: command
             lore: "Typical Klingon female inspired by the Sisters of Duras. Ruthlessly supervised the <i>I.K.S. Pagh</i> engine room. Curious about William T. Riker's endurance."
             species: klingon
+            gender: female
             skill-box: "[*] Astrophysics [*] Treachery [*] Greed [*] SECURITY"
             integrity: 4
             cunning: 5
@@ -974,6 +1009,7 @@
             icons: au-icon,staff
             lore: Tilonian psychiatrist created by Suna as part of a plan to brainwash Riker. Worked in Ward 47 of the Tilonus Institute for Mental Disorders.
             species: tilonian
+            gender: male
             skill-box: "[*] Law"
             integrity: 5
             cunning: 8
@@ -990,6 +1026,7 @@
             icons: command
             lore: Dour smuggler of few words. Acquired part of the Stone of Gol for Baran. Commanded a Klingon shuttle. Disliked games and replicated bloodwine.
             species: klingon
+            gender: male
             skill-box: "[*] Archaeology [*] Smuggling [*] Navigation [*] Treachery [*] Stellar Cartography"
             integrity: 3
             cunning: 4
@@ -1009,6 +1046,7 @@
             classification: SCIENCE
             lore: Treasure hunter, archaeologist, liar, and thief romantically involved with Jean-Luc Picard. Partnered with Q to explore distant Gamma Quadrant ruins.
             species: human
+            gender: female
             skill-box: "[*] Archaeology x2 [*] Treachery [*] Anthropology [*] Smuggling [*] Acquisition [DL] Dig"
             integrity: 4
             cunning: 7
@@ -1027,6 +1065,7 @@
             persona: William T. Riker
             lore: "<b>William T. Riker</b> \"went renegade\" to penetrate Baran's crew during the hunt for the Stone of Gol."
             species: human
+            gender: male
             skill-box: "[*] SECURITY [*] Diplomacy [*] Anthropology [*] Treachery [*] Transporter Skill [DL] Dropping In"
             integrity: 5
             cunning: 7

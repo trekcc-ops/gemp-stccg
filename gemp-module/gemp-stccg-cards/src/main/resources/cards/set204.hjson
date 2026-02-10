@@ -53,6 +53,7 @@
             icons: staff
             lore: Typical humanoid employee of Omag. Retained for her expertise in biochemical weaponry and her talents for the tympanic tickle. Mentor to Calandra.
             species: humanoid
+            gender: female
             skill-box: "[*] Acquisition [*] Biology [*] Physics"
             integrity: 4
             cunning: 6
@@ -74,6 +75,7 @@
             icons: staff
             lore: Representative of Ferengi trained in the field of commercial security. He helped Lurin take over the U.S.S. Enterprise in 2369.
             species: ferengi
+            gender: male
             skill-box: "[*] Navigation"
             integrity: 5
             cunning: 6
@@ -91,6 +93,7 @@
             icons: command
             lore: Typical Klingon captain. Enjoys drinking with friends and enemies alike. Commanded a squadron for the House of Duras during the Klingon Civil War.
             species: klingon
+            gender: male
             skill-box: "[*] Leadership [*] SECURITY [*] Computer Skill [*] Klingon Intelligence"
             integrity: 4
             cunning: 6
@@ -108,6 +111,7 @@
             icons: command
             lore: "Representative of senior advisors living on Qo'noS. Has loyally served the Klingon High Council since his appointment by K'mpec. Collects antique bat'leths."
             species: klingon
+            gender: male
             skill-box: "[*] ENGINEER [*] Archaeology [*] Diplomacy"
             integrity: 7
             cunning: 7
@@ -125,6 +129,7 @@
             icons: staff
             lore: Typical Klingon physician. Personal surgeon to Kargan. Became romantically involved with Vekma while serving aboard the I.K.S. Pagh.
             species: klingon
+            gender: male
             skill-box: "[*] Physics [*] Navigation [*] Exobiology"
             integrity: 4
             cunning: 6
@@ -141,6 +146,7 @@
             icons: staff
             lore: Rutian chief of police. Takes a hard line on terrorism. Pledges to end the Ansata violence. Has survived three assassination attempts on her life.
             species: rutian
+            gender: female
             skill-box: "[*] Law [*] Leadership [*] MEDICAL [*] Biology [*] Archaeology"
             integrity: 7
             cunning: 8
@@ -158,6 +164,7 @@
             icons: staff
             lore: Typical humanoid mercenary. Colleague of Narik and Vekor. In 2370, he worked with Baran to find the Stone of Gol. Distrusts Galen.
             species: humanoid
+            gender: male
             skill-box: "[*] Astrophysics [*] Biology [*] Physics [*] Treachery"
             integrity: 4
             cunning: 7
@@ -175,6 +182,7 @@
             icons: defense-subcommand
             lore: Characteristic of disconnected Borg. Assault team member on Ohniaka III. Assigned by The One to identify the Starfleet forces encountered there.
             species: borg,human
+            gender: male
             skill-box: "[*] Computer Skill [*] Physics [*] Stellar Cartography"
             integrity: 5
             cunning: 7
@@ -192,6 +200,7 @@
             icons: staff
             lore: Typical member of the Romulan underground. Colleague of Dr. Koramar. Impersonated a security officer to apprehend Jean-Luc Picard and Data.
             species: romulan
+            gender: male
             skill-box: "[*] SECURITY [*] Navigation [*] Computer Skill [*] Astrophysics"
             integrity: 6
             cunning: 8
@@ -209,6 +218,7 @@
             icons: staff
             lore: "Typical Romulan underground sympathizer. Chief engineer aboard the Khazara. He aided N'Vek in misaligning the cloak. Collects antique globes."
             species: romulan
+            gender: male
             skill-box: "[*] Stellar Cartography [*] Biology [*] Astrophysics [*] Honor"
             integrity: 8
             cunning: 7
@@ -226,6 +236,7 @@
             icons: command
             lore: Representative of versatile bridge officers serving aboard the Haakona under Taris. He later returned to Romulus and joined the Romulan underground.
             species: romulan
+            gender: male
             skill-box: "[*] Honor [*] SCIENCE [*] Leadership [*] Geology"
             integrity: 7
             cunning: 6

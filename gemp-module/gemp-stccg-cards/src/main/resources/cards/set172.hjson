@@ -13,6 +13,7 @@
             icons: command,maquis
             lore: "Starfleet's attaché to the Federation's Demilitarized Zone colonies. Friend of Benjamin Sisko. Widower who found new purpose as leader of a Maquis cell."
             species: human
+            gender: male
             skill-box: "[*] Diplomacy [*] Leadership [*] Navigation [*] Treachery [*] Law [*] Smuggling"
             integrity: 4
             cunning: 7
@@ -29,6 +30,7 @@
             icons: staff,maquis
             lore: Technician and former petty officer aboard the <i>U.S.S. Gandhi</i>. Recruited into the Maquis by Thomas Riker. Enjoys studying early Earth warp technology.
             species: human
+            gender: male
             skill-box: "[*] Anthropology [*] SCIENCE [*] Geology"
             integrity: 7
             cunning: 7
@@ -46,6 +48,7 @@
             uniqueness: universal
             lore: One of many Klingons seeking glory outside the Klingon Empire. She sympathized with the grievances of the Maquis.
             species: klingon
+            gender: female
             skill-box: "[*] Archaeology [*] Stellar Cartography [*] Biology"
             integrity: 6
             cunning: 5
