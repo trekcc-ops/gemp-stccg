@@ -12,7 +12,7 @@ import java.util.Objects;
 public class SelectCardsResolver implements ActionCardResolver {
     private final SelectCardsAction _selectAction;
     private boolean _resolved;
-    private Collection<PhysicalCard> _cards;
+    private Collection<PhysicalCard> _selectedCards;
     public SelectCardsResolver(SelectCardsAction selectAction) {
         _selectAction = selectAction;
         _resolved = false;
@@ -24,7 +24,7 @@ public class SelectCardsResolver implements ActionCardResolver {
             if (!_selectAction.wasInitiated()) {
                 cardGame.addActionToStack(_selectAction);
             } else if (_selectAction.wasSuccessful()) {
-                _cards = _selectAction.getSelectedCards();
+                _selectedCards = _selectAction.getSelectedCards();
                 _resolved = true;
             } else if (_selectAction.wasFailed()) {
                 throw new InvalidGameLogicException("Unable to resolve cards");
@@ -33,7 +33,7 @@ public class SelectCardsResolver implements ActionCardResolver {
     }
 
     public Collection<PhysicalCard> getCards() {
-        return Objects.requireNonNullElseGet(_cards, ArrayList::new);
+        return Objects.requireNonNullElseGet(_selectedCards, ArrayList::new);
     }
 
     public boolean isResolved() { return _resolved; }
@@ -49,4 +49,12 @@ public class SelectCardsResolver implements ActionCardResolver {
         }
     }
 
+    public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) {
+        return _selectAction.getSelectableCards(cardGame);
+    }
+
+    public void setSelectedCards(Collection<PhysicalCard> cardsToSelect) {
+        _selectedCards = cardsToSelect;
+        _resolved = true;
+    }
 }

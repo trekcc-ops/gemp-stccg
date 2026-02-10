@@ -15,6 +15,11 @@ public class YouControlAMatchingOutpostFilter implements CardFilter {
     public YouControlAMatchingOutpostFilter(Player player) {
         _playerName = player.getPlayerId();
     }
+
+    public YouControlAMatchingOutpostFilter(String playerName) {
+        _playerName = playerName;
+    }
+
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         for (PhysicalCard outpostCard : Filters.filterCardsInPlay(game, FacilityType.OUTPOST)) {

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -14,10 +15,10 @@ import com.gempukku.stccg.requirement.SeedQuantityLimitRequirement;
 public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     private final Zone _seedToZone;
 
-    private SeedCardActionBlueprint(@JsonProperty(value = "where")
-                                Zone seedToZone,
-                                    @JsonProperty(value = "limit")
-                                    Integer limit
+    public SeedCardActionBlueprint(@JsonProperty(value = "where")
+                                   Zone seedToZone,
+                                   @JsonProperty(value = "limit")
+                                   Integer limit
     ) {
         super(new YouPlayerSource());
         _seedToZone = seedToZone;
@@ -29,7 +30,8 @@ public class SeedCardActionBlueprint extends DefaultActionBlueprint {
     @Override
     public SeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
-        if (isValid(cardGame, actionContext)) {
+        if (isValid(cardGame, actionContext) &&
+                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, PlayCardAction.EnterPlayActionType.SEED)) {
             SeedCardAction action;
             if (thisCard instanceof FacilityCard facility) {
                 action = new SeedOutpostAction(cardGame, facility);

@@ -16,7 +16,9 @@ public class DrawAdditionalCardsAtEndOfTurnActionBlueprint extends ActivateCardA
     private DrawAdditionalCardsAtEndOfTurnActionBlueprint(@JsonProperty("count") ValueSource count,
                                                           @JsonProperty("player") String playerText)
             throws InvalidCardDefinitionException {
-        super(1, List.of(new PhaseRequirement(Phase.END_OF_TURN)), new ArrayList<>(),
+        super(
+                new UsageLimitBlueprint("eachOfYourTurns", 1),
+                List.of(new PhaseRequirement(Phase.END_OF_TURN)), new ArrayList<>(),
                 List.of(new DrawCardsActionBlueprint(count, playerText)));
     }
 

@@ -17,6 +17,6 @@ public class PropertyLogoFilter implements CardFilter {
 
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        return physicalCard.getBlueprint().getPropertyLogo() == _propertyLogo;
+        return physicalCard.hasPropertyLogo(_propertyLogo);
     }
 }

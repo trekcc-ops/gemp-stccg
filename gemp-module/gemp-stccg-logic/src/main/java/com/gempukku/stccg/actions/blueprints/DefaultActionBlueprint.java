@@ -23,17 +23,10 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         _performingPlayer = performingPlayer;
     }
 
-    protected DefaultActionBlueprint(int limitPerTurn, PlayerSource performingPlayer) {
-        if (limitPerTurn > 0) {
-            costs.add(new UsePerTurnLimitActionBlueprint(this, limitPerTurn));
-        }
-        _performingPlayer = performingPlayer;
-    }
-
-    protected DefaultActionBlueprint(int limitPerTurn, List<SubActionBlueprint> costs,
-                                  List<SubActionBlueprint> effects,
-                                  PlayerSource playerSource) {
-        this(limitPerTurn, playerSource);
+    protected DefaultActionBlueprint(List<SubActionBlueprint> costs,
+                                     List<SubActionBlueprint> effects,
+                                     PlayerSource playerSource) {
+        this(playerSource);
 
         if (costs != null && !costs.isEmpty()) {
             for (SubActionBlueprint costBlueprint : costs) {
@@ -72,6 +65,10 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         } else {
             return actionContext.acceptsAllRequirements(cardGame, _requirements);
         }
+    }
+
+    protected boolean isActionForPlayer(String requestingPlayerName, DefaultGame cardGame, ActionContext context) {
+        return _performingPlayer.isPlayer(requestingPlayerName, cardGame, context);
     }
 
     @Override

@@ -12,10 +12,12 @@ import com.gempukku.stccg.requirement.Requirement;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({@JsonSubTypes.Type(value = SeedCardActionBlueprint.class, name = "seedThis"),
         @JsonSubTypes.Type(value = ActivateCardActionBlueprint.class, name = "activate"),
+        @JsonSubTypes.Type(value = DownloadCardActionBlueprint.class, name = "downloadCard"),
         @JsonSubTypes.Type(value = DrawAdditionalCardsAtEndOfTurnActionBlueprint.class,
                 name = "drawAdditionalCardsAtEndOfTurn"),
         @JsonSubTypes.Type(value = EncounterSeedCardActionBlueprint.class, name = "encounter"),
         @JsonSubTypes.Type(value = OptionalTriggerActionBlueprint.class, name = "optionalTrigger"),
+        @JsonSubTypes.Type(value = PlayCardForFreeActionBlueprint.class, name = "playCardForFree"),
         @JsonSubTypes.Type(value = PlayThisCardActionBlueprint.class, name = "playThis"),
         @JsonSubTypes.Type(value = PlayThisCardAsResponseActionBlueprint.class, name = "playThisAsResponse"),
         @JsonSubTypes.Type(value = RequiredTriggerActionBlueprint.class, name = "requiredTrigger")

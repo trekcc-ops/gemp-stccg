@@ -1,6 +1,7 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
@@ -8,7 +9,6 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -72,7 +72,8 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             } else if (phase == Phase.CARD_PLAY) {
                 for (PhysicalCard card : Filters.filter(player.getCardsInHand(), cardGame)) {
                     if (isCurrentPlayer) {
-                        if (card.canBePlayed(cardGame) && card.getCardType() != CardType.DILEMMA) {
+                        if (cardGame.getRules()
+                                .cardCanEnterPlay(cardGame, card, PlayCardAction.EnterPlayActionType.PLAY)) {
                             TopLevelSelectableAction action = card.getPlayCardAction(cardGame);
                             if (action != null && action.canBeInitiated(cardGame))
                                 result.add(action);
@@ -88,7 +89,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         return switch(card) {
             case FacilityCard facility -> canFacilityBeSeeded(facility, game);
             case MissionCard ignored -> true;
-            default -> card.canEnterPlay(game, card.getBlueprint().getSeedRequirements());
+            default -> game.getRules().cardCanEnterPlay(game, card, PlayCardAction.EnterPlayActionType.SEED);
         };
     }
 

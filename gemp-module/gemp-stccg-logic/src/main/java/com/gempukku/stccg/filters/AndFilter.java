@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,7 +21,14 @@ public class AndFilter implements CardFilter {
 
     @JsonCreator
     public AndFilter(@JsonProperty("filters") Collection<CardFilter> filters) {
-        _filters = filters;
+        _filters = new ArrayList<>();
+        for (CardFilter filter : filters) {
+            if (filter instanceof AndFilter andFilter) {
+                _filters.addAll(andFilter.getFilters());
+            } else {
+                _filters.add(filter);
+            }
+        }
     }
 
 

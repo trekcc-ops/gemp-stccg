@@ -14,9 +14,7 @@ import java.util.List;
 public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
 
     @JsonCreator
-    private RequiredTriggerActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
-                                       int limitPerTurn,
-                                          @JsonProperty(value="triggerDuringSeed", required = true)
+    private RequiredTriggerActionBlueprint(@JsonProperty(value="triggerDuringSeed", required = true)
                                       boolean triggerDuringSeed,
                                           @JsonProperty("trigger")
                                        TriggerChecker triggerChecker,
@@ -30,7 +28,7 @@ public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
                                        List<SubActionBlueprint> effects,
                                            @JsonProperty("player")
                                            String playerText) throws InvalidCardDefinitionException {
-        super(limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed,
+        super(triggerChecker, requirements, costs, effects, triggerDuringSeed,
                 (playerText == null) ? new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText));
     }
 }

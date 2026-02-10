@@ -36,7 +36,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             List<? extends PhysicalCard> playerHand = currentPlayer.getCardsInHand();
             PhysicalCard cardDrawn = playerHand.getLast();
             final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
-            if (cardDrawn.canBePlayed(cardGame)) {
+            if (((TribblesPhysicalCard) cardDrawn).canBePlayed(cardGame)) {
                 TribblesPlayCardAction action = new TribblesPlayCardAction(cardGame, (TribblesPhysicalCard) cardDrawn);
                 playableActions.add(action);
             }

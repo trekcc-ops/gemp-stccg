@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.movecard.UndockAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToSeedCardStackAction;
 import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
 import com.gempukku.stccg.actions.playcard.*;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -15,12 +16,11 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.CardsSelectionDecision;
+import com.gempukku.stccg.decisions.CardSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -61,6 +61,11 @@ public interface UserInputSimulator {
                     if (action.getPerformingCard() == card) {
                         choice = (T) action;
                     }
+                } else if (action instanceof UseGameTextAction useTextAction) {
+                    if (useTextAction.getPerformingCard() == card &&
+                            clazz.isAssignableFrom(useTextAction.getSubActions().getFirst().getClass())) {
+                        choice = (T) action;
+                    }
                 }
             }
             if (choice != null) {
@@ -79,15 +84,20 @@ public interface UserInputSimulator {
         selectCards(playerId, List.of(card));
     }
 
-    default void selectCards(String playerId, List<PhysicalCard> cards) 
+    default List<? extends PhysicalCard> getSelectableCards(String playerId) throws DecisionResultInvalidException {
+        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
+        if (decision instanceof CardSelectionDecision cardSelection) {
+            return cardSelection.getSelectableCards();
+        } else {
+            throw new DecisionResultInvalidException("No current decision allows selecting of cards");
+        }
+    }
+
+    default void selectCards(String playerId, List<PhysicalCard> cards)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof CardsSelectionDecision cardSelection) {
+        if (decision instanceof CardSelectionDecision cardSelection) {
             cardSelection.decisionMade(cards);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
-        } else if (decision instanceof ArbitraryCardsSelectionDecision arbitrary) {
-            arbitrary.decisionMade(cards);
             getGame().removeDecision(playerId);
             getGame().carryOutPendingActionsUntilDecisionNeeded();
         } else {
@@ -349,6 +359,14 @@ public interface UserInputSimulator {
                 if (action instanceof PlayCardAction playCardAction &&
                         playCardAction.getCardEnteringPlay() == cardToPlay) {
                     choice = playCardAction;
+                    break;
+                } else if (
+                        action instanceof SelectAndReportForFreeCardAction reportAction &&
+                        reportAction.getSelectableReportables(getGame()).contains(cardToPlay)
+                ) {
+                    reportAction.setCardReporting(cardToPlay);
+                    choice = reportAction;
+                    break;
                 }
             }
             actionDecision.decisionMade(choice);
@@ -455,6 +473,18 @@ public interface UserInputSimulator {
         }
     }
 
+    default void skipToNextTurnAndPhase(String turnPlayerName, Phase phase)
+            throws InvalidGameOperationException, DecisionResultInvalidException {
+        do {
+            skipCardPlay();
+            skipExecuteOrders();
+        } while (!getGame().getCurrentPlayerId().equals(turnPlayerName));
+
+        if (phase == Phase.EXECUTE_ORDERS) {
+            skipCardPlay();
+        }
+    }
+
 
     default void skipCardPlay() throws DecisionResultInvalidException, InvalidGameOperationException {
         String playerId = getGame().getCurrentPlayerId();
@@ -466,11 +496,12 @@ public interface UserInputSimulator {
 
     default void skipExecuteOrders() throws DecisionResultInvalidException, InvalidGameOperationException {
         String currentPlayerId = getGame().getCurrentPlayerId();
+        String selectingPlayerId = currentPlayerId;
         while (getGame().getCurrentPhase() == Phase.EXECUTE_ORDERS && getGame().getCurrentPlayerId().equals(currentPlayerId)) {
-            for (Player player : getGame().getPlayers()) {
-                if (getGame().getAwaitingDecision(player.getPlayerId()) != null)
-                    playerDecided(player.getPlayerId(), "");
+            if (getGame().getAwaitingDecision(selectingPlayerId) != null) {
+                playerDecided(selectingPlayerId, "");
             }
+            selectingPlayerId = getGame().getOpponent(selectingPlayerId);
         }
     }
 

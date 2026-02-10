@@ -14,8 +14,8 @@ import java.util.List;
 
 public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
 
-    public ActivateCardActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
-                                    int limitPerTurn,
+    public ActivateCardActionBlueprint(@JsonProperty(value="limit")
+                                        UsageLimitBlueprint usageLimit,
                                        @JsonProperty("requires")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<Requirement> requirements,
@@ -25,15 +25,20 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                        @JsonProperty("effect")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-            super(limitPerTurn, costs, effects, new YouPlayerSource());
+            super(costs, effects, new YouPlayerSource());
             if (requirements != null && !requirements.isEmpty()) {
                 _requirements.addAll(requirements);
             }
+            if (usageLimit != null) {
+                usageLimit.applyLimitToActionBlueprint(this);
+            }
     }
 
-    public UseGameTextAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard card) {
-        ActionContext context = new ActionContext(card, card.getOwnerName());
-        if (isValid(cardGame, context)) {
+    public UseGameTextAction createAction(DefaultGame cardGame, String requestingPlayerName, PhysicalCard card) {
+        ActionContext context = new ActionContext(card, requestingPlayerName);
+        if (!isActionForPlayer(requestingPlayerName, cardGame, context)) {
+            return null;
+        } else if (context.acceptsAllRequirements(cardGame, _requirements)) {
             UseGameTextAction action = new UseGameTextAction(cardGame, card, context);
             appendActionToContext(cardGame, action, context);
             return action;

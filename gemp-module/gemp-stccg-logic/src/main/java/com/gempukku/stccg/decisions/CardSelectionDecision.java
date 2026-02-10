@@ -1,6 +1,14 @@
 package com.gempukku.stccg.decisions;
 
-public interface CardSelectionDecision {
-    public String[] getCardIds();
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+
+import java.util.List;
+
+public interface CardSelectionDecision extends AwaitingDecision {
+    String[] getCardIds();
+
+    List<? extends PhysicalCard> getSelectableCards();
+    void decisionMade(List<PhysicalCard> cardsSelected) throws DecisionResultInvalidException;
 
 }

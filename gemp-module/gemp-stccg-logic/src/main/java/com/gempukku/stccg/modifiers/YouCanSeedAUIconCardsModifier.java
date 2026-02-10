@@ -28,4 +28,8 @@ public class YouCanSeedAUIconCardsModifier extends AbstractModifier {
     public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
         return "Can seed [AU] cards";
     }
+
+    public boolean canPlayerSeedAUCards(String playerName) {
+        return _cardSource.isControlledBy(playerName);
+    }
 }

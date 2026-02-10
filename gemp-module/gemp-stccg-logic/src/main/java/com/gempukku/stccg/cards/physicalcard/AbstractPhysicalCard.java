@@ -19,7 +19,6 @@ import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.*;
 
@@ -144,48 +143,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean canInsertIntoSpaceline() { return _blueprint.canInsertIntoSpaceline(); }
 
-
-    public boolean canEnterPlay(DefaultGame game, List<Requirement> enterPlayRequirements) {
-        if (cannotEnterPlayPerUniqueness(game))
-            return false;
-        if (game instanceof ST1EGame stGame &&
-                this.hasIcon(game, CardIcon.AU_ICON) &&
-                !stGame.getRules().canAUCardBePlayed(stGame, this)) {
-            return false;
-        }
-        if (enterPlayRequirements != null && !allRequirementsAreTrue(game, enterPlayRequirements))
-            return false;
-        return !game.canNotPlayCard(getOwnerName(), this);
-    }
-
-    public boolean allRequirementsAreTrue(DefaultGame cardGame, Iterable<Requirement> requirements) {
-        if (requirements == null)
-            return true;
-        boolean result = true;
-        for (Requirement requirement : requirements) {
-            if (!requirement.isTrue(this, cardGame)) result = false;
-        }
-        return result;
-    }
-
-    protected boolean cannotEnterPlayPerUniqueness(DefaultGame cardGame) {
-        for (PhysicalCard cardInPlay : cardGame.getGameState().getAllCardsInPlay()) {
-            if (cardInPlay.isCopyOf(this) && cardInPlay.isOwnedBy(_ownerName) && !cardInPlay.isUniversal())
-                return true;
-        }
-        return false;
-    }
-
-
     public boolean isOwnedBy(String playerName) {
         return Objects.equals(_ownerName, playerName);
     }
-
-    public boolean canBePlayed(DefaultGame game) {
-        return canEnterPlay(game, _blueprint.getPlayRequirements());
-    }
-
-
     public boolean isControlledBy(String playerId) {
         // TODO - Need to set modifiers for when cards get temporary control
         // PhysicalFacilityCard has an override for headquarters. Updates to this method should be made there as well.

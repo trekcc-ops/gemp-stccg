@@ -24,7 +24,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
     private EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                             List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(0, new ArrayList<>(), Objects.requireNonNullElse(effects, new LinkedList<>()),
+        super(new ArrayList<>(), Objects.requireNonNullElse(effects, new LinkedList<>()),
                 new YouPlayerSource());
     }
 

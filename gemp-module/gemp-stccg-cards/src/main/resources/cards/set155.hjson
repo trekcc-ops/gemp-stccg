@@ -61,7 +61,7 @@
         {
             blueprintId: 155_021
             title: Attention All Hands
-            java-blueprint: true
+            java-blueprint: false
             type: incident
             icons: warp-core
             property-logo: tng-logo
@@ -71,7 +71,29 @@
                     type: seedThis
                     where: core
                 }
+                {
+                    type: playCardForFree
+                    limit: {
+                        type: eachOfYourTurns
+                        count: 1
+                    }
+                    filter: personnel + universal + tng-icon + youOwnNoCopiesInPlay + not(android) + not(hologram) + not(au-icon) + youControlAMatchingOutpost
+                    destination: yourMatchingOutpost
+                }
+                {
+                    type: downloadCard
+                    limit: {
+                        type: perGame
+                        count: 1
+                        inPlaceOfNormalCardPlay: true
+                    }
+                    filter: universal + ship + tng-icon + youControlAMatchingOutpost
+                    destination: yourMatchingOutpost
+                }
             ]
+            playThisCardAction: {
+                type: playThis
+            }
         }
         {
             blueprintId: 155_022
@@ -114,7 +136,10 @@
                 }
                 {
                     type: optionalTrigger
-                    limitPerTurn: 1
+                    limit: {
+                        type: eachOfYourTurns
+                        count: 1
+                    }
                     trigger: {
                         type: played
                         player: you
@@ -145,7 +170,10 @@
             actions: [
                 {
                     type: activate
-                    limitPerTurn: 1
+                    limit: {
+                        type: eachOfYourTurns
+                        count: 1
+                    }
                     requires: {
                         type: phase
                         phase: execute_orders

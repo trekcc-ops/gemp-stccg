@@ -1,9 +1,11 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
@@ -16,20 +18,21 @@ import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class SelectAndReportForFreeCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class SelectAndReportForFreeCardAction extends PlayCardAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
     private Action _playCardAction;
     private final PhysicalCard _performingCard;
-    private final ActionCardResolver _cardToPlayTarget;
+    private final SelectCardsResolver _cardToPlayTarget;
     private final MatchingFilterBlueprint _destinationFilterBlueprint;
 
     public SelectAndReportForFreeCardAction(DefaultGame cardGame, String performingPlayerName,
-                                            ActionCardResolver playableCardTarget, PhysicalCard performingCard,
+                                            SelectCardsResolver playableCardTarget, PhysicalCard performingCard,
                                             MatchingFilterBlueprint destinationFilterBlueprint) {
-        super(cardGame, performingPlayerName, ActionType.PLAY_CARD);
+        super(cardGame, performingCard, null, performingPlayerName, null, ActionType.PLAY_CARD);
         _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;
@@ -74,5 +77,14 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
+    }
+
+    @JsonIgnore
+    public Collection<? extends PhysicalCard> getSelectableReportables(DefaultGame cardGame) {
+        return _cardToPlayTarget.getSelectableCards(cardGame);
+    }
+
+    public void setCardReporting(PhysicalCard cardToPlay) {
+        _cardToPlayTarget.setSelectedCards(List.of(cardToPlay));
     }
 }

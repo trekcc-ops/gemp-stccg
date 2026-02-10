@@ -17,7 +17,8 @@ import com.gempukku.stccg.game.DefaultGame;
         "islessthan", "islessthanorequal", "isnotequal"}),
         @JsonSubTypes.Type(value = PhaseRequirement.class, name = "phase"),
         @JsonSubTypes.Type(value = PlayOutOfSequenceRequirement.class, name = "playOutOfSequenceCondition"),
-        @JsonSubTypes.Type(value = ThisCardPresentWithYourCardRequirement.class, names = "thisCardPresentWithYourCard")
+        @JsonSubTypes.Type(value = ThisCardPresentWithYourCardRequirement.class, names = "thisCardPresentWithYourCard"),
+        @JsonSubTypes.Type(value = YourTurnRequirement.class, name = "yourTurn")
 })
 public interface Requirement {
 

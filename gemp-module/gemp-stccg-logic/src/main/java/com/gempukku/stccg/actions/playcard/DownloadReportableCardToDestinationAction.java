@@ -1,11 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -16,36 +11,25 @@ import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DownloadReportableAction extends ActionyAction implements TopLevelSelectableAction {
+public class DownloadReportableCardToDestinationAction extends ActionWithSubActions implements TopLevelSelectableAction {
 
-    @JsonProperty("playCardAction")
-    @JsonIdentityReference(alwaysAsId = true)
-    private Action _playCardAction;
     private final PhysicalCard _performingCard;
     private final ActionCardResolver _cardToDownloadTarget;
     private final FilterBlueprint _destinationFilterBlueprint;
 
-    public DownloadReportableAction(DefaultGame cardGame, String playerName, ActionCardResolver cardTarget,
-                                    PhysicalCard performingCard, FilterBlueprint destinationFilterBlueprint,
-                                    ActionContext context) {
-        super(cardGame, playerName, ActionType.DOWNLOAD_CARD, context);
+
+    public DownloadReportableCardToDestinationAction(DefaultGame cardGame, String playerName, ActionCardResolver cardTarget,
+                                                     PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
+        super(cardGame, playerName, ActionType.DOWNLOAD_CARD, new ActionContext(performingCard, playerName));
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;
         _cardTargets.add(cardTarget);
-    }
-
-
-    public DownloadReportableAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
-                                    PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
-        this(cardGame, player.getPlayerId(), cardTarget, performingCard, destinationFilterBlueprint,
-                new ActionContext(performingCard, player.getPlayerId()));
     }
 
 
@@ -66,7 +50,7 @@ public class DownloadReportableAction extends ActionyAction implements TopLevelS
                     eligibleDestinations.add(facility);
                 }
             }
-            _playCardAction = new ReportCardAction(cardGame, reportable, true, eligibleDestinations);
+            Action _playCardAction = new ReportCardAction(cardGame, reportable, true, eligibleDestinations);
             cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
             setAsSuccessful();
         } else {
