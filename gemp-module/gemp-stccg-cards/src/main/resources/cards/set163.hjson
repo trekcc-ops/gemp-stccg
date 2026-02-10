@@ -188,6 +188,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/tstl/45.jpg
         }
         {
+            blueprintId: 163_048
+            title: Third of Five
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: ENGINEER
+            icons: navigation-subcommand
+            lore: "Borg befriended by Geordi La Forge. Became an individual, \"Hugh\", fracturing his hive's link to the Collective. Led those resisting Lore's leadership."
+            species: borg,human
+            skill-box: "[*] Honor [*] Leadership [*] Biology [*] Exobiology [DL] Group of Individuals"
+            integrity: 7
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/48.jpg
+            rarity: V
+        }
+        {
             blueprintId: 163_050
             title: Tarvang
             type: personnel
