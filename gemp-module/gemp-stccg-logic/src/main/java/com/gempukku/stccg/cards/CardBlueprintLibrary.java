@@ -224,6 +224,12 @@ public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint>
             }
         }
 
+        if (blueprint.getCardType() == CardType.PERSONNEL && !blueprint.hasSpecies()) {
+            throw new InvalidCardDefinitionException("Missing species for personnel card");
+        } else if (blueprint.getCardType() != CardType.PERSONNEL && blueprint.hasSpecies()) {
+            throw new InvalidCardDefinitionException("Has species for a non-personnel card");
+        }
+
         // Set rarity to V if none was specified
         if (blueprint.getRarity() == null)
             blueprint.setRarity("V");
