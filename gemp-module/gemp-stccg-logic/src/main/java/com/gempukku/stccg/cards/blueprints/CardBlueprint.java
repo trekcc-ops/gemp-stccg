@@ -68,6 +68,9 @@ public class CardBlueprint {
     @JsonProperty("species")
     protected List<Species> _species;
 
+    @JsonProperty("gender")
+    protected Gender _gender;
+
     @JsonProperty("characteristic")
     private final List<Characteristic> _characteristics = new ArrayList<>();
 

@@ -41,11 +41,29 @@
             icons: staff
             lore: "Representative of Cardassians researching new means of interrogation. Glinn. Visited the U.S.S. Enterprise in 2369 as Gul Lemec's aide."
             species: cardassian
+            gender: male
             skill-box: "[*] Biology [*] Physics"
             integrity: 4
             cunning: 7
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/engage/33.jpg
+        }
+        {
+            blueprintId: 161_034
+            title: Gollek
+            type: personnel
+            affiliation: cardassian
+            property-logo: tng-logo
+            classification: ENGINEER
+            icons: command
+            lore: "Female chief engineer on the Vetar. Believes females make better engineers. Injured in a Maquis attack in 2370. Tactful manager."
+            species: cardassian
+            gender: female
+            skill-box: "[*] Leadership [*] Computer Skill [*] Navigation [*] Diplomacy"
+            integrity: 6
+            cunning: 8
+            strength: 4
+            image-url: https://www.trekcc.org/1e/cardimages/engage/34.jpg
         }
         {
             blueprintId: 161_038
@@ -57,6 +75,7 @@
             icons: staff
             lore: "Expert in shield and cloak technology serving on the Apnex in 2368. Invited to Dr. Reyga's metaphasic shield test but refused permission by his government."
             species: romulan
+            gender: male
             skill-box: "[*] Navigation [*] Stellar Cartography x2 [*] Transporter Skill [DL] Space Boomer"
             integrity: 5
             cunning: 9
@@ -73,6 +92,7 @@
             classification: V.I.P.
             lore: "Typical political aide. Dissident who defected to the Federation in stasis with Vice-Proconsul M'ret in 2369. Former senator in the youth diplomatic corps."
             species: romulan
+            gender: male
             skill-box: "[*] Diplomacy"
             integrity: 5
             cunning: 7
@@ -89,6 +109,7 @@
             icons: staff
             lore: Human captain disguised as a Romulan. Worked with the Romulan underground movement. Shared his memories of Sarek through a mindmeld with Spock.
             species: human,romulan
+            gender: male
             skill-box: "[*] Diplomacy [*] Anthropology [*] Archaeology [*] Music [*] Honor [DL] Vulcan Mindmeld"
             integrity: 8
             cunning: 8
@@ -105,6 +126,7 @@
             classification: CIVILIAN
             lore: "Typical member of the Romulan underground. Female colleague of Tamarith. Pleased by Spock's decision to stay on Romulus after Pardek's betrayal."
             species: romulan
+            gender: female
             skill-box: "[*] MEDICAL [*] Exobiology [*] Anthropology [*] Honor"
             integrity: 7
             cunning: 5
@@ -122,6 +144,7 @@
             icons: staff
             lore: "Representative of non-military personnel guarding the Carraya system prison camp for Khitomer survivors. Sometimes serves as Tokath's bodyguard."
             species: romulan
+            gender: male
             skill-box: "[*] SECURITY [*] Biology [*] Youth"
             integrity: 5
             cunning: 5
@@ -139,6 +162,7 @@
             icons: staff
             lore: Typical Romulan engineer who became trapped in a temporal fragment in 2369. Did not realize the cause was life-form incubation in the engine core.
             species: romulan
+            gender: male
             skill-box: "[*] Computer Skill [*] Transporter Skill [*] Youth"
             integrity: 4
             cunning: 7
@@ -155,6 +179,7 @@
             classification: MEDICAL
             lore: Typical field nurse assigned to a damage control team on the Haakona in 2365. Was tending injured crew members when Jean-Luc Picard appeared.
             species: romulan
+            gender: male
             skill-box: "[*] Biology [*] Greed [*] Anthropology"
             integrity: 5
             cunning: 8
@@ -172,6 +197,7 @@
             icons: command
             lore: One of many female officers serving aboard Romulan warbirds. Former engineering technician who got caught in a temporal fragment in 2369.
             species: romulan
+            gender: female
             skill-box: "[*] ENGINEER [*] Treachery [*] Geology"
             integrity: 4
             cunning: 7
@@ -188,6 +214,7 @@
             icons: staff
             lore: Tal Shiar officer assigned to the Office of the Proconsul in 2368. Often works alongside his twin brother Telak. Likes viinerine with Romulan ale.
             species: romulan
+            gender: male
             skill-box: "[*] Tal Shiar [*] Exobiology [*] Treachery [*] Transporter Skill [DL] Romulan Disruptor"
             integrity: 5
             cunning: 7
