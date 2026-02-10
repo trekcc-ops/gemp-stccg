@@ -13,6 +13,7 @@
             classification: OFFICER
             icons: command
             lore: "Captain of the <i>U.S.S. Hood</i> and former commanding officer of William T. Riker. Years ago, he and Jean-Luc Picard served together as lieutenants on the same ship."
+            species: human
             integrity: 8
             cunning: 7
             strength: 5
@@ -28,6 +29,7 @@
             classification: OFFICER
             icons: command
             lore: "Captain of the sleeper ship <i>I.K.S. T'Ong</i>, on a crucial mission ordered by the High Command in the late 23rd century. Awoke 75 years later in a much-changed galaxy."
+            species: klingon
             skill-box: "[*] Astrophysics [*] Transporter Skill [*] Geology [DL] Engage Cloak"
             integrity: 6
             cunning: 7
@@ -44,6 +46,7 @@
             classification: OFFICER
             icons: command
             lore: Zalkonian captain. Sought to capture criminals undergoing a dangerous mutation before they could further disrupt society.
+            species: zalkonian
             skill-box: "[*] SECURITY [*] Leadership [*] Physics [*] Law"
             integrity: 5
             cunning: 8

@@ -13,6 +13,7 @@
             classification: ENGINEER
             icons: staff
             lore: Romulan female who assisted in the capture of U.S.S. Prometheus. Majored in warp theory at an academy located on a colony world 31 light-years from Romulus.
+            species: romulan
             skill-box: "[*] Physics"
             integrity: 5
             cunning: 7

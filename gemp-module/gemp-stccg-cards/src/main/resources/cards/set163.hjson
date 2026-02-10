@@ -13,6 +13,7 @@
             classification: MEDICAL
             icons: command
             lore: Representative of espionage specialists serving in the Cardassian military. Posed as a monk to attack a Maquis cell at the Juhraya colony in 2370.
+            species: cardassian
             skill-box: "[*] Transporter Skill [*] Anthropology [*] Obsidian Order [DL] Cardassian Disruptor"
             integrity: 6
             cunning: 7
@@ -29,6 +30,7 @@
             classification: OFFICER
             icons: command,au-icon
             lore: Elder gul encountered by the U.S.S. Enterprise in multiple realities. Commanded the Rokassa. Investigated espionage uses of the Argus Array.
+            species: cardassian
             skill-box: "[*] Treachery [*] Stellar Cartography [*] Law [*] Leadership [*] Anthropology"
             integrity: 4
             cunning: 7
@@ -45,6 +47,7 @@
             classification: SECURITY
             icons: staff,au-icon,classic-films-icon
             lore: Human tactical officer typical of those serving in the late 23rd century. Directed efforts to transport the S.S. Lakul survivors aboard the U.S.S. Enterprise-B.
+            species: human
             skill-box: "[*] Astrophysics [*] Transporter Skill"
             integrity: 6
             cunning: 6
@@ -61,6 +64,7 @@
             classification: OFFICER
             icons: staff,au-icon,classic-films-icon
             lore: Human navigator typical of U.S.S. Enterprise-B staff officers. Befriended Demora Sulu. Enjoys strategy games and tales of the ancient American West.
+            species: human
             skill-box: "[*] Navigation [*] Computer Skill"
             integrity: 6
             cunning: 6
@@ -77,6 +81,7 @@
             classification: MEDICAL
             icons: staff,first-contact-icon
             lore: Typical nurse who served under Beverly Crusher for many years. Helped evacuate sickbay when the Borg boarded the U.S.S. Enterprise-E.
+            species: human
             skill-box: "[*] Biology [*] Transporter Skill"
             integrity: 8
             cunning: 7
@@ -92,6 +97,7 @@
             classification: OFFICER
             icons: command
             lore: Experienced officer who often commanded the <i>U.S.S. Enterprise</i>. Defeated the Sisters of Duras at Veridian III. Well versed in saucer separations.
+            species: human
             skill-box: "[*] Leadership [*] Navigation [*] Music [DL] Brace for Impact"
             integrity: 8
             cunning: 7
@@ -108,6 +114,7 @@
             classification: MEDICAL
             icons: staff
             lore: Typical Ferengi physician. Served aboard the Krayton in 2366. Distrusted Lwaxana Troi. Tried to study her empathic powers with a mind probe.
+            species: ferengi
             skill-box: "[*] Exobiology [*] Treachery [*] Computer Skill"
             integrity: 3
             cunning: 7
@@ -122,6 +129,7 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: Betazoid ambassador held captive by Tog. Misled him about her willingness to cooperate. Later described Tog as slightly repulsive, but with a certain charm.
+            species: betazoid
             skill-box: "[*] Empathy x2 [*] Anthropology [*] Computer Skill"
             integrity: 5
             cunning: 8
@@ -138,6 +146,7 @@
             classification: OFFICER
             icons: staff
             lore: Characteristic of male Klingon warriors supporting attempts by the House of Duras to regain power after their defeat in the Klingon Civil War.
+            species: klingon
             skill-box: "[*] Biology [*] Treachery [*] Transporter Skill"
             integrity: 5
             cunning: 5
@@ -153,6 +162,7 @@
             uniqueness: universal
             classification: SECURITY
             lore: Typical disconnected Borg disciple of The One. Participated in the raid on Ohniaka III. Swore to avenge the death of his friend Torsus.
+            species: borg,human
             icons: defense-subcommand
             skill-box: "[*] Astrophysics [*] Treachery [*] Navigation"
             integrity: 6
@@ -170,6 +180,7 @@
             classification: CIVILIAN
             icons: au-icon,classic-films-icon
             lore: Male El-Aurian representative of refugees rescued by the U.S.S. Enterprise-B from the S.S. Lakul before it was destroyed by the Nexus.
+            species: el-aurian
             skill-box: "[*] Honor [*] Anthropology"
             integrity: 7
             cunning: 7
@@ -186,6 +197,7 @@
             classification: ENGINEER
             icons: staff
             lore: Typical Romulan pilot. Beamed aboard the <i>U.S.S. Enterprise</i> during an encounter with quantum singularity lifeforms in 2369. Enjoys chess.
+            species: romulan
             skill-box: "[*] Navigation [*] Physics"
             integrity: 5
             cunning: 7

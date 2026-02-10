@@ -12,6 +12,7 @@
             classification: SCIENCE
             icons: staff
             lore: Invited aboard the <i>U.S.S. Enterprise</i> to demonstrate his innovative technology. The ensuing murder mystery proved it successful, but at a high cost.
+            species: ferengi
             skill-box: "[*] ENGINEER [*] Astrophysics [*] Physics [*] Stellar Cartography [DL] Metaphasic Shields"
             integrity: 7
             cunning: 8

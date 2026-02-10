@@ -27,6 +27,7 @@
             classification: OFFICER
             icons: command
             lore: Typical Cardassian intelligence asset. His undercover team, dressed as monks, attacked a Maquis cell at the Juhraya colony. Later promoted to legate.
+            species: cardassian
             skill-box: "[*] Leadership [*] Obsidian Order"
             integrity: 3
             cunning: 6
@@ -42,6 +43,7 @@
             property-logo: tng-logo
             classification: CIVILIAN
             lore: "One of many Cardassian children who admire their parents' military service. Daughter of Gul Madred. Cares for her pet wompat. Curious about humans."
+            species: cardassian
             skill-box: "[*] Youth [*] Exobiology [*] Geology"
             integrity: 7
             cunning: 7
@@ -57,6 +59,7 @@
             property-logo: tng-logo
             classification: MEDICAL
             lore: Typical Cardassian working for Gul Madred. Cook and field medic. He provides taspar eggs for nutrition: boiled for the officers, live for the prisoners.
+            species: cardassian
             skill-box: "[*] Biology [*] Acquisition [DL] Taspar Egg"
             integrity: 5
             cunning: 5

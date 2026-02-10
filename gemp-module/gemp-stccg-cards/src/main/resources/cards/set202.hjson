@@ -12,6 +12,7 @@
             property-logo: ds9-logo
             classification: SCIENCE
             lore: Red Squad cadet typical of those assigned to train on the U.S.S. Valiant in 2373. Although loyal to Tim Watters, he secretly misses home.
+            species: human
             skill-box: "[*] Exobiology [*] Archaeology [*] Youth"
             integrity: 6
             cunning: 6
@@ -28,6 +29,7 @@
             classification: MEDICAL
             icons: staff
             lore: Typical surgeon serving under Martok. Former nurse and arms dealer. She developed new combat stimulants and advised the High Council on their use.
+            species: klingon
             skill-box: "[*] Biology [*] Honor [*] Physics [*] Computer Skill"
             integrity: 7
             cunning: 6

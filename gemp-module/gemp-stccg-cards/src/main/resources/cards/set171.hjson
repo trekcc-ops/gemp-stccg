@@ -13,6 +13,7 @@
             classification: ENGINEER
             icons: staff
             lore: "Representative transporter officer aboard the U.S.S. Enterprise. He held the rank of ensign in the early years of the flagship's mission."
+            species: human
             skill-box: "[*] Transporter Skill [*] Biology [*] Stellar Cartography"
             integrity: 6
             cunning: 7
@@ -29,6 +30,7 @@
             classification: SCIENCE
             icons: staff
             lore: "Typical scientist and teacher in the U.S.S. Enterprise's primary school. She expressed concern to Data about Lal's ability to fit in."
+            species: human
             skill-box: "[*] Exobiology [*] Physics"
             integrity: 7
             cunning: 6

@@ -99,6 +99,7 @@
             lore: "Academy Superintendent during the Nova Squadron incident in 2368. Promoted to rear admiral prior to accepting the post. A formidable woman."
             classification: V.I.P.
             property-logo: tng-logo
+            species: human
             skill-box: "[*] Leadership x2 [*] Navigation [*] Law [*] Transporter Skill"
             integrity: 6
             cunning: 7

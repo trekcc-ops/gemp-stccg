@@ -24,6 +24,7 @@
             affiliation: romulan
             property-logo: tng-logo
             lore: Female subcommander. Captain of the warbird <i>Haakona</i>. Investigated the Federation incursion of the Neutral Zone in the vicinity of Iconia.
+            species: romulan
             classification: OFFICER
             icons: command
             skill-box: "[*] Archaeology [*] MEDICAL [*] Music [*] Transporter Skill"

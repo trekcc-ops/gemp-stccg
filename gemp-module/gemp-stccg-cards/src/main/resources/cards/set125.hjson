@@ -11,6 +11,7 @@
             property-logo: ds9-logo
             classification: V.I.P.
             lore: "Wry, 100-year-old judge who presided over Jadzia Dax's Klaestron extradition hearing in 2369. Shows no signs of slowing down, despite her advanced age."
+            species: bajoran
             skill-box: "[*] Law x2 [*] MEDICAL [*] Anthropology"
             integrity: 8
             cunning: 8
