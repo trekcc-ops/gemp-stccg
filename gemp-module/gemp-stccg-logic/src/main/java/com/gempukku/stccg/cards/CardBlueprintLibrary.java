@@ -224,6 +224,22 @@ public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint>
             }
         }
 
+        if (blueprint.getCardType() == CardType.PERSONNEL && !blueprint.hasSpecies()) {
+            throw new InvalidCardDefinitionException("Missing species for personnel card");
+        } else if (blueprint.getCardType() != CardType.PERSONNEL && blueprint.hasSpecies()) {
+            throw new InvalidCardDefinitionException("Has species for a non-personnel card");
+        }
+
+        if (blueprint.getCardType() == CardType.PERSONNEL && blueprint.getGameType() == GameType.FIRST_EDITION) {
+            if (!blueprint.hasGender()) {
+                throw new InvalidCardDefinitionException("Missing gender for personnel card");
+            }
+        } else {
+            if (blueprint.hasGender()) {
+                throw new InvalidCardDefinitionException("Added gender to a card that shouldn't have it");
+            }
+        }
+
         // Set rarity to V if none was specified
         if (blueprint.getRarity() == null)
             blueprint.setRarity("V");

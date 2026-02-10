@@ -40,6 +40,8 @@
             uniqueness: universal
             icons: staff
             lore: "Transporter technician under the command of Lurin. Guarded a U.S.S. Enterprise transporter room during his DaiMon's unsuccessful takeover attempt."
+            species: ferengi
+            gender: male
             skill-box: "[*] Physics [*] Computer Skill [*] Transporter Skill"
             integrity: 6
             cunning: 6

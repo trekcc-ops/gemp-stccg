@@ -180,6 +180,8 @@
             icons: staff
             characteristic: admiral
             lore: Not a psychiatrist, mechanic, coal miner, bricklayer, scientist, physicist, moon shuttle conductor, escalator, magician or fish peddler. Just an old country doctor.
+            species: human
+            gender: male
             integrity: 8
             cunning: 6
             strength: 1
@@ -194,6 +196,8 @@
             classification: V.I.P.
             icons: command
             lore: "1/2 Vulcan, 1/2 Human son of Sarek and Amanda Grayson. Over 140-year-old ambassador. On private mission to Romulus. Mindmelded with Picard."
+            species: human,vulcan
+            gender: male
             skill-box: "[*] Diplomacy x2 [*] Computer Skill [*] Leadership [*] SCIENCE [*] Mindmeld"
             integrity: 9
             cunning: 10

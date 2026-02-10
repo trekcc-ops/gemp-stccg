@@ -8,10 +8,15 @@ import java.util.Locale;
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum Species implements Filterable {
     ANDROID("android"),
-    BAJORAN, BENZITE, BOLIAN, FERENGI, HEKARAN,
+    BAJORAN, BENZITE, BETAZOID, BOLIAN, BORG, BOSLIC,
+    CAIRN, CARDASSIAN, DOPTERIAN,
+    EL_AURIAN ("El-Aurian"),
+    FERENGI, FLAXIAN, HEKARAN,
     HOLOGRAM("hologram"),
     HUMAN("human"),
-    KLINGON, MARKALIAN, NAPEAN, ROMULAN, VULCAN;
+    HUMANOID("humanoid"),
+    KELLERUN, KLINGON, LETHEAN, MARKALIAN, NAPEAN, ROMULAN, RUTIAN,
+    TAKARAN, TILONIAN, TRILL, VULCAN, YRIDIAN, ZALKONIAN;
     private final String _humanReadable;
 
     Species() { _humanReadable = StringUtils.capitalize(name().toLowerCase(Locale.ROOT)); }

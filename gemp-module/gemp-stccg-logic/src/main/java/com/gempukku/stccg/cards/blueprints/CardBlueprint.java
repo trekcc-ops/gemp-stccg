@@ -68,6 +68,9 @@ public class CardBlueprint {
     @JsonProperty("species")
     protected List<Species> _species;
 
+    @JsonProperty("gender")
+    protected Gender _gender;
+
     @JsonProperty("characteristic")
     private final List<Characteristic> _characteristics = new ArrayList<>();
 
@@ -307,14 +310,21 @@ public class CardBlueprint {
         return (_skillBox == null) ? 0 : _skillBox.getSdIcons();
     }
 
-    public void setSpecies(List<Species> species) { _species = species; }
-
     public boolean isSpecies(Species species) {
         if (_species == null)
             return false;
         else
             return _species.contains(species);
     }
+
+    public boolean hasSpecies() {
+        return _species != null && !_species.isEmpty();
+    }
+
+    public boolean hasGender() {
+        return _gender != null;
+    }
+
 
     // Tribbles
     public void setTribbleValue(int tribbleValue) { this.tribbleValue = tribbleValue; }
