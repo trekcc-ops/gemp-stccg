@@ -12,7 +12,6 @@ public class CostCanBePaidRequirement implements Requirement {
         _costBlueprint = cost;
     }
 
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         return _costBlueprint.isPlayableInFull(cardGame, actionContext);
     }

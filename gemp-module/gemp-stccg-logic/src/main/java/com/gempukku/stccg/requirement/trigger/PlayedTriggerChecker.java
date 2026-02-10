@@ -37,7 +37,6 @@ public class PlayedTriggerChecker implements TriggerChecker {
         _onFilter = onFilter;
         _saveToMemoryId = Objects.requireNonNullElse(memorize, "_temp");
     }
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
         final ActionResult actionResult = cardGame.getCurrentActionResult();

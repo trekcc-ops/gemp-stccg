@@ -30,7 +30,6 @@ public class StartOfMissionAttemptTriggerChecker implements TriggerChecker {
         }
     }
 
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         String attemptingPlayerName = _attemptingPlayer.getPlayerName(cardGame, actionContext);
         ActionResult currentResult = cardGame.getCurrentActionResult();

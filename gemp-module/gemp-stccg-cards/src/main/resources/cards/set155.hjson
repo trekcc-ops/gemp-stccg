@@ -531,7 +531,6 @@
         {
             blueprintId: 155_061
             title: Kosinski
-            java-blueprint: true
             type: personnel
             affiliation: federation
             property-logo: tng-logo
@@ -543,6 +542,39 @@
             lore: Arrogant engineer believed to have improved engine performance on several ships in 2364. Finds problem solving highly therapeutic.
             species: human
             gender: male
+            skill-box: {
+                skill-dots: 5
+                skills: [
+                    {
+                        type: regular
+                        name: Computer Skill
+                    }
+                    {
+                        type: regular
+                        name: Physics
+                    }
+                    {
+                        type: regular
+                        name: SCIENCE
+                    }
+                    {
+                        type: regular
+                        name: Stellar Cartography
+                    }
+                    {
+                        type: specialModifier
+                        text: "X=4 when facing a dilemma."
+                        modifier: {
+                            type: addCunning
+                            modifiedCards: thisCard
+                            amount: -4
+                            ifCondition: {
+                                type: thisCardIsFacingDilemma
+                            }
+                        }
+                    }
+                ]
+            }
             image-url: https://www.trekcc.org/1e/cardimages/tng/61V.jpg
             rarity: V
         }

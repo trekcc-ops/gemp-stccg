@@ -415,7 +415,7 @@ public class CardBlueprint {
                                                                      DefaultGame cardGame) {
         return new ArrayList<>();
     }
-    public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
+    public List<PlayOutOfSequenceRequirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
     public List<TriggerActionBlueprint> getTriggers(RequiredType requiredType) {

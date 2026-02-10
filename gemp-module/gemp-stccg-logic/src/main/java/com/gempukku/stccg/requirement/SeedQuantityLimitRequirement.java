@@ -11,7 +11,6 @@ public class SeedQuantityLimitRequirement implements Requirement {
     public SeedQuantityLimitRequirement(int limit) {
         _seedQuantityLimit = limit;
     }
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         PhysicalCard cardSeeding = actionContext.card();
         int copiesSeeded = cardSeeding.getNumberOfCopiesSeededByPlayer(actionContext.getPerformingPlayerId(), cardGame);

@@ -9,6 +9,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = ThisCardIsFacingDilemmaRequirement.class, name = "thisCardIsFacingDilemma"),
         @JsonSubTypes.Type(value = CardInPlayRequirement.class, name = "cardInPlay"),
         @JsonSubTypes.Type(value = MiscRequirement.class, names = {"cardsindeckcount", "cardsinhandmorethan",
     "hascardindiscard", "hascardinhand", "hascardinplaypile", "lasttribbleplayed", "nextTribbleInSequence",
@@ -22,14 +23,7 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface Requirement {
 
-    default boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
-        return isTrue(actionContext.card(), cardGame);
-    }
-
-    @JsonIgnore
-    default boolean isTrue(PhysicalCard thisCard, DefaultGame cardGame) {
-        return false;
-    }
+    boolean accepts(ActionContext context, DefaultGame cardGame);
 
     @JsonIgnore
     default Condition getCondition(ActionContext context, PhysicalCard thisCard, DefaultGame cardGame) {

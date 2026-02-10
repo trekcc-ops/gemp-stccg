@@ -52,7 +52,11 @@ public class SkillBoxDeserializer extends StdDeserializer<SkillBox> {
             int sdIcons = 0;
             List<Skill> skillList = new ArrayList<>();
             for (JsonNode skillNode : node.get("skills")) {
-                skillList.add(jp.getCodec().treeToValue(skillNode, Skill.class));
+                Skill skillToAdd = jp.getCodec().treeToValue(skillNode, Skill.class);
+                if (skillToAdd instanceof SpecialDownloadSkill) {
+                    sdIcons++;
+                }
+                skillList.add(skillToAdd);
             }
             return new SkillBox(skillDots, sdIcons, skillList);
         }

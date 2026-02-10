@@ -19,7 +19,6 @@ public class ThisCardPresentWithYourCardRequirement implements Requirement {
         _otherCardFilter = otherCardFilter;
     }
 
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         PhysicalCard thisCard = actionContext.card();
         CardFilter cardFilter = Filters.and(

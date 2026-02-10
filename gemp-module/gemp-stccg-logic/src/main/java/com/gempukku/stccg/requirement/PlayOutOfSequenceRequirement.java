@@ -27,7 +27,7 @@ public class PlayOutOfSequenceRequirement implements Requirement {
         }
     }
 
-    public boolean isTrue(PhysicalCard thisCard, DefaultGame cardGame) {
+    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         if (cardGame instanceof TribblesGame tribblesGame) {
             TribblesGameState gameState = tribblesGame.getGameState();
             return switch (_valueCheck) {

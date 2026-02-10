@@ -7,7 +7,6 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class WhenThisCardPlayedTriggerChecker implements TriggerChecker {
 
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         return cardGame.getCurrentActionResult() instanceof PlayCardResult playCardResult &&
                 playCardResult.hasType(ActionResult.Type.JUST_PLAYED) &&
