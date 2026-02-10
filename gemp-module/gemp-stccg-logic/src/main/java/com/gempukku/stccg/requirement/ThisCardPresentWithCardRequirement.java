@@ -10,10 +10,10 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 
-public class ThisCardPresentWithYourCardRequirement implements Requirement {
+public class ThisCardPresentWithCardRequirement implements Requirement {
     private final FilterBlueprint _otherCardFilter;
 
-    public ThisCardPresentWithYourCardRequirement(@JsonProperty("otherCardFilter")
+    public ThisCardPresentWithCardRequirement(@JsonProperty("otherCardFilter")
                                                 FilterBlueprint otherCardFilter
     ) {
         _otherCardFilter = otherCardFilter;
@@ -22,7 +22,7 @@ public class ThisCardPresentWithYourCardRequirement implements Requirement {
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         PhysicalCard thisCard = actionContext.card();
         CardFilter cardFilter = Filters.and(
-                Filters.yourCardsPresentWithThisCard(thisCard),
+                Filters.presentWithThisCard(thisCard.getCardId()),
                 _otherCardFilter.getFilterable(cardGame, actionContext)
         );
         Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, cardFilter);
@@ -31,7 +31,7 @@ public class ThisCardPresentWithYourCardRequirement implements Requirement {
 
     public Condition getCondition(ActionContext actionContext, PhysicalCard thisCard, DefaultGame cardGame) {
         CardFilter cardFilter = Filters.and(
-                Filters.yourCardsPresentWithThisCard(thisCard),
+                Filters.presentWithThisCard(thisCard.getCardId()),
                 _otherCardFilter.getFilterable(cardGame, actionContext)
         );
         return new CardInPlayCondition(cardFilter);

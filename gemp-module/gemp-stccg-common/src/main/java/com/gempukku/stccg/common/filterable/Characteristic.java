@@ -1,5 +1,9 @@
 package com.gempukku.stccg.common.filterable;
 
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.stream.Stream;
+
 @SuppressWarnings("unused")
 public enum Characteristic implements Filterable {
     ADMIRAL("admiral"),
@@ -19,6 +23,18 @@ public enum Characteristic implements Filterable {
 
     public String getHumanReadable() {
         return _humanReadable;
+    }
+    
+    public static Characteristic findCharacteristic(String name) {
+        Stream<Characteristic> characteristicValues = Arrays.stream(values());
+        return characteristicValues.filter(
+                        characteristic -> characteristic.getHumanReadable().equalsIgnoreCase(name) ||
+                                characteristic.toString().equals(
+                                        name.toUpperCase(Locale.ROOT)
+                                                .replace(' ', '_')
+                                                .replace("'", "_")
+                                                .replace('-', '_')))
+                .findFirst().orElse(null);
     }
 
 }

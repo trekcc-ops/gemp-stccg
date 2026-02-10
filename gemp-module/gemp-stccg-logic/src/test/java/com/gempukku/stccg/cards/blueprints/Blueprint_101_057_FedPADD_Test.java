@@ -18,6 +18,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
     private FacilityCard outpost;
     private EquipmentCard padd;
     private PersonnelCard picard;
+    private PersonnelCard opposingPicard;
 
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
@@ -25,6 +26,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
         padd = builder.addCardInHand("101_057", "Federation PADD", P1, EquipmentCard.class);
         picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
+        opposingPicard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P2, outpost, PersonnelCard.class);
         builder.setPhase(Phase.CARD_PLAY);
         builder.startGame();
     }
@@ -37,5 +39,6 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         reportCard(P1, padd, outpost);
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, padd));
         assertEquals(10, picard.getCunning(_game));
+        assertEquals(8, opposingPicard.getCunning(_game));
     }
 }

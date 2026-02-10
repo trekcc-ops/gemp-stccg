@@ -844,7 +844,6 @@
         {
             blueprintId: 155_079
             title: Captain Worf
-            java-blueprint: true
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
@@ -854,6 +853,41 @@
             lore: "To persuade K'Temoc not to attack, <b>Worf</b> served as acting captain of the <i>U.S.S. Enterprise</i>. Mate of K'Ehleyr. Finds the command chair \"comfortable\"."
             species: klingon
             gender: male
+            skill-box: {
+                skill-dots: 5
+                skills: [
+                    {
+                        type: regular
+                        name: OFFICER
+                    }
+                    {
+                        type: regular
+                        name: Diplomacy
+                    }
+                    {
+                        type: regular
+                        name: Navigation
+                    }
+                    {
+                        type: regular
+                        name: Honor
+                        level: 2
+                    }
+                    {
+                        type: specialModifier
+                        text: "If with any K'Ehleyr, both are attributes all +2."
+                        modifier: {
+                            type: addToAllAttributes
+                            ifCondition: {
+                                type: thisCardPresentWithCard
+                                otherCardFilter: "characteristic=k'ehleyr"
+                            }
+                            modifiedCards: "thisCard OR presentWithThisCard + characteristic=k'ehleyr"
+                            amount: 2
+                        }
+                    }
+                ]
+            }
             integrity: 8
             cunning: 6
             strength: 10

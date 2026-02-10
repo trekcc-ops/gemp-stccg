@@ -335,4 +335,7 @@ public class Filters {
         return new SameCardFilter(cardId);
     }
 
+    public static CardFilter presentWithThisCard(int thisCardId) {
+        return new PresentWithCardFilter(thisCardId);
+    }
 }
