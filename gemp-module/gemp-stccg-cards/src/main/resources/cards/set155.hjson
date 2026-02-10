@@ -80,6 +80,16 @@
                     filter: personnel + universal + tng-icon + youOwnNoCopiesInPlay + not(android) + not(hologram) + not(au-icon) + youControlAMatchingOutpost
                     destination: yourMatchingOutpost
                 }
+                {
+                    type: downloadCard
+                    limit: {
+                        type: perGame
+                        count: 1
+                        inPlaceOfNormalCardPlay: true
+                    }
+                    filter: universal + ship + tng-icon + youControlAMatchingOutpost
+                    destination: yourMatchingOutpost
+                }
             ]
             playThisCardAction: {
                 type: playThis
