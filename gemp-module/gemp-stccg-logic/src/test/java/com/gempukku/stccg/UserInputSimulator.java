@@ -475,6 +475,10 @@ public interface UserInputSimulator {
 
     default void skipToNextTurnAndPhase(String turnPlayerName, Phase phase)
             throws InvalidGameOperationException, DecisionResultInvalidException {
+
+        skipDilemma();
+        skipFacility();
+
         do {
             skipCardPlay();
             skipExecuteOrders();
