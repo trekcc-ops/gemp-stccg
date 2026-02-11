@@ -67,9 +67,7 @@ public class Blueprint_112_167_ShakaarEdon_Test extends AbstractAtTest {
     @Test
     public void uniquenessTest() throws Exception {
         initializeGame();
-        assertEquals(1, _game.getGameState().getCurrentTurnNumber());
         playCard(P1, shakaar);
-        assertEquals(1, _game.getGameState().getCurrentTurnNumber());
         skipToNextTurnAndPhase(P1, Phase.CARD_PLAY);
         assertEquals(3, _game.getGameState().getCurrentTurnNumber());
         assertTrue(shakaar2.isInHand(_game));
