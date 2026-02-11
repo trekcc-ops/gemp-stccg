@@ -17,9 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
 
-    private FacilityCard outpost;
     private MissionCard _mission;
-    private MissionCard mission2;
     private PersonnelCard crosis;
     private PersonnelCard betor;
     private PhysicalCard lursa;
@@ -29,7 +27,7 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         _mission = builder.addMission("101_170", "Investigate Raid", P1);
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        FacilityCard outpost = builder.addFacility("101_104", P1); // Federation Outpost
         builder.addFacility("101_104", P2);
         builder.addSeedCardUnderMission("101_015", "Armus: Skin of Evil", P2, _mission);
         crosis = builder.addCardInHand("163_044", "Lieutenant Crosis", P2, PersonnelCard.class);
