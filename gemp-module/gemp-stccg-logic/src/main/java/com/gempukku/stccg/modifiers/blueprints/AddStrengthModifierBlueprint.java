@@ -19,23 +19,27 @@ public class AddStrengthModifierBlueprint implements ModifierBlueprint {
     private final FilterBlueprint _modifiedCardFilterBlueprint;
     private final List<Requirement> _requirements = new ArrayList<>();
     private final int _amount;
+    private final boolean _isCumulative;
 
     AddStrengthModifierBlueprint(@JsonProperty(value = "modifiedCards", required = true)
                               FilterBlueprint modifiedCardFilterBlueprint,
                                  @JsonProperty(value = "amount", required = true)
                              int amount,
                                  @JsonProperty(value = "ifCondition")
-                                Requirement ifRequirement) {
+                                Requirement ifRequirement,
+                                 @JsonProperty(value = "cumulative")
+                                 boolean isCumulative) {
         _amount = amount;
         _modifiedCardFilterBlueprint = modifiedCardFilterBlueprint;
         if (ifRequirement != null)
             _requirements.add(ifRequirement);
+        _isCumulative = isCumulative;
     }
 
     public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
         Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         Condition ifCondition = convertRequirementListToCondition(_requirements, actionContext, thisCard, cardGame);
-        return new StrengthModifier(thisCard, affectFilter, ifCondition, _amount);
+        return new StrengthModifier(thisCard, affectFilter, ifCondition, _amount, _isCumulative);
     }
 
 }

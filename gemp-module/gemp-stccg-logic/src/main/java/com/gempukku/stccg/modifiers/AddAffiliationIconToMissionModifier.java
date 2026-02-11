@@ -22,7 +22,7 @@ public class AddAffiliationIconToMissionModifier extends AbstractModifier {
 
     public AddAffiliationIconToMissionModifier(ActionContext actionContext, CardFilter affectedCardsFilter,
                                                List<Affiliation> affiliationsToAdd, boolean addToBothSides) {
-        super(actionContext.card(), affectedCardsFilter, new TrueCondition(), ModifierEffect.ADD_ICON_TO_MISSION);
+        super(actionContext.card(), affectedCardsFilter, new TrueCondition(), ModifierEffect.ADD_ICON_TO_MISSION, false);
         _affiliationsToAdd = affiliationsToAdd;
         _addToBothSides = addToBothSides;
     }

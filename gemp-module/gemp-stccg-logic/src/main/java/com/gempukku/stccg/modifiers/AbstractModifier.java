@@ -26,17 +26,22 @@ public abstract class AbstractModifier implements Modifier {
     @JsonProperty("effectType")
     private final ModifierEffect _effect;
 
+    @JsonProperty("cumulative")
+    private final boolean _cumulative;
+
     protected AbstractModifier(PhysicalCard source, CardFilter affectedCards, Condition condition,
-                               ModifierEffect effect) {
+                               ModifierEffect effect, boolean cumulative) {
         _cardSource = source;
         _affectedCardsFilter = Objects.requireNonNullElse(affectedCards, Filters.any);
         _condition = Objects.requireNonNullElse(condition, new TrueCondition());
         _effect = effect;
+        _cumulative = cumulative;
     }
 
-
-    protected AbstractModifier(CardFilter affectFilter, Condition condition, ModifierEffect effect) {
-        this(null, affectFilter, condition, effect);
+    // for rules-based modifiers
+    protected AbstractModifier(CardFilter affectFilter, Condition condition, ModifierEffect effect,
+                               boolean cumulative) {
+        this(null, affectFilter, condition, effect, cumulative);
     }
 
 
@@ -107,7 +112,7 @@ public abstract class AbstractModifier implements Modifier {
     }
 
     @JsonIgnore
-    public boolean isCumulative() { return true; }
+    public boolean isCumulative() { return _cumulative; }
 
     public final boolean isConditionFulfilled(DefaultGame cardGame) {
         return _condition == null || _condition.isFulfilled(cardGame);

@@ -163,6 +163,7 @@
                         type: thisCardPresentWithCard
                         otherCardFilter: yours + personnel + affiliation=federation
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -183,6 +184,7 @@
                         type: thisCardPresentWithCard
                         otherCardFilter: yours + (affiliation=klingon OR affiliation=non-aligned) + personnel
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -202,6 +204,7 @@
                         type: thisCardPresentWithCard
                         otherCardFilter: yours + personnel + affiliation=klingon
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -254,6 +257,7 @@
                         type: thisCardPresentWithCard
                         otherCardFilter: yours + (affiliation=romulan OR affiliation=non-aligned) + personnel
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -274,6 +278,7 @@
                         type: thisCardPresentWithCard
                         otherCardFilter: yours + personnel + affiliation=romulan
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -294,6 +299,7 @@
                         type: thisCardPresentWithCard
                         otherCardFilter: yours + (affiliation=federation OR affiliation=non-aligned) + personnel
                     }
+                    cumulative: true
                 }
             ]
         }

@@ -23,7 +23,7 @@ public class PlayerCantPlayCardsModifier extends AbstractModifier {
                                              @JsonProperty("condition") Condition condition,
                                              @JsonProperty("effectType") ModifierEffect effectType,
                                              @JsonProperty("playerName") String playerName) {
-        super(performingCard, affectFilter, condition, effectType);
+        super(performingCard, affectFilter, condition, effectType, false);
         _playerName = playerName;
     }
 
