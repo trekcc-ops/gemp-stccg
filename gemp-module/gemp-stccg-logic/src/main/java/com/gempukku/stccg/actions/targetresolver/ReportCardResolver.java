@@ -24,7 +24,7 @@ public class ReportCardResolver implements ActionCardResolver {
     private SelectCardsAction _selectDestinationAction;
     private boolean _isFailed;
     private SelectAffiliationAction _affiliationSelectionAction;
-    private Collection<FacilityCard> _specifiedDestinations;
+    private Collection<PhysicalCard> _specifiedDestinations;
 
     public ReportCardResolver(ReportableCard cardEnteringPlay) {
         _cardEnteringPlay = cardEnteringPlay;
@@ -42,7 +42,7 @@ public class ReportCardResolver implements ActionCardResolver {
     }
 
     public ReportCardResolver(ReportableCard cardEnteringPlay,
-                              Collection<FacilityCard> eligibleDestinations) {
+                              Collection<PhysicalCard> eligibleDestinations) {
         this(cardEnteringPlay);
         _specifiedDestinations = eligibleDestinations;
     }
@@ -64,7 +64,7 @@ public class ReportCardResolver implements ActionCardResolver {
 
     private void selectDestination(ST1EGame stGame) {
         if (_selectDestinationAction == null) {
-            Collection<FacilityCard> destinationOptions;
+            Collection<PhysicalCard> destinationOptions;
             destinationOptions =
                     Objects.requireNonNullElseGet(_specifiedDestinations, () -> getDestinationOptions(stGame));
             _selectDestinationAction = new SelectVisibleCardsAction(stGame, _performingPlayerName,
@@ -73,8 +73,8 @@ public class ReportCardResolver implements ActionCardResolver {
             stGame.addActionToStack(_selectDestinationAction);
         } else if (_selectDestinationAction.wasCompleted()) {
             Collection<PhysicalCard> cardResult = _selectDestinationAction.getSelectedCards();
-            if (cardResult.size() == 1 && Iterables.getOnlyElement(cardResult) instanceof FacilityCard facility) {
-                _destinationCard = facility;
+            if (cardResult.size() == 1) {
+                _destinationCard = Iterables.getOnlyElement(cardResult);
             } else {
                 _isFailed = true;
             }
@@ -112,8 +112,8 @@ public class ReportCardResolver implements ActionCardResolver {
         }
     }
 
-    private Collection<FacilityCard> getDestinationOptions(ST1EGame game) {
-        Collection<FacilityCard> availableFacilities = new HashSet<>();
+    private Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
+        Collection<PhysicalCard> availableFacilities = new HashSet<>();
         for (MissionLocation location : game.getGameState().getSpacelineLocations()) {
             Collection<PhysicalCard> facilities =
                     Filters.filterCardsInPlay(game, FacilityType.OUTPOST, Filters.atLocation(location));
@@ -140,7 +140,7 @@ public class ReportCardResolver implements ActionCardResolver {
     @Override
     public boolean cannotBeResolved(DefaultGame cardGame) {
         if (cardGame instanceof ST1EGame stGame) {
-            return _isFailed || getDestinationOptions(stGame).isEmpty();
+            return _isFailed;
         } else {
             return true; // Cannot perform report card action in non-1E game
         }

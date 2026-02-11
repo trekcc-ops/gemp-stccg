@@ -2,9 +2,7 @@ package com.gempukku.stccg.cards;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 
@@ -31,10 +29,6 @@ public class ModifierSkill extends Skill {
 
     public Modifier createModifierNew(DefaultGame cardGame, ActionContext context) {
         return _modifier.createModifier(cardGame, context.card(), context);
-    }
-
-    public Modifier getModifierOld(PhysicalCard card) throws InvalidGameLogicException {
-        return null;
     }
 
 }

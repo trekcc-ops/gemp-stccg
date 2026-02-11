@@ -32,7 +32,7 @@ public class DownloadCardActionBlueprint extends DefaultActionBlueprint {
     )
             throws InvalidCardDefinitionException {
         super(new YouPlayerSource());
-        if (destination.equals("yourMatchingOutpost")) {
+        if (destination.equals("yourMatchingOutpost") || destination.equals("anywhereAtThisLocation")) {
             _destination = destination;
         } else {
             throw new InvalidCardDefinitionException("Unable to process destination other than 'yourMatchingOutpost'");
@@ -71,6 +71,25 @@ public class DownloadCardActionBlueprint extends DefaultActionBlueprint {
             if (action2.canBeInitiated(cardGame)) {
                 return action2;
             }
+        } else if (!downloadableCards.isEmpty() && _destination.equals("anywhereAtThisLocation")) {
+            SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
+                    "Select a card to download", downloadableCards);
+            ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+
+            FilterBlueprint destinationFilterBlueprint = (cardGame1, actionContext1) -> {
+                CardFilter atThisLocationFilter = Filters.atLocation(thisCard.getLocationId());
+                CardFilter shipFacilityOrPlanet = Filters.or(CardType.SHIP, CardType.FACILITY,
+                        Filters.planetLocation);
+                return Filters.and(atThisLocationFilter, shipFacilityOrPlanet);
+            };
+
+            DownloadReportableCardToDestinationAction action2 =
+                    new DownloadReportableCardToDestinationAction(cardGame, performingPlayerName, cardTarget, thisCard, destinationFilterBlueprint);
+            appendActionToContext(cardGame, action2, actionContext);
+            if (action2.canBeInitiated(cardGame)) {
+                return action2;
+            }
+
         }
 
         return null;

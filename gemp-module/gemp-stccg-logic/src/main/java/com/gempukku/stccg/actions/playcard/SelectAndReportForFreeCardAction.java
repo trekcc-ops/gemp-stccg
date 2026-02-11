@@ -43,7 +43,7 @@ public class SelectAndReportForFreeCardAction extends PlayCardAction {
 
     protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
-        Collection<FacilityCard> eligibleDestinations = new ArrayList<>();
+        Collection<PhysicalCard> eligibleDestinations = new ArrayList<>();
         for (PhysicalCard card : Filters.filter(cardGame, outpostFilter)) {
             if (card instanceof FacilityCard facility) {
                 eligibleDestinations.add(facility);

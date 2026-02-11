@@ -1817,6 +1817,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR277.jpg
         }
         {
+            blueprintId: 101_280
+            title: Lursa
+            type: personnel
+            affiliation: klingon
+            property-logo: tng-logo
+            classification: V.I.P.
+            icons: command
+            lore: "Elder of the two Duras sisters. Plotted with Sela, a Romulan, to start the Klingon Civil War of 2367-68."
+            species: klingon
+            gender: female
+            skill-box: "[*] Treachery [*] Leadership [*] Geology [*] Greed"
+            integrity: 2
+            cunning: 8
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR280.jpg
+        }
+        {
             blueprintId: 101_284
             title: Torak
             type: personnel

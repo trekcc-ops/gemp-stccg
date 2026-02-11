@@ -37,7 +37,7 @@ public class Blueprint_163_044_LtCrosis_Test extends AbstractAtTest {
     }
 
     @Test
-    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
+    public void affiliationIconTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame();
         seedMission(mission2);
         assertTrue(_mission.isInPlay());

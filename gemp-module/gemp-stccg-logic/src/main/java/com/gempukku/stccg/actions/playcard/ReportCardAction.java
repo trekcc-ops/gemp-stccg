@@ -36,7 +36,7 @@ public class ReportCardAction extends PlayCardAction {
     }
 
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
-                            Collection<FacilityCard> destinationOptions) {
+                            Collection<PhysicalCard> destinationOptions) {
         this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay, destinationOptions));
     }
 
