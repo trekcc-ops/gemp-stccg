@@ -5,7 +5,6 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -19,12 +18,7 @@ public class Blueprint_106_014_AdmiralMcCoy_Test extends AbstractAtTest {
 
     private FacilityCard outpost;
     private PersonnelCard mccoy;
-    private MissionCard mission;
     private PersonnelCard ogawa;
-    private PersonnelCard picardOnPlanet;
-    private PersonnelCard opposingKallisOnPlanet;
-    private PersonnelCard kallisOnFacility;
-    private EquipmentCard medicalKit;
     private PersonnelCard ogawa2;
     private PersonnelCard picard;
     private PersonnelCard worf;
@@ -38,7 +32,7 @@ public class Blueprint_106_014_AdmiralMcCoy_Test extends AbstractAtTest {
         ogawa2 = builder.addCardAboardShipOrFacility("101_198", "Alyssa Ogawa", P2, outpost, PersonnelCard.class);
         worf = builder.addCardAboardShipOrFacility("101_251", "Worf", P1, outpost, PersonnelCard.class);
         picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
-        medicalKit = builder.addCardAboardShipOrFacility("101_060", "Medical Kit", P1, outpost, EquipmentCard.class);
+        builder.addCardAboardShipOrFacility("101_060", "Medical Kit", P1, outpost, EquipmentCard.class);
         builder.setPhase(Phase.CARD_PLAY);
         builder.startGame();
     }
