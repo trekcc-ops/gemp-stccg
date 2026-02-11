@@ -723,7 +723,6 @@
             blueprintId: 155_072
             title: Kol
             type: personnel
-            java-blueprint: true
             affiliation: ferengi
             property-logo: tng-logo
             classification: SCIENCE
@@ -731,6 +730,40 @@
             lore: "Ferengi scientist serving under Goss. Studied the Barzan wormhole with Dr. Arridor. Didn't realize the significance of the meson and lepton fluctuations."
             species: ferengi
             gender: male
+            skill-box: {
+                skill-dots: 5
+                skills: [
+                    {
+                        type: regular
+                        name: Diplomacy
+                    }
+                    {
+                        type: regular
+                        name: Navigation
+                    }
+                    {
+                        type: regular
+                        name: Greed
+                    }
+                    {
+                        type: regular
+                        name: Stellar Cartography
+                    }
+                    {
+                        type: specialModifier
+                        text: "Attributes all +2 if with Goss or Dr. Arridor."
+                        modifier: {
+                            type: addToAllAttributes
+                            ifCondition: {
+                                type: thisCardPresentWithCard
+                                otherCardFilter: name(Goss) OR name(Dr. Arridor)
+                            }
+                            modifiedCards: thisCard
+                            amount: 2
+                        }
+                    }
+                ]
+            }
             integrity: 6
             cunning: 6
             strength: 5
