@@ -70,7 +70,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public abstract GameState getGameState();
     public abstract RuleSet<? extends DefaultGame> getRules();
-    public boolean shouldAutoPass(Phase phase) {
+    public boolean shouldAutoPass(Phase phase, String playerName) {
         return false;
     }
 

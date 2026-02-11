@@ -139,11 +139,7 @@ public class ReportCardResolver implements ActionCardResolver {
 
     @Override
     public boolean cannotBeResolved(DefaultGame cardGame) {
-        if (cardGame instanceof ST1EGame stGame) {
-            return _isFailed;
-        } else {
-            return true; // Cannot perform report card action in non-1E game
-        }
+        return _isFailed || (!(cardGame instanceof ST1EGame));
     }
 
     public PhysicalCard getDestination() {

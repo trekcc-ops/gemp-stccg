@@ -195,9 +195,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         seedCard(P1, continuing);
         seedCard(P2, continuingPlayerTwo);
 
-        // skip player one turn
-        skipCardPlay();
-        skipExecuteOrders();
+        skipToNextTurnAndPhase(P2, Phase.CARD_PLAY);
         int initialHandSize = hand.size();
 
         assertEquals(P2, _game.getCurrentPlayerId());

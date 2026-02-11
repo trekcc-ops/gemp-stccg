@@ -500,8 +500,10 @@ public interface UserInputSimulator {
         if (!initiallySeeding || !initialPlayerId.equals(turnPlayerName)) {
             do {
                 int turnNumberBeforeLoop = gameState.getCurrentTurnNumber();
-                skipCardPlay();
-                skipExecuteOrders();
+                skipPhase(Phase.START_OF_TURN);
+                skipPhase(Phase.CARD_PLAY);
+                skipPhase(Phase.EXECUTE_ORDERS);
+                skipPhase(Phase.END_OF_TURN);
                 assertEquals(turnNumberBeforeLoop + 1, gameState.getCurrentTurnNumber());
             } while (!getGame().getCurrentPlayerId().equals(turnPlayerName));
         }
@@ -517,26 +519,17 @@ public interface UserInputSimulator {
         assertEquals(turnNumberAfterSkippingTurns, initialTurnNumber + expectedTurnsSkipped);
 
         if (phase == Phase.EXECUTE_ORDERS) {
-            skipCardPlay();
+            skipPhase(Phase.START_OF_TURN);
+            skipPhase(Phase.CARD_PLAY);
         }
     }
 
 
-    default void skipCardPlay() throws DecisionResultInvalidException, InvalidGameOperationException {
-        int initialTurnNumber = getGame().getGameState().getCurrentTurnNumber();
-        String playerId = getGame().getCurrentPlayerId();
-        while (getGame().getCurrentPhase() == Phase.CARD_PLAY) {
-            if (getGame().getAwaitingDecision(playerId) != null)
-                playerDecided(playerId, "");
-        }
-        assertEquals(initialTurnNumber, getGame().getGameState().getCurrentTurnNumber());
-    }
-
-    default void skipExecuteOrders() throws DecisionResultInvalidException, InvalidGameOperationException {
+    default void skipPhase(Phase phase) throws DecisionResultInvalidException, InvalidGameOperationException {
         String currentPlayerId = getGame().getCurrentPlayerId();
         int initialTurnNumber = getGame().getGameState().getCurrentTurnNumber();
         String selectingPlayerId = currentPlayerId;
-        while (getGame().getCurrentPhase() == Phase.EXECUTE_ORDERS && getGame().getCurrentPlayerId().equals(currentPlayerId)) {
+        while (getGame().getCurrentPhase() == phase && getGame().getCurrentPlayerId().equals(currentPlayerId)) {
             if (getGame().getAwaitingDecision(selectingPlayerId) != null) {
                 playerDecided(selectingPlayerId, "");
             }

@@ -27,7 +27,7 @@ public class StartOfTurnGameProcess extends GameProcess {
         } else if (cardGame instanceof ST1EGame) {
             cardGame.getGameState().setCurrentPhase(Phase.CARD_PLAY);
             cardGame.sendActionResultToClient(); // for phase change
-            return new ST1EPlayPhaseSegmentProcess();
+            return new ST1EPlayPhaseSegmentProcess(cardGame.getCurrentPlayerId());
         }
         throw new InvalidGameLogicException("No start of turn process defined for game type");
     }

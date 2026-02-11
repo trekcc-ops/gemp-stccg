@@ -15,8 +15,6 @@ import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class ST1EGame extends DefaultGame {
@@ -70,16 +68,13 @@ public class ST1EGame extends DefaultGame {
     }
 
     @Override
-    public boolean shouldAutoPass(Phase phase) {
-            // If false for a given phase, the user will still be prompted to "Pass" even if they have no legal actions.
-        Collection<Phase> autoPassPhases = new LinkedList<>();
-        autoPassPhases.add(Phase.SEED_DOORWAY);
-        autoPassPhases.add(Phase.SEED_MISSION);
-        autoPassPhases.add(Phase.SEED_DILEMMA);
-        autoPassPhases.add(Phase.SEED_FACILITY);
-        autoPassPhases.add(Phase.CARD_PLAY);
-        autoPassPhases.add(Phase.END_OF_TURN);
-        return autoPassPhases.contains(phase);
+    public boolean shouldAutoPass(Phase phase, String playerName) {
+        return switch(phase) {
+            case SEED_DOORWAY, SEED_MISSION, SEED_DILEMMA, SEED_FACILITY -> true;
+            case CARD_PLAY, END_OF_TURN, START_OF_TURN -> true;
+            case EXECUTE_ORDERS -> !playerName.equals(getCurrentPlayerId());
+            case BETWEEN_TURNS, TRIBBLES_TURN -> false;
+        };
     }
 
     public ST1ERuleSet getRules() { return _rules; }

@@ -41,7 +41,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
         final List<TopLevelSelectableAction> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, player);
         Phase phase = cardGame.getCurrentPhase();
-        if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase)) {
+        if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase,currentPlayerName)) {
             cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(cardGame.getCurrentPlayer(), DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, false) {

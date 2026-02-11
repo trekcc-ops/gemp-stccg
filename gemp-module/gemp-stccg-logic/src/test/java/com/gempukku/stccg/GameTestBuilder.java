@@ -74,7 +74,7 @@ public class GameTestBuilder {
             case SEED_MISSION -> new ST1EMissionSeedPhaseProcess(0);
             case SEED_DILEMMA -> new DilemmaSeedPhaseOpponentsMissionsProcess(_players);
             case SEED_FACILITY -> new ST1EFacilitySeedPhaseProcess(0);
-            case CARD_PLAY, EXECUTE_ORDERS -> new ST1EPlayPhaseSegmentProcess();
+            case CARD_PLAY, EXECUTE_ORDERS -> new ST1EPlayPhaseSegmentProcess(_game.getCurrentPlayerId());
             case BETWEEN_TURNS, TRIBBLES_TURN, START_OF_TURN -> throw new InvalidGameOperationException(
                     "Unequipped to create test game starting in phase '" + _startingPhase + "'");
         };

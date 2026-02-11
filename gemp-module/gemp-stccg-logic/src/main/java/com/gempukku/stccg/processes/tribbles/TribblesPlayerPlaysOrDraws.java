@@ -24,7 +24,7 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
         final List<TopLevelSelectableAction> playableActions =
                 _game.getActionsEnvironment().getPhaseActions(_game, currentPlayer);
 
-        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
+        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase(), currentPlayer.getPlayerId())) {
             _consecutivePasses++;
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
