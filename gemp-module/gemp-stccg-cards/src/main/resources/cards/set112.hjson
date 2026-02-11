@@ -8,11 +8,23 @@
         {
             blueprintId: 112_046
             title: Bajoran Phaser
-            java-blueprint: true
             type: equipment
             property-logo: ds9-logo
             lore: Standard-issue phased energy weapon of the Bajoran Militia. Provides firepower equivalent to that of the Starfleet type II phaser.
             image-url: https://www.trekcc.org/1e/cardimages/ds9/bajoranphaser.gif
+            rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (bajoran OR affiliation=non-aligned) + personnel
+                    }
+                    cumulative: true
+                }
+            ]
         }
         {
             blueprintId: 112_078
