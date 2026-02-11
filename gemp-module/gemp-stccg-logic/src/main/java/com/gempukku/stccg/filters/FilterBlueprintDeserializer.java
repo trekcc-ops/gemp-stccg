@@ -56,6 +56,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("another", (cardGame, actionContext) ->
                 Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
         appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
+        appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
         appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
@@ -70,6 +71,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
         appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
+        appendSimpleFilter("notThisCard", (cardGame, actionContext) -> Filters.not(Filters.card(actionContext.card())));
         appendSimpleFilter("onPlanet(missionSeededByYourOpponent)", (cardGame, actionContext) -> {
                 String opponentName = cardGame.getOpponent(actionContext.yourName());
                 return new OnPlanetMissionFilter(opponentName);

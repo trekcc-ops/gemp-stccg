@@ -49,6 +49,7 @@ public class Filters {
 
     public static final CardFilter active = new ActiveCardFilter();
     public static final CardFilter any = new AnyCardFilter();
+    public static final CardFilter Bajoran = Filters.or(Affiliation.BAJORAN, Species.BAJORAN);
     public static final CardFilter controllerControlsMatchingPersonnelAboard =
             new ControllerControlsMatchingPersonnelAboardFilter();
     public static final CardFilter equipment = Filters.or(CardType.EQUIPMENT);

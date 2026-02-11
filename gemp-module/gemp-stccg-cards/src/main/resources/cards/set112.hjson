@@ -15,6 +15,29 @@
             image-url: https://www.trekcc.org/1e/cardimages/ds9/bajoranphaser.gif
         }
         {
+            blueprintId: 112_078
+            title: Bajoran Outpost
+            type: facility
+            property-logo: ds9-logo
+            facility-type: outpost
+            affiliation: bajoran
+            uniqueness: universal
+            lore: The Bajoran homeworld is Bajor. The Bajorans establish outposts throughout their territory.
+            shields: 30
+            image-url: https://www.trekcc.org/1e/cardimages/errata/Bajoran-Outpost.jpg
+            rarity: C
+            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(affiliation=bajoran)
+            }
+        }
+        {
             blueprintId: 112_105
             title: Access Relay Station
             type: mission
@@ -222,7 +245,6 @@
         {
             blueprintId: 112_167
             title: Shakaar Edon
-            java-blueprint: true
             type: personnel
             affiliation: bajoran
             property-logo: ds9-logo
@@ -231,6 +253,37 @@
             lore: Leader of Shakaar resistance cell. Farmer. Refused to return soil reclamators to provisional government in 2371. Old friend of Kira Nerys.
             species: bajoran
             gender: male
+            skill-box: {
+                skill-dots: 5
+                skills: [
+                    {
+                        type: regular
+                        name: SECURITY
+                    }
+                    {
+                        type: regular
+                        name: Resistance
+                        level: 2
+                    }
+                    {
+                        type: regular
+                        name: Leadership
+                    }
+                    {
+                        type: regular
+                        name: Geology
+                    }
+                    {
+                        type: specialModifier
+                        text: "Other Bajorans present are STRENGTH +2."
+                        modifier: {
+                            type: addStrength
+                            modifiedCards: bajoran + personnel + presentWithThisCard + notThisCard
+                            amount: 2
+                        }
+                    }
+                ]
+            }
             integrity: 8
             cunning: 8
             strength: 8
