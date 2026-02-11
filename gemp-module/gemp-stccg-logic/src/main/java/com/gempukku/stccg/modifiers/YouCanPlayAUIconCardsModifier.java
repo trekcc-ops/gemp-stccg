@@ -16,7 +16,7 @@ public class YouCanPlayAUIconCardsModifier extends AbstractModifier {
                                         @JsonProperty("affectedCards") CardFilter affectFilter,
                                         @JsonProperty("condition") Condition condition,
                                         @JsonProperty("effectType") ModifierEffect effectType) {
-        super(performingCard, affectFilter, condition, effectType);
+        super(performingCard, affectFilter, condition, effectType, false);
     }
 
     public YouCanPlayAUIconCardsModifier(PhysicalCard performingCard) {

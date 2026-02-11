@@ -20,7 +20,6 @@ public class CardInPlayRequirement implements Requirement {
         _filterBlueprint = filterBlueprint;
     }
 
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         CardFilter filter = _filterBlueprint.getFilterable(cardGame, actionContext);
         return !Filters.filterCardsInPlay(cardGame, filter).isEmpty();

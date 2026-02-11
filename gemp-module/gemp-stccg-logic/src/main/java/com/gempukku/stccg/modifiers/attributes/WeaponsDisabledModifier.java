@@ -16,7 +16,7 @@ public class WeaponsDisabledModifier extends AbstractModifier {
     private WeaponsDisabledModifier(@JsonProperty("affectedCards") CardFilter affectFilter,
                                     @JsonProperty("condition") Condition condition,
                                     @JsonProperty("effectType") ModifierEffect effectType) {
-        super(affectFilter, condition, effectType);
+        super(affectFilter, condition, effectType, false);
     }
 
     public WeaponsDisabledModifier(CardFilter affectedCards) {

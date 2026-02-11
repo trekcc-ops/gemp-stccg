@@ -1,6 +1,5 @@
 package com.gempukku.stccg.modifiers.attributes;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.TextUtils;
@@ -30,58 +29,62 @@ public class AttributeModifier extends AbstractModifier {
     @JsonProperty("attributes")
     private final List<CardAttribute> _attributes = new LinkedList<>();
 
-    @JsonCreator
     private AttributeModifier(@JsonProperty("evaluator") Evaluator evaluator,
-                      @JsonProperty(value = "attributes", required = true) Collection<CardAttribute> attributes,
-                      @JsonProperty("performingCard") PhysicalCard performingCard,
-                      @JsonProperty("affectedCards") CardFilter affectFilter,
-                      @JsonProperty("condition") Condition condition,
-                      @JsonProperty("effectType") ModifierEffect effectType) {
-        super(performingCard, affectFilter, condition, effectType);
+                              @JsonProperty(value = "attributes", required = true) Collection<CardAttribute> attributes,
+                              @JsonProperty("performingCard") PhysicalCard performingCard,
+                              @JsonProperty("affectedCards") CardFilter affectFilter,
+                              @JsonProperty("condition") Condition condition,
+                              @JsonProperty("effectType") ModifierEffect effectType,
+                              @JsonProperty("cumulative") boolean cumulative) {
+        super(performingCard, affectFilter, condition, effectType, cumulative);
         _evaluator = evaluator;
         _attributes.addAll(attributes);
     }
+
 
     public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCards, Condition condition,
                              Evaluator evaluator, Collection<CardAttribute> attributes,
                              ModifierTimingType timingType, boolean cumulative) {
         this(evaluator, attributes, performingCard, affectedCards, condition,
-                ModifierEffect.ATTRIBUTE_MODIFIER);
+                ModifierEffect.ATTRIBUTE_MODIFIER, cumulative);
     }
 
+    public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
+                             Evaluator evaluator, CardAttribute attribute,
+                             ModifierEffect effectType, boolean cumulative) {
+        this(evaluator, List.of(attribute), modifierSource, Filters.changeToFilter(affectFilter), condition,
+                effectType, cumulative);
+    }
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
                              Evaluator evaluator, CardAttribute attribute,
                              ModifierEffect effectType) {
         this(evaluator, List.of(attribute), modifierSource, Filters.changeToFilter(affectFilter), condition,
-                effectType);
+                effectType, false);
     }
 
     public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCards, Condition condition,
                              Evaluator evaluator, CardAttribute attribute,
                              ModifierEffect effectType) {
-        this(evaluator, List.of(attribute), performingCard, affectedCards, condition, effectType);
+        this(evaluator, List.of(attribute), performingCard, affectedCards, condition, effectType, false);
     }
 
     public AttributeModifier(PhysicalCard performingCard, CardFilter affectedCardFilter, int modifierValue,
                              Collection<CardAttribute> attributes) {
         this(new ConstantEvaluator(modifierValue), attributes, performingCard, affectedCardFilter,
-                new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER);
+                new TrueCondition(), ModifierEffect.ATTRIBUTE_MODIFIER, false);
     }
-
-
-
 
     public AttributeModifier(PhysicalCard performingCard, PhysicalCard affectedCard,
                              Condition condition, int modifierValue, ModifierEffect effectType,
                              CardAttribute... attributes) {
         this(new ConstantEvaluator(modifierValue), List.of(attributes), performingCard, Filters.card(affectedCard),
-                condition, effectType);
+                condition, effectType, false);
     }
 
     public AttributeModifier(PhysicalCard modifierSource, Filterable affectFilter, Condition condition,
                              Evaluator evaluator, ModifierEffect effectType, Collection<CardAttribute> attributes) {
-        this(evaluator, attributes, modifierSource, Filters.changeToFilter(affectFilter), condition, effectType);
+        this(evaluator, attributes, modifierSource, Filters.changeToFilter(affectFilter), condition, effectType, false);
     }
 
 

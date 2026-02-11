@@ -19,6 +19,7 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
     private final FilterBlueprint _modifiedCardFilterBlueprint;
     private final List<Requirement> _requirements = new ArrayList<>();
     private final int _amount;
+    private final boolean _isCumulative;
 
     AddCunningModifierBlueprint(@JsonProperty(value = "modifiedCards", required = true)
                               FilterBlueprint modifiedCardFilterBlueprint,
@@ -33,12 +34,13 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
         if (ifRequirement != null) {
             _requirements.add(ifRequirement);
         }
+        _isCumulative = isCumulative;
     }
 
     public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
         Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         Condition ifCondition = convertRequirementListToCondition(_requirements, actionContext, thisCard, cardGame);
-        return new CunningModifier(thisCard, affectFilter, ifCondition, _amount);
+        return new CunningModifier(thisCard, affectFilter, ifCondition, _amount, _isCumulative);
     }
 
 

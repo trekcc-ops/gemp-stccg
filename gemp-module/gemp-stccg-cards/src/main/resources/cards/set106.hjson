@@ -172,7 +172,6 @@
         {
             blueprintId: 106_014
             title: Admiral McCoy
-            java-blueprint: true
             affiliation: federation
             type: personnel
             property-logo: tng-logo
@@ -182,6 +181,32 @@
             lore: Not a psychiatrist, mechanic, coal miner, bricklayer, scientist, physicist, moon shuttle conductor, escalator, magician or fish peddler. Just an old country doctor.
             species: human
             gender: male
+            skill-box: {
+                skill-dots: 4
+                skills: [
+                    {
+                        type: regular
+                        name: MEDICAL
+                    }
+                    {
+                        type: regular
+                        name: Exobiology
+                    }
+                    {
+                        type: regular
+                        name: Cantankerousness
+                    }
+                    {
+                        type: specialModifier
+                        text: "Other MEDICAL are CUNNING +3 where present."
+                        modifier: {
+                            type: addCunning
+                            modifiedCards: medical + personnel + presentWithThisCard + notThisCard
+                            amount: 3
+                        }
+                    }
+                ]
+            }
             integrity: 8
             cunning: 6
             strength: 1

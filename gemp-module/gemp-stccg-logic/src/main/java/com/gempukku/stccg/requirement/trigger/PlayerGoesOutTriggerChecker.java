@@ -12,7 +12,6 @@ public class PlayerGoesOutTriggerChecker implements TriggerChecker {
 
     private final PlayerSource _playerSource = new YouPlayerSource();
 
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         ActionResult currentActionResult = cardGame.getCurrentActionResult();
         if (currentActionResult == null) {

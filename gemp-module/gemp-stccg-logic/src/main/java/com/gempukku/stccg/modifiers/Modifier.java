@@ -14,6 +14,7 @@ import com.gempukku.stccg.requirement.Condition;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = AddAffiliationIconToMissionModifier.class, name = "addAffiliationIconToMission"),
         @JsonSubTypes.Type(value = AttributeModifier.class, name = "attribute"),
             // TODO Do we need all the types of attribute modifiers??
         @JsonSubTypes.Type(value = GainIconModifier.class, name = "gainIcon"),

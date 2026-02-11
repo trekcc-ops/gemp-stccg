@@ -24,7 +24,7 @@ public class PlayerCannotSolveMissionModifier extends AbstractModifier {
                                              @JsonProperty("effectType") ModifierEffect effectType,
                                              @JsonProperty("playerName") String playerName,
                                              @JsonProperty("locationId") int locationId) {
-        super(performingCard, affectFilter, condition, effectType);
+        super(performingCard, affectFilter, condition, effectType, false);
         _playerName = playerName;
         _locationId = locationId;
     }

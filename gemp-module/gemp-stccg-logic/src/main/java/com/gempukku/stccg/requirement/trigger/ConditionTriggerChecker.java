@@ -22,7 +22,6 @@ public class ConditionTriggerChecker implements TriggerChecker {
     ) {
         _requirements = requirements;
     }
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         return actionContext.acceptsAllRequirements(cardGame, _requirements);
     }

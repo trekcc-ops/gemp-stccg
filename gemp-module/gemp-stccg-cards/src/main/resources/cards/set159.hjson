@@ -14,12 +14,12 @@
             modifiers: [
                 {
                     type: addStrength
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + not(SCIENCE + Treachery)
+                    modifiedCards: yours + presentWithThisCard + personnel + not(SCIENCE + Treachery)
                     amount: 1
                 }
                 {
                     type: addStrength
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + SCIENCE + Treachery
+                    modifiedCards: yours + presentWithThisCard + personnel + SCIENCE + Treachery
                     amount: 3
                 }
             ]
@@ -35,12 +35,12 @@
             modifiers: [
                 {
                     type: addCunning
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + Astrophysics + Stellar Cartography + not(Treachery)
+                    modifiedCards: yours + presentWithThisCard + personnel + Astrophysics + Stellar Cartography + not(Treachery)
                     amount: 1
                 }
                 {
                     type: addCunning
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + Astrophysics + Stellar Cartography + Treachery
+                    modifiedCards: yours + presentWithThisCard + personnel + Astrophysics + Stellar Cartography + Treachery
                     amount: 3
                 }
             ]

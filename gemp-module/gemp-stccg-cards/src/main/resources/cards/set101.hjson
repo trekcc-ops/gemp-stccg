@@ -126,7 +126,7 @@
                 {
                     type: gainSkill
                     skills: engineer
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=officer
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=officer
                 }
             ]
         }
@@ -142,7 +142,7 @@
                 {
                     type: gainSkill
                     skills: engineer
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=science
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=science
                 }
             ]
         }
@@ -157,12 +157,13 @@
             modifiers: [
                 {
                     type: addCunning
-                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    modifiedCards: yours + presentWithThisCard + personnel
                     amount: 2
                     ifCondition: {
-                        type: thisCardPresentWithYourCard
-                        otherCardFilter: personnel + affiliation=federation
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + personnel + affiliation=federation
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -177,12 +178,13 @@
             modifiers: [
                 {
                     type: addStrength
-                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    modifiedCards: yours + presentWithThisCard + personnel
                     amount: 2
                     ifCondition: {
-                        type: thisCardPresentWithYourCard
-                        otherCardFilter: (affiliation=klingon OR affiliation=non-aligned) + personnel
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (affiliation=klingon OR affiliation=non-aligned) + personnel
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -196,12 +198,13 @@
             modifiers: [
                 {
                     type: addCunning
-                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    modifiedCards: yours + presentWithThisCard + personnel
                     amount: 2
                     ifCondition: {
-                        type: thisCardPresentWithYourCard
-                        otherCardFilter: personnel + affiliation=klingon
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + personnel + affiliation=klingon
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -217,7 +220,7 @@
                 {
                     type: gainSkill
                     skills: medical
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=officer
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=officer
                 }
             ]
         }
@@ -233,7 +236,7 @@
                 {
                     type: gainSkill
                     skills: medical
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=science
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=science
                 }
             ]
         }
@@ -248,12 +251,13 @@
             modifiers: [
                 {
                     type: addStrength
-                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    modifiedCards: yours + presentWithThisCard + personnel
                     amount: 2
                     ifCondition: {
-                        type: thisCardPresentWithYourCard
-                        otherCardFilter: (affiliation=romulan OR affiliation=non-aligned) + personnel
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (affiliation=romulan OR affiliation=non-aligned) + personnel
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -268,12 +272,13 @@
             modifiers: [
                 {
                     type: addCunning
-                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    modifiedCards: yours + presentWithThisCard + personnel
                     amount: 2
                     ifCondition: {
-                        type: thisCardPresentWithYourCard
-                        otherCardFilter: personnel + affiliation=romulan
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + personnel + affiliation=romulan
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -288,12 +293,13 @@
             modifiers: [
                 {
                     type: addStrength
-                    modifiedCards: yourCardsPresentWithThisCard + personnel
+                    modifiedCards: yours + presentWithThisCard + personnel
                     amount: 2
                     ifCondition: {
-                        type: thisCardPresentWithYourCard
-                        otherCardFilter: (affiliation=federation OR affiliation=non-aligned) + personnel
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (affiliation=federation OR affiliation=non-aligned) + personnel
                     }
+                    cumulative: true
                 }
             ]
         }
@@ -309,7 +315,7 @@
                 {
                     type: gainSkill
                     skills: science
-                    modifiedCards: yourCardsPresentWithThisCard + personnel + classification=engineer
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=engineer
                 }
             ]
         }

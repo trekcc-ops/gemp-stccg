@@ -20,11 +20,14 @@ import com.gempukku.stccg.decisions.CardSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public interface UserInputSimulator {
 
@@ -473,12 +476,45 @@ public interface UserInputSimulator {
         }
     }
 
+    private void skipSeedPhase() throws InvalidGameOperationException, DecisionResultInvalidException {
+        skipDilemma();
+        skipFacility();
+    }
+
     default void skipToNextTurnAndPhase(String turnPlayerName, Phase phase)
             throws InvalidGameOperationException, DecisionResultInvalidException {
-        do {
-            skipCardPlay();
-            skipExecuteOrders();
-        } while (!getGame().getCurrentPlayerId().equals(turnPlayerName));
+
+        GameState gameState = getGame().getGameState();
+        int initialTurnNumber = gameState.getCurrentTurnNumber();
+        boolean initiallySeeding = getGame().getCurrentPhase().isSeedPhase();
+
+        if (initiallySeeding) {
+            skipSeedPhase();
+        }
+
+        assertFalse(getGame().getCurrentPhase().isSeedPhase());
+        int turnNumberAfterSeeding = gameState.getCurrentTurnNumber();
+        String initialPlayerId = getGame().getCurrentPlayerId();
+        assertTrue(turnNumberAfterSeeding == initialTurnNumber || turnNumberAfterSeeding == 1);
+
+        if (!initiallySeeding || !initialPlayerId.equals(turnPlayerName)) {
+            do {
+                int turnNumberBeforeLoop = gameState.getCurrentTurnNumber();
+                skipCardPlay();
+                skipExecuteOrders();
+                assertEquals(turnNumberBeforeLoop + 1, gameState.getCurrentTurnNumber());
+            } while (!getGame().getCurrentPlayerId().equals(turnPlayerName));
+        }
+
+        int turnNumberAfterSkippingTurns = gameState.getCurrentTurnNumber();
+        int expectedTurnsSkipped = 0;
+        if (initiallySeeding) {
+            expectedTurnsSkipped = (initialPlayerId.equals(turnPlayerName)) ? 1 : 2;
+        } else {
+            expectedTurnsSkipped = (initialPlayerId.equals(turnPlayerName)) ? 2 : 1;
+        }
+
+        assertEquals(turnNumberAfterSkippingTurns, initialTurnNumber + expectedTurnsSkipped);
 
         if (phase == Phase.EXECUTE_ORDERS) {
             skipCardPlay();
@@ -487,15 +523,18 @@ public interface UserInputSimulator {
 
 
     default void skipCardPlay() throws DecisionResultInvalidException, InvalidGameOperationException {
+        int initialTurnNumber = getGame().getGameState().getCurrentTurnNumber();
         String playerId = getGame().getCurrentPlayerId();
         while (getGame().getCurrentPhase() == Phase.CARD_PLAY) {
             if (getGame().getAwaitingDecision(playerId) != null)
                 playerDecided(playerId, "");
         }
+        assertEquals(initialTurnNumber, getGame().getGameState().getCurrentTurnNumber());
     }
 
     default void skipExecuteOrders() throws DecisionResultInvalidException, InvalidGameOperationException {
         String currentPlayerId = getGame().getCurrentPlayerId();
+        int initialTurnNumber = getGame().getGameState().getCurrentTurnNumber();
         String selectingPlayerId = currentPlayerId;
         while (getGame().getCurrentPhase() == Phase.EXECUTE_ORDERS && getGame().getCurrentPlayerId().equals(currentPlayerId)) {
             if (getGame().getAwaitingDecision(selectingPlayerId) != null) {
@@ -503,12 +542,17 @@ public interface UserInputSimulator {
             }
             selectingPlayerId = getGame().getOpponent(selectingPlayerId);
         }
+        if (getGame().getCurrentPlayerId().equals(currentPlayerId)) {
+            assertEquals(initialTurnNumber, getGame().getGameState().getCurrentTurnNumber());
+        } else {
+            assertEquals(initialTurnNumber + 1, getGame().getGameState().getCurrentTurnNumber());
+        }
     }
 
 
     default void skipDilemma() throws DecisionResultInvalidException, InvalidGameOperationException {
         for (String playerId : getGame().getAllPlayerIds())
-            if (getGame().getAwaitingDecision(playerId) != null)
+            if (getGame().getCurrentPhase() == Phase.SEED_DILEMMA && getGame().getAwaitingDecision(playerId) != null)
                 playerDecided(playerId, "");
     }
 

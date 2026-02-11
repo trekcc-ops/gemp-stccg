@@ -20,12 +20,14 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
     private EquipmentCard medicalKit;
     private PersonnelCard picard;
     private PersonnelCard taris;
+    private EquipmentCard medicalKit2;
 
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         outpost = builder.addFacility("101_104", P1); // Federation Outpost
         medicalKit = builder.addCardInHand("101_060", "Medical Kit", P1, EquipmentCard.class);
+        medicalKit2 = builder.addCardInHand("101_060", "Medical Kit", P1, EquipmentCard.class);
         picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
         taris = builder.addCardAboardShipOrFacility("105_085", "Taris", P1, outpost, PersonnelCard.class);
         builder.setPhase(Phase.CARD_PLAY);
@@ -43,4 +45,19 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         assertEquals(1, picard.getSkillLevel(_game, SkillName.MEDICAL));
         assertEquals(2, taris.getSkillLevel(_game, SkillName.MEDICAL));
     }
+
+    @Test
+    public void notCumulativeTest() throws Exception {
+        initializeGame();
+
+        assertEquals(0, picard.getSkillLevel(_game, SkillName.MEDICAL));
+        assertEquals(1, taris.getSkillLevel(_game, SkillName.MEDICAL));
+        playCard(P1, medicalKit);
+        skipToNextTurnAndPhase(P1, Phase.CARD_PLAY);
+        playCard(P1, medicalKit2);
+        assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, medicalKit2, medicalKit, taris));
+        assertEquals(1, picard.getSkillLevel(_game, SkillName.MEDICAL));
+        assertEquals(2, taris.getSkillLevel(_game, SkillName.MEDICAL));
+    }
+
 }

@@ -18,7 +18,6 @@ public class StartOfTurnTriggerChecker implements TriggerChecker {
     StartOfTurnTriggerChecker(@JsonProperty("turnPlayer") String playerText) throws InvalidCardDefinitionException {
         _player = (playerText == null) ? null : PlayerResolver.resolvePlayer(playerText);
     }
-    @Override
     public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
         if (!cardGame.isCurrentActionResultType(ActionResult.Type.START_OF_TURN)) {
             return false;

@@ -21,7 +21,7 @@ public class GainIconModifier extends AbstractModifier implements IconAffectingM
                                           @JsonProperty("condition") Condition condition,
                                           @JsonProperty("effectType") ModifierEffect effectType,
                              @JsonProperty("icon") CardIcon icon) {
-        super(performingCard, affectFilter, condition, effectType);
+        super(performingCard, affectFilter, condition, effectType, false);
         _icon = icon;
     }
 

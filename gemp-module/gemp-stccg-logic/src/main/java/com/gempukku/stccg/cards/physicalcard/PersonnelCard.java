@@ -97,4 +97,7 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
     @JsonIgnore
     public SkillName getClassification() { return _blueprint.getClassification(); }
 
+    public float getPrintedStrength() {
+        return _blueprint.getStrength();
+    }
 }

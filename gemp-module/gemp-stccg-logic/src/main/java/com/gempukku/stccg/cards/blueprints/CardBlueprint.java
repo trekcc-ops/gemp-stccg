@@ -415,7 +415,7 @@ public class CardBlueprint {
                                                                      DefaultGame cardGame) {
         return new ArrayList<>();
     }
-    public List<? extends Requirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
+    public List<PlayOutOfSequenceRequirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
     public List<TriggerActionBlueprint> getTriggers(RequiredType requiredType) {
@@ -466,6 +466,13 @@ public class CardBlueprint {
         // Add in-play modifiers created through JSON definitions
         inPlayModifiers.forEach(modifierSource ->
                 result.add(modifierSource.createModifier(cardGame, thisCard, actionContext)));
+        if (_skillBox != null) {
+            for (Skill skill : _skillBox.getSkillList()) {
+                if (skill instanceof ModifierSkill modifier) {
+                    result.add(modifier.createModifierNew(cardGame, actionContext));
+                }
+            }
+        }
 
         // Add in-play modifiers created through Java definitions
         try {

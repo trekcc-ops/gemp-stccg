@@ -84,7 +84,7 @@ public class AwayTeam implements AttemptingUnit {
                 return true;
             if (missionCard.getBlueprint().canAnyExceptBorgAttempt() && !hasAffiliation(Affiliation.BORG))
                 return true;
-            return hasAnyAffiliation(mission.getAffiliationIconsForPlayer(_controllerName));
+            return hasAnyAffiliation(mission.getAffiliationIcons(cardGame, _controllerName));
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             return false;

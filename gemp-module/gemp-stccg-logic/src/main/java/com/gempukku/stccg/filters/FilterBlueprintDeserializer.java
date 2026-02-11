@@ -56,6 +56,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("another", (cardGame, actionContext) ->
                 Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
         appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
+        appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
         appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
@@ -70,6 +71,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
         appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
+        appendSimpleFilter("notThisCard", (cardGame, actionContext) -> Filters.not(Filters.card(actionContext.card())));
         appendSimpleFilter("onPlanet(missionSeededByYourOpponent)", (cardGame, actionContext) -> {
                 String opponentName = cardGame.getOpponent(actionContext.yourName());
                 return new OnPlanetMissionFilter(opponentName);
@@ -88,8 +90,8 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("yours", (cardGame, actionContext) -> Filters.your(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("yoursevenifnotinplay", (cardGame, actionContext) ->
                 Filters.yoursEvenIfNotInPlay(actionContext.getPerformingPlayerId()));
-        appendSimpleFilter("yourcardspresentwiththiscard", (cardGame, actionContext) ->
-                Filters.yourCardsPresentWithThisCard(actionContext.getPerformingPlayerId(), actionContext.getPerformingCardId()));
+        appendSimpleFilter("presentWithThisCard", (cardGame, actionContext) ->
+                Filters.presentWithThisCard(actionContext.getPerformingCardId()));
     }
     
     private void appendSimpleFilter(String label, FilterBlueprint blueprint) {
@@ -179,6 +181,9 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
 
     private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
 //        System.out.println(value); // Very useful for debugging
+        if (simpleFilters.get(Sanitize(value)) != null) {
+            return simpleFilters.get(Sanitize(value));
+        }
         if (value.startsWith("bottomCardsOfYourDiscardPile(") && value.endsWith(")")) {
             String remainingText = value.substring("bottomCardsOfYourDiscardPile(".length(), value.length() - 1);
             final String[] filters = splitIntoFilters(remainingText);
@@ -215,6 +220,11 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             String affiliationName = value.substring(12);
             Affiliation affiliation = Affiliation.findAffiliation(affiliationName);
             return (cardGame, actionContext) -> Filters.and(affiliation);
+        }
+        if (value.startsWith("characteristic=")) {
+            String characteristicName = value.substring("characteristic=".length());
+            Characteristic characteristic = Characteristic.findCharacteristic(characteristicName);
+            return (cardGame, actionContext) -> Filters.and(characteristic);
         }
         if (value.startsWith("classification=")) {
             String skillName = value.substring("classification=".length());
