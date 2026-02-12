@@ -570,17 +570,6 @@ public class CardBlueprint {
                 if (action != null) result.add(action);
             }
         }
-        if (_skillBox != null) {
-            for (Skill skill : _skillBox.getSkillList()) {
-                if (skill instanceof SpecialDownloadSkill downloadSkill) {
-                    ActionBlueprint blueprint = downloadSkill.getActionBlueprint(thisCard);
-                    TopLevelSelectableAction action = blueprint.createAction(cardGame, player.getPlayerId(), thisCard);
-                    if (action != null) {
-                        result.add(action);
-                    }
-                }
-            }
-        }
         return result;
     }
 

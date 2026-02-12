@@ -33,7 +33,8 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
         applyActionProxiesAsRules(cardGame,
                 new ST1EPlayCardInPhaseRule(),
                 new ST1EChangeAffiliationRule(),
-                new ST1EPhaseActionsRule()
+                new ST1EPhaseActionsRule(),
+                new SpecialDownloadRule()
         );
 
         List<Modifier> modifiers = getGlobalRulesBasedModifiersForCardsInPlay();

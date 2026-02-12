@@ -80,6 +80,14 @@ public class ActionResult {
     public boolean hasType(Type type) {
         return _types.contains(type);
     }
+    public boolean hasAnyType(List<Type> types) {
+        for (Type type : types) {
+            if (_types.contains(type)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void createOptionalAfterTriggerActions(DefaultGame game) {
         for (Player player : game.getPlayers()) {

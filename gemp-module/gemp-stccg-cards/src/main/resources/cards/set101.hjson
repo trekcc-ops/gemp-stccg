@@ -769,6 +769,20 @@
             rarity: U
         }
         {
+            blueprintId: 101_193
+            title: Test Mission
+            type: mission
+            mission-type: space
+            location: Praxillus System
+            lore: Provide aid for a helium ignition project attempting to revitalize dying sun.
+            affiliation-icons: federation,klingon
+            mission-requirements: Physics + INTEGRITY>28
+            point-box: 25
+            span: 3
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR193.jpg
+            rarity: C
+        }
+        {
             blueprintId: 101_194
             title: Wormhole Negotiations
             type: mission

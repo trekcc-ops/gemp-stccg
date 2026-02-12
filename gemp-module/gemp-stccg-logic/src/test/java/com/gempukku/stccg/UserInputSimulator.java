@@ -23,6 +23,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,6 +66,20 @@ public interface UserInputSimulator {
             getGame().carryOutPendingActionsUntilDecisionNeeded();
         }
     }
+
+    default <T extends Action> void skipAction(String playerId, Class<T> clazz)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        List<Action> selectableActions = getSelectableActionsOfClass(playerId, Action.class);
+        if (selectableActions.size() == 1) {
+            Action selectableAction = Iterables.getOnlyElement(selectableActions);
+            if (clazz.isAssignableFrom(selectableAction.getClass())) {
+                playerDecided(playerId, "");
+            }
+        } else {
+            throw new DecisionResultInvalidException("Too many actions available. Cannot skip.");
+        }
+    }
+
     
     default InitiateShipBattleAction initiateBattle(String initiatingPlayerName)
             throws InvalidGameOperationException, DecisionResultInvalidException {
@@ -191,7 +206,7 @@ public interface UserInputSimulator {
     }
 
 
-    default Action attemptMission(String playerId, MissionCard mission)
+    default AttemptMissionAction attemptMission(String playerId, MissionCard mission)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         List<AttemptMissionAction> selectableActions =
                 getSelectableActionsOfClass(playerId, AttemptMissionAction.class);
