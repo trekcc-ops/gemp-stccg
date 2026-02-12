@@ -196,11 +196,7 @@ public class Filters {
     }
 
     public static CardFilter your(final String playerId) {
-                // TODO - Does this track with general usage of "your"
-        return or(
-                and(inPlay, new ControlledByPlayerFilter(playerId)),
-                and(not(inPlay), owner(playerId))
-        );
+        return and(inPlay, new ControlledByPlayerFilter(playerId));
     }
 
     public static CardFilter your(final Player player) {
