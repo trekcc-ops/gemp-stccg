@@ -202,6 +202,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         if (value.startsWith("(") && value.endsWith(")")) {
             return parseSTCCGFilter(value.substring(1, value.length() - 1));
         }
+        if (value.startsWith("locationName(") && value.endsWith(")")) {
+            String locationName = value.substring("locationName(".length(), value.length() - 1);
+            return new LocationNameFilterBlueprint(locationName);
+        }
         if (value.startsWith("not(") && value.endsWith(")")) {
             FilterBlueprint filterBlueprint = parseSTCCGFilter(value.substring(4, value.length() - 1));
             return (cardGame, actionContext) -> Filters.not(filterBlueprint.getFilterable(cardGame, actionContext));

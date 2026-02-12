@@ -34,6 +34,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = InYourDrawDeckFilter.class, name = "inYourDrawDeck"),
         @JsonSubTypes.Type(value = InYourHandFilter.class, name = "inYourHand"),
         @JsonSubTypes.Type(value = InZoneFilter.class, name = "inZone"),
+        @JsonSubTypes.Type(value = LocationNameFilter.class, name = "locationName"),
         @JsonSubTypes.Type(value = MatchingAffiliationFilter.class, name = "matchingAffiliation"),
         @JsonSubTypes.Type(value = MatchingAttributeFilter.class, name = "matchingAttribute"),
         @JsonSubTypes.Type(value = MissionPointValueFilter.class, name = "missionPointValue"),

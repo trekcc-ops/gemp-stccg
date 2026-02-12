@@ -31,8 +31,8 @@ public class NullLocation implements GameLocation {
     }
 
     @Override
-    public String getLocationName() throws InvalidGameLogicException {
-        throw new InvalidGameLogicException("Null location has no name");
+    public String getLocationName() {
+        return "";
     }
 
     public boolean isHomeworld() { return false; }

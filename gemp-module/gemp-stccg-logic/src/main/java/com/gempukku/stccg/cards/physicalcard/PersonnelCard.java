@@ -100,4 +100,14 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
     public float getPrintedStrength() {
         return _blueprint.getStrength();
     }
+
+    public int getPrintedCunning() {
+        return _blueprint.getCunning();
+    }
+
+    public int getPrintedIntegrity() {
+        return _blueprint.getIntegrity();
+    }
+
+
 }
