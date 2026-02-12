@@ -29,7 +29,7 @@ public class Blueprint_163_044_LtCrosis_Test extends AbstractAtTest {
         _game = builder.getGame();
         _mission = builder.addMission("101_170", "Investigate Raid", P1);
         mission2 = builder.addMissionToDeck("101_170", "Investigate Raid", P2);
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         builder.addSeedCardUnderMission("101_015", "Armus: Skin of Evil", P2, _mission);
         crosis = builder.addCardInHand("163_044", "Lieutenant Crosis", P1, PersonnelCard.class);
         builder.setPhase(Phase.SEED_MISSION);
@@ -37,7 +37,7 @@ public class Blueprint_163_044_LtCrosis_Test extends AbstractAtTest {
     }
 
     @Test
-    public void armusTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
+    public void affiliationIconTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame();
         seedMission(mission2);
         assertTrue(_mission.isInPlay());
@@ -58,8 +58,7 @@ public class Blueprint_163_044_LtCrosis_Test extends AbstractAtTest {
         AwayTeam awayTeam = _game.getGameState().getAwayTeamForCard(crosis);
         assertTrue(awayTeam.isOnSurface(_mission.getLocationId()));
 
-        // Attempt mission
-        attemptMission(P1, awayTeam, _mission);
+        attemptMission(P1, _mission);
 
         // Confirm that Crosis was killed; missions are no longer non-aligned
         assertEquals(Zone.DISCARD, crosis.getZone());

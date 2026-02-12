@@ -27,6 +27,27 @@
             ]
         }
         {
+            blueprintId: 112_048
+            title: Cardassian Disruptor
+            type: equipment
+            property-logo: ds9-logo
+            lore: "Phase-disruption weapon used by Cardassian military and civilian personnel."
+            image-url: https://www.trekcc.org/1e/cardimages/sfls/6.jpg
+            rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (cardassian OR affiliation=non-aligned) + personnel
+                    }
+                    cumulative: true
+                }
+            ]
+        }
+        {
             blueprintId: 112_078
             title: Bajoran Outpost
             type: facility
@@ -46,7 +67,30 @@
             ]
             playThisCardAction: {
                 type: playThis
-                destination: facilityEngineerRequirement(affiliation=bajoran)
+                destination: facilityEngineerRequirement(bajoran)
+            }
+        }
+        {
+            blueprintId: 112_080
+            title: Cardassian Outpost
+            type: facility
+            property-logo: ds9-logo
+            facility-type: outpost
+            affiliation: cardassian
+            uniqueness: universal
+            lore: "Cardassia Prime is the homeworld of the Cardassians. The Cardassian Union establishes outposts throughout its territory."
+            shields: 32
+            image-url: https://www.trekcc.org/1e/cardimages/errata/Cardassian-Outpost.jpg
+            rarity: C
+            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(cardassian)
             }
         }
         {

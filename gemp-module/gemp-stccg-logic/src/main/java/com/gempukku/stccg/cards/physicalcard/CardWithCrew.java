@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public interface CardWithCrew extends CardWithHullIntegrity {
+public interface CardWithCrew extends CardWithCompatibility, CardWithHullIntegrity {
 
     Collection<PhysicalCard> getCrew(DefaultGame cardGame);
 

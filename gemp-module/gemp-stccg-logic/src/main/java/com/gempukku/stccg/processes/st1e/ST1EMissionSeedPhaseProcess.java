@@ -41,7 +41,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         ST1EGameState gameState = getST1EGame(cardGame).getGameState();
         Phase currentPhase = gameState.getCurrentPhase();
 
-        if (playableActions.isEmpty() && cardGame.shouldAutoPass(currentPhase)) {
+        if (playableActions.isEmpty() && cardGame.shouldAutoPass(currentPhase, currentPlayer.getPlayerId())) {
             _consecutivePasses++;
         } else {
             cardGame.sendAwaitingDecision(

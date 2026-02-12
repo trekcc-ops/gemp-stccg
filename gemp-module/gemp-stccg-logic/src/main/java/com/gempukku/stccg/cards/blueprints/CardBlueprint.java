@@ -294,15 +294,6 @@ public class CardBlueprint {
     public void setClassification(SkillName classification) { _classification = classification; }
     public SkillName getClassification() { return _classification; }
 
-    public List<RegularSkill> getRegularSkills() {
-        List<RegularSkill> result = new LinkedList<>();
-        for (Skill skill : _skillBox.getSkillList()) {
-            if (skill instanceof RegularSkill regularSkill)
-                result.add(regularSkill);
-        }
-        return result;
-    }
-
     public int getSkillDotCount() {
         return (_skillBox == null) ? 0 : _skillBox.getSkillDots();
     }
@@ -635,10 +626,6 @@ public class CardBlueprint {
 
     public Collection<ActionBlueprint> getActionBlueprintsForTestingOnly() {
         return _actionBlueprints;
-    }
-
-    public ActionBlueprint getActionBlueprintForId(int id) {
-        return _actionBlueprints.get(id);
     }
 
     public int getIdForActionBlueprint(ActionBlueprint blueprint) {

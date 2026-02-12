@@ -20,17 +20,18 @@ public class ST1EPhaseActionsRule extends ST1ERule {
     @Override
     public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
+        boolean isPlayersTurn = cardGame.getCurrentPlayerId().equals(player.getPlayerId());
         if (cardGame instanceof ST1EGame stGame) {
             final GameState gameState = cardGame.getGameState();
             final Phase currentPhase = gameState.getCurrentPhase();
-            if (currentPhase == Phase.CARD_PLAY || currentPhase == Phase.EXECUTE_ORDERS) {
+            if (List.of(Phase.CARD_PLAY, Phase.EXECUTE_ORDERS).contains(currentPhase) && isPlayersTurn) {
                 Filters.filterCardsInPlay(cardGame, CardType.MISSION).forEach(
                         card -> result.addAll(card.getRulesActionsWhileInPlay(player, cardGame)));
                 Filters.filterYourCardsInPlay(cardGame, player, Filters.not(CardType.MISSION)).forEach(
                         card -> result.addAll(card.getRulesActionsWhileInPlay(player, cardGame)));
             }
 
-            if (currentPhase == Phase.EXECUTE_ORDERS) {
+            if (currentPhase == Phase.EXECUTE_ORDERS && isPlayersTurn) {
                 Map<PhysicalCard, Map<String, List<PhysicalCard>>> shipBattleTargets =
                         ShipBattleRules.getTargetsForShipBattleInitiation(stGame, player);
                 if (!shipBattleTargets.isEmpty()) {

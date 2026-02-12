@@ -31,7 +31,6 @@ public class ActionsEnvironment {
         _untilEndOfTurnActionProxies.add(actionProxy);
     }
 
-
     public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
 

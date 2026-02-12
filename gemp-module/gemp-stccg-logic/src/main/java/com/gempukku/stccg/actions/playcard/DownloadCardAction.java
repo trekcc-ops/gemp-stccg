@@ -2,14 +2,19 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.google.common.collect.Iterables;
 
-public class DownloadCardAction extends ActionyAction implements TopLevelSelectableAction {
+import java.util.Collection;
+import java.util.List;
+
+public class DownloadCardAction extends ActionyAction implements DownloadAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
@@ -17,9 +22,9 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
 
     private final PhysicalCard _performingCard;
 
-    private final ActionCardResolver _cardToDownloadTarget;
+    private final SelectCardsResolver _cardToDownloadTarget;
 
-    public DownloadCardAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardTarget,
+    public DownloadCardAction(DefaultGame cardGame, String performingPlayerName, SelectCardsResolver cardTarget,
                               PhysicalCard performingCard) {
         super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD);
         _cardToDownloadTarget = cardTarget;
@@ -58,4 +63,13 @@ public class DownloadCardAction extends ActionyAction implements TopLevelSelecta
         return _performingCard;
     }
 
+    @Override
+    public Collection<? extends PhysicalCard> getDownloadableTargets(DefaultGame cardGame) {
+        return _cardToDownloadTarget.getSelectableCards(cardGame);
+    }
+
+    @Override
+    public void setCardToDownload(PhysicalCard cardToDownload) {
+        _cardToDownloadTarget.setSelectedCards(List.of(cardToDownload));
+    }
 }

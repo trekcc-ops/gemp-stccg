@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.playcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.targetresolver.ReportMultipleCardsResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -12,8 +11,9 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 
 import java.util.Collection;
+import java.util.List;
 
-public class DownloadMultipleReportablesActionNew extends ActionyAction implements TopLevelSelectableAction {
+public class DownloadMultipleReportablesActionNew extends ActionyAction implements DownloadAction {
     private final Zone _fromZone;
     private final PhysicalCard _performingCard;
     private final ReportMultipleCardsResolver _resolver;
@@ -58,4 +58,13 @@ public class DownloadMultipleReportablesActionNew extends ActionyAction implemen
         return _performingCard;
     }
 
+    @Override
+    public Collection<? extends PhysicalCard> getDownloadableTargets(DefaultGame cardGame) {
+        return _resolver.getSelectableCardsToPlay();
+    }
+
+    @Override
+    public void setCardToDownload(PhysicalCard cardToDownload) {
+        _resolver.setCardsToPlay(List.of(cardToDownload));
+    }
 }

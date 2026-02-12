@@ -14,8 +14,6 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = MiscRequirement.class, names = {"cardsindeckcount", "cardsinhandmorethan",
     "hascardindiscard", "hascardinhand", "hascardinplaypile", "lasttribbleplayed", "nextTribbleInSequence",
     "tribblesequencebroken"}),
-        @JsonSubTypes.Type(value = ComparatorRequirement.class, names = {"isequal", "isgreaterthan", "isgreaterthanorequal",
-        "islessthan", "islessthanorequal", "isnotequal"}),
         @JsonSubTypes.Type(value = PhaseRequirement.class, name = "phase"),
         @JsonSubTypes.Type(value = PlayOutOfSequenceRequirement.class, name = "playOutOfSequenceCondition"),
         @JsonSubTypes.Type(value = ThisCardPresentWithCardRequirement.class, names = "thisCardPresentWithCard"),

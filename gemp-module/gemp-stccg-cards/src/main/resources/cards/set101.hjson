@@ -769,6 +769,20 @@
             rarity: U
         }
         {
+            blueprintId: 101_193
+            title: Test Mission
+            type: mission
+            mission-type: space
+            location: Praxillus System
+            lore: Provide aid for a helium ignition project attempting to revitalize dying sun.
+            affiliation-icons: federation,klingon
+            mission-requirements: Physics + INTEGRITY>28
+            point-box: 25
+            span: 3
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR193.jpg
+            rarity: C
+        }
+        {
             blueprintId: 101_194
             title: Wormhole Negotiations
             type: mission
@@ -1817,6 +1831,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR277.jpg
         }
         {
+            blueprintId: 101_280
+            title: Lursa
+            type: personnel
+            affiliation: klingon
+            property-logo: tng-logo
+            classification: V.I.P.
+            icons: command
+            lore: "Elder of the two Duras sisters. Plotted with Sela, a Romulan, to start the Klingon Civil War of 2367-68."
+            species: klingon
+            gender: female
+            skill-box: "[*] Treachery [*] Leadership [*] Geology [*] Greed"
+            integrity: 2
+            cunning: 8
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR280.jpg
+        }
+        {
             blueprintId: 101_284
             title: Torak
             type: personnel
@@ -2026,6 +2057,24 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR304.jpg
         }
         {
+            blueprintId: 101_305
+            title: Bochra
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: staff
+            lore: "Centurion serving the Romulan Star Empire. He was once marooned on Galorndon Core with Geordi La Forge."
+            species: romulan
+            gender: male
+            skill-box: "[*] Navigation [*] Youth"
+            integrity: 7
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR305.jpg
+            rarity: U
+        }
+        {
             blueprintId: 101_310
             title: Mirok
             type: personnel
@@ -2076,6 +2125,22 @@
             cunning: 8
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR314.jpg
+        }
+        {
+            blueprintId: 101_315
+            title: Pardek
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: V.I.P.
+            lore: "Male senator from the Krocton Segment of Romulus. Delegate at the 2293 Khitomer conference. Betrayer of Ambassador Spock."
+            species: romulan
+            gender: male
+            skill-box: "[*] Diplomacy x2 [*] Treachery"
+            integrity: 4
+            cunning: 8
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR315.jpg
         }
         {
             blueprintId: 101_320

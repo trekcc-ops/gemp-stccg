@@ -17,7 +17,7 @@ import java.util.Stack;
 
 @JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
         allowGetters = true)
-public class PersonnelCard extends AffiliatedCard implements CardWithCompatibility, ReportableCard {
+public class PersonnelCard extends AffiliatedCard implements CardWithCompatibility, ReportableCard, CardWithStrength {
 
     @JsonCreator
     public PersonnelCard(

@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -31,7 +32,7 @@ public class Blueprint_155_060_Geordi_Test extends AbstractAtTest {
             case DUAL -> throw new RuntimeException("Test is not set up for dual missions");
             case HEADQUARTERS -> throw new RuntimeException("Test is not set up to use 2E headquarters missions");
         };
-        outpost = builder.addFacility("101_104", P1, mission); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
         geordi = builder.addCardAboardShipOrFacility("155_060", "Geordi La Forge", P1, runabout, PersonnelCard.class);
         builder.setPhase(Phase.EXECUTE_ORDERS);

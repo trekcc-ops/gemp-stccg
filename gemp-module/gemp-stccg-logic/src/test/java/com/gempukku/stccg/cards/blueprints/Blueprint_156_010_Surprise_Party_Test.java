@@ -42,9 +42,8 @@ public class Blueprint_156_010_Surprise_Party_Test extends AbstractAtTest {
 
         chooseOnlyAction(P2);
         assertEquals(startingSize2 + 2, hand2.size()); // Verify that P2 drew 2 cards
-
-        skipCardPlay();
-        skipExecuteOrders();
+        skipPhase(Phase.CARD_PLAY);
+        skipPhase(Phase.EXECUTE_ORDERS);
         assertEquals(startingSize1, hand1.size()); // Verify that P1 took their normal card draw
 
         assertNotNull(_game.getAwaitingDecision(P1)); // Verify that P1 has an optional action

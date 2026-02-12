@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -74,7 +75,7 @@ public class GameTestBuilder {
             case SEED_MISSION -> new ST1EMissionSeedPhaseProcess(0);
             case SEED_DILEMMA -> new DilemmaSeedPhaseOpponentsMissionsProcess(_players);
             case SEED_FACILITY -> new ST1EFacilitySeedPhaseProcess(0);
-            case CARD_PLAY, EXECUTE_ORDERS -> new ST1EPlayPhaseSegmentProcess();
+            case CARD_PLAY, EXECUTE_ORDERS -> new ST1EPlayPhaseSegmentProcess(_game.getCurrentPlayerId());
             case BETWEEN_TURNS, TRIBBLES_TURN, START_OF_TURN -> throw new InvalidGameOperationException(
                     "Unequipped to create test game starting in phase '" + _startingPhase + "'");
         };
@@ -130,7 +131,8 @@ public class GameTestBuilder {
     public ShipCard addShipInSpace(String shipBlueprintId, String cardTitle, String ownerName, MissionCard mission)
             throws CardNotFoundException, InvalidGameOperationException {
         ShipCard shipCard = addCardToGame(shipBlueprintId, cardTitle, ownerName, ShipCard.class);
-        ReportCardAction playAction = new ReportCardAction(_game, shipCard, true, mission);
+        ReportCardAction playAction = new ReportCardAction(_game, shipCard, true);
+        playAction.setDestination(mission);
         playAction.setAffiliation(shipCard.getCurrentAffiliations().getFirst());
         executeAction(playAction);
         assertTrue(shipCard.isInPlay());
@@ -146,7 +148,8 @@ public class GameTestBuilder {
         if (!location.isPlanet()) {
             throw new InvalidGameOperationException("Location is not a planet");
         }
-        ReportCardAction playAction = new ReportCardAction(_game, cardToAdd, true, mission);
+        ReportCardAction playAction = new ReportCardAction(_game, cardToAdd, true);
+        playAction.setDestination(mission);
         if (cardToAdd instanceof AffiliatedCard affiliatedCard) {
             playAction.setAffiliation(affiliatedCard.getCurrentAffiliations().getFirst());
         }
@@ -157,12 +160,22 @@ public class GameTestBuilder {
         return cardToAdd;
     }
 
-
-    public FacilityCard addFacility(String facilityBlueprintId, String ownerName)
+    public FacilityCard addOutpost(Affiliation affiliation, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
         if (_missions.isEmpty()) {
             addMission(DEFAULT_MISSION, DEFAULT_MISSION_TITLE, ownerName);
         }
+        String facilityBlueprintId = switch(affiliation) {
+            case BAJORAN -> "112_078";
+            case CARDASSIAN -> "112_080";
+            case FEDERATION -> "101_104";
+            case FERENGI -> "117_030";
+            case KLINGON -> "101_105";
+            case NON_ALIGNED -> "111_009";
+            case ROMULAN -> "101_106";
+            case BORG, DOMINION, HIROGEN, KAZON, NEUTRAL, STARFLEET, VIDIIAN, VULCAN, XINDI ->
+                    throw new CardNotFoundException("Could not find blueprint for outpost of affiliation " + affiliation);
+        };
         return addFacility(facilityBlueprintId, ownerName, _missions.getFirst());
     }
 
@@ -218,7 +231,8 @@ public class GameTestBuilder {
             throws CardNotFoundException, InvalidGameOperationException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
 
-        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, cardWithCrew);
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false);
+        reportAction.setDestination(cardWithCrew);
 
         if (cardToAdd instanceof AffiliatedCard affiliatedCard) {
             reportAction.setAffiliation(affiliatedCard.getCurrentAffiliations().getFirst());
@@ -231,11 +245,29 @@ public class GameTestBuilder {
         return cardToAdd;
     }
 
+    public <T extends ReportableCard> T addCardAboardShipOrFacility(String blueprintId, String cardTitle, String ownerName,
+                                                                    CardWithCrew cardWithCrew, Class<T> clazz, Affiliation affiliation)
+            throws CardNotFoundException, InvalidGameOperationException {
+        T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
+
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false);
+        reportAction.setDestination(cardWithCrew);
+        reportAction.setAffiliation(affiliation);
+
+        executeAction(reportAction);
+
+        assertTrue(cardToAdd.isInPlay());
+        assertTrue(cardToAdd.isAttachedTo(cardWithCrew));
+        assertTrue(cardWithCrew.hasCardInCrew(cardToAdd));
+        return cardToAdd;
+    }
+
     public ShipCard addDockedShip(String blueprintId, String cardTitle, String ownerName, FacilityCard facility)
             throws CardNotFoundException, InvalidGameOperationException {
         ShipCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, ShipCard.class);
 
-        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, facility);
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false);
+        reportAction.setDestination(facility);
         reportAction.setAffiliation(cardToAdd.getCurrentAffiliations().getFirst());
         executeAction(reportAction);
 
@@ -263,6 +295,13 @@ public class GameTestBuilder {
     public PhysicalCard addDrawDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
+        return cardToAdd;
+    }
+
+    public <T extends PhysicalCard> T addDrawDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
+            throws CardNotFoundException {
+        T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
         _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
         return cardToAdd;
     }

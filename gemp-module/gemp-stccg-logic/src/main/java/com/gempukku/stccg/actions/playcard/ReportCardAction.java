@@ -32,23 +32,13 @@ public class ReportCardAction extends PlayCardAction {
     }
 
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree) {
-        this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay));
+        this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardGame, cardToPlay));
     }
 
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
-                            Collection<FacilityCard> destinationOptions) {
-        this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay, destinationOptions));
-    }
-
-    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
-                            MissionCard mission) {
-        this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay, mission));
-    }
-
-
-    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
-                            CardWithCrew facilityCard) {
-        this(cardGame, cardToPlay, forFree, new ReportCardResolver(cardToPlay, facilityCard));
+                            Collection<PhysicalCard> destinationOptions, boolean specialReporting) {
+        this(cardGame, cardToPlay, forFree,
+                new ReportCardResolver(cardGame, cardToPlay, destinationOptions, specialReporting));
     }
 
 
@@ -106,7 +96,7 @@ public class ReportCardAction extends PlayCardAction {
         }
     }
 
-    public void setDestination(FacilityCard card) {
+    public void setDestination(PhysicalCard card) {
         _targetResolver.setDestination(card);
     }
 

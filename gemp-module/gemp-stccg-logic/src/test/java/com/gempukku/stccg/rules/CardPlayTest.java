@@ -5,6 +5,7 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.ST1EGame;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ public class CardPlayTest extends AbstractAtTest {
                                     boolean allowAUCards) throws Exception {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         continuing = builder.addSeedDeckCard("155_022", "Continuing Mission", P1);
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         ams = builder.addSeedDeckCard("109_063", "Assign Mission Specialists", P1);
         builder.addCardToCoreAsSeeded("991_004", "Dummy 1E Unique Warp Core Event", P1);
         if (includeDownloadableCards) {

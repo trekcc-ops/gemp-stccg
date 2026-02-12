@@ -43,13 +43,14 @@ public class SelectAndReportForFreeCardAction extends PlayCardAction {
 
     protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
-        Collection<FacilityCard> eligibleDestinations = new ArrayList<>();
+        Collection<PhysicalCard> eligibleDestinations = new ArrayList<>();
         for (PhysicalCard card : Filters.filter(cardGame, outpostFilter)) {
             if (card instanceof FacilityCard facility) {
                 eligibleDestinations.add(facility);
             }
         }
-        Action action = new ReportCardAction(cardGame, (ReportableCard) selectedCard, true, eligibleDestinations);
+        Action action = new ReportCardAction(cardGame, (ReportableCard) selectedCard, true,
+                eligibleDestinations, true);
         setPlayCardAction(action);
         cardGame.getActionsEnvironment().addActionToStack(getPlayCardAction());
     }
@@ -80,7 +81,7 @@ public class SelectAndReportForFreeCardAction extends PlayCardAction {
     }
 
     @JsonIgnore
-    public Collection<? extends PhysicalCard> getSelectableReportables(DefaultGame cardGame) {
+    public Collection<? extends PhysicalCard> getSelectableCardsToPlay(DefaultGame cardGame) {
         return _cardToPlayTarget.getSelectableCards(cardGame);
     }
 

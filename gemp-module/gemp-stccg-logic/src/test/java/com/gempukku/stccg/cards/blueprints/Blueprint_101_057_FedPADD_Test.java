@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
         padd = builder.addCardInHand("101_057", "Federation PADD", P1, EquipmentCard.class);
         padd2 = builder.addCardInHand("101_057", "Federation PADD", P1, EquipmentCard.class);
         picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
@@ -38,7 +39,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
         initializeGame();
 
         assertEquals(8, picard.getCunning(_game));
-        reportCard(P1, padd, outpost);
+        playCard(P1, padd);
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, padd));
         assertEquals(10, picard.getCunning(_game));
         assertEquals(8, opposingPicard.getCunning(_game));

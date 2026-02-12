@@ -86,7 +86,7 @@ public class Blueprint_101_104_FedOutpost_Test extends AbstractAtTest {
         seedFacility(P1, outpost1);
         selectCard(P1, excavation);
         assertFalse(outpost2.isInPlay());
-        playFacility(P1, outpost2);
+        playCard(P1, outpost2);
         CardsSelectionDecision decision = (CardsSelectionDecision) _game.getAwaitingDecision(P1);
         List<? extends PhysicalCard> selectableCards = decision.getSelectableCards();
         assertFalse(selectableCards.contains(noEngineerMission)); // no ENGINEER here
@@ -99,7 +99,7 @@ public class Blueprint_101_104_FedOutpost_Test extends AbstractAtTest {
         assertTrue(outpost2.isAtSameLocationAsCard(gammaMission));
 
         // Can't play another facility because the normal card play has been used
-        assertThrows(DecisionResultInvalidException.class, () -> playFacility(P1, outpost3));
+        assertThrows(DecisionResultInvalidException.class, () -> playCard(P1, outpost3));
     }
 
 }

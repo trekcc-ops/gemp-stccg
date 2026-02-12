@@ -40,17 +40,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
             }
 
             final Phase phase = cardGame.getGameState().getCurrentPhase();
-            if (phase == Phase.SEED_DOORWAY) {
-                for (PhysicalCard card : cardsInHand) {
-                    ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
-                    for (TopLevelSelectableAction action : stCard.createSeedCardActions(cardGame)) {
-                        if (action != null && action.canBeInitiated(cardGame)) {
-                            result.add(action);
-                        }
-                    }
-                }
-                return result;
-            } else if (phase == Phase.SEED_MISSION && !player.getMissionsPile().isEmpty() && isCurrentPlayer) {
+            if (phase == Phase.SEED_MISSION && !player.getMissionsPile().isEmpty() && isCurrentPlayer) {
                 CardPile<PhysicalCard> missionsPile = player.getMissionsPile();
                 if (missionsPile.getTopCard() instanceof MissionCard missionCard) {
                     result.add(new SeedMissionCardAction(cardGame, missionCard));

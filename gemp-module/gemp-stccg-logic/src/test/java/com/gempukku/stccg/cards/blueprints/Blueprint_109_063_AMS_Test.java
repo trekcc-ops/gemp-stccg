@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -29,7 +30,7 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
         ams = builder.addSeedDeckCard("109_063", "Assign Mission Specialists", P1);
         tarses = builder.addDrawDeckCard("101_236", "Simon Tarses", P1);
         wallace = builder.addDrawDeckCard("101_203", "Darian Wallace", P1);
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         builder.setPhase(Phase.SEED_FACILITY);
         builder.startGame();
     }
@@ -41,7 +42,7 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
         seedCard(P1, ams);
         assertTrue(ams.isInPlay());
-        selectFirstAction(P1);
+        useGameText(ams, P1);
         assertNotNull(_game.getAwaitingDecision(P1));
 
         List<PhysicalCard> specialists = List.of(tarses, wallace);

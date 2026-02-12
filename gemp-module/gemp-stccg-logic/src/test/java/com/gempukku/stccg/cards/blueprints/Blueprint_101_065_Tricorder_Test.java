@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -24,7 +25,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         tricorder = builder.addCardInHand("101_065", "Tricorder", P1, EquipmentCard.class);
         geordi = builder.addCardAboardShipOrFacility("101_212", "Geordi La Forge", P1, outpost, PersonnelCard.class);
         tamal = builder.addCardAboardShipOrFacility("172_031", "Tamal", P1, outpost, PersonnelCard.class);
@@ -41,7 +42,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         assertFalse(deanna.hasSkill(SkillName.SCIENCE, _game));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.SCIENCE));
         assertEquals(1, tamal.getSkillLevel(_game, SkillName.SCIENCE));
-        reportCard(P1, tricorder, outpost);
+        playCard(P1, tricorder);
 
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(tricorder, geordi, tamal, deanna));
 
