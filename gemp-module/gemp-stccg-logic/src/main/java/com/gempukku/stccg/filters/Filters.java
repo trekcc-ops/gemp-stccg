@@ -50,13 +50,14 @@ public class Filters {
     public static final CardFilter active = new ActiveCardFilter();
     public static final CardFilter any = new AnyCardFilter();
     public static final CardFilter Bajoran = Filters.or(Affiliation.BAJORAN, Species.BAJORAN);
+    public static final CardFilter Cardassian = Filters.or(Affiliation.CARDASSIAN, Species.CARDASSIAN);
     public static final CardFilter controllerControlsMatchingPersonnelAboard =
             new ControllerControlsMatchingPersonnelAboardFilter();
     public static final CardFilter equipment = Filters.or(CardType.EQUIPMENT);
     public static final CardFilter exposedShip = new ExposedShipFilter();
     public static final CardFilter facility = Filters.or(CardType.FACILITY);
     public static final CardFilter Ferengi = Filters.or(Affiliation.FERENGI, Species.FERENGI);
-    public static final CardFilter hologram = Filters.or(Species.HOLOGRAM);
+    public static final CardFilter hologram = Filters.changeToFilter(Species.HOLOGRAM);
     public static final CardFilter inPlay = new InPlayFilter();
     public static final CardFilter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
     public static final CardFilter personnel = Filters.or(CardType.PERSONNEL);

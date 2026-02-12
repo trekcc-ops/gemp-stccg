@@ -167,12 +167,13 @@ public class GameTestBuilder {
         }
         String facilityBlueprintId = switch(affiliation) {
             case BAJORAN -> "112_078";
+            case CARDASSIAN -> "112_080";
             case FEDERATION -> "101_104";
             case FERENGI -> "117_030";
             case KLINGON -> "101_105";
             case NON_ALIGNED -> "111_009";
             case ROMULAN -> "101_106";
-            case BORG, CARDASSIAN, DOMINION, HIROGEN, KAZON, NEUTRAL, STARFLEET, VIDIIAN, VULCAN, XINDI ->
+            case BORG, DOMINION, HIROGEN, KAZON, NEUTRAL, STARFLEET, VIDIIAN, VULCAN, XINDI ->
                     throw new CardNotFoundException("Could not find blueprint for outpost of affiliation " + affiliation);
         };
         return addFacility(facilityBlueprintId, ownerName, _missions.getFirst());
