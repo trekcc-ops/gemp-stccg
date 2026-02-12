@@ -129,7 +129,6 @@ public class Filters {
         return highestCards;
     }
 
-
     public static Collection<PhysicalCard> filterCardsInPlay(DefaultGame game, Filterable... filters) {
         CardFilter filter = Filters.and(filters);
         Collection<PhysicalCard> cards = game.getAllCardsInPlay();

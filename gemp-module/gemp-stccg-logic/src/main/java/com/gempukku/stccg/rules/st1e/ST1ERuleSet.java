@@ -2,10 +2,7 @@ package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
-import com.gempukku.stccg.cards.physicalcard.CardWithCompatibility;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -27,6 +24,7 @@ import com.gempukku.stccg.rules.generic.RuleSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class ST1ERuleSet extends RuleSet<ST1EGame> {
 
@@ -162,5 +160,21 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
         }
         return false;
     }
+
+    public Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCard(
+            ReportableCard reportingCard, ST1EGame cardGame, boolean specialReporting
+    ) {
+        return PlayCardDestinationRules.getDestinationAndAffiliationMapForReportingCards(
+                reportingCard, cardGame, specialReporting);
+    }
+
+    public Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCard(
+            ReportableCard reportingCard, ST1EGame cardGame, Collection<PhysicalCard> eligibleDestinations,
+            boolean specialReporting
+    ) {
+        return PlayCardDestinationRules.getDestinationAndAffiliationMapForReportingCards(
+                reportingCard, cardGame, eligibleDestinations, specialReporting);
+    }
+
 
 }

@@ -49,7 +49,8 @@ public class SelectAndReportForFreeCardAction extends PlayCardAction {
                 eligibleDestinations.add(facility);
             }
         }
-        Action action = new ReportCardAction(cardGame, (ReportableCard) selectedCard, true, eligibleDestinations);
+        Action action = new ReportCardAction(cardGame, (ReportableCard) selectedCard, true,
+                eligibleDestinations, true);
         setPlayCardAction(action);
         cardGame.getActionsEnvironment().addActionToStack(getPlayCardAction());
     }

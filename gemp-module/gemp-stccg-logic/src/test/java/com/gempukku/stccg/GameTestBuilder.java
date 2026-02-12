@@ -130,7 +130,8 @@ public class GameTestBuilder {
     public ShipCard addShipInSpace(String shipBlueprintId, String cardTitle, String ownerName, MissionCard mission)
             throws CardNotFoundException, InvalidGameOperationException {
         ShipCard shipCard = addCardToGame(shipBlueprintId, cardTitle, ownerName, ShipCard.class);
-        ReportCardAction playAction = new ReportCardAction(_game, shipCard, true, mission);
+        ReportCardAction playAction = new ReportCardAction(_game, shipCard, true);
+        playAction.setDestination(mission);
         playAction.setAffiliation(shipCard.getCurrentAffiliations().getFirst());
         executeAction(playAction);
         assertTrue(shipCard.isInPlay());
@@ -146,7 +147,8 @@ public class GameTestBuilder {
         if (!location.isPlanet()) {
             throw new InvalidGameOperationException("Location is not a planet");
         }
-        ReportCardAction playAction = new ReportCardAction(_game, cardToAdd, true, mission);
+        ReportCardAction playAction = new ReportCardAction(_game, cardToAdd, true);
+        playAction.setDestination(mission);
         if (cardToAdd instanceof AffiliatedCard affiliatedCard) {
             playAction.setAffiliation(affiliatedCard.getCurrentAffiliations().getFirst());
         }
@@ -218,7 +220,8 @@ public class GameTestBuilder {
             throws CardNotFoundException, InvalidGameOperationException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
 
-        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, cardWithCrew);
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false);
+        reportAction.setDestination(cardWithCrew);
 
         if (cardToAdd instanceof AffiliatedCard affiliatedCard) {
             reportAction.setAffiliation(affiliatedCard.getCurrentAffiliations().getFirst());
@@ -235,7 +238,8 @@ public class GameTestBuilder {
             throws CardNotFoundException, InvalidGameOperationException {
         ShipCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, ShipCard.class);
 
-        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false, facility);
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false);
+        reportAction.setDestination(facility);
         reportAction.setAffiliation(cardToAdd.getCurrentAffiliations().getFirst());
         executeAction(reportAction);
 

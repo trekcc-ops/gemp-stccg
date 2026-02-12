@@ -21,15 +21,16 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
     private PersonnelCard crosis;
     private PersonnelCard betor;
     private PhysicalCard lursa;
+    private FacilityCard outpost;
+    private FacilityCard outpost2;
 
     private void initializeGame(Phase startingPhase, boolean lursaInPlayAlready)
             throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         _mission = builder.addMission("101_170", "Investigate Raid", P1);
-        FacilityCard outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        builder.addFacility("101_104", P2);
-        builder.addSeedCardUnderMission("101_015", "Armus: Skin of Evil", P2, _mission);
+        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost2 = builder.addFacility("101_104", P2);
         crosis = builder.addCardInHand("163_044", "Lieutenant Crosis", P2, PersonnelCard.class);
         lursa = builder.addDrawDeckCard("101_280", "Lursa", P1);
         if (lursaInPlayAlready) {
@@ -48,6 +49,21 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
         selectCard(P1, _mission);
         assertTrue(lursa.isInPlay());
     }
+
+    @Test
+    public void cannotDownloadIfIncompatibleTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
+        initializeGame(Phase.EXECUTE_ORDERS, false);
+        useGameText(betor, P1);
+        assertThrows(DecisionResultInvalidException.class, () -> selectCard(P1, outpost));
+    }
+
+    @Test
+    public void canDownloadToOpponentsOutpostTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
+        initializeGame(Phase.EXECUTE_ORDERS, false);
+        useGameText(betor, P1);
+        selectCard(P1, outpost2);
+    }
+
 
     @Test
     public void downloadDuringCardPlayTest()

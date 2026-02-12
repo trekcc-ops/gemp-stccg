@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.CardWithCompatibility;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -72,8 +73,14 @@ public class ReportMultipleCardsResolver implements ActionCardResolver {
                 if (personnel1.isCompatibleWith(stGame, facility) && personnel2.isCompatibleWith(stGame, facility)) {
                     return true;
                 }
-            } else if (personnel1.canReportToFacility(facility, stGame) && personnel2.canReportToFacility(facility, stGame)) {
-                return true;
+            } else {
+                Map<PhysicalCard, List<Affiliation>> destinationMap =
+                        stGame.getRules().getDestinationAndAffiliationMapForReportingCard(personnel1, stGame, List.of(facility), true);
+                Map<PhysicalCard, List<Affiliation>> destinationMap2 =
+                        stGame.getRules().getDestinationAndAffiliationMapForReportingCard(personnel2, stGame, List.of(facility), true);
+                if (destinationMap.containsKey(facility) && destinationMap2.containsKey(facility)) {
+                    return true;
+                }
             }
         }
         return false;

@@ -46,7 +46,7 @@ public class DownloadReportableCardToDestinationAction extends ActionWithSubActi
                 Iterables.getOnlyElement(cardsToDownload) instanceof ReportableCard reportable) {
             Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame, _actionContext);
             Collection<PhysicalCard> eligibleDestinations = new ArrayList<>(Filters.filter(cardGame, outpostFilter));
-            Action _playCardAction = new ReportCardAction(cardGame, reportable, true, eligibleDestinations);
+            Action _playCardAction = new ReportCardAction(cardGame, reportable, true, eligibleDestinations, true);
             cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
             setAsSuccessful();
         } else {

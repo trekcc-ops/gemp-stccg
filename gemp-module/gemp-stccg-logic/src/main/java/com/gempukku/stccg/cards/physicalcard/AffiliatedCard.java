@@ -6,7 +6,6 @@ import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Quadrant;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
@@ -18,6 +17,10 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
 
     protected List<Affiliation> _currentAffiliations = new ArrayList<>();
     private Affiliation _defaultCardArtAffiliation;
+
+    // proxyAffiliation is only used to temporarily assign affiliation when doing compatibility checks
+    @JsonIgnore
+    private Affiliation _proxyAffiliation;
 
     AffiliatedCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
@@ -45,7 +48,11 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
 
     @JsonProperty("affiliation")
     public List<Affiliation> getCurrentAffiliations() {
-        return _currentAffiliations;
+        if (_proxyAffiliation == null) {
+            return _currentAffiliations;
+        } else {
+            return List.of(_proxyAffiliation);
+        }
     }
     
 
@@ -92,32 +99,9 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
     }
 
     public boolean matchesAffiliationOf(AffiliatedCard otherCard) {
-        for (Affiliation affiliation : _currentAffiliations) {
+        for (Affiliation affiliation : getCurrentAffiliations()) {
             if (otherCard.isAffiliation(affiliation)) {
                 return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean canReportToCrewAsAffiliation(CardWithCrew cardWithCrew, Affiliation affiliation, ST1EGame stGame) {
-            /* Normally, Personnel, Ship, and Equipment cards play at a usable, compatible outpost or headquarters
-                in their native quadrant. */
-        if (this instanceof ReportableCard) {
-            // TODO - Does not perform any compatibility checks other than affiliation
-            if (cardWithCrew instanceof ShipCard shipCard) {
-                Collection<CardWithCompatibility> otherCards = new ArrayList<>();
-                otherCards.add(shipCard);
-                otherCards.addAll(shipCard.getPersonnelInCrew(stGame));
-                return isCompatibleWithOtherCardsAsAffiliation(affiliation, otherCards, stGame);
-            } else if (cardWithCrew instanceof FacilityCard facilityCard) {
-                if ((facilityCard.getFacilityType() == FacilityType.OUTPOST || facilityCard.getFacilityType() == FacilityType.HEADQUARTERS) &&
-                        facilityCard.isUsableBy(getOwnerName()) && facilityCard.isInQuadrant(stGame, getNativeQuadrant())) {
-                    Collection<CardWithCompatibility> otherCards = new ArrayList<>();
-                    otherCards.add(facilityCard);
-                    otherCards.addAll(cardWithCrew.getPersonnelInCrew(stGame));
-                    return isCompatibleWithOtherCardsAsAffiliation(affiliation, otherCards, stGame);
-                }
             }
         }
         return false;
@@ -142,7 +126,7 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
 
 
     public boolean isAffiliation(Affiliation affiliation) {
-        return _currentAffiliations.contains(affiliation);
+        return getCurrentAffiliations().contains(affiliation);
     }
 
     @Override
@@ -150,4 +134,11 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         return _blueprint.getCardType() == CardType.SHIP || _blueprint.getCardType() == CardType.FACILITY; // TODO - Cards with no transporters
     }
 
+    public void setProxyAffiliation(Affiliation proxyAffiliation) {
+        _proxyAffiliation = proxyAffiliation;
+    }
+
+    public void clearProxyAffiliation() {
+        _proxyAffiliation = null;
+    }
 }
