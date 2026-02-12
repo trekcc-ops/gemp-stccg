@@ -160,7 +160,7 @@ CREATE TABLE `league` (
   `properties` JSON COLLATE utf8_bin NOT NULL,
   `start` TIMESTAMP NOT NULL,
   `end` TIMESTAMP NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`league_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -178,7 +178,7 @@ CREATE TABLE `league_match` (
   `winner` varchar(45) COLLATE utf8_bin NOT NULL,
   `loser` varchar(45) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `league_match_type` (`league_type`)
+  KEY `league_match_type` (`league_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -195,7 +195,7 @@ CREATE TABLE `league_participation` (
   `player_name` varchar(45) COLLATE utf8_bin NOT NULL,
   `join_ip` varchar(45) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `league_participation_type` (`league_type`)
+  KEY `league_participation_type` (`league_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
