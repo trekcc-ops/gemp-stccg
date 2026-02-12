@@ -609,6 +609,11 @@ export default class GempLotrDeckBuildingUI {
                 that.deckModified(false);
                 alert("Deck was saved.  Refresh the Game Hall to see it!");
             }, {
+                "200":function () {
+                    // work around server sending 200 but invalid XML
+                    that.deckModified(false);
+                    alert("Deck was saved.  Refresh the Game Hall to see it!");
+                },
                 "400":function () {
                     alert("Invalid deck format.");
                 }
