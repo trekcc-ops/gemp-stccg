@@ -421,6 +421,18 @@ export default class GempLotrDeckBuildingUI {
                                                 }
 
                                                 that.loadDeckList();
+                                            },
+                                            {
+                                                "200":function () {
+                                                    // work around server sending 200 but invalid XML
+                                                    if (that.deckName === deckNames[i]) {
+                                                        that.deckName = null;
+                                                        $("#editingDeck").text("New deck");
+                                                        that.clearDeck();
+                                                    }
+
+                                                    that.loadDeckList();
+                                                }
                                             });
                                 }
                             };
