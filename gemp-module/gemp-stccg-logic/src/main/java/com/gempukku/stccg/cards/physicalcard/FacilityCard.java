@@ -103,11 +103,15 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
         return _hullIntegrity;
     }
 
-    public float getWeapons(DefaultGame cardGame) {
+    public Integer getRange(DefaultGame cardGame) {
+        return cardGame.getAttribute(this, CardAttribute.RANGE);
+    }
+
+    public Integer getWeapons(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.WEAPONS);
     }
 
-    public float getShields(DefaultGame cardGame) {
+    public Integer getShields(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.SHIELDS);
     }
 

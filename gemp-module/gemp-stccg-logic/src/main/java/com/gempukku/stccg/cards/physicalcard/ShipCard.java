@@ -155,16 +155,19 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
         return icons.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
+    public Integer getRange(DefaultGame cardGame) {
+        return cardGame.getAttribute(this, CardAttribute.RANGE);
+    }
+
     public int getFullRange(DefaultGame cardGame) {
         return (int) cardGame.getAttribute(this, CardAttribute.RANGE);
     }
 
-
-    public float getWeapons(DefaultGame cardGame) {
+    public Integer getWeapons(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.WEAPONS);
     }
 
-    public float getShields(DefaultGame cardGame) {
+    public Integer getShields(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.SHIELDS);
     }
 

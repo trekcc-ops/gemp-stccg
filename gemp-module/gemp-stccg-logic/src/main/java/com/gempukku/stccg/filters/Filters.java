@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameLocation;
@@ -338,5 +339,9 @@ public class Filters {
 
     public static CardFilter presentWithThisCard(int thisCardId) {
         return new PresentWithCardFilter(thisCardId);
+    }
+
+    public static CardFilter integrityGreaterThan(int integrityAmount) {
+        return new AttributeFilter(CardAttribute.INTEGRITY, ComparatorType.GREATER_THAN, integrityAmount);
     }
 }

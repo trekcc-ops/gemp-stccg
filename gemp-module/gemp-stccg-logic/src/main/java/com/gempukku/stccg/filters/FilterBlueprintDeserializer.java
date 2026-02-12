@@ -219,6 +219,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             FilterBlueprint engineerBlueprint = parseSTCCGFilter(engineerFilter);
             return new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);
         }
+        if (value.startsWith("integrity>")) {
+            int integrityAmount = Integer.valueOf(value.substring("integrity>".length()));
+            return (cardGame, actionContext) -> Filters.integrityGreaterThan(integrityAmount);
+        }
         if (value.startsWith("affiliation=")) {
             String affiliationName = value.substring(12);
             Affiliation affiliation = Affiliation.findAffiliation(affiliationName);

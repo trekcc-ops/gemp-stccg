@@ -8,8 +8,10 @@ public interface CardWithHullIntegrity extends PhysicalCard {
 
     void applyDamage(Integer damageAmount);
     int getHullIntegrity();
-    float getShields(DefaultGame cardGame);
-    float getWeapons(DefaultGame cardGame);
+    Integer getShields(DefaultGame cardGame);
+    Integer getWeapons(DefaultGame cardGame);
+    Integer getRange(DefaultGame cardGame);
+
     void stop();
 
     Collection<PersonnelCard> getPersonnelAboard(DefaultGame cardGame);
