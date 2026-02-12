@@ -19,7 +19,7 @@ public interface GameLocation {
     int getDistanceToLocation(ST1EGame cardGame, GameLocation location, Player calculatingPlayer) 
             throws InvalidGameLogicException;
     
-    String getLocationName() throws InvalidGameLogicException;
+    String getLocationName();
 
     boolean isHomeworld();
 

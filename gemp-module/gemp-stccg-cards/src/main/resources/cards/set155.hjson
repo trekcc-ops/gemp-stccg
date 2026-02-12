@@ -1039,7 +1039,41 @@
             lore: Follower of Kahless. Representative of young male Klingons eager to study the teachings of Kahless at the sacred Boreth monastery.
             species: klingon
             gender: male
-            skill-box: "[*] Geology [*] Navigation [*] Youth [DL] Lower Decks (if present with Kahless or on Boreth)"
+            skill-box: {
+                skill-dots: 3
+                skills: [
+                    {
+                        type: regular
+                        name: Geology
+                    }
+                    {
+                        type: regular
+                        name: Navigation
+                    }
+                    {
+                        type: regular
+                        name: Youth
+                    }
+                    {
+                        type: specialDownload
+                        text: "Lower Decks (if present with Kahless or on Boreth)."
+                        downloadCardFilter: "name(Lower Decks)"
+                        ifCondition: {
+                            type: or
+                            conditions: [
+                                {
+                                    type: thisCardPresentWithCard
+                                    otherCardFilter: name(Kahless)
+                                }
+                                {
+                                    type: thisCardIsOnPlanet
+                                    planetFilter: locationName(Boreth)
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
             integrity: 6
             cunning: 6
             strength: 7

@@ -9,7 +9,9 @@ import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = OrRequirement.class, name = "or"),
         @JsonSubTypes.Type(value = ThisCardIsFacingDilemmaRequirement.class, name = "thisCardIsFacingDilemma"),
+        @JsonSubTypes.Type(value = ThisCardIsOnPlanetRequirement.class, name = "thisCardIsOnPlanet"),
         @JsonSubTypes.Type(value = CardInPlayRequirement.class, name = "cardInPlay"),
         @JsonSubTypes.Type(value = MiscRequirement.class, names = {"cardsindeckcount", "cardsinhandmorethan",
     "hascardindiscard", "hascardinhand", "hascardinplaypile", "lasttribbleplayed", "nextTribbleInSequence",

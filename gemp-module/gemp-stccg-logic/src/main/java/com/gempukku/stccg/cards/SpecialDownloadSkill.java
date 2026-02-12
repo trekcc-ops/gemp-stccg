@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.blueprints.UsageLimitBlueprint;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardTitleFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.requirement.Requirement;
 
 public class SpecialDownloadSkill extends Skill {
 
@@ -15,10 +16,14 @@ public class SpecialDownloadSkill extends Skill {
 
     @JsonCreator
     private SpecialDownloadSkill(@JsonProperty("downloadCardFilter") FilterBlueprint filterBlueprint,
+                                 @JsonProperty("ifCondition") Requirement ifCondition,
                                  @JsonProperty("text") String skillText) throws InvalidCardDefinitionException {
         _downloadActionBlueprint = new DownloadCardActionBlueprint("anywhereAtThisLocation",
                 new UsageLimitBlueprint(UsageLimitBlueprint.LimitType.perGame, 1, false),
                 filterBlueprint);
+        if (ifCondition != null) {
+            _downloadActionBlueprint.addRequirement(ifCondition);
+        }
     }
 
     public SpecialDownloadSkill(String text) throws InvalidCardDefinitionException {
