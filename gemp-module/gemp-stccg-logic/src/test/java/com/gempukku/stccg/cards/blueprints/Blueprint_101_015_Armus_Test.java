@@ -46,8 +46,7 @@ public class Blueprint_101_015_Armus_Test extends AbstractAtTest {
         AwayTeam awayTeam = _game.getGameState().getAwayTeamForCard(picard);
         assertTrue(awayTeam.isOnSurface(_mission.getLocationId()));
 
-        // Attempt mission
-        attemptMission(P1, awayTeam, _mission);
+        attemptMission(P1, _mission);
 
         // Confirm that Picard was discarded
         assertEquals(Zone.DISCARD, picard.getZone());

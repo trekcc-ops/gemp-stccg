@@ -42,7 +42,7 @@ public class Blueprint_101_065_Tricorder_Test extends AbstractAtTest {
         assertFalse(deanna.hasSkill(SkillName.SCIENCE, _game));
         assertEquals(0, geordi.getSkillLevel(_game, SkillName.SCIENCE));
         assertEquals(1, tamal.getSkillLevel(_game, SkillName.SCIENCE));
-        reportCard(P1, tricorder, outpost);
+        playCard(P1, tricorder);
 
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(tricorder, geordi, tamal, deanna));
 

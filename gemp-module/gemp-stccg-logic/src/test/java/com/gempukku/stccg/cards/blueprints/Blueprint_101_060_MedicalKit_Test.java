@@ -41,7 +41,7 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
 
         assertEquals(0, picard.getSkillLevel(_game, SkillName.MEDICAL));
         assertEquals(1, taris.getSkillLevel(_game, SkillName.MEDICAL));
-        reportCard(P1, medicalKit, outpost);
+        playCard(P1, medicalKit);
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, medicalKit, taris));
         assertEquals(1, picard.getSkillLevel(_game, SkillName.MEDICAL));
         assertEquals(2, taris.getSkillLevel(_game, SkillName.MEDICAL));

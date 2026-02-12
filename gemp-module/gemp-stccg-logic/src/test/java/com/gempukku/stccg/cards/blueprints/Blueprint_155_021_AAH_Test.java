@@ -85,7 +85,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
             assertFalse(getSelectableCards(P1).contains(card));
         }
 
-        // Select a card for normal card play
+        // Select a card for card play
         selectCard(P1, lopez1);
         assertTrue(lopez1.isInPlay());
 

@@ -33,7 +33,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         _maglock = builder.addSeedCardUnderMission("109_010", "Maglock", P2, _mission);
         builder.setPhase(Phase.EXECUTE_ORDERS);
-        runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
+        runabout = builder.addShipInSpace("101_331", "Runabout", P1, _mission);
         data = builder.addCardAboardShipOrFacility("101_204", "Data", P1, runabout, PersonnelCard.class);
         troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, runabout, PersonnelCard.class);
         builder.addCardAboardShipOrFacility("101_202", "Christopher Hobson", P1, runabout, PersonnelCard.class);
@@ -52,10 +52,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         beamCards(P1, runabout, List.of(data), outpost);
         assertFalse(runabout.hasCardInCrew(data));
 
-        undockShip(P1, runabout);
-        assertFalse(runabout.isDocked());
-
-        attemptMission(P1, runabout, _mission);
+        attemptMission(P1, _mission);
         for (PersonnelCard personnel : runabout.getAttemptingPersonnel(_game)) {
             assertTrue(personnel.isStopped());
         }
@@ -74,10 +71,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
         beamCards(P1, runabout, List.of(troi), outpost);
         assertFalse(runabout.hasCardInCrew(troi));
 
-        undockShip(P1, runabout);
-        assertFalse(runabout.isDocked());
-
-        attemptMission(P1, runabout, _mission);
+        attemptMission(P1, _mission);
         for (PersonnelCard personnel : runabout.getAttemptingPersonnel(_game)) {
             assertFalse(personnel.isStopped());
         }

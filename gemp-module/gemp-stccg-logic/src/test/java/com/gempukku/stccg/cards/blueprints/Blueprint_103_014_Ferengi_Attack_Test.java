@@ -54,7 +54,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
             assertFalse(outpost.hasCardInCrew(card));
         }
 
-        attemptMission(P1, _game.getGameState().getAwayTeamForCard(troi), _mission);
+        attemptMission(P1, _mission);
         assertNotNull(_game.getAwaitingDecision(P2));
         assertInstanceOf(ArbitraryCardsSelectionDecision.class, _game.getAwaitingDecision(P2));
 

@@ -9,9 +9,7 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,12 +34,12 @@ public class MisSeedTest extends AbstractAtTest {
     }
 
     @Test
-    public void misSeedTest() throws DecisionResultInvalidException, InvalidGameLogicException,
-            CardNotFoundException, InvalidGameOperationException, PlayerNotFoundException {
+    public void misSeedTest()
+            throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame();
 
         beamCard(P1, outpost, picard, mission);
-        attemptMission(P1, _game.getGameState().getAwayTeamForCard(picard), mission);
+        attemptMission(P1, mission);
 
         // Confirm that mission was not solved and Simon Tarses was removed from play
         assertEquals(Zone.REMOVED, tarses.getZone());

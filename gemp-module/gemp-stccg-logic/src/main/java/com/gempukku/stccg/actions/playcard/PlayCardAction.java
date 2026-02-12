@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
@@ -15,6 +16,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.Collection;
 import java.util.List;
 
 public class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
@@ -85,6 +87,11 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
+    @JsonIgnore
+    public Collection<? extends PhysicalCard> getSelectableCardsToPlay(DefaultGame cardGame) {
+        return List.of(_cardEnteringPlay);
+    }
+
     protected void putCardIntoPlay(DefaultGame cardGame) throws PlayerNotFoundException {
         _cardEnteringPlay.removeFromCardGroup(cardGame);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
@@ -116,4 +123,5 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
     public void removeNormalCardPlayCost() {
         _costs.removeIf(cost -> cost instanceof UseNormalCardPlayAction);
     }
+
 }

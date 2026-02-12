@@ -41,8 +41,8 @@ public class Blueprint_155_079_CaptainWorf_Test extends AbstractAtTest {
         assertTrue(personnelAttributesAre(worf, List.of(8, 6, 10)));
         assertTrue(personnelAttributesAre(kehleyr1, List.of(7, 8, 7)));
         assertTrue(personnelAttributesAre(kehleyr2, List.of(8, 7, 7)));
+        playCard(P1, worf);
 
-        reportCard(P1, worf, outpost);
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr1));
         assertTrue(_game.getGameState().getAllCardsInPlay().contains(kehleyr2));
         assertTrue(_game.getGameState().cardsArePresentWithEachOther(kehleyr1, worf));

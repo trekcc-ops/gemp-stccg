@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
-import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -44,14 +43,14 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Beam to the planet and attempt mission
         beamCard(P1, outpost, worf, _mission);
-        attemptMission(P1, _game.getGameState().getAwayTeamForCard(worf), _mission);
+        attemptMission(P1, _mission);
 
         // Confirm that Worf was killed by Armus
         assertEquals(Zone.DISCARD, worf.getZone());
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        selectAction(UseGameTextAction.class, deathYell, P1);
+        useGameText(deathYell, P1);
 
         Player player1 = _game.getPlayer(P1);
 

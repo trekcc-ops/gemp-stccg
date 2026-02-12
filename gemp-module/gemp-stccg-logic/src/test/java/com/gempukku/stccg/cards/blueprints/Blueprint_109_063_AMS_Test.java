@@ -42,7 +42,7 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
         seedCard(P1, ams);
         assertTrue(ams.isInPlay());
-        selectFirstAction(P1);
+        useGameText(ams, P1);
         assertNotNull(_game.getAwaitingDecision(P1));
 
         List<PhysicalCard> specialists = List.of(tarses, wallace);

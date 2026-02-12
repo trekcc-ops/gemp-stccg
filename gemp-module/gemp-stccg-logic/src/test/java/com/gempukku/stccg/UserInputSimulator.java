@@ -2,15 +2,16 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
-import com.gempukku.stccg.actions.movecard.UndockAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToSeedCardStackAction;
 import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
 import com.gempukku.stccg.actions.playcard.*;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
-import com.gempukku.stccg.cards.AttemptingUnit;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -23,8 +24,8 @@ import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +53,28 @@ public interface UserInputSimulator {
         if (choice == null) {
             throw new DecisionResultInvalidException("Could not find game text action");
         }
+    }
+
+
+    private void selectAction(String playerId, Action action)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
+        if (decision instanceof ActionSelectionDecision actionDecision) {
+            actionDecision.decisionMade(action);
+            getGame().removeDecision(playerId);
+            getGame().carryOutPendingActionsUntilDecisionNeeded();
+        }
+    }
+    
+    default InitiateShipBattleAction initiateBattle(String initiatingPlayerName)
+            throws InvalidGameOperationException, DecisionResultInvalidException {
+        List<InitiateShipBattleAction> selectableActions =
+                getSelectableActionsOfClass(initiatingPlayerName, InitiateShipBattleAction.class);
+        for (InitiateShipBattleAction action : selectableActions) {
+            selectAction(initiatingPlayerName, action);
+            return action;
+        }
+        throw new DecisionResultInvalidException("Could not initiate battle");
     }
 
     default <T extends Action> T selectAction(Class<T> clazz, PhysicalCard card, String playerId)
@@ -126,28 +149,33 @@ public interface UserInputSimulator {
         }
     }
 
-    default void seedCard(String playerId, PhysicalCard cardToSeed) 
-            throws DecisionResultInvalidException, InvalidGameOperationException {
-        Action choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
+    default <T extends Action> List<T> getSelectableActionsOfClass(String playerName, Class<T> clazz) {
+        List<T> result = new ArrayList<>();
+        AwaitingDecision decision = getGame().getAwaitingDecision(playerName);
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
-                if (action instanceof SeedCardAction seedAction &&
-                        seedAction.getCardEnteringPlay() == cardToSeed)
-                    choice = seedAction;
-                if (action instanceof SeedOutpostAction seedAction &&
-                        seedAction.getCardEnteringPlay() == cardToSeed)
-                    choice = seedAction;
+                if (clazz.isAssignableFrom(action.getClass())) {
+                    result.add((T) action);
+                }
             }
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
         }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+        return result;
     }
 
-    default void chooseOnlyAction(String playerId) throws DecisionResultInvalidException, InvalidGameOperationException {
+    default Action seedCard(String playerId, PhysicalCard cardToSeed)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        List<SeedCardAction> selectableActions = getSelectableActionsOfClass(playerId, SeedCardAction.class);
+        for (SeedCardAction action : selectableActions) {
+            if (action.getCardEnteringPlay() == cardToSeed) {
+                selectAction(playerId, action);
+                return action;
+            }
+        }
+        throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+    }
+
+    default void chooseOnlyAction(String playerId)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
@@ -163,42 +191,19 @@ public interface UserInputSimulator {
     }
 
 
-    default void attemptMission(String playerId, AttemptingUnit attemptingUnit, MissionCard mission)
-            throws DecisionResultInvalidException, InvalidGameLogicException, InvalidGameOperationException {
-        AttemptMissionAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getLocationId() == mission.getLocationId())
-                    choice = attemptAction;
+    default Action attemptMission(String playerId, MissionCard mission)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        List<AttemptMissionAction> selectableActions =
+                getSelectableActionsOfClass(playerId, AttemptMissionAction.class);
+        for (AttemptMissionAction action : selectableActions) {
+            if (action.getLocationId() == mission.getLocationId()) {
+                selectAction(playerId, action);
+                return action;
             }
-            choice.setAttemptingUnit(attemptingUnit);
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
         }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to attempt " + mission.getTitle());
+        throw new DecisionResultInvalidException("No valid action to attempt " + mission.getTitle());
     }
 
-    default void attemptMission(String playerId, MissionLocation mission)
-            throws DecisionResultInvalidException, InvalidGameLogicException, InvalidGameOperationException {
-        AttemptMissionAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getLocationId() == mission.getLocationId())
-                    choice = attemptAction;
-            }
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
-        }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to attempt " + mission.getLocationName());
-    }
 
     default void seedMission(MissionCard mission) throws DecisionResultInvalidException,
             InvalidGameOperationException {
@@ -278,24 +283,6 @@ public interface UserInputSimulator {
         }
     }
 
-    default void playFacility(String playerId, PhysicalCard cardToSeed)
-            throws DecisionResultInvalidException, InvalidGameOperationException {
-        PlayFacilityAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof PlayFacilityAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
-                    choice = seedAction;
-                }
-            }
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
-        }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
-    }
-
     default void seedFacility(String playerId, PhysicalCard cardToSeed)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         SeedOutpostAction choice = null;
@@ -333,39 +320,34 @@ public interface UserInputSimulator {
             throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
     }
 
-    default void reportCard(String playerId, PhysicalCard cardToReport, FacilityCard destination)
+    default Action playCard(String playerId, PhysicalCard cardToPlay)
             throws DecisionResultInvalidException, InvalidGameOperationException {
-        ReportCardAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof ReportCardAction reportAction &&
-                        reportAction.getCardEnteringPlay() == cardToReport) {
-                    choice = reportAction;
+        List<PlayCardAction> actions = getSelectableActionsOfClass(playerId, PlayCardAction.class);
+        for (PlayCardAction action : actions) {
+            if (action.getSelectableCardsToPlay(getGame()).contains(cardToPlay)) {
+                if (action instanceof SelectAndReportForFreeCardAction reportAction) {
+                    reportAction.setCardReporting(cardToPlay);
                 }
+                selectAction(playerId, action);
+                return action;
             }
-            choice.setDestination(destination);
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
         }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to report " + cardToReport.getTitle());
+        throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle());
     }
 
-    default void playCard(String playerId, PhysicalCard cardToPlay)
+    default void downloadCard(String playerId, PhysicalCard cardToPlay)
             throws DecisionResultInvalidException, InvalidGameOperationException {
-        PlayCardAction choice = null;
+/*        DownloadCardAction choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
-                if (action instanceof PlayCardAction playCardAction &&
+                if (action instanceof DownloadCardAction playCardAction &&
                         playCardAction.getCardEnteringPlay() == cardToPlay) {
                     choice = playCardAction;
                     break;
                 } else if (
                         action instanceof SelectAndReportForFreeCardAction reportAction &&
-                        reportAction.getSelectableReportables(getGame()).contains(cardToPlay)
+                                reportAction.getSelectableReportables(getGame()).contains(cardToPlay)
                 ) {
                     reportAction.setCardReporting(cardToPlay);
                     choice = reportAction;
@@ -377,72 +359,31 @@ public interface UserInputSimulator {
             getGame().carryOutPendingActionsUntilDecisionNeeded();
         }
         if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle());
-    }
-
-    default void beamCard(String playerId, PhysicalCard cardWithTransporters, ReportableCard cardToBeam,
-                            PhysicalCard destination)
-            throws DecisionResultInvalidException, InvalidGameOperationException {
-        BeamCardsAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof BeamCardsAction beamAction &&
-                        beamAction.getCardUsingTransporters() == cardWithTransporters)
-                    choice = beamAction;
-            }
-            choice.setOrigin(cardWithTransporters);
-            choice.setCardsToMove(Collections.singletonList(cardToBeam));
-            choice.setDestination(destination);
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
-        }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to beam " + cardToBeam.getTitle());
-    }
-
-    default void undockShip(String playerId, ShipCard ship)
-            throws DecisionResultInvalidException, InvalidGameOperationException {
-        UndockAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof UndockAction undockAction &&
-                        undockAction.getCardToMove() == ship)
-                    choice = undockAction;
-            }
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
-        }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to undock " + ship.getTitle());
+            throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle()); */
     }
 
 
-    default void beamCards(String playerId, PhysicalCard cardWithTransporters,
+    default Action beamCards(String playerId, PhysicalCard cardWithTransporters,
                              Collection<? extends ReportableCard> cardsToBeam, PhysicalCard destination)
             throws DecisionResultInvalidException, InvalidGameOperationException {
-        BeamCardsAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof BeamCardsAction beamAction &&
-                        beamAction.getCardUsingTransporters() == cardWithTransporters)
-                    choice = beamAction;
+        List<BeamCardsAction> actions = getSelectableActionsOfClass(playerId, BeamCardsAction.class);
+        for (BeamCardsAction action : actions) {
+            if (action.getCardUsingTransporters() == cardWithTransporters) {
+                action.setOrigin(cardWithTransporters);
+                action.setCardsToMove(cardsToBeam);
+                action.setDestination(destination);
+                selectAction(playerId, action);
+                return action;
             }
-            choice.setOrigin(cardWithTransporters);
-            choice.setCardsToMove(cardsToBeam);
-            choice.setDestination(destination);
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
         }
-        if (choice == null) {
-            throw new DecisionResultInvalidException(
-                    "No valid action to beam " + TextUtils.getConcatenatedCardLinks(cardsToBeam));
-        }
+        throw new DecisionResultInvalidException(
+                "No valid action to beam " + TextUtils.getConcatenatedCardLinks(cardsToBeam));
+    }
+
+    default Action beamCard(String playerId, PhysicalCard cardWithTransporters, ReportableCard cardToBeam,
+                            PhysicalCard destination)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        return beamCards(playerId, cardWithTransporters, List.of(cardToBeam), destination);
     }
 
     default void playerDecided(String player, String answer) throws DecisionResultInvalidException,
@@ -456,24 +397,6 @@ public interface UserInputSimulator {
             throw exp;
         }
         getGame().carryOutPendingActionsUntilDecisionNeeded();
-    }
-
-    default void selectFirstAction(String player) throws DecisionResultInvalidException,
-            InvalidGameOperationException {
-        AwaitingDecision decision = getGame().getAwaitingDecision(player);
-        if (ActionSelectionDecision.class.isAssignableFrom(decision.getClass())) {
-            ActionSelectionDecision actionDecision = (ActionSelectionDecision) decision;
-            getGame().removeDecision(player);
-            try {
-                actionDecision.selectFirstAction();
-            } catch (DecisionResultInvalidException exp) {
-                getGame().sendAwaitingDecision(decision);
-                throw exp;
-            }
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
-        } else {
-            throw new DecisionResultInvalidException();
-        }
     }
 
     private void skipSeedPhase() throws InvalidGameOperationException, DecisionResultInvalidException {

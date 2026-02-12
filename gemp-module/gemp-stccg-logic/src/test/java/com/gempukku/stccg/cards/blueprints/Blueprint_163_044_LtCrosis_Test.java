@@ -58,8 +58,7 @@ public class Blueprint_163_044_LtCrosis_Test extends AbstractAtTest {
         AwayTeam awayTeam = _game.getGameState().getAwayTeamForCard(crosis);
         assertTrue(awayTeam.isOnSurface(_mission.getLocationId()));
 
-        // Attempt mission
-        attemptMission(P1, awayTeam, _mission);
+        attemptMission(P1, _mission);
 
         // Confirm that Crosis was killed; missions are no longer non-aligned
         assertEquals(Zone.DISCARD, crosis.getZone());

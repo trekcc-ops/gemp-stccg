@@ -35,7 +35,7 @@ public class Blueprint_101_058_KlingonDisruptor_Test extends AbstractAtTest {
         initializeGame();
 
         assertEquals(6, picard.getStrength(_game));
-        reportCard(P1, disruptor, outpost);
+        playCard(P1, disruptor);
         assertEquals(8, picard.getStrength(_game));
     }
 }

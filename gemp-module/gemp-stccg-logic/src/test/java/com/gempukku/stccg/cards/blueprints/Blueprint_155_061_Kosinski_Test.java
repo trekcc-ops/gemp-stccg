@@ -63,7 +63,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         assertTrue(dilemmaRequirement.canBeMetBy(team.getAttemptingPersonnel(_game), _game));
 
         // Verify that, in practice, the Away Team failed to resolve the dilemma
-        attemptMission(P1, team, mission);
+        attemptMission(P1, mission);
         assertTrue(mission.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(climb));
         assertFalse(mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
     }

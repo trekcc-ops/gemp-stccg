@@ -81,7 +81,7 @@ public class SelectAndReportForFreeCardAction extends PlayCardAction {
     }
 
     @JsonIgnore
-    public Collection<? extends PhysicalCard> getSelectableReportables(DefaultGame cardGame) {
+    public Collection<? extends PhysicalCard> getSelectableCardsToPlay(DefaultGame cardGame) {
         return _cardToPlayTarget.getSelectableCards(cardGame);
     }
 

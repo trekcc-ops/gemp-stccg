@@ -8,7 +8,6 @@ import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,8 +36,7 @@ public class AttemptMissionTest extends AbstractAtTest {
         beamCard(P1, outpost, picard, mission);
         assertTrue(_game.getGameState().getAwayTeamForCard(picard).isOnSurface(mission.getLocationDeprecatedOnlyUseForTests(_game)));
 
-        // Attempt mission
-        attemptMission(P1, (MissionLocation) mission.getGameLocation(_game));
+        attemptMission(P1, mission);
 
         // Confirm that mission was solved and player earned points
         assertTrue(mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());
