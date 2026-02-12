@@ -335,6 +335,18 @@ public interface UserInputSimulator {
         throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle());
     }
 
+    default DownloadAction initiateDownloadAction(String playerId, PhysicalCard performingCard)
+            throws InvalidGameOperationException, DecisionResultInvalidException {
+        List<DownloadAction> actions = getSelectableActionsOfClass(playerId, DownloadAction.class);
+        for (DownloadAction action : actions) {
+            if (action.getPerformingCard() == performingCard) {
+                selectAction(playerId, action);
+                return action;
+            }
+        }
+        throw new DecisionResultInvalidException("Could not identify a valid download action");
+    }
+
     default DownloadAction downloadCard(String playerId, PhysicalCard cardToPlay)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         List<DownloadAction> actions = getSelectableActionsOfClass(playerId, DownloadAction.class);
