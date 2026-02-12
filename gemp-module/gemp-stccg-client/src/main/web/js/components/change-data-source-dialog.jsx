@@ -59,7 +59,7 @@ export default function ChangeDataSourceDialog({open, onCloseFunc, dataSource, s
                         <FormControlLabel control={
                             <Switch checked={useLiveData} onChange={shouldUseLiveData} name="useLiveDataSwitch" />
                             }
-                            label="Use Live Data"
+                            label="Use Live Data (WIP)"
                         />
                         {useLiveData? gameDataSelector() : null}
                     </FormGroup>
