@@ -151,6 +151,7 @@
             affiliation: klingon
             property-logo: generations-logo
             classification: V.I.P.
+            icons: command
             lore: "Since failing to seize control of the Klingon Empire, B'Etor, sister of Duras, has been trying to acquire powerful weapons. Still the prettier sister."
             species: klingon
             gender: female
@@ -198,6 +199,49 @@
             cunning: 5
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/tstl/37.jpg
+        }
+        {
+            blueprintId: 163_039
+            title: Lursa
+            type: personnel
+            affiliation: klingon
+            property-logo: generations-logo
+            classification: V.I.P.
+            icons: command
+            lore: "Ambitious sister of Duras and B'Etor. Working to restore her family's previous position of power. Named her newborn son after her father, Ja'rod."
+            species: klingon
+            gender: female
+            skill-box: {
+                skill-dots: 3
+                skills: [
+                    {
+                        type: regular
+                        name: Treachery
+                    }
+                    {
+                        type: regular
+                        name: Leadership
+                    }
+                    {
+                        type: specialDownload
+                        text: "B'Etor"
+                        downloadCardFilter: "name(B'Etor)"
+                    }
+                    {
+                        type: specialModifier
+                        text: "Treachery Klingons present are attributes all +1."
+                        modifier: {
+                            type: addToAllAttributes
+                            modifiedCards: treachery + personnel + klingon + presentWithThisCard
+                            amount: 1
+                        }
+                    }
+                ]
+            }
+            integrity: 2
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/39.jpg
         }
         {
             blueprintId: 163_040

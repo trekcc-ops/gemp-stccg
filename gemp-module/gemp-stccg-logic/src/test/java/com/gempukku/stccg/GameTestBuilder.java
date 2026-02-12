@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -234,6 +235,23 @@ public class GameTestBuilder {
         return cardToAdd;
     }
 
+    public <T extends ReportableCard> T addCardAboardShipOrFacility(String blueprintId, String cardTitle, String ownerName,
+                                                                    CardWithCrew cardWithCrew, Class<T> clazz, Affiliation affiliation)
+            throws CardNotFoundException, InvalidGameOperationException {
+        T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
+
+        ReportCardAction reportAction = new ReportCardAction(_game, cardToAdd, false);
+        reportAction.setDestination(cardWithCrew);
+        reportAction.setAffiliation(affiliation);
+
+        executeAction(reportAction);
+
+        assertTrue(cardToAdd.isInPlay());
+        assertTrue(cardToAdd.isAttachedTo(cardWithCrew));
+        assertTrue(cardWithCrew.hasCardInCrew(cardToAdd));
+        return cardToAdd;
+    }
+
     public ShipCard addDockedShip(String blueprintId, String cardTitle, String ownerName, FacilityCard facility)
             throws CardNotFoundException, InvalidGameOperationException {
         ShipCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, ShipCard.class);
@@ -267,6 +285,13 @@ public class GameTestBuilder {
     public PhysicalCard addDrawDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
+        return cardToAdd;
+    }
+
+    public <T extends PhysicalCard> T addDrawDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
+            throws CardNotFoundException {
+        T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
         _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
         return cardToAdd;
     }
