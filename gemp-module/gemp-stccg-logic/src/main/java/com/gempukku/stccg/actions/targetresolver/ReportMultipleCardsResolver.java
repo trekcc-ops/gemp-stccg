@@ -180,4 +180,12 @@ public class ReportMultipleCardsResolver implements ActionCardResolver {
         return _cardsToDownload;
     }
 
+    public Collection<? extends PhysicalCard> getSelectableCardsToPlay() {
+        return _validCombinations.keySet();
+    }
+
+    public void setCardsToPlay(Collection<PhysicalCard> cards) {
+        _cardsToDownload = cards;
+    }
+
 }

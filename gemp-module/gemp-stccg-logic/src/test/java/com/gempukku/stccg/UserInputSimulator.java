@@ -335,31 +335,17 @@ public interface UserInputSimulator {
         throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle());
     }
 
-    default void downloadCard(String playerId, PhysicalCard cardToPlay)
+    default DownloadAction downloadCard(String playerId, PhysicalCard cardToPlay)
             throws DecisionResultInvalidException, InvalidGameOperationException {
-/*        DownloadCardAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof DownloadCardAction playCardAction &&
-                        playCardAction.getCardEnteringPlay() == cardToPlay) {
-                    choice = playCardAction;
-                    break;
-                } else if (
-                        action instanceof SelectAndReportForFreeCardAction reportAction &&
-                                reportAction.getSelectableReportables(getGame()).contains(cardToPlay)
-                ) {
-                    reportAction.setCardReporting(cardToPlay);
-                    choice = reportAction;
-                    break;
-                }
+        List<DownloadAction> actions = getSelectableActionsOfClass(playerId, DownloadAction.class);
+        for (DownloadAction action : actions) {
+            if (action.getDownloadableTargets(getGame()).contains(cardToPlay)) {
+                action.setCardToDownload(cardToPlay);
+                selectAction(playerId, action);
+                return action;
             }
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
         }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to play " + cardToPlay.getTitle()); */
+        throw new DecisionResultInvalidException("No valid action to download " + cardToPlay.getTitle());
     }
 
 

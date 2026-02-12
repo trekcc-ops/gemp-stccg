@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadReportableCardToDestinationAction;
-import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.filters.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
@@ -62,7 +62,7 @@ public class DownloadCardActionBlueprint extends DefaultActionBlueprint {
 
             SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
                     "Select a card to download", downloadableCards);
-            ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+            SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
             MatchingFilterBlueprint destinationFilterBlueprint =
                     new MatchingFilterBlueprint(cardTarget, Filters.your(performingPlayerName), FacilityType.OUTPOST);
             DownloadReportableCardToDestinationAction action2 =
@@ -74,7 +74,7 @@ public class DownloadCardActionBlueprint extends DefaultActionBlueprint {
         } else if (!downloadableCards.isEmpty() && _destination.equals("anywhereAtThisLocation")) {
             SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
                     "Select a card to download", downloadableCards);
-            ActionCardResolver cardTarget = new SelectCardsResolver(selectAction);
+            SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
 
             FilterBlueprint destinationFilterBlueprint = (cardGame1, actionContext1) -> {
                 CardFilter atThisLocationFilter = Filters.atLocation(thisCard.getLocationId());
