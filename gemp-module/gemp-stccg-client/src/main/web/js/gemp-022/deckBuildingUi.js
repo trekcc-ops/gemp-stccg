@@ -798,7 +798,7 @@ export default class GempLotrDeckBuildingUI {
                     let blueprintId = card.blueprintId;
                     let imageUrl = card.imageUrl;
                     let count = card.count;
-                    let title = card.title;
+                    let title = card.cardTitle;
                     for (let i = 0; i < count; i++) {
                         this.addCardToDeck(blueprintId, title, imageUrl, subDeck);
                     }
