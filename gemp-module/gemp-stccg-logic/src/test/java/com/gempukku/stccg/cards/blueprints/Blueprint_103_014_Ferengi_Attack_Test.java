@@ -3,7 +3,11 @@ package com.gempukku.stccg.cards.blueprints;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
@@ -29,7 +33,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         _mission = builder.addMission("101_154", "Excavation", P1);
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         _ferengiAttack = builder.addSeedCardUnderMission("103_014", "Ferengi Attack", P2, _mission);
         troi = builder.addCardAboardShipOrFacility("101_205", "Deanna Troi", P1, outpost, PersonnelCard.class);
         hobson = builder.addCardAboardShipOrFacility("101_202", "Christopher Hobson", P1, outpost, PersonnelCard.class);

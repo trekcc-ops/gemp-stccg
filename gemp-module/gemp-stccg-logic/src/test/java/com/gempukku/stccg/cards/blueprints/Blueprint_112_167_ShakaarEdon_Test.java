@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class Blueprint_112_167_ShakaarEdon_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         mission = builder.addMission("161_021", "Advanced Combat Training", P1);
-        outpost = builder.addFacility("112_078", P1, mission); // Bajoran Outpost
+        outpost = builder.addOutpost(Affiliation.BAJORAN, P1);
         shakaar = builder.addCardInHand("112_167", "Shakaar Edon", P1, PersonnelCard.class);
         shakaar2 = builder.addCardInHand("112_167", "Shakaar Edon", P1, PersonnelCard.class);
         sitoOnPlanet = builder.addCardOnPlanetSurface("101_239", "Sito Jaxa", P1, mission, PersonnelCard.class);

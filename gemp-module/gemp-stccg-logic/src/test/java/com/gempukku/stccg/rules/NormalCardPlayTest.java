@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class NormalCardPlayTest extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         builder.addMission("101_154", "Excavation", P1);
-        FacilityCard outpost = builder.addFacility("101_104", P1);
+        FacilityCard outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
         PersonnelCard wallace1 = builder.addCardInHand("101_203", "Darian Wallace", P1, PersonnelCard.class);
         builder.addCardInHand("101_203", "Darian Wallace", P1, PersonnelCard.class);
         builder.setPhase(Phase.CARD_PLAY);

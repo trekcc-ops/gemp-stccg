@@ -29,7 +29,7 @@ public class Blueprint_163_039_Lursa_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         builder.addMission("101_170", "Investigate Raid", P1);
-        outpost = builder.addFacility("101_105", P1); // Klingon Outpost
+        outpost = builder.addOutpost(Affiliation.KLINGON, P1);
         lursa = builder.addCardInHand("163_039", "Lursa", P1, PersonnelCard.class);
         betor = builder.addDrawDeckCard("163_036", "B'Etor", P1, PersonnelCard.class);
         koral = builder.addCardAboardShipOrFacility("155_093", "Koral", P1, outpost,

@@ -7,10 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.PropertyLogo;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.ST1EGame;
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +43,8 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         if (includeContinuingMissionForBothPlayers) {
             continuingPlayerTwo = builder.addSeedDeckCard("155_022", "Continuing Mission", P2);
         }
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        builder.addFacility("101_104", P2); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
+        builder.addOutpost(Affiliation.FEDERATION, P2);
         if (includeWarpCoreCards) {
             attention = builder.addDrawDeckCard("155_021", "Attention All Hands", P1);
             attention2 = builder.addDrawDeckCard("155_021", "Attention All Hands", P1);

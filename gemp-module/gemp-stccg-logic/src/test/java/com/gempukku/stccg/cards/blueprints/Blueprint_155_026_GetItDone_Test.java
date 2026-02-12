@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -51,7 +52,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         builder.addCardToTopOfDiscard("101_236", "Simon Tarses", P1);
         builder.addCardToTopOfDiscard("101_236", "Simon Tarses", P1);
         builder.addMission("101_154", "Excavation", P1);
-        FacilityCard outpost = builder.addFacility("101_104", P1);
+        FacilityCard outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
         picard = builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, outpost, PersonnelCard.class);
 

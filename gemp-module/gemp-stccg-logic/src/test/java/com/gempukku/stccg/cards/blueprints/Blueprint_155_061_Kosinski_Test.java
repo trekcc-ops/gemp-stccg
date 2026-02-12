@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -35,7 +36,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         mission = builder.addMission("101_154", "Excavation", P1);
-        outpost = builder.addFacility("101_104", P1, mission);
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
         climb = builder.addSeedCardUnderMission("152_002", "Dangerous Climb", P1, mission);
         kosinski = builder.addCardAboardShipOrFacility("155_061", "Kosinski", P1, outpost, PersonnelCard.class);
         taitt1 = builder.addCardAboardShipOrFacility("101_242", "Taitt", P1, outpost, PersonnelCard.class);

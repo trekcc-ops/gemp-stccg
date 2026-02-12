@@ -160,12 +160,21 @@ public class GameTestBuilder {
         return cardToAdd;
     }
 
-
-    public FacilityCard addFacility(String facilityBlueprintId, String ownerName)
+    public FacilityCard addOutpost(Affiliation affiliation, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
         if (_missions.isEmpty()) {
             addMission(DEFAULT_MISSION, DEFAULT_MISSION_TITLE, ownerName);
         }
+        String facilityBlueprintId = switch(affiliation) {
+            case BAJORAN -> "112_078";
+            case FEDERATION -> "101_104";
+            case FERENGI -> "117_030";
+            case KLINGON -> "101_105";
+            case NON_ALIGNED -> "111_009";
+            case ROMULAN -> "101_106";
+            case BORG, CARDASSIAN, DOMINION, HIROGEN, KAZON, NEUTRAL, STARFLEET, VIDIIAN, VULCAN, XINDI ->
+                    throw new CardNotFoundException("Could not find blueprint for outpost of affiliation " + affiliation);
+        };
         return addFacility(facilityBlueprintId, ownerName, _missions.getFirst());
     }
 

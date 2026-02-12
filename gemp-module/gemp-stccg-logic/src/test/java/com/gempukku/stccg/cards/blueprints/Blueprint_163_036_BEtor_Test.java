@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -32,8 +33,8 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         _mission = builder.addMission("101_170", "Investigate Raid", P1);
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
-        outpost2 = builder.addFacility("101_104", P2);
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
+        outpost2 = builder.addOutpost(Affiliation.FEDERATION, P2);
         crosis = builder.addCardInHand("163_044", "Lieutenant Crosis", P2, PersonnelCard.class);
         lursa = builder.addDrawDeckCard("101_280", "Lursa", P1);
         if (twoLursas) {

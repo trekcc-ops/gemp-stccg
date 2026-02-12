@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -24,7 +25,7 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         MissionCard mission = builder.addMission("101_154", "Excavation", P2);
-        builder.addFacility("101_104", P1, mission);
+        builder.addOutpost(Affiliation.FEDERATION, P1);
         MissionCard homeworld = builder.addMission("117_046", "Deliver Message", P1);
         if (diplomacyAtOpponentsMission) {
             builder.addCardOnPlanetSurface(

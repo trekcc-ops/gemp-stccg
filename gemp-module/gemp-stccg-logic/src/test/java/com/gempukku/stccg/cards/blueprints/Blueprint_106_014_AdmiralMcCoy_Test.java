@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -26,7 +27,7 @@ public class Blueprint_106_014_AdmiralMcCoy_Test extends AbstractAtTest {
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        outpost = builder.addFacility("101_104", P1); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         mccoy = builder.addCardInHand("106_014", "Admiral McCoy", P1, PersonnelCard.class);
         ogawa = builder.addCardAboardShipOrFacility("101_198", "Alyssa Ogawa", P1, outpost, PersonnelCard.class);
         ogawa2 = builder.addCardAboardShipOrFacility("101_198", "Alyssa Ogawa", P2, outpost, PersonnelCard.class);

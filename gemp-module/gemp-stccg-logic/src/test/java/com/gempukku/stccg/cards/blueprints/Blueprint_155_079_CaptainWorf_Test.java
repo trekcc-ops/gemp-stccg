@@ -5,6 +5,7 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ public class Blueprint_155_079_CaptainWorf_Test extends AbstractAtTest {
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        outpost = builder.addFacility("101_105", P1); // Klingon Outpost
+        outpost = builder.addOutpost(Affiliation.KLINGON, P1);
         worf = builder.addCardInHand("155_079", "Captain Worf", P1, PersonnelCard.class);
         kehleyr1 = builder.addCardAboardShipOrFacility("155_080", "Commander K'Ehleyr", P1, outpost, PersonnelCard.class);
         kehleyr2 = builder.addCardAboardShipOrFacility("101_217", "K'Ehleyr", P2, outpost, PersonnelCard.class);

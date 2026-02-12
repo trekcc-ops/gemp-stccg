@@ -5,6 +5,7 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class Blueprint_155_072_Kol_Test extends AbstractAtTest {
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        outpost = builder.addFacility("117_030", P1); // Ferengi Outpost
+        outpost = builder.addOutpost(Affiliation.FERENGI, P1);
         arridor = builder.addCardInHand("155_069", "Dr. Arridor", P1, PersonnelCard.class);
         kol = builder.addCardAboardShipOrFacility("155_072", "Kol", P1, outpost, PersonnelCard.class);
         builder.setPhase(Phase.CARD_PLAY);
