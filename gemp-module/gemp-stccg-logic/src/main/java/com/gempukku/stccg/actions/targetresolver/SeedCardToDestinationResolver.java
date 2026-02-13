@@ -9,6 +9,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.Collection;
+import java.util.List;
 
 public class SeedCardToDestinationResolver implements ActionTargetResolver {
 
@@ -27,6 +28,15 @@ public class SeedCardToDestinationResolver implements ActionTargetResolver {
         _destinationOptions = destinationOptions;
         _performingPlayerName = performingPlayerName;
     }
+
+    public SeedCardToDestinationResolver(String performingPlayerName, PhysicalCard cardToSeed,
+                                         Collection<PhysicalCard> destinationOptions) {
+        _cardEnteringPlay = cardToSeed;
+        _seedableCards = List.of(cardToSeed);
+        _destinationOptions = destinationOptions;
+        _performingPlayerName = performingPlayerName;
+    }
+
 
 
     @Override

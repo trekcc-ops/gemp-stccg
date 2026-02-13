@@ -16,6 +16,14 @@ public class SeedCardToDestinationAction extends SeedCardAction {
     private final SeedCardToDestinationResolver _targetResolver;
 
     public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
+                                       PhysicalCard cardToSeed,
+                                       Collection<PhysicalCard> destinationOptions) {
+        super(cardGame, cardToSeed, Zone.AT_LOCATION);
+        _targetResolver = new SeedCardToDestinationResolver(performingPlayerName, cardToSeed, destinationOptions);
+        _cardTargets.add(_targetResolver);
+    }
+
+    public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
                                        Collection<PhysicalCard> seedableCards,
                                        Collection<PhysicalCard> destinationOptions,
                                        PhysicalCard performingCard) {

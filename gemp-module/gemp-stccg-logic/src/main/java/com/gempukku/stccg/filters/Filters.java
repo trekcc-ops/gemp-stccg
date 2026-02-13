@@ -142,6 +142,17 @@ public class Filters {
         return result;
     }
 
+    public static Collection<PhysicalCard> filterCardsInSeedDeck(String seedDeckOwnerName, DefaultGame game,
+                                                                 Filterable... filters) {
+        CardFilter filter = Filters.and(filters);
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : game.getGameState().getCardGroup(seedDeckOwnerName, Zone.SEED_DECK).getCards()) {
+            if (filter.accepts(game, card))
+                result.add(card);
+        }
+        return result;
+    }
+
     public static Collection<PhysicalCard> filter(DefaultGame game, Filterable... filters) {
         CardFilter filter = Filters.and(filters);
         List<PhysicalCard> result = new LinkedList<>();
