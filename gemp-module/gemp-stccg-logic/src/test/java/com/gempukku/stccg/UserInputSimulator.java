@@ -57,7 +57,7 @@ public interface UserInputSimulator {
     }
 
 
-    private void selectAction(String playerId, Action action)
+    default void selectAction(String playerId, Action action)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
@@ -181,7 +181,13 @@ public interface UserInputSimulator {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         List<SeedCardAction> selectableActions = getSelectableActionsOfClass(playerId, SeedCardAction.class);
         for (SeedCardAction action : selectableActions) {
-            if (action.getCardEnteringPlay() == cardToSeed) {
+            if (action instanceof SeedCardToDestinationAction destinationAction) {
+                if (destinationAction.getSeedableOptions().contains(cardToSeed)) {
+                    selectAction(playerId, action);
+                    selectCard(playerId, cardToSeed);
+                    return action;
+                }
+            } else if (action.getCardEnteringPlay() == cardToSeed) {
                 selectAction(playerId, action);
                 return action;
             }
@@ -298,31 +304,23 @@ public interface UserInputSimulator {
         }
     }
 
-    default void seedFacility(String playerId, PhysicalCard cardToSeed)
+    default SeedFacilityAction seedFacility(String playerId, PhysicalCard cardToSeed)
             throws DecisionResultInvalidException, InvalidGameOperationException {
-        SeedOutpostAction choice = null;
-        AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
-        if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (Action action : actionDecision.getActions()) {
-                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
-                    choice = seedAction;
-                }
-            }
-            actionDecision.decisionMade(choice);
-            getGame().removeDecision(playerId);
-            getGame().carryOutPendingActionsUntilDecisionNeeded();
+        List<SeedFacilityAction> selectableActions = getSelectableActionsOfClass(playerId, SeedFacilityAction.class);
+        for (SeedFacilityAction action : selectableActions) {
+            selectAction(playerId, action);
+            return action;
         }
-        if (choice == null)
-            throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
+        throw new DecisionResultInvalidException("No valid action to seed " + cardToSeed.getTitle());
     }
 
     default void seedFacility(String playerId, PhysicalCard cardToSeed, MissionCard destination)
             throws DecisionResultInvalidException, InvalidGameOperationException {
-        SeedOutpostAction choice = null;
+        SeedFacilityAction choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
-                if (action instanceof SeedOutpostAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
+                if (action instanceof SeedFacilityAction seedAction && seedAction.getCardEnteringPlay() == cardToSeed) {
                     choice = seedAction;
                 }
             }

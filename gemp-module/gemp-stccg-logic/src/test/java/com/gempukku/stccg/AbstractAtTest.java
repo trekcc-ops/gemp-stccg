@@ -1,10 +1,16 @@
 package com.gempukku.stccg;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,6 +43,31 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         }
         return true;
     }
+
+    protected JsonNode getJsonForPerformedAction(GameState gameState, String requestingPlayerId, Action action)
+            throws JsonProcessingException {
+        String gameStateString = gameState.serializeForPlayer(requestingPlayerId);
+        JsonNode gameStateJson = new ObjectMapper().readTree(gameStateString);
+        for (JsonNode node : gameStateJson.get("performedActions")) {
+            if (node.get("actionId").asInt() == action.getActionId()) {
+                return node;
+            }
+        }
+        throw new RuntimeException("Could not find JSON data for requested action");
+    }
+
+    protected JsonNode getJsonForSelectableAction(ST1EGameState gameState, String requestingPlayerId, Action action)
+            throws JsonProcessingException {
+        String gameStateString = gameState.serializeForPlayer(requestingPlayerId);
+        JsonNode gameStateJson = new ObjectMapper().readTree(gameStateString);
+        for (JsonNode node : gameStateJson.get("pendingDecision").get("actions")) {
+            if (node.get("actionId").asInt() == action.getActionId()) {
+                return node;
+            }
+        }
+        throw new RuntimeException("Could not find JSON data for requested action");
+    }
+
 
 
 }

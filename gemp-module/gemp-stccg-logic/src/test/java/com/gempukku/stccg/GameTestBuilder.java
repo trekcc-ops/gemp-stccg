@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
-import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
+import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -183,7 +183,8 @@ public class GameTestBuilder {
             throws CardNotFoundException, InvalidGameOperationException {
         PhysicalCard facilityCard = _game.addCardToGame(facilityBlueprintId, ownerName);
         if (facilityCard instanceof FacilityCard facility) {
-            SeedOutpostAction seedAction = new SeedOutpostAction(_game, facility, mission);
+            SeedFacilityAction seedAction = new SeedFacilityAction(_game, facility, new HashMap<>());
+            seedAction.setDestination(mission);
             seedAction.setAffiliation(facility.getCurrentAffiliations().getFirst());
             executeAction(seedAction);
             assertTrue(facilityCard.isInPlay());

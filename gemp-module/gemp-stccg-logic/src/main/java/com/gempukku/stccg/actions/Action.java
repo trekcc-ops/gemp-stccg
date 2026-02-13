@@ -13,9 +13,9 @@ import java.util.Collection;
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "className")
 @JsonIgnoreProperties(value = { "actionType" }, allowGetters = true)
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
-@JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "status", "targetCardId", "targetCardIds",
-        "performingCardId", "pointsScored", "originCardId", "destinationCardId", "locationId", "destinationZone",
-        "selectedIndex", "selectionOptions" })
+@JsonIncludeProperties({ "actionId", "actionType", "performingPlayerId", "seededCardId", "status", "targetCardId",
+        "targetCardIds", "performingCardId", "pointsScored", "originCardId", "destinationCardId", "locationId",
+        "destinationZone", "selectedIndex", "selectionOptions" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
     String getCardActionPrefix();

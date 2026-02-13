@@ -376,6 +376,12 @@ public abstract class GameState {
         return _actionLimitCollection.getUntilEndOfGameLimitCounter(playerName, card, actionBlueprint);
     }
 
+    public LimitCounter getPerGamePerCopyLimitCounter(String playerName, PhysicalCard card,
+                                                      ActionBlueprint actionBlueprint) {
+        return _actionLimitCollection.getPerGamePerCopyLimitCounter(playerName, card, actionBlueprint);
+    }
+
+
     public LimitCounter getUntilEndOfTurnLimitCounter(String playerName, PhysicalCard card,
                                                       ActionBlueprint actionBlueprint) {
         return _actionLimitCollection.getUntilEndOfTurnLimitCounter(playerName, card, actionBlueprint);

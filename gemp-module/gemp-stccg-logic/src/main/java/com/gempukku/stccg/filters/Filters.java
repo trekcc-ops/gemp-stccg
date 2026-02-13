@@ -1,6 +1,6 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -136,6 +136,17 @@ public class Filters {
         Collection<PhysicalCard> cards = game.getAllCardsInPlay();
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard card : cards) {
+            if (filter.accepts(game, card))
+                result.add(card);
+        }
+        return result;
+    }
+
+    public static Collection<PhysicalCard> filterCardsInSeedDeck(String seedDeckOwnerName, DefaultGame game,
+                                                                 Filterable... filters) {
+        CardFilter filter = Filters.and(filters);
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : game.getGameState().getCardGroup(seedDeckOwnerName, Zone.SEED_DECK).getCards()) {
             if (filter.accepts(game, card))
                 result.add(card);
         }
@@ -316,7 +327,7 @@ public class Filters {
                     new InYourDrawDeckFilter(performingPlayerName),
                     new InYourHandFilter(performingPlayerName)
                 ),
-                new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.PLAY)
+                new CanEnterPlayFilter(EnterPlayActionType.PLAY)
         );
     }
 

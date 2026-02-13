@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
@@ -58,12 +58,22 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                         }
                     }
                 }
+                for (PhysicalCard card : stGame.getAllCardsInPlay()) {
+                    if (isCurrentPlayer && card.isControlledBy(player)) {
+                        ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
+                        for (TopLevelSelectableAction action : stCard.createSeedPhaseActions(cardGame, player.getPlayerId())) {
+                            if (action != null && action.canBeInitiated(cardGame)) {
+                                result.add(action);
+                            }
+                        }
+                    }
+                }
                 return result;
             } else if (phase == Phase.CARD_PLAY) {
                 for (PhysicalCard card : Filters.filter(player.getCardsInHand(), cardGame)) {
                     if (isCurrentPlayer) {
                         if (cardGame.getRules()
-                                .cardCanEnterPlay(cardGame, card, PlayCardAction.EnterPlayActionType.PLAY)) {
+                                .cardCanEnterPlay(cardGame, card, EnterPlayActionType.PLAY)) {
                             TopLevelSelectableAction action = card.getPlayCardAction(cardGame);
                             if (action != null && action.canBeInitiated(cardGame))
                                 result.add(action);
@@ -79,7 +89,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
         return switch(card) {
             case FacilityCard facility -> canFacilityBeSeeded(facility, game);
             case MissionCard ignored -> true;
-            default -> game.getRules().cardCanEnterPlay(game, card, PlayCardAction.EnterPlayActionType.SEED);
+            default -> game.getRules().cardCanEnterPlay(game, card, EnterPlayActionType.SEED);
         };
     }
 

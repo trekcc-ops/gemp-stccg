@@ -20,9 +20,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
-    public enum EnterPlayActionType {
-        DOWNLOAD, PLAY, SEED
-    }
     private final PhysicalCard _performingCard;
     protected final PhysicalCard _cardEnteringPlay;
     private final EnterPlayActionType _type;

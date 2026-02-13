@@ -27,7 +27,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     @JsonCreator
     @SuppressWarnings("unused")
     private SeedMissionCardAction(@JsonProperty("actionId") int actionId,
-                                  @JsonProperty("targetCardId") @JsonIdentityReference(alwaysAsId=true)
+                                  @JsonProperty("seededCardId") @JsonIdentityReference(alwaysAsId=true)
                            MissionCard cardEnteringPlay,
                                   @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
                           MissionCard performingCard,
@@ -95,6 +95,11 @@ public class SeedMissionCardAction extends PlayCardAction {
             setAsFailed();
             game.sendErrorMessage("Seed mission action attempted in a non-1E game");
         }
+    }
+
+    @JsonProperty("seededCardId")
+    private int getSeededCardId() {
+        return _cardEnteringPlay.getCardId();
     }
 
 }
