@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.turn.PlayThisCardAsResponseAction;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
@@ -59,7 +60,7 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
                                                  PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext) &&
-                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, PlayCardAction.EnterPlayActionType.PLAY)) {
+                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.PLAY)) {
             UseGameTextAction action = new PlayThisCardAsResponseAction(cardGame, thisCard, actionContext);
             appendActionToContext(cardGame, action, actionContext);
             return action;

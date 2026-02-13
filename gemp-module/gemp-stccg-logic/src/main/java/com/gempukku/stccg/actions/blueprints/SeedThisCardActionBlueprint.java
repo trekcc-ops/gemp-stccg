@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -41,7 +41,7 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
     public SeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext) &&
-                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, PlayCardAction.EnterPlayActionType.SEED)) {
+                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.SEED)) {
             SeedCardAction action;
             if (thisCard instanceof FacilityCard facility && cardGame instanceof ST1EGame stGame) {
                 if (_destinationBlueprint != null) {

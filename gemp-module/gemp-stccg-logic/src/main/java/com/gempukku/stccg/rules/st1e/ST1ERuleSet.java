@@ -1,5 +1,6 @@
 package com.gempukku.stccg.rules.st1e;
 
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -119,7 +120,7 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
     }
 
     private boolean canAUCardEnterPlay(ST1EGame stGame, PhysicalCard cardToPlay,
-                                       PlayCardAction.EnterPlayActionType actionType) {
+                                       EnterPlayActionType actionType) {
         return switch(actionType) {
             case DOWNLOAD, PLAY -> stGame.isCardAllowingPlayerToPlayAUCards(cardToPlay.getOwnerName());
             case SEED -> stGame.isCardAllowingPlayerToSeedAUCards(cardToPlay.getOwnerName());
@@ -127,13 +128,13 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
     }
 
     public boolean cardCanEnterPlay(DefaultGame cardGame, PhysicalCard card,
-                                    PlayCardAction.EnterPlayActionType actionType) {
+                                    EnterPlayActionType actionType) {
         if (cardGame instanceof ST1EGame stGame) {
             if (card.hasIcon(cardGame, CardIcon.AU_ICON) &&
                     !canAUCardEnterPlay(stGame, card, actionType)) {
                 return false;
             }
-            if (actionType == PlayCardAction.EnterPlayActionType.PLAY && card.getCardType() == CardType.DILEMMA) {
+            if (actionType == EnterPlayActionType.PLAY && card.getCardType() == CardType.DILEMMA) {
                 return false;
             }
             return !cannotEnterPlayPerUniqueness(cardGame, card);

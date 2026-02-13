@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardToDestinationAction;
 import com.gempukku.stccg.cards.ActionContext;
@@ -40,7 +40,7 @@ public class SeedCardIntoPlayBlueprint extends DefaultActionBlueprint {
         CardFilter seedableCardFilter = _cardToSeedBlueprint.getFilterable(cardGame, actionContext);
         CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
         Collection<PhysicalCard> seedableCards = Filters.filter(cardGame, Zone.SEED_DECK, seedableCardFilter,
-                new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.SEED),
+                new CanEnterPlayFilter(EnterPlayActionType.SEED),
                 Filters.owner(performingPlayerName));
         Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destinationFilter);
 
