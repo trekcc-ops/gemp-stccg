@@ -14,7 +14,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.YouPlayerSource;
-import com.gempukku.stccg.requirement.SeedQuantityLimitRequirement;
 
 import java.util.Collection;
 import java.util.List;
@@ -67,12 +66,6 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
             }
         }
         return null;
-    }
-
-
-    @JsonProperty("limit")
-    private void setLimit(int limit) {
-        addRequirement(new SeedQuantityLimitRequirement(limit));
     }
 
 }

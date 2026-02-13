@@ -9,7 +9,7 @@ import com.gempukku.stccg.requirement.YourTurnRequirement;
 public class UsageLimitBlueprint {
 
     public enum LimitType {
-        eachOfYourTurns, perGame
+        eachOfYourTurns, perGame, perGamePerCopy
     }
 
     @JsonProperty("type")
@@ -48,6 +48,10 @@ public class UsageLimitBlueprint {
                 break;
             case perGame:
                 actionBlueprint.addCost(new UsePerGameLimitActionBlueprint(actionBlueprint, _count));
+                break;
+            case perGamePerCopy:
+                actionBlueprint.addCost(new UsePerGamePerCopyLimitActionBlueprint(actionBlueprint, _count));
+                break;
         }
 
         if (_inPlaceOfNormalCardPlay) {

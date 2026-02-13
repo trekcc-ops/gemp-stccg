@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
@@ -61,6 +62,9 @@ public class CardBlueprint {
     protected String _rarity;
     @JsonProperty("property-logo")
     protected PropertyLogo _propertyLogo;
+
+    @JsonProperty("extended-shields-percentage")
+    Float _extendedShieldsPercentage;
     private String _persona;
 
     @JsonProperty("lore")
@@ -166,6 +170,11 @@ public class CardBlueprint {
     @JsonProperty("playOutOfSequenceCondition")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<PlayOutOfSequenceRequirement> playOutOfSequenceConditions;
+
+    @JsonIgnore
+    public Float getExtendedShieldsPercentage() {
+        return _extendedShieldsPercentage;
+    }
 
     @JsonProperty("actions")
     protected List<ActionBlueprint> _actionBlueprints = new LinkedList<>();

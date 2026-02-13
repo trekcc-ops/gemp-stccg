@@ -38,9 +38,6 @@ public class SeedCardAction extends PlayCardAction {
     public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone, ActionContext context) {
         super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD, context);
     }
-    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, ActionContext context) {
-        this(cardGame, cardToSeed, null, context);
-    }
 
 
     @Override
