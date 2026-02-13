@@ -45,7 +45,7 @@ public class SeedCardToDestinationResolver implements ActionTargetResolver {
     private void selectCardToSeed(ST1EGame stGame) {
         if (_selectCardToSeedAction == null) {
             _selectCardToSeedAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                    "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
+                    "Choose a card to seed",
                     new InCardListFilter(_seedableCards));
             stGame.addActionToStack(_selectCardToSeedAction);
         } else if (_selectCardToSeedAction.wasSuccessful()) {
@@ -59,7 +59,7 @@ public class SeedCardToDestinationResolver implements ActionTargetResolver {
     private void selectDestination(ST1EGame stGame) {
         if (_selectDestinationAction == null) {
             _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                    "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
+                    "Choose a destination",
                     new InCardListFilter(_destinationOptions));
             stGame.addActionToStack(_selectDestinationAction);
         } else if (_selectDestinationAction.wasSuccessful()) {
@@ -86,6 +86,11 @@ public class SeedCardToDestinationResolver implements ActionTargetResolver {
 
     public PhysicalCard getCardToSeed() {
         return _cardEnteringPlay;
+    }
+
+    public Collection<PhysicalCard> getSelectableOptions() { return _seedableCards; }
+    public void setCardToSeed(PhysicalCard cardToSeed) {
+        _cardEnteringPlay = cardToSeed;
     }
 
 }

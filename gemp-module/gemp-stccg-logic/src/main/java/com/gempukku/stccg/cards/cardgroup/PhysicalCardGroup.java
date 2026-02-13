@@ -46,4 +46,8 @@ public class PhysicalCardGroup<T extends PhysicalCard> {
         return _cards.getFirst();
     }
 
+    public boolean contains(PhysicalCard card) {
+        return _cards.contains(card);
+    }
+
 }

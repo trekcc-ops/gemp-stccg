@@ -181,7 +181,13 @@ public interface UserInputSimulator {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         List<SeedCardAction> selectableActions = getSelectableActionsOfClass(playerId, SeedCardAction.class);
         for (SeedCardAction action : selectableActions) {
-            if (action.getCardEnteringPlay() == cardToSeed) {
+            if (action instanceof SeedCardToDestinationAction destinationAction) {
+                if (destinationAction.getSeedableOptions().contains(cardToSeed)) {
+                    selectAction(playerId, action);
+                    selectCard(playerId, cardToSeed);
+                    return action;
+                }
+            } else if (action.getCardEnteringPlay() == cardToSeed) {
                 selectAction(playerId, action);
                 return action;
             }

@@ -10,6 +10,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
+import java.util.List;
 
 public class SeedCardToDestinationAction extends SeedCardAction {
     private final SeedCardToDestinationResolver _targetResolver;
@@ -29,6 +30,7 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                 _targetResolver.getCardToSeed() instanceof ReportableCard reportable) {
             GameState gameState = stGame.getGameState();
             PhysicalCard destination = _targetResolver.getDestination();
+            cardGame.removeCardsFromZone(List.of(reportable));
             setAsSuccessful();
             if (destination instanceof CardWithCrew cardWithCrew) {
                 // if reporting to a ship or facility
@@ -54,6 +56,10 @@ public class SeedCardToDestinationAction extends SeedCardAction {
             cardGame.sendErrorMessage("Unable to process seed card action");
             setAsFailed();
         }
+    }
+
+    public Collection<PhysicalCard> getSeedableOptions() {
+        return _targetResolver.getSelectableOptions();
     }
 
 }

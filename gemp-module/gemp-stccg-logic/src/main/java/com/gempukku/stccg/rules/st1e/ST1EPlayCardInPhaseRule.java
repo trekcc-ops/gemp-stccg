@@ -58,6 +58,16 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                         }
                     }
                 }
+                for (PhysicalCard card : stGame.getAllCardsInPlay()) {
+                    if (isCurrentPlayer && card.isControlledBy(player)) {
+                        ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
+                        for (TopLevelSelectableAction action : stCard.createSeedPhaseActions(cardGame, player.getPlayerId())) {
+                            if (action != null && action.canBeInitiated(cardGame)) {
+                                result.add(action);
+                            }
+                        }
+                    }
+                }
                 return result;
             } else if (phase == Phase.CARD_PLAY) {
                 for (PhysicalCard card : Filters.filter(player.getCardsInHand(), cardGame)) {

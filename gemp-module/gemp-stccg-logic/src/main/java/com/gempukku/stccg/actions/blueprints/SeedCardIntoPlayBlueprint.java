@@ -40,7 +40,8 @@ public class SeedCardIntoPlayBlueprint extends DefaultActionBlueprint {
         CardFilter seedableCardFilter = _cardToSeedBlueprint.getFilterable(cardGame, actionContext);
         CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
         Collection<PhysicalCard> seedableCards = Filters.filter(cardGame, Zone.SEED_DECK, seedableCardFilter,
-                new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.SEED));
+                new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.SEED),
+                Filters.owner(performingPlayerName));
         Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destinationFilter);
 
         if (seedableCards.isEmpty() || destinationOptions.isEmpty()) {

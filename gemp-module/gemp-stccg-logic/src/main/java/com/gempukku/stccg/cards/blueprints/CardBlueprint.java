@@ -641,4 +641,17 @@ public class CardBlueprint {
         return _actionBlueprints.indexOf(blueprint);
     }
 
+    public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName,
+                                                                 PhysicalCard thisCard) {
+        List<TopLevelSelectableAction> result = new ArrayList<>();
+        for (ActionBlueprint actionBlueprint : _actionBlueprints) {
+            if (actionBlueprint instanceof SeedCardIntoPlayBlueprint seedBlueprint) {
+                TopLevelSelectableAction seedAction = seedBlueprint.createAction(cardGame, performingPlayerName, thisCard);
+                if (seedAction != null && seedAction.canBeInitiated(cardGame)) {
+                    result.add(seedAction);
+                }
+            }
+        }
+        return result;
+    }
 }
