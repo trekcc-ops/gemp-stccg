@@ -341,7 +341,7 @@ public class CardBlueprint {
     public List<ActionBlueprint> getSeedCardActionSources() {
         List<ActionBlueprint> result = new LinkedList<>();
         for (ActionBlueprint source : _actionBlueprints) {
-            if (source instanceof SeedCardActionBlueprint)
+            if (source instanceof SeedThisCardActionBlueprint)
                 result.add(source);
         }
         return result;

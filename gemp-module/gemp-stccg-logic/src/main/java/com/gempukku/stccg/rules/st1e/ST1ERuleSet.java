@@ -3,10 +3,7 @@ package com.gempukku.stccg.rules.st1e;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.*;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.CardIcon;
-import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -21,10 +18,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.rules.UndefinedRuleException;
 import com.gempukku.stccg.rules.generic.RuleSet;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ST1ERuleSet extends RuleSet<ST1EGame> {
 
@@ -178,4 +172,57 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
     }
 
 
+    public Map<PhysicalCard, List<Affiliation>> getDestinationMapForSeedingFacilityWithGameTextDestinations(
+            FacilityCard facility, String performingPlayerName, Collection<MissionLocation> gameTextDestinations,
+            ST1EGame cardGame) {
+        Map<PhysicalCard, List<Affiliation>> result = new HashMap<>();
+        for (MissionLocation location : gameTextDestinations) {
+            try {
+                Collection<PhysicalCard> facilitiesOwnedByPlayerHere = Filters.filterCardsInPlay(
+                        cardGame, Filters.owner(performingPlayerName), CardType.FACILITY,
+                        Filters.atLocation(location));
+                if (facilitiesOwnedByPlayerHere.isEmpty() &&
+                        (!location.isHomeworld() || facility.getFacilityType() != FacilityType.OUTPOST) &&
+                        location.isInQuadrant(facility.getNativeQuadrant())
+                ) {
+                    MissionCard card = location.getMissionForPlayer(performingPlayerName);
+                    result.put(card, facility.getCurrentAffiliations());
+                }
+            } catch(InvalidGameLogicException ignored) {
+
+            }
+        }
+        return result;
+    }
+
+    public Map<PhysicalCard, List<Affiliation>> getDestinationMapForSeedingFacilityPerRules(
+            FacilityCard facility, String performingPlayerName, ST1EGame stGame) {
+        Map<PhysicalCard, List<Affiliation>> result = new HashMap<>();
+        for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+            try {
+                Collection<PhysicalCard> facilitiesOwnedByPlayerHere = Filters.filterCardsInPlay(
+                        stGame, Filters.owner(performingPlayerName), CardType.FACILITY,
+                        Filters.atLocation(location));
+                if (facilitiesOwnedByPlayerHere.isEmpty() &&
+                        (!location.isHomeworld() || facility.getFacilityType() != FacilityType.OUTPOST) &&
+                        location.isInQuadrant(facility.getNativeQuadrant())
+                ) {
+
+                    List<Affiliation> affiliationsToAdd = new ArrayList<>();
+                    for (Affiliation affiliationToAdd : facility.getAffiliationOptions()) {
+                        if (location.hasMatchingAffiliationIcon(stGame, performingPlayerName, List.of(affiliationToAdd))) {
+                            affiliationsToAdd.add(affiliationToAdd);
+                        }
+                    }
+                    if (!affiliationsToAdd.isEmpty()) {
+                        MissionCard card = location.getMissionForPlayer(performingPlayerName);
+                        result.put(card, affiliationsToAdd);
+                    }
+                }
+            } catch(InvalidGameLogicException ignored) {
+
+            }
+        }
+        return result;
+    }
 }

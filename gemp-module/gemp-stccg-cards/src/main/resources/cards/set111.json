@@ -13,6 +13,20 @@
             "uniqueness": "universal",
             "lore": "The sudden eradication of the entire Husnock race left its many outposts vacant. Various affiliations take advantage of these available facilities.",
             "shields": 40,
+            "extended-shields-percentage": 25,
+            "actions": [
+                {
+                    "type": "seedThis",
+                    "destinationLocation": {
+                        "affiliation": "non-aligned"
+                    }
+                },
+                {
+                    "type": "seedCardIntoPlay",
+                    "seededCard": "universal + name(Husnock Ship)",
+                    "destination": "thisCard"
+                }
+            ],
             "image-url": "https://www.trekcc.org/1e/cardimages/otsdr/9.jpg",
             "rarity": "P"
         }
