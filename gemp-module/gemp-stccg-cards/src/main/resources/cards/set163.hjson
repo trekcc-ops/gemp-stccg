@@ -378,6 +378,20 @@
             image-url: https://www.trekcc.org/1e/cardimages/tstl/50.jpg
         }
         {
+            "blueprintId": "163_052",
+            "title": "Cha'Joh",
+            "type": "ship",
+            "affiliation": "klingon",
+            "property-logo": "generations-logo",
+            "ship-class": "CLASS D-12 SCOUT VESSEL",
+            "lore": "Bird-of-Prey commanded by Lursa and B'Etor, the Sisters of Duras. Fought at Veridian III.",
+            "gametext": "Cloaking Device",
+            "range": 7,
+            "weapons": 5,
+            "shields": 5,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/52.jpg"
+        }
+        {
             blueprintId: 163_054
             title: Stolen Ship
             type: ship
