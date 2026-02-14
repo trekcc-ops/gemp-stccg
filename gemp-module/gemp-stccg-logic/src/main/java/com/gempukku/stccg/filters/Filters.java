@@ -1,9 +1,10 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameLocation;
@@ -50,13 +51,14 @@ public class Filters {
     public static final CardFilter active = new ActiveCardFilter();
     public static final CardFilter any = new AnyCardFilter();
     public static final CardFilter Bajoran = Filters.or(Affiliation.BAJORAN, Species.BAJORAN);
+    public static final CardFilter Cardassian = Filters.or(Affiliation.CARDASSIAN, Species.CARDASSIAN);
     public static final CardFilter controllerControlsMatchingPersonnelAboard =
             new ControllerControlsMatchingPersonnelAboardFilter();
     public static final CardFilter equipment = Filters.or(CardType.EQUIPMENT);
     public static final CardFilter exposedShip = new ExposedShipFilter();
     public static final CardFilter facility = Filters.or(CardType.FACILITY);
     public static final CardFilter Ferengi = Filters.or(Affiliation.FERENGI, Species.FERENGI);
-    public static final CardFilter hologram = Filters.or(Species.HOLOGRAM);
+    public static final CardFilter hologram = Filters.changeToFilter(Species.HOLOGRAM);
     public static final CardFilter inPlay = new InPlayFilter();
     public static final CardFilter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
     public static final CardFilter personnel = Filters.or(CardType.PERSONNEL);
@@ -129,12 +131,22 @@ public class Filters {
         return highestCards;
     }
 
-
     public static Collection<PhysicalCard> filterCardsInPlay(DefaultGame game, Filterable... filters) {
         CardFilter filter = Filters.and(filters);
         Collection<PhysicalCard> cards = game.getAllCardsInPlay();
         List<PhysicalCard> result = new LinkedList<>();
         for (PhysicalCard card : cards) {
+            if (filter.accepts(game, card))
+                result.add(card);
+        }
+        return result;
+    }
+
+    public static Collection<PhysicalCard> filterCardsInSeedDeck(String seedDeckOwnerName, DefaultGame game,
+                                                                 Filterable... filters) {
+        CardFilter filter = Filters.and(filters);
+        List<PhysicalCard> result = new LinkedList<>();
+        for (PhysicalCard card : game.getGameState().getCardGroup(seedDeckOwnerName, Zone.SEED_DECK).getCards()) {
             if (filter.accepts(game, card))
                 result.add(card);
         }
@@ -195,11 +207,7 @@ public class Filters {
     }
 
     public static CardFilter your(final String playerId) {
-                // TODO - Does this track with general usage of "your"
-        return or(
-                and(inPlay, new ControlledByPlayerFilter(playerId)),
-                and(not(inPlay), owner(playerId))
-        );
+        return and(inPlay, new ControlledByPlayerFilter(playerId));
     }
 
     public static CardFilter your(final Player player) {
@@ -319,7 +327,7 @@ public class Filters {
                     new InYourDrawDeckFilter(performingPlayerName),
                     new InYourHandFilter(performingPlayerName)
                 ),
-                new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.PLAY)
+                new CanEnterPlayFilter(EnterPlayActionType.PLAY)
         );
     }
 
@@ -338,5 +346,9 @@ public class Filters {
 
     public static CardFilter presentWithThisCard(int thisCardId) {
         return new PresentWithCardFilter(thisCardId);
+    }
+
+    public static CardFilter integrityGreaterThan(int integrityAmount) {
+        return new AttributeFilter(CardAttribute.INTEGRITY, ComparatorType.GREATER_THAN, integrityAmount);
     }
 }

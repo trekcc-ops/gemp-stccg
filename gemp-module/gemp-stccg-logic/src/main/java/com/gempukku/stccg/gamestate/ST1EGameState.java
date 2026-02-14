@@ -32,6 +32,8 @@ public class ST1EGameState extends GameState {
     @JsonProperty("awayTeams")
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId = 1;
+
+    @JsonProperty("gameLocations")
     private final Map<Integer, GameLocation> _locationIds = new HashMap<>();
 
     @SuppressWarnings("unused")
@@ -221,7 +223,8 @@ public class ST1EGameState extends GameState {
         return null;
     }
 
-    public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
+    @JsonIgnore
+    public List<MissionLocation> getUnorderedMissionLocations() { return _spacelineLocations; }
 
 
     public List<AwayTeam> getAwayTeams() {
@@ -323,4 +326,23 @@ public class ST1EGameState extends GameState {
         return null;
     }
 
+    public List<GameLocation> getOrderedSpacelineLocations() {
+        List<GameLocation> result = new ArrayList<>();
+        for (SpacelineIndex index : getSpacelineElements()) {
+            if (index instanceof LocationSpacelineIndex locationIndex) {
+                GameLocation location = _locationIds.get(locationIndex.getLocationId());
+                result.add(location);
+            }
+        }
+        return result;
+    }
+
+    @JsonProperty("spacelineElements")
+    public List<SpacelineIndex> getSpacelineElements() {
+        List<SpacelineIndex> result = new ArrayList<>();
+        for (MissionLocation mission : _spacelineLocations) {
+            result.add(new LocationSpacelineIndex(mission));
+        }
+        return result;
+    }
 }

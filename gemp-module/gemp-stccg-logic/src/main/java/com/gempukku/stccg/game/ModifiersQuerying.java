@@ -152,7 +152,7 @@ public interface ModifiersQuerying {
         return liveModifiers;
     }
 
-    default float getAttribute(PhysicalCard card, CardAttribute attribute) {
+    default Integer getAttribute(PhysicalCard card, CardAttribute attribute) {
         CardBlueprint blueprint = card.getBlueprint();
         float result = switch(attribute) {
             case INTEGRITY -> blueprint.getIntegrity();
@@ -179,7 +179,7 @@ public interface ModifiersQuerying {
         if (result < 0)
             return 0;
         else
-            return result;
+            return (int) result;
     }
 
     default boolean playerRestrictedFromPerformingActionDueToModifiers(String performingPlayer, Action action) {

@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class Blueprint_112_046_BajoranPhaser_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         mission = builder.addMission("161_021", "Advanced Combat Training", P1);
-        outpost = builder.addFacility("112_078", P1, mission); // Bajoran Outpost
+        outpost = builder.addOutpost(Affiliation.BAJORAN, P1);
         phaser = builder.addCardInHand("112_046", "Bajoran Phaser", P1, EquipmentCard.class);
         kallis = builder.addCardAboardShipOrFacility("112_152", "Kallis Ven", P1, outpost, PersonnelCard.class);
         sito = builder.addCardAboardShipOrFacility("101_239", "Sito Jaxa", P1, outpost, PersonnelCard.class);

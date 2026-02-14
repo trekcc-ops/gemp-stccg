@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.targetresolver;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.evaluator.ValueSource;
@@ -28,7 +28,7 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
             throws InvalidCardDefinitionException {
         _reportableFilterBlueprint = new AndFilterBlueprint(
                 reportableFilterBlueprint,
-                new CanEnterPlayFilterBlueprint(PlayCardAction.EnterPlayActionType.PLAY)
+                new CanEnterPlayFilterBlueprint(EnterPlayActionType.PLAY)
         );
         _count = count;
         _differentCardsOnly = differentCardsOnly;

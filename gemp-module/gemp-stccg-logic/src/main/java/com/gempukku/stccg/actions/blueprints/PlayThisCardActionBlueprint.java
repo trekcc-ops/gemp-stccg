@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
@@ -61,7 +62,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
                                                  PhysicalCard thisCard) {
         ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
         if (!isValid(cardGame, actionContext) ||
-                !cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, PlayCardAction.EnterPlayActionType.PLAY)) {
+                !cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.PLAY)) {
             return null;
         }
         PlayCardAction action = null;

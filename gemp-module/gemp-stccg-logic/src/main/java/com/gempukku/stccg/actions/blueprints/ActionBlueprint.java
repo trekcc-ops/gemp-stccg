@@ -10,7 +10,8 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({@JsonSubTypes.Type(value = SeedCardActionBlueprint.class, name = "seedThis"),
+@JsonSubTypes({@JsonSubTypes.Type(value = SeedThisCardActionBlueprint.class, name = "seedThis"),
+        @JsonSubTypes.Type(value = SeedCardIntoPlayBlueprint.class, name = "seedCardIntoPlay"),
         @JsonSubTypes.Type(value = ActivateCardActionBlueprint.class, name = "activate"),
         @JsonSubTypes.Type(value = DownloadCardActionBlueprint.class, name = "downloadCard"),
         @JsonSubTypes.Type(value = DrawAdditionalCardsAtEndOfTurnActionBlueprint.class,

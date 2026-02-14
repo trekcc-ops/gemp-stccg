@@ -75,7 +75,7 @@
             actions: [
                 {
                     type: seedThis
-                    where: core
+                    toCore: true
                 }
                 {
                     type: optionalTrigger

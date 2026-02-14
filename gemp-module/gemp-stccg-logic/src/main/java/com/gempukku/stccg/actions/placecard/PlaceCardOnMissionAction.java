@@ -53,9 +53,10 @@ public class PlaceCardOnMissionAction extends ActionyAction {
                 _cardBeingPlaced.setLocation(cardGame, mission);
                 gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
 
-                for (MissionLocation spacelineLocation : gameState.getSpacelineLocations()) {
-                    if (spacelineLocation.getSeedCards().contains(_cardBeingPlaced)) {
-                        spacelineLocation.removeSeedCard(_cardBeingPlaced);
+                for (GameLocation spacelineLocation : gameState.getOrderedSpacelineLocations()) {
+                    if (spacelineLocation instanceof MissionLocation missionLoc &&
+                            missionLoc.getSeedCards().contains(_cardBeingPlaced)) {
+                        missionLoc.removeSeedCard(_cardBeingPlaced);
                     }
                 }
                 setAsSuccessful();

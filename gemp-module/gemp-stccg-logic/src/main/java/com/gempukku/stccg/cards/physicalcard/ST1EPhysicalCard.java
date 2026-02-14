@@ -132,4 +132,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         }
     }
 
+    public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName) {
+        return _blueprint.createSeedPhaseActions(cardGame, performingPlayerName, this);
+    }
 }

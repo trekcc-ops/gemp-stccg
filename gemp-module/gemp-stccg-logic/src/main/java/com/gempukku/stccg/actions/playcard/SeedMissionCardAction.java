@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
@@ -27,7 +28,7 @@ public class SeedMissionCardAction extends PlayCardAction {
     @JsonCreator
     @SuppressWarnings("unused")
     private SeedMissionCardAction(@JsonProperty("actionId") int actionId,
-                                  @JsonProperty("targetCardId") @JsonIdentityReference(alwaysAsId=true)
+                                  @JsonProperty("seededCardId") @JsonIdentityReference(alwaysAsId=true)
                            MissionCard cardEnteringPlay,
                                   @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
                           MissionCard performingCard,
@@ -66,19 +67,20 @@ public class SeedMissionCardAction extends PlayCardAction {
                     !_cardEnteringPlay.getBlueprint().isUniversal();
 
             gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
-            List<MissionLocation> spaceline = gameState.getSpacelineLocations();
+            List<GameLocation> spaceline = gameState.getOrderedSpacelineLocations();
 
             try {
                 if (sharedMission) {
-                    MissionLocation location = spaceline.get(_locationZoneIndex);
-                    List<MissionCard> missionsAtLocation = location.getMissionCards();
-                    if (missionsAtLocation.size() != 1 ||
-                            Objects.equals(missionsAtLocation.getFirst().getOwnerName(), mission.getOwnerName()))
-                        throw new InvalidGameLogicException("Cannot seed " + mission.getTitle() + " because " +
-                                mission.getOwnerName() + " already has a mission at " +
-                                mission.getBlueprint().getLocation());
-                    location.addMission(game, mission);
-                    gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
+                    if (spaceline.get(_locationZoneIndex) instanceof MissionLocation location) {
+                        List<MissionCard> missionsAtLocation = location.getMissionCards();
+                        if (missionsAtLocation.size() != 1 ||
+                                Objects.equals(missionsAtLocation.getFirst().getOwnerName(), mission.getOwnerName()))
+                            throw new InvalidGameLogicException("Cannot seed " + mission.getTitle() + " because " +
+                                    mission.getOwnerName() + " already has a mission at " +
+                                    mission.getBlueprint().getLocation());
+                        location.addMission(game, mission);
+                        gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
+                    }
                 }
                 else {
                     int newLocationId = gameState.getNextLocationId();
@@ -95,6 +97,11 @@ public class SeedMissionCardAction extends PlayCardAction {
             setAsFailed();
             game.sendErrorMessage("Seed mission action attempted in a non-1E game");
         }
+    }
+
+    @JsonProperty("seededCardId")
+    private int getSeededCardId() {
+        return _cardEnteringPlay.getCardId();
     }
 
 }

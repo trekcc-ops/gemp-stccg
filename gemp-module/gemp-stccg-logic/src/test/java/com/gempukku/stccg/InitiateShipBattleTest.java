@@ -2,7 +2,6 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
@@ -18,27 +17,30 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InitiateShipBattleTest extends AbstractAtTest {
 
-    private FacilityCard outpost1;
-    private FacilityCard outpost2;
-
-    private MissionCard _mission;
     private ShipCard attackingShip;
     private ShipCard defendingTarget;
-    private PersonnelCard klag;
-    private ShipCard k_ratak;
-    private ShipCard yridianShuttle;
 
-    private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
+    private void initializeGame(String defendingCardTitle, boolean includeLeaderOnAttackingShip)
+            throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        _mission = builder.addMission("101_194", "Wormhole Negotiations", P1);
-        outpost1 = builder.addFacility("101_105", P1); // Klingon Outpost
-        outpost2 = builder.addFacility("101_105", P2); // Klingon Outpost
-        attackingShip = builder.addDockedShip("116_105", "I.K.C. Lukara", P1, outpost1); // 7-7-7
-        k_ratak = builder.addDockedShip("103_118", "I.K.C. K'Ratak", P2, outpost2); // 6-8-6
-        yridianShuttle = builder.addDockedShip("101_355", "Yridian Shuttle", P2, outpost2); // 6-1-3
+        MissionCard _mission = builder.addMission("101_194", "Wormhole Negotiations", P1);
+        attackingShip = builder.addShipInSpace("116_105", "I.K.C. Lukara", P1, _mission); // 7-7-7
 
-        klag = builder.addCardAboardShipOrFacility("101_270", "Klag", P1, attackingShip, PersonnelCard.class);
+        defendingTarget = switch(defendingCardTitle) {
+            case "K'Ratak" ->
+                    builder.addShipInSpace("103_118", "I.K.C. K'Ratak", P2, _mission); // 6-8-6
+            case "Yridian Shuttle" ->
+                    builder.addShipInSpace("101_355", "Yridian Shuttle", P2, _mission); // 6-1-3
+            default -> throw new CardNotFoundException(
+                    "Test not designed to work with defending target " + defendingCardTitle);
+        };
+
+        if (includeLeaderOnAttackingShip) {
+            builder.addCardAboardShipOrFacility(
+                    "101_270", "Klag", P1, attackingShip, PersonnelCard.class);
+        }
+
         builder.setPhase(Phase.EXECUTE_ORDERS);
         builder.startGame();
     }
@@ -50,12 +52,9 @@ public class InitiateShipBattleTest extends AbstractAtTest {
 
         // Initiate battle: Lukara vs. K'Ratak
         // Should result in a "hit" with 50% HULL reduction
-        initializeGame();
-        undockShip(P1, this.attackingShip);
-        defendingTarget = k_ratak;
-        defendingTarget.undockFromFacility();
+        initializeGame("K'Ratak", true);
+        InitiateShipBattleAction battleAction = initiateBattle(P1);
 
-        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
         ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _game.getAwaitingDecision(P1);
         decision.decisionMade(List.of(attackingShip), defendingTarget);
         _game.removeDecision(P1);
@@ -73,12 +72,9 @@ public class InitiateShipBattleTest extends AbstractAtTest {
 
         // Initiate battle: Lukara vs. Yridian Shuttle
         // Should result in a "direct hit" with 100% HULL reduction
-        initializeGame();
-        undockShip(P1, this.attackingShip);
-        defendingTarget = yridianShuttle;
-        defendingTarget.undockFromFacility();
+        initializeGame("Yridian Shuttle", true);
 
-        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
+        InitiateShipBattleAction battleAction = initiateBattle(P1);
         ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _game.getAwaitingDecision(P1);
         decision.decisionMade(List.of(attackingShip), defendingTarget);
         _game.removeDecision(P1);
@@ -96,20 +92,9 @@ public class InitiateShipBattleTest extends AbstractAtTest {
 
         // Initiate battle: Lukara vs. Yridian Shuttle
         // Beaming Klag off the ship means Lukara's WEAPONS are disabled and battle can't be initiated
-        initializeGame();
-        undockShip(P1, this.attackingShip);
-        defendingTarget = yridianShuttle;
-        defendingTarget.undockFromFacility();
-        beamCard(P1, this.attackingShip, klag, outpost1);
+        initializeGame("Yridian Shuttle", false);
 
-        boolean actionNotFound = false;
-
-        try {
-            selectAction(InitiateShipBattleAction.class, null, P1);
-        } catch(DecisionResultInvalidException exp) {
-            actionNotFound = true;
-        }
-        assertTrue(actionNotFound);
+        assertThrows(DecisionResultInvalidException.class, () -> initiateBattle(P1));
     }
 
 }

@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("unused")
 public enum Characteristic implements Filterable {
     ADMIRAL("admiral"),
+    CAPTAINS_ORDER("Captain's Order"),
     COOK("cook"),
     GENERAL("general"),
 

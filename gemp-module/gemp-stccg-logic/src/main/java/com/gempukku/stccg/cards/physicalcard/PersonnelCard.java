@@ -17,7 +17,7 @@ import java.util.Stack;
 
 @JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
         allowGetters = true)
-public class PersonnelCard extends AffiliatedCard implements CardWithCompatibility, ReportableCard {
+public class PersonnelCard extends AffiliatedCard implements CardWithCompatibility, ReportableCard, CardWithStrength {
 
     @JsonCreator
     public PersonnelCard(
@@ -100,4 +100,14 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
     public float getPrintedStrength() {
         return _blueprint.getStrength();
     }
+
+    public int getPrintedCunning() {
+        return _blueprint.getCunning();
+    }
+
+    public int getPrintedIntegrity() {
+        return _blueprint.getIntegrity();
+    }
+
+
 }

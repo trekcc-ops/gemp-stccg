@@ -9,7 +9,7 @@ import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class SeedMissionTargetResolver implements ActionTargetResolver {
                     boolean sharedMission = gameState.indexOfLocation(missionLocationName, quadrant) != null &&
                             !_cardEnteringPlay.getBlueprint().isUniversal();
 
-                    List<MissionLocation> spacelineLocations = gameState.getSpacelineLocations();
+                    List<GameLocation> spacelineLocations = gameState.getOrderedSpacelineLocations();
                     if (sharedMission) {
                         possibleIndices.add(gameState.indexOfLocation(missionLocationName, quadrant));
                     } else if (spacelineLocations.isEmpty()) {

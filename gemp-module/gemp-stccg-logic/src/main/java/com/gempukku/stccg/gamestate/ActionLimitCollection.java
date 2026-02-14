@@ -16,6 +16,9 @@ public class ActionLimitCollection {
     @JsonProperty("perGame")
     private final Map<String, Map<String, DefaultLimitCounter>> _gameLimitCounters = new HashMap<>();
 
+    @JsonProperty("perGamePerCopy")
+    private final Map<String, Map<String, DefaultLimitCounter>> _perGamePerCopyLimitCounters = new HashMap<>();
+
     @JsonProperty("perTurn")
     private final Map<String, Map<String, DefaultLimitCounter>> _turnLimitActionSourceCounters = new HashMap<>();
 
@@ -58,4 +61,13 @@ public class ActionLimitCollection {
         _normalCardPlaysAvailable.put(playerName, currentPlaysAvailable - 1);
     }
 
+    public LimitCounter getPerGamePerCopyLimitCounter(String playerName, PhysicalCard card,
+                                                      ActionBlueprint actionBlueprint) {
+        CardBlueprint cardBlueprint = card.getBlueprint();
+        String cardId = String.valueOf(card.getCardId());
+        int actionBlueprintId = cardBlueprint.getIdForActionBlueprint(actionBlueprint);
+        String fullActionBlueprintId = card.getBlueprintId() + "_" + actionBlueprintId;
+        _perGamePerCopyLimitCounters.computeIfAbsent(fullActionBlueprintId, k -> new HashMap<>());
+        return _perGamePerCopyLimitCounters.get(fullActionBlueprintId).computeIfAbsent(cardId, k -> new DefaultLimitCounter());
+    }
 }

@@ -12,6 +12,8 @@ import com.gempukku.stccg.modifiers.ModifierEffect;
 import com.gempukku.stccg.modifiers.attributes.AttributeModifier;
 import com.gempukku.stccg.requirement.TrueCondition;
 
+import java.util.Objects;
+
 public class DockingRules {
     private final static float HALF = 0.5f;
 
@@ -20,7 +22,9 @@ public class DockingRules {
     public static Modifier getExtendedShieldsModifier(FacilityCard dockedAtFacility) {
         CardFilter dockedAtCards = new DockedAtFilter(dockedAtFacility);
         Evaluator facilityShieldsEvaluator = new ShieldsEvaluator(dockedAtFacility);
-        Evaluator halfOfShieldsEvaluator = new MultiplyEvaluator(HALF, facilityShieldsEvaluator);
+        float multiplier = Objects.requireNonNullElse(
+                dockedAtFacility.getBlueprint().getExtendedShieldsPercentage(), HALF);
+        Evaluator halfOfShieldsEvaluator = new MultiplyEvaluator(multiplier, facilityShieldsEvaluator);
         return new AttributeModifier(dockedAtFacility, dockedAtCards, new TrueCondition(), halfOfShieldsEvaluator,
                 CardAttribute.SHIELDS, ModifierEffect.ATTRIBUTE_MODIFIER);
     }

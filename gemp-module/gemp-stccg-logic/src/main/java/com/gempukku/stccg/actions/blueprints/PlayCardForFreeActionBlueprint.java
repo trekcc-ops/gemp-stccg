@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
@@ -59,7 +60,7 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
         CardFilter playableCardFilter = Filters.and(
                 _filterBlueprint.getFilterable(cardGame, actionContext),
                 new InYourHandFilter(performingPlayerName),
-                new CanEnterPlayFilter(PlayCardAction.EnterPlayActionType.PLAY)
+                new CanEnterPlayFilter(EnterPlayActionType.PLAY)
         );
 
         Collection<PhysicalCard> playableCards = Filters.filter(cardGame, playableCardFilter);

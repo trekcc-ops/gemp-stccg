@@ -34,12 +34,16 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = { "performedActions", "phasesInOrder" }, allowGetters = true)
-@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
-@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "spacelineLocations",
-        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers" })
+@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "playerMap", "spacelineLocations",
+        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers", "gameLocations", "spacelineElements",
+"versionNumber" })
+@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "playerMap", "spacelineLocations",
+        "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers", "gameLocations", "spacelineElements",
+"versionNumber" })
 public abstract class GameState {
 
+    @JsonProperty("versionNumber")
+    protected final String VERSION_NUMBER = "1.1.0";
     Phase _currentPhase;
     PlayerOrder _playerOrder;
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
@@ -55,6 +59,7 @@ public abstract class GameState {
     private final Map<String, PlayerClock> _playerClocks;
     @JsonProperty("players")
     List<Player> _players = new ArrayList<>();
+
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
     private int nextDecisionId = 1;
 
@@ -376,6 +381,12 @@ public abstract class GameState {
         return _actionLimitCollection.getUntilEndOfGameLimitCounter(playerName, card, actionBlueprint);
     }
 
+    public LimitCounter getPerGamePerCopyLimitCounter(String playerName, PhysicalCard card,
+                                                      ActionBlueprint actionBlueprint) {
+        return _actionLimitCollection.getPerGamePerCopyLimitCounter(playerName, card, actionBlueprint);
+    }
+
+
     public LimitCounter getUntilEndOfTurnLimitCounter(String playerName, PhysicalCard card,
                                                       ActionBlueprint actionBlueprint) {
         return _actionLimitCollection.getUntilEndOfTurnLimitCounter(playerName, card, actionBlueprint);
@@ -423,6 +434,15 @@ public abstract class GameState {
 
     public Set<String> getUsersPendingDecision() {
         return _awaitingDecisionMap.keySet();
+    }
+
+    @JsonProperty("playerMap")
+    private Map<String, Player> getPlayerMap() {
+        Map<String, Player> result = new HashMap<>();
+        for (Player player : _players) {
+            result.put(player.getPlayerId(), player);
+        }
+        return result;
     }
 
 }

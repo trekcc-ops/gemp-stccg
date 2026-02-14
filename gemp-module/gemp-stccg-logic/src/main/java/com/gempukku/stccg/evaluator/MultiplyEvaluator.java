@@ -29,6 +29,6 @@ public class MultiplyEvaluator extends Evaluator {
         for (Evaluator evaluator : _evaluators) {
             subtotal = subtotal * evaluator.evaluateExpression(game);
         }
-        return subtotal;
+        return (float) Math.floor(subtotal);
     }
 }

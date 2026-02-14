@@ -91,6 +91,11 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
         return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.your(getControllerName()), Filters.or(Filters.personnel, Filters.equipment));
     }
 
+    @Override
+    public Collection<PhysicalCard> getCardsAboard(DefaultGame cardGame) {
+        return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.or(Filters.personnel, Filters.equipment, Filters.ship));
+    }
+
     public boolean isOutpost() {
         return getFacilityType() == FacilityType.OUTPOST;
     }
@@ -103,11 +108,15 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
         return _hullIntegrity;
     }
 
-    public float getWeapons(DefaultGame cardGame) {
+    public Integer getRange(DefaultGame cardGame) {
+        return cardGame.getAttribute(this, CardAttribute.RANGE);
+    }
+
+    public Integer getWeapons(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.WEAPONS);
     }
 
-    public float getShields(DefaultGame cardGame) {
+    public Integer getShields(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.SHIELDS);
     }
 

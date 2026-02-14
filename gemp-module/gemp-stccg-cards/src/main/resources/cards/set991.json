@@ -1,0 +1,59 @@
+{
+    "setId": "991",
+    "setName": "1E Debug Cards",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "991_001",
+            "title": "Dummy 1E Dilemma",
+            "type": "dilemma",
+            "property-logo": "tng-logo"
+        },
+        {
+            "blueprintId": "991_002",
+            "title": "Dummy 1E AU Dilemma",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "icons": "au-icon",
+            "property-logo": "tng-logo"
+        },
+        {
+            "blueprintId": "991_003",
+            "title": "Dummy 1E AU Warp Core Event",
+            "type": "event",
+            "icons": "au-icon,warp-core",
+            "property-logo": "tng-logo",
+            "playThisCardAction": {
+                "type": "playThis"
+            }
+        },
+        {
+            "blueprintId": "991_004",
+            "title": "Dummy 1E Unique Warp Core Event",
+            "type": "event",
+            "icons": "warp-core",
+            "uniqueness": "unique",
+            "property-logo": "tng-logo",
+            "playThisCardAction": {
+                "type": "playThis"
+            }
+        },
+        {
+            "blueprintId": "991_005",
+            "title": "Dummy 1E Hologram Personnel",
+            "type": "personnel",
+            "affiliation": "federation",
+            "classification": "SCIENCE",
+            "skill-box": "[*] SCIENCE",
+            "species": "hologram",
+            "icons": "holographic",
+            "lore": "blork",
+            "gender": "male",
+            "uniqueness": "universal",
+            "integrity": 6,
+            "cunning": 6,
+            "strength": 6,
+            "property-logo": "tng-logo"
+        }
+    ]
+}

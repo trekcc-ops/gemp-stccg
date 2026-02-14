@@ -1,0 +1,38 @@
+{
+    "setId": "111",
+    "setName": "Official Tournament Sealed Deck",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "111_009",
+            "title": "Husnock Outpost",
+            "type": "facility",
+            "property-logo": "tng-logo",
+            "facility-type": "outpost",
+            "affiliation": "non-aligned",
+            "uniqueness": "universal",
+            "lore": "The sudden eradication of the entire Husnock race left its many outposts vacant. Various affiliations take advantage of these available facilities.",
+            "shields": 40,
+            "extended-shields-percentage": 0.25,
+            "actions": [
+                {
+                    "type": "seedThis",
+                    "destinationLocation": {
+                        "affiliation": "non-aligned"
+                    }
+                },
+                {
+                    "type": "seedCardIntoPlay",
+                    "seededCard": "universal + name(Husnock Ship)",
+                    "destination": "thisCard",
+                    "limit": {
+                        "type": "perGamePerCopy",
+                        "count": 1
+                    }
+                }
+            ],
+            "image-url": "https://www.trekcc.org/1e/cardimages/otsdr/9.jpg",
+            "rarity": "P"
+        }
+    ]
+}

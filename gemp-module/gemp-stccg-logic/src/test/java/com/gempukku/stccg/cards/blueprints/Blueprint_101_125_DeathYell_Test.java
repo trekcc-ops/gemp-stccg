@@ -2,12 +2,12 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
-import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -28,7 +28,7 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         _mission = builder.addMission("101_154", "Excavation", P1);
-        outpost = builder.addFacility("101_104", P1, _mission); // Federation Outpost
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
         _armus = builder.addSeedCardUnderMission("101_015", "Armus: Skin of Evil", P2, _mission);
         worf = builder.addCardAboardShipOrFacility("101_251", "Worf", P1, outpost, PersonnelCard.class);
         deathYell = builder.addCardInHand("101_125", "Klingon Death Yell", P1);
@@ -43,14 +43,14 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Beam to the planet and attempt mission
         beamCard(P1, outpost, worf, _mission);
-        attemptMission(P1, _game.getGameState().getAwayTeamForCard(worf), _mission);
+        attemptMission(P1, _mission);
 
         // Confirm that Worf was killed by Armus
         assertEquals(Zone.DISCARD, worf.getZone());
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        selectAction(UseGameTextAction.class, deathYell, P1);
+        useGameText(deathYell, P1);
 
         Player player1 = _game.getPlayer(P1);
 

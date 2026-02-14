@@ -12,7 +12,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
@@ -33,17 +32,17 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
         super(cardGame, player, ActionType.FLY_SHIP);
         _flyingCard = flyingCard;
         _destinationOptions = new LinkedList<>();
-            // TODO - Include non-mission cards in location options (like Gaps in Normal Space)
-        List<MissionLocation> allLocations = cardGame.getGameState().getSpacelineLocations();
+        List<GameLocation> allLocations = cardGame.getGameState().getOrderedSpacelineLocations();
         GameLocation currentLocation = _flyingCard.getGameLocation(cardGame);
                 // TODO - Does not include logic for inter-quadrant flying (e.g. through wormholes)
-        for (MissionLocation location : allLocations) {
+        for (GameLocation location : allLocations) {
             if (location.isInSameQuadrantAs(currentLocation) && location != currentLocation) {
                 int rangeNeeded = currentLocation.getDistanceToLocation(cardGame, location, player);
                 if (rangeNeeded <= _flyingCard.getRangeAvailable(cardGame)) {
                     PhysicalCard destination = location.getMissionForPlayer(player.getPlayerId());
-                    _destinationOptions.add(destination);
-                    _destinationOptions.add(location.getMissionForPlayer(player.getPlayerId()));
+                    if (destination != null) {
+                        _destinationOptions.add(destination);
+                    }
                 }
             }
         }

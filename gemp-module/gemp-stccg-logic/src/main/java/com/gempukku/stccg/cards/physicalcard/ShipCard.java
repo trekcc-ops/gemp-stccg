@@ -21,10 +21,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.google.common.collect.Lists;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -155,16 +152,22 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
         return icons.collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
     }
 
+    public Integer getRange(DefaultGame cardGame) {
+        return cardGame.getAttribute(this, CardAttribute.RANGE);
+    }
+    public Integer getPrintedRange() {
+        return _blueprint.getRange();
+    }
+
     public int getFullRange(DefaultGame cardGame) {
         return (int) cardGame.getAttribute(this, CardAttribute.RANGE);
     }
 
-
-    public float getWeapons(DefaultGame cardGame) {
+    public Integer getWeapons(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.WEAPONS);
     }
 
-    public float getShields(DefaultGame cardGame) {
+    public Integer getShields(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.SHIELDS);
     }
 
@@ -200,8 +203,18 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
     }
 
     public Collection<PersonnelCard> getPersonnelAboard(DefaultGame cardGame) {
-        // TODO - Doesn't include intruders
-        return getPersonnelInCrew(cardGame);
+        Collection<PersonnelCard> result = new ArrayList<>();
+        for (PhysicalCard card : getCardsAboard(cardGame)) {
+            if (card instanceof PersonnelCard personnel) {
+                result.add(personnel);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Collection<PhysicalCard> getCardsAboard(DefaultGame cardGame) {
+        return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.or(Filters.personnel, Filters.equipment, Filters.ship));
     }
 
 

@@ -25,17 +25,17 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     private final ObjectMapper _mapper = new ObjectMapper();
 
 
-    public FilterBlueprintDeserializer() {
+    public FilterBlueprintDeserializer() throws InvalidCardDefinitionException {
         this(null);
     }
 
-    public FilterBlueprintDeserializer(Class<?> vc) {
+    public FilterBlueprintDeserializer(Class<?> vc) throws InvalidCardDefinitionException {
         super(vc);
         loadSimpleFilters();
         loadParameterFilters();
     }
 
-    private void loadSimpleFilters() {
+    private void loadSimpleFilters() throws InvalidCardDefinitionException {
         for (CardIcon value : CardIcon.values())
             appendFilter(value);
         for (CardType value : CardType.values())
@@ -51,37 +51,38 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         for (SkillName value : SkillName.values())
             appendFilter(value);
 
-        appendSimpleFilter("android", (cardGame, actionContext) ->
-                Filters.and(Species.ANDROID));
+        // Affiliations and species
+        appendSimpleFilter("android", (cardGame, actionContext) -> Filters.changeToFilter(Species.ANDROID));
+        appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
+        appendSimpleFilter("cardassian", (cardGame, actionContext) -> Filters.Cardassian);
+        appendSimpleFilter("dominion", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.DOMINION));
+        appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
+        appendSimpleFilter("hologram", (cardGame, actionContext) -> Filters.hologram);
+        appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
+        appendSimpleFilter("romulan", (cardGame, actionContext) -> Filters.Romulan);
+
+        // Other
         appendSimpleFilter("another", (cardGame, actionContext) ->
                 Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
         appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
-        appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
         appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.getPerformingCardId()));
-        appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
-        appendSimpleFilter("hologram", (cardGame, actionContext) ->
-                Filters.and(Species.HOLOGRAM));
         appendSimpleFilter("inplay", (cardGame, actionContext) -> Filters.inPlay);
         appendSimpleFilter("inYourHand", (cardGame, actionContext) ->
                 new InYourHandFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("inYourDrawDeck", (cardGame, actionContext) ->
                 new InYourDrawDeckFilter(actionContext.getPerformingPlayerId()));
-        appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
         appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
         appendSimpleFilter("notThisCard", (cardGame, actionContext) -> Filters.not(Filters.card(actionContext.card())));
         appendSimpleFilter("onPlanet(missionSeededByYourOpponent)", (cardGame, actionContext) -> {
                 String opponentName = cardGame.getOpponent(actionContext.yourName());
                 return new OnPlanetMissionFilter(opponentName);
         });
-        appendSimpleFilter("outpost", (cardGame, actionContext) -> Filters.changeToFilter(FacilityType.OUTPOST));
-        appendSimpleFilter("romulan", (cardGame, actionContext) -> Filters.Romulan);
         appendSimpleFilter("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         appendSimpleFilter("thisCard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
-        appendSimpleFilter("unique", (cardGame, actionContext) -> Filters.unique);
-        appendSimpleFilter("universal", (cardGame, actionContext) -> Filters.universal);
+        appendSimpleFilter("thisCardIsAboard", (cardGame, actionContext) -> new ThisCardIsAboardFilter(actionContext.card()));
         appendSimpleFilter("youControlAMatchingOutpost", (cardGame, actionContext) ->
                 new YouControlAMatchingOutpostFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("youOwnNoCopiesInPlay", (cardGame, actionContext) ->
@@ -94,8 +95,12 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 Filters.presentWithThisCard(actionContext.getPerformingCardId()));
     }
     
-    private void appendSimpleFilter(String label, FilterBlueprint blueprint) {
+    private void appendSimpleFilter(String label, FilterBlueprint blueprint) throws InvalidCardDefinitionException {
         String labelToUse = label.toLowerCase();
+        if (simpleFilters.get(label) != null) {
+            System.out.println(labelToUse);
+            throw new InvalidCardDefinitionException("Duplicate filter blueprint label: " + labelToUse);
+        }
         simpleFilters.put(labelToUse, blueprint);
     }
 
@@ -199,6 +204,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         if (value.startsWith("(") && value.endsWith(")")) {
             return parseSTCCGFilter(value.substring(1, value.length() - 1));
         }
+        if (value.startsWith("locationName(") && value.endsWith(")")) {
+            String locationName = value.substring("locationName(".length(), value.length() - 1);
+            return new LocationNameFilterBlueprint(locationName);
+        }
         if (value.startsWith("not(") && value.endsWith(")")) {
             FilterBlueprint filterBlueprint = parseSTCCGFilter(value.substring(4, value.length() - 1));
             return (cardGame, actionContext) -> Filters.not(filterBlueprint.getFilterable(cardGame, actionContext));
@@ -215,6 +224,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             String engineerFilter = value.substring("facilityEngineerRequirement(".length(), value.length() - 1);
             FilterBlueprint engineerBlueprint = parseSTCCGFilter(engineerFilter);
             return new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);
+        }
+        if (value.startsWith("integrity>")) {
+            int integrityAmount = Integer.valueOf(value.substring("integrity>".length()));
+            return (cardGame, actionContext) -> Filters.integrityGreaterThan(integrityAmount);
         }
         if (value.startsWith("affiliation=")) {
             String affiliationName = value.substring(12);

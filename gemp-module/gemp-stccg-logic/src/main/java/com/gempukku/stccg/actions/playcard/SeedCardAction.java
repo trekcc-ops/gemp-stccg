@@ -17,7 +17,7 @@ public class SeedCardAction extends PlayCardAction {
 
     @JsonCreator
     private SeedCardAction(@JsonProperty("actionId") int actionId,
-                           @JsonProperty("targetCardId") @JsonIdentityReference(alwaysAsId=true)
+                           @JsonProperty("seededCardId") @JsonIdentityReference(alwaysAsId=true)
                            PhysicalCard cardEnteringPlay,
                            @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
                                PhysicalCard performingCard,
@@ -38,9 +38,6 @@ public class SeedCardAction extends PlayCardAction {
     public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone, ActionContext context) {
         super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD, context);
     }
-    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, ActionContext context) {
-        this(cardGame, cardToSeed, null, context);
-    }
 
 
     @Override
@@ -55,6 +52,15 @@ public class SeedCardAction extends PlayCardAction {
     public void processEffect(DefaultGame cardGame) {
         putCardIntoPlay(cardGame);
         setAsSuccessful();
+    }
+
+    @JsonProperty("seededCardId")
+    protected int getSeededCardId() {
+        if (_cardEnteringPlay != null) {
+            return _cardEnteringPlay.getCardId();
+        } else {
+            return 0;
+        }
     }
 
 }

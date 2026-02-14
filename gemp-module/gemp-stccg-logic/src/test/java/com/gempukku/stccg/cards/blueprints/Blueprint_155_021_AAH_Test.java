@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         _game = builder.getGame();
         builder.addCardToCoreAsSeeded("155_022", "Continuing Mission", P1);
         attention = builder.addCardToCoreAsSeeded("155_021", "Attention All Hands", P1);
-        outpost = builder.addFacility("101_104", P1);
+        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
 
         // playable
         lopez1 = builder.addCardInHand("155_063", "Lopez", P1, PersonnelCard.class);
@@ -84,7 +85,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
             assertFalse(getSelectableCards(P1).contains(card));
         }
 
-        // Select a card for normal card play
+        // Select a card for card play
         selectCard(P1, lopez1);
         assertTrue(lopez1.isInPlay());
 

@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
@@ -61,6 +62,9 @@ public class CardBlueprint {
     protected String _rarity;
     @JsonProperty("property-logo")
     protected PropertyLogo _propertyLogo;
+
+    @JsonProperty("extended-shields-percentage")
+    Float _extendedShieldsPercentage;
     private String _persona;
 
     @JsonProperty("lore")
@@ -166,6 +170,11 @@ public class CardBlueprint {
     @JsonProperty("playOutOfSequenceCondition")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     private List<PlayOutOfSequenceRequirement> playOutOfSequenceConditions;
+
+    @JsonIgnore
+    public Float getExtendedShieldsPercentage() {
+        return _extendedShieldsPercentage;
+    }
 
     @JsonProperty("actions")
     protected List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
@@ -294,15 +303,6 @@ public class CardBlueprint {
     public void setClassification(SkillName classification) { _classification = classification; }
     public SkillName getClassification() { return _classification; }
 
-    public List<RegularSkill> getRegularSkills() {
-        List<RegularSkill> result = new LinkedList<>();
-        for (Skill skill : _skillBox.getSkillList()) {
-            if (skill instanceof RegularSkill regularSkill)
-                result.add(regularSkill);
-        }
-        return result;
-    }
-
     public int getSkillDotCount() {
         return (_skillBox == null) ? 0 : _skillBox.getSkillDots();
     }
@@ -350,7 +350,7 @@ public class CardBlueprint {
     public List<ActionBlueprint> getSeedCardActionSources() {
         List<ActionBlueprint> result = new LinkedList<>();
         for (ActionBlueprint source : _actionBlueprints) {
-            if (source instanceof SeedCardActionBlueprint)
+            if (source instanceof SeedThisCardActionBlueprint)
                 result.add(source);
         }
         return result;
@@ -637,12 +637,21 @@ public class CardBlueprint {
         return _actionBlueprints;
     }
 
-    public ActionBlueprint getActionBlueprintForId(int id) {
-        return _actionBlueprints.get(id);
-    }
-
     public int getIdForActionBlueprint(ActionBlueprint blueprint) {
         return _actionBlueprints.indexOf(blueprint);
     }
 
+    public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName,
+                                                                 PhysicalCard thisCard) {
+        List<TopLevelSelectableAction> result = new ArrayList<>();
+        for (ActionBlueprint actionBlueprint : _actionBlueprints) {
+            if (actionBlueprint instanceof SeedCardIntoPlayBlueprint seedBlueprint) {
+                TopLevelSelectableAction seedAction = seedBlueprint.createAction(cardGame, performingPlayerName, thisCard);
+                if (seedAction != null && seedAction.canBeInitiated(cardGame)) {
+                    result.add(seedAction);
+                }
+            }
+        }
+        return result;
+    }
 }

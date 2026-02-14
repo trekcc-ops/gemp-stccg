@@ -99,7 +99,7 @@
                 {
                     type: seedThis
                     limit: 1
-                    where: core
+                    toCore: true
                 }
             ]
             modifiers: [
@@ -108,6 +108,25 @@
                 }
                 {
                     type: youCanSeedAUCards
+                }
+            ]
+        }
+        {
+            blueprintId: 103_042
+            title: Lower Decks
+            type: event
+            property-logo: tng-logo
+            characteristic: captains-order
+            image-url: https://www.trekcc.org/1e/cardimages/errata/Lower-Decks.jpg
+            rarity: U
+            playThisCardAction: {
+                type: playThis
+            }
+            modifiers: [
+                {
+                    type: addToAllAttributes
+                    modifiedCards: yours + universal + personnel + not(hologram)
+                    amount: 2
                 }
             ]
         }

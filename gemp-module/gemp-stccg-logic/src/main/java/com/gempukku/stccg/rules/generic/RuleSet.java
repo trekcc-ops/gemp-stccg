@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules.generic;
 
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -64,7 +64,7 @@ public class RuleSet<T extends DefaultGame> {
     }
 
     public boolean cardCanEnterPlay(DefaultGame cardGame, PhysicalCard card,
-                                    PlayCardAction.EnterPlayActionType type) {
+                                    EnterPlayActionType type) {
         return true;
     }
 }

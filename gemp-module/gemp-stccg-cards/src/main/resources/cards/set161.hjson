@@ -83,6 +83,54 @@
             image-url: https://www.trekcc.org/1e/cardimages/engage/38.jpg
         }
         {
+            blueprintId: 161_039
+            title: Ambassador Spock
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: V.I.P.
+            icons: staff
+            persona: Spock
+            lore: "Legendary 1/2 Vulcan, 1/2 human head of the Romulan underground. An advocate of reunification, <b>Spock</b> was betrayed by his friend Senator Pardek."
+            species: romulan
+            gender: male
+            skill-box: {
+                skill-dots: 5
+                skills: [
+                    {
+                        type: regular
+                        name: SCIENCE
+                    }
+                    {
+                        type: regular
+                        name: Diplomacy
+                        level: 2
+                    }
+                    {
+                        type: regular
+                        name: Honor
+                    }
+                    {
+                        type: regular
+                        name: Law
+                    }
+                    {
+                        type: regular
+                        name: Mindmeld
+                    }
+                    {
+                        type: specialDownload
+                        text: "Any [univ] [Rom] personnel with INTEGRITY>6 OR Pardek"
+                        downloadCardFilter: "name(Pardek) OR universal + personnel + affiliation=romulan + integrity>6"
+                    }
+                ]
+            }
+            integrity: 10
+            cunning: 9
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/engage/39.jpg
+        }
+        {
             blueprintId: 161_040
             title: "D'Lors"
             type: personnel
