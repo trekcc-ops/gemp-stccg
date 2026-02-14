@@ -40,6 +40,7 @@ public class Blueprint_155_086_Korris_Test extends AbstractAtTest {
         attemptMission(P1, mission);
         useGameText(korris, P1);
         assertEquals(Zone.DISCARD, korris.getZone());
+        assertEquals(Zone.REMOVED, armus.getZone());
     }
 
 }
