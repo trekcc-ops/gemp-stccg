@@ -11,6 +11,8 @@ public interface CardWithCrew extends CardWithCompatibility, CardWithHullIntegri
 
     Collection<PhysicalCard> getCrew(DefaultGame cardGame);
 
+    Collection<PhysicalCard> getCardsAboard(DefaultGame cardGame);
+
     default Collection<PersonnelCard> getPersonnelInCrew(DefaultGame cardGame) {
         Collection<PersonnelCard> personnelInCrew = new LinkedList<>();
         for (PhysicalCard card : getCrew(cardGame)) {

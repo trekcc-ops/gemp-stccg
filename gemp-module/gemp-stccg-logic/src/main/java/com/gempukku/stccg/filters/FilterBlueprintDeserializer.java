@@ -81,6 +81,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         });
         appendSimpleFilter("self", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
         appendSimpleFilter("thisCard", (cardGame, actionContext) -> Filters.cardId(actionContext.getPerformingCardId()));
+        appendSimpleFilter("thisCardIsAboard", (cardGame, actionContext) -> new ThisCardIsAboardFilter(actionContext.card()));
         appendSimpleFilter("youControlAMatchingOutpost", (cardGame, actionContext) ->
                 new YouControlAMatchingOutpostFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("youOwnNoCopiesInPlay", (cardGame, actionContext) ->

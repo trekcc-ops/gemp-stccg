@@ -50,6 +50,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = SkillDotFilter.class, name = "skillDotCount"),
         @JsonSubTypes.Type(value = SpecialDownloadIconCountFilter.class, name = "specialDownloadIconCount"),
         @JsonSubTypes.Type(value = SpeciesFilter.class, name = "species"),
+        @JsonSubTypes.Type(value = ThisCardIsAboardFilter.class, name = "thisCardIsAboard"),
         @JsonSubTypes.Type(value = TitleFilter.class, name = "title"),
         @JsonSubTypes.Type(value = TopOfPlayPileFilter.class, name = "topOfPlayPile"),
         @JsonSubTypes.Type(value = UndockedFilter.class, name = "undocked"),
