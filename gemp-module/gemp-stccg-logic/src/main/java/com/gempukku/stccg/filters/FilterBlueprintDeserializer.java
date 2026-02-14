@@ -55,6 +55,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("android", (cardGame, actionContext) -> Filters.changeToFilter(Species.ANDROID));
         appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
         appendSimpleFilter("cardassian", (cardGame, actionContext) -> Filters.Cardassian);
+        appendSimpleFilter("dominion", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.DOMINION));
         appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
         appendSimpleFilter("hologram", (cardGame, actionContext) -> Filters.hologram);
         appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
