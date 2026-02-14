@@ -31,7 +31,7 @@ public class PlayFacilityResolver implements ActionTargetResolver {
     public PlayFacilityResolver(ST1EGame stGame, FacilityCard facilityCard, CardFilter additionalDestinationFilter) {
         _cardEnteringPlay = facilityCard;
         _performingPlayerName = _cardEnteringPlay.getOwnerName();
-        for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location : stGame.getGameState().getUnorderedMissionLocations()) {
             try {
                 MissionCard missionCard = location.getMissionForPlayer(facilityCard.getOwnerName());
                 boolean canPlayHere = stGame.getRules().isLocationValidPlayCardDestinationPerRules(

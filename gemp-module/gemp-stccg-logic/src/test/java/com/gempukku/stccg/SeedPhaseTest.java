@@ -46,7 +46,7 @@ public class SeedPhaseTest extends AbstractAtTest {
         autoSeedMissions();
 
         // There should now be 12 missions seeded
-        assertEquals(12, _game.getGameState().getSpacelineLocations().size());
+        assertEquals(12, _game.getGameState().getUnorderedMissionLocations().size());
 
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
@@ -69,7 +69,7 @@ public class SeedPhaseTest extends AbstractAtTest {
         initializeGame();
         autoSeedMissions();
 
-        assertEquals(12, _game.getGameState().getSpacelineLocations().size());
+        assertEquals(12, _game.getGameState().getUnorderedMissionLocations().size());
 
         assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
 

@@ -154,7 +154,7 @@ public class MissionLocation implements GameLocation {
             LOGGER.error(errorMessage);
             throw new InvalidGameLogicException("Tried to calculate span between quadrants");
         } else {
-            List<MissionLocation> spaceline = cardGame.getGameState().getSpacelineLocations();
+            List<GameLocation> spaceline = cardGame.getGameState().getOrderedSpacelineLocations();
             int startingIndex = spaceline.indexOf(this);
             int endingIndex = spaceline.indexOf(location);
             int distance = 0;
@@ -174,11 +174,7 @@ public class MissionLocation implements GameLocation {
         }
     }
 
-    public int getLocationZoneIndex(ST1EGame cardGame) {
-        return cardGame.getGameState().getSpacelineLocations().indexOf(this);
-    }
-
-    private int getSpan(Player player) throws InvalidGameLogicException {
+    public int getSpan(Player player) throws InvalidGameLogicException {
         MissionCard card = getMissionForPlayer(player.getPlayerId());
         if (card.isOwnedBy(player.getPlayerId()))
             return card.getBlueprint().getOwnerSpan();
@@ -416,6 +412,10 @@ public class MissionLocation implements GameLocation {
 
     public boolean isInSameQuadrantAs(GameLocation currentLocation) {
         return currentLocation.isInQuadrant(_quadrant);
+    }
+
+    public boolean isInRegion(Region region) {
+        return _region == region;
     }
 
     public boolean wasSeededBy(String playerName) {
