@@ -1051,7 +1051,52 @@
             cunning: 7
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/tng/85V.jpg
-        }
+        },
+        {
+            "blueprintId": "155_086",
+            "title": "Korris",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "command",
+            "lore": "Renegade captain that sought an honorable death. To him, peace was a living death. Deserted with Konmel and Kuvinas to restore Imperial glory.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 3,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Honor"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "ENGINEER"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "SECURITY"
+                    },
+                    {
+                        "type": "specialResponse",
+                        "trigger": {
+                            "type": "randomSelectionInitiated",
+                            "selectionIncludes": "thisCard"
+                        }
+                        "text": "May volunteer for random selections (if applicable).",
+                        "action": {
+                            "type": "volunteerForRandomSelection"
+                        },
+                        "optional": true
+                    }
+                ]
+            }
+            "integrity": 8,
+            "cunning": 6,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/86V.jpg"
+        },
         {
             blueprintId: 155_087
             title: Losta
