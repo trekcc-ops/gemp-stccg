@@ -1080,10 +1080,6 @@
                     },
                     {
                         "type": "specialResponse",
-                        "trigger": {
-                            "type": "randomSelectionInitiated",
-                            "selectionIncludes": "thisCard"
-                        }
                         "text": "May volunteer for random selections (if applicable).",
                         "action": {
                             "type": "volunteerForRandomSelection"

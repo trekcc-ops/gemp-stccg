@@ -2,10 +2,11 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class VolunteerForSelectionAction extends ActionyAction {
+public class VolunteerForSelectionAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _volunteeringCard;
     private final SelectRandomCardAction _selectAction;
@@ -28,4 +29,8 @@ public class VolunteerForSelectionAction extends ActionyAction {
         setAsSuccessful();
     }
 
+    @Override
+    public PhysicalCard getPerformingCard() {
+        return _volunteeringCard;
+    }
 }

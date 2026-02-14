@@ -9,6 +9,8 @@ import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.Skill;
+import com.gempukku.stccg.cards.SpecialResponseActionSkill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -371,6 +373,20 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
                     }
                 }
             });
+            if (this instanceof PersonnelCard personnel) {
+                for (Skill skill : personnel.getSkills(game)) {
+                    if (skill instanceof SpecialResponseActionSkill responseSkill &&
+                            responseSkill.isOptional()) {
+                        ActionBlueprint blueprint = responseSkill.getActionBlueprint(this);
+                        if (blueprint != null) {
+                            TopLevelSelectableAction action = blueprint.createAction(game, playerName, this);
+                            if (action != null) {
+                                playerActions.add(action);
+                            }
+                        }
+                    }
+                }
+            }
             return playerActions;
         }
     }
