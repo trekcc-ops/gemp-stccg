@@ -1774,7 +1774,24 @@
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR270.jpg
             rarity: C
-        }
+        },
+        {
+            "blueprintId": "101_269",
+            "title": "Konmel",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "staff",
+            "lore": "Klingon warrior. He destroyed the cruiser <i>I.K.S. T'Acog</i> and hijacked the Talarian ship <i>Batris</i> with Korris.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": "[*] Navigation",
+            "integrity": 8,
+            "cunning": 5,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR272.jpg"
+        },
         {
             blueprintId: 101_271
             title: "Kle'eg"

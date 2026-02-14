@@ -995,21 +995,46 @@
             image-url: https://www.trekcc.org/1e/cardimages/tng/83V.jpg
         }
         {
-            blueprintId: 155_084
-            title: Konmel
-            type: personnel
-            affiliation: klingon
-            property-logo: tng-logo
-            classification: OFFICER
-            icons: staff
-            lore: Former lieutenant in the Klingon Defense Force. Deserted with Korris and Kunivas to restore glory to the Empire. Expert at concealing weaponry.
-            species: klingon
-            gender: male
-            skill-box: "[*] Honor [*] Computer Skill [*] Stellar Cartography"
-            integrity: 8
-            cunning: 5
-            strength: 8
-            image-url: https://www.trekcc.org/1e/cardimages/tng/84V.jpg
+            "blueprintId": "155_084",
+            "title": "Konmel",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "staff",
+            "lore": "Former lieutenant in the Klingon Defense Force. Deserted with Korris and Kunivas to restore glory to the Empire. Expert at concealing weaponry.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 3,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Honor"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Computer Skill"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Stellar Cartography"
+                    },
+                    {
+                        "type": "specialDownload",
+                        "text": "Klingon Disruptor (if with Korris).",
+                        "downloadCardFilter": "name(Klingon Disruptor)",
+                        "ifCondition": {
+                            "type": "thisCardPresentWithCard"
+                            "otherCardFilter": "name(Korris)"
+                        }
+                    }
+                ]
+            }
+            "integrity": 8,
+            "cunning": 5,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/84V.jpg"
         }
         {
             blueprintId: 155_085
