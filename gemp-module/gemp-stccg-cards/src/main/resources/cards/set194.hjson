@@ -1,0 +1,31 @@
+{
+    "setId": "194",
+    "setName": "Pre-Warp Pack",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "194_076",
+            "title": "Vulcan Outpost",
+            "type": "facility",
+            "property-logo": "ent-logo",
+            "facility-type": "outpost",
+            "affiliation": "vulcan",
+            "uniqueness": "universal",
+            "icons": "au-icon,ent-era"
+            "lore": "Vulcan is the homeworld of the highly logical Vulcan people. The Vulcan High Command established outposts throughout its territory.",
+            "shields": 30,
+            "image-url": "https://www.trekcc.org/1e/cardimages/pwp/76.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "seedThis",
+                    "limit": 1
+                }
+            ],
+            "playThisCardAction": {
+                "type": "playThis",
+                "destination": "facilityEngineerRequirement(affiliation=vulcan)"
+            }
+        }
+    ]
+}
