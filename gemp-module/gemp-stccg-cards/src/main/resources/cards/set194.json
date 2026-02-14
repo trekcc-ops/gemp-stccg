@@ -11,7 +11,7 @@
             "facility-type": "outpost",
             "affiliation": "vulcan",
             "uniqueness": "universal",
-            "icons": "au-icon,ent-era"
+            "icons": "au-icon,ent-era",
             "lore": "Vulcan is the homeworld of the highly logical Vulcan people. The Vulcan High Command established outposts throughout its territory.",
             "shields": 30,
             "image-url": "https://www.trekcc.org/1e/cardimages/pwp/76.jpg",
