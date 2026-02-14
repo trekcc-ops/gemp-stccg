@@ -201,6 +201,50 @@
             image-url: https://www.trekcc.org/1e/cardimages/tstl/37.jpg
         }
         {
+            "blueprintId": "163_038",
+            "title": "K'Vit",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "generations-logo",
+            "classification": "SECURITY",
+            "icons": "staff",
+            "lore": "Klingon helmsman serving the Sisters of Duras. Briefly worked as a bounty hunter. Warrior at heart. Surprised when his ship began to cloak at Veridian III.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Navigation",
+                        "level": 2
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Anthropology"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Treachery"
+                    },
+                    {
+                        "type": "specialModifier",
+                        "text": "If on Cha'Joh, it is RANGE +2.",
+                        "modifier": {
+                            "type": "addRange",
+                            "modifiedCards": "name(Cha'Joh) + thisCardIsAboard",
+                            "amount": 2
+                        }
+                    }
+                ]
+            },
+            "integrity": 3,
+            "cunning": 7,
+            "strength": 9,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/38.jpg",
+            "rarity": "V"
+        }
+        {
             blueprintId: 163_039
             title: Lursa
             type: personnel
