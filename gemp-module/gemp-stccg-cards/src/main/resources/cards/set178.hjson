@@ -11,6 +11,7 @@
             "facility-type": "outpost",
             "affiliation": "dominion",
             "uniqueness": "universal",
+            "quadrant": "gamma",
             "lore": "The homeworld of the Founders of the Dominion is shrouded in mystery. The Dominion establishes outposts throughout its territory.",
             "shields": 30,
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront6/33.jpg",
