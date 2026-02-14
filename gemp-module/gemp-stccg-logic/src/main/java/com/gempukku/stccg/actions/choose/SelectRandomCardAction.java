@@ -29,7 +29,7 @@ public class SelectRandomCardAction extends ActionyAction implements ActionWithR
 
 
     public boolean requirementsAreMet(DefaultGame game) {
-        return !getSelectableCards(game).isEmpty();
+        return !_targetResolver.cannotBeResolved(game);
     }
 
     @Override
