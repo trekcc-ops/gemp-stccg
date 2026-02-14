@@ -10,6 +10,7 @@ import com.gempukku.stccg.actions.targetresolver.ReportMultipleCardsResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.YouCanDownloadFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -23,8 +24,8 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
 
     DownloadReportableActionBlueprint(@JsonProperty(value = "target")
                                       ReportCardsResolverBlueprint cardTarget) {
+        cardTarget.addReportableFilter(new YouCanDownloadFilterBlueprint());
         _cardTarget = cardTarget;
-
     }
 
     @Override
