@@ -421,6 +421,18 @@ export default class GempLotrDeckBuildingUI {
                                                 }
 
                                                 that.loadDeckList();
+                                            },
+                                            {
+                                                "200":function () {
+                                                    // work around server sending 200 but invalid XML
+                                                    if (that.deckName === deckNames[i]) {
+                                                        that.deckName = null;
+                                                        $("#editingDeck").text("New deck");
+                                                        that.clearDeck();
+                                                    }
+
+                                                    that.loadDeckList();
+                                                }
                                             });
                                 }
                             };
@@ -609,6 +621,11 @@ export default class GempLotrDeckBuildingUI {
                 that.deckModified(false);
                 alert("Deck was saved.  Refresh the Game Hall to see it!");
             }, {
+                "200":function () {
+                    // work around server sending 200 but invalid XML
+                    that.deckModified(false);
+                    alert("Deck was saved.  Refresh the Game Hall to see it!");
+                },
                 "400":function () {
                     alert("Invalid deck format.");
                 }
@@ -798,7 +815,7 @@ export default class GempLotrDeckBuildingUI {
                     let blueprintId = card.blueprintId;
                     let imageUrl = card.imageUrl;
                     let count = card.count;
-                    let title = card.title;
+                    let title = card.cardTitle;
                     for (let i = 0; i < count; i++) {
                         this.addCardToDeck(blueprintId, title, imageUrl, subDeck);
                     }
