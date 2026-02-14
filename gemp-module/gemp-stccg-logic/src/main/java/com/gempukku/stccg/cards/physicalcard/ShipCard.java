@@ -155,6 +155,9 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
     public Integer getRange(DefaultGame cardGame) {
         return cardGame.getAttribute(this, CardAttribute.RANGE);
     }
+    public Integer getPrintedRange() {
+        return _blueprint.getRange();
+    }
 
     public int getFullRange(DefaultGame cardGame) {
         return (int) cardGame.getAttribute(this, CardAttribute.RANGE);
