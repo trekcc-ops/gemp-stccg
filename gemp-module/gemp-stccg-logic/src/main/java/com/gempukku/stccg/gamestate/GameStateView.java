@@ -15,11 +15,18 @@ import com.gempukku.stccg.player.PlayerView;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame",
-        "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
-@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision" })
+@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder", "visibleCardsInGame",
+        "versionNumber",
+        "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations"})
+@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder", "visibleCardsInGame", "spacelineLocations",
+        "versionNumber",
+        "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations" })
 public class GameStateView {
+
+    @JsonProperty("versionNumber")
+    @SuppressWarnings("unused")
+    private final String VERSION_NUMBER = "1.1.0";
+
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
     private final GameState _gameState;
@@ -61,8 +68,36 @@ public class GameStateView {
     @JsonProperty("spacelineLocations")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<MissionLocation> getSpacelineLocations() {
+        List<MissionLocation> result = new ArrayList<>();
         if (_gameState instanceof ST1EGameState stGameState) {
-            return new LinkedList<>(stGameState.getSpacelineLocations());
+            for (GameLocation location : stGameState.getOrderedSpacelineLocations()) {
+                if (location instanceof MissionLocation missionLocation) {
+                    result.add(missionLocation);
+                }
+            }
+            return result;
+        }
+        else return null;
+    }
+
+    @JsonProperty("spacelineElements")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<SpacelineIndex> getSpacelineElements() {
+        if (_gameState instanceof ST1EGameState stGameState) {
+            return stGameState.getSpacelineElements();
+        }
+        else return null;
+    }
+
+    @JsonProperty("gameLocations")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, GameLocation> getGameLocations() {
+        if (_gameState instanceof ST1EGameState stGameState) {
+            Map<String, GameLocation> result = new HashMap<>();
+            for (GameLocation location : stGameState.getOrderedSpacelineLocations()) {
+                result.put(String.valueOf(location.getLocationId()), location);
+            }
+            return result;
         }
         else return null;
     }
@@ -72,6 +107,15 @@ public class GameStateView {
         List<PlayerView> result = new LinkedList<>();
         for (Player player : _gameState.getPlayers()) {
             result.add(new PlayerView(player, _requestingPlayerId));
+        }
+        return result;
+    }
+
+    @JsonProperty("playerMap")
+    private Map<String, PlayerView> getPlayerMap() {
+        Map<String, PlayerView> result = new HashMap<>();
+        for (Player player : _gameState.getPlayers()) {
+            result.put(player.getPlayerId(), new PlayerView(player, _requestingPlayerId));
         }
         return result;
     }

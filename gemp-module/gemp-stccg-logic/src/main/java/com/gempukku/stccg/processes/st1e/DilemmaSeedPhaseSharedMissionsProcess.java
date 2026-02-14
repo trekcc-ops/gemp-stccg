@@ -27,7 +27,7 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
     @Override
     List<MissionLocation> getAvailableMissions(ST1EGame stGame, String playerId) {
         List<MissionLocation> result = new ArrayList<>();
-        for (MissionLocation location: stGame.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location: stGame.getGameState().getUnorderedMissionLocations()) {
             if (location.isSharedMission())
                 result.add(location);
         }
@@ -38,7 +38,7 @@ public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProce
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
         ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
-            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+            for (MissionLocation location : stGame.getGameState().getUnorderedMissionLocations()) {
                 location.seedPreSeedsForSharedMissions(stGame);
             }
             return new DilemmaSeedPhaseYourMissionsProcess(stGame);

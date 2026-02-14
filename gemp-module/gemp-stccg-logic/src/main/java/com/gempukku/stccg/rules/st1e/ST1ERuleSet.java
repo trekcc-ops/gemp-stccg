@@ -199,7 +199,7 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
     public Map<PhysicalCard, List<Affiliation>> getDestinationMapForSeedingFacilityPerRules(
             FacilityCard facility, String performingPlayerName, ST1EGame stGame) {
         Map<PhysicalCard, List<Affiliation>> result = new HashMap<>();
-        for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location : stGame.getGameState().getUnorderedMissionLocations()) {
             try {
                 Collection<PhysicalCard> facilitiesOwnedByPlayerHere = Filters.filterCardsInPlay(
                         stGame, Filters.owner(performingPlayerName), CardType.FACILITY,

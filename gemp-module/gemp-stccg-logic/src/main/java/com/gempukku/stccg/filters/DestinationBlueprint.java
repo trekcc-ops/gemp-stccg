@@ -19,7 +19,7 @@ public class DestinationBlueprint {
 
     public Collection<MissionLocation> getDestinationOptions(ST1EGame stGame, String performingPlayerName) {
         Collection<MissionLocation> result = new ArrayList<>();
-        for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
+        for (MissionLocation location : stGame.getGameState().getUnorderedMissionLocations()) {
             if (location.hasMatchingAffiliationIcon(stGame, performingPlayerName, List.of(_affiliation))) {
                 result.add(location);
             }
