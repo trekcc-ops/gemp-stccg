@@ -32,6 +32,7 @@ public class Blueprint_139_013_PickingUpThePieces_Test extends AbstractAtTest {
     private Collection<PersonnelCard> attemptingPersonnel = new ArrayList<>();
 
     private void initializeGame(int geologyOrComputerSkillPersonnel) throws InvalidGameOperationException, CardNotFoundException {
+        attemptingPersonnel.clear();
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         _mission = builder.addMission("101_154", "Excavation", P1);

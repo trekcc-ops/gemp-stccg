@@ -5,9 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.RegularSkill;
-import com.gempukku.stccg.cards.Skill;
-import com.gempukku.stccg.cards.SpecialDownloadSkill;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.PersonnelName;
 import com.gempukku.stccg.common.filterable.SkillName;
@@ -107,7 +104,10 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
                 return new RegularSkillMissionRequirement(
                         _skillMap.get(stringSplit[1].toUpperCase()), Integer.parseInt(stringSplit[0]));
         }
-        if (text.split(attributeSplit).length > 1) {
+        String upperText = text.toUpperCase();
+        if ((upperText.startsWith("INTEGRITY") || upperText.startsWith("CUNNING") || upperText.startsWith("STRENGTH") ||
+                upperText.startsWith("RANGE") || upperText.startsWith("WEAPONS") || upperText.startsWith("SHIELDS")) &&
+                text.split(attributeSplit).length > 1) {
             String[] stringSplit = text.split(attributeSplit);
             if (stringSplit[1].charAt(0) == '>') {
                 String attributeName = stringSplit[0].trim().toUpperCase(Locale.ROOT);
@@ -123,6 +123,15 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
         }
         if (_personnelNameMap.get(text) != null) {
             return new PersonnelNameMissionRequirement(_personnelNameMap.get(text));
+        }
+        if (text.startsWith("name(") && text.endsWith(")")) {
+            String name = text.substring("name(".length(), text.length() - 1);
+            return new PersonnelNameMissionRequirement(name);
+        }
+        if (text.startsWith("personnelWith(") && text.endsWith(")")) {
+            String requirement = text.substring(14,text.length()-1);
+            MissionRequirement personnelRequirement = createRequirement(requirement);
+            return new FromOnePersonnelMissionRequirement(personnelRequirement);
         }
         // If none of these worked, throw an exception
         throw new InvalidCardDefinitionException("Unable to process mission requirement: " + text);

@@ -10,7 +10,6 @@
             "mission-type": "planet",
             "lore": "Parts of B-4's assembly were found strewn across the Kolaran system. Many planetary scans were required to locate all the positronic signatures.",
             "property-logo": "nemesis-logo",
-            "java-blueprint": true,
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront/HMF_13V.jpg",
             "rarity": "V",
             "actions": [

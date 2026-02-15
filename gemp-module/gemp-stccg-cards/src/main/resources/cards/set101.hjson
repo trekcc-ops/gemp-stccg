@@ -122,15 +122,25 @@
             rarity: C
         } */
         {
-            blueprintId: 101_054
-            title: Wind Dancer
-            type: dilemma
-            mission-type: planet
-            property-logo: tng-logo
-            java-blueprint: true
-            lore: Sentry of the Parallax Colony. Only allows those whose hearts are joyous to pass.
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR54.jpg
-            rarity: R
+            "blueprintId": "101_054",
+            "title": "Wind Dancer",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Sentry of the Parallax Colony. Only allows those whose hearts are joyous to pass.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR54.jpg",
+            "rarity": "R",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "name(Lwaxana Troi) OR personnelWith(Youth OR Music OR STRENGTH>9)"
+                        }
+                    ]
+                }
+            ]
         }
         {
             blueprintId: 101_055
