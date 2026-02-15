@@ -89,7 +89,26 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
 
 function cardInStackHasValidAction(gamestate, allCardsInStack) {
     if (Object.hasOwn(gamestate, "pendingDecision")) {
-        if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
+        if (gamestate.pendingDecision.context === "SELECT_PHASE_ACTION") {
+            if (Object.hasOwn(gamestate.pendingDecision, "actions")) {
+                // collect up cards with actions
+                let possible_cardIds_with_actions = [];
+                for (const possible_action of gamestate.pendingDecision.actions) {
+                    if (possible_action.performingCardId) {
+                        possible_cardIds_with_actions.push(possible_action.performingCardId);
+                    }
+                }
+
+                // compare current stack cards against actionable cards
+                for (const stackCardData of allCardsInStack) {
+                    if (possible_cardIds_with_actions.includes(stackCardData.cardId)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        // older code, may not be up to date with gamestate
+        else if (Object.hasOwn(gamestate.pendingDecision, "cardIds")) {
             for (const stackCardData of allCardsInStack) {
                 if (gamestate.pendingDecision.cardIds.includes(stackCardData.cardId.toString())) {
                     return true;
