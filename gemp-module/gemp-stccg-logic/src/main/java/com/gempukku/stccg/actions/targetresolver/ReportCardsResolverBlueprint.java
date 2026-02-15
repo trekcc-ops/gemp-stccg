@@ -12,9 +12,12 @@ import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
 
-    private final FilterBlueprint _reportableFilterBlueprint;
+    private FilterBlueprint _reportableFilterBlueprint;
     private final ValueSource _count;
     private final FilterBlueprint _destinationFilterBlueprint;
     private final boolean _differentCardsOnly;
@@ -59,6 +62,13 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
     @Override
     public void addFilter(FilterBlueprint... filterBlueprint) {
 
+    }
+
+    public void addReportableFilter(FilterBlueprint... filterBlueprints) {
+        List<FilterBlueprint> newFilters = new ArrayList<>();
+        newFilters.add(_reportableFilterBlueprint);
+        newFilters.addAll(List.of(filterBlueprints));
+        _reportableFilterBlueprint = new AndFilterBlueprint(newFilters);
     }
 
     @Override

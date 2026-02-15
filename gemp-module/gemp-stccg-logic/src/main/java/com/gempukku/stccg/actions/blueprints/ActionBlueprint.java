@@ -21,7 +21,8 @@ import com.gempukku.stccg.requirement.Requirement;
         @JsonSubTypes.Type(value = PlayCardForFreeActionBlueprint.class, name = "playCardForFree"),
         @JsonSubTypes.Type(value = PlayThisCardActionBlueprint.class, name = "playThis"),
         @JsonSubTypes.Type(value = PlayThisCardAsResponseActionBlueprint.class, name = "playThisAsResponse"),
-        @JsonSubTypes.Type(value = RequiredTriggerActionBlueprint.class, name = "requiredTrigger")
+        @JsonSubTypes.Type(value = RequiredTriggerActionBlueprint.class, name = "requiredTrigger"),
+        @JsonSubTypes.Type(value = VolunteerForSelectionActionBlueprint.class, name = "volunteerForRandomSelection")
 })
 public interface ActionBlueprint {
     boolean isValid(DefaultGame cardGame, ActionContext actionContext);

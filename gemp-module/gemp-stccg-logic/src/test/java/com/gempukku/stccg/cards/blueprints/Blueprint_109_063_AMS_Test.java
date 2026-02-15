@@ -21,15 +21,19 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
     private FacilityCard outpost;
     private PhysicalCard ams;
-    private PhysicalCard tarses;
-    private PhysicalCard wallace;
+    private PhysicalCard tarses1;
+    private PhysicalCard wallace1;
+    private PhysicalCard tarses2;
+    private PhysicalCard wallace2;
 
     private void initializeGame() throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         ams = builder.addSeedDeckCard("109_063", "Assign Mission Specialists", P1);
-        tarses = builder.addDrawDeckCard("101_236", "Simon Tarses", P1);
-        wallace = builder.addDrawDeckCard("101_203", "Darian Wallace", P1);
+        tarses1 = builder.addDrawDeckCard("101_236", "Simon Tarses", P1);
+        wallace1 = builder.addDrawDeckCard("101_203", "Darian Wallace", P1);
+        tarses2 = builder.addDrawDeckCard("101_236", "Simon Tarses", P2);
+        wallace2 = builder.addDrawDeckCard("101_203", "Darian Wallace", P2);
         outpost = builder.addOutpost(Affiliation.FEDERATION, P1); // Federation Outpost
         builder.setPhase(Phase.SEED_FACILITY);
         builder.startGame();
@@ -45,7 +49,10 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
         useGameText(ams, P1);
         assertNotNull(_game.getAwaitingDecision(P1));
 
-        List<PhysicalCard> specialists = List.of(tarses, wallace);
+
+        List<PhysicalCard> specialists = List.of(tarses1, wallace1);
+        assertTrue(getSelectableCards(P1).containsAll(specialists));
+        assertFalse(getSelectableCards(P1).containsAll(List.of(tarses2, wallace2)));
 
         selectCards(P1, specialists);
         for (PhysicalCard specialist : specialists) {

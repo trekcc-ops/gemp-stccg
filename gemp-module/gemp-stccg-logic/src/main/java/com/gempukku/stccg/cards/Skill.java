@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = RegularSkill.class, name = "regular"),
         @JsonSubTypes.Type(value = SpecialDownloadSkill.class, name = "specialDownload"),
+        @JsonSubTypes.Type(value = SpecialResponseActionSkill.class, name = "specialResponse"),
         @JsonSubTypes.Type(value = NullSkill.class, name = "specialNull"),
         @JsonSubTypes.Type(value = ModifierSkill.class, name = "specialModifier")
 })

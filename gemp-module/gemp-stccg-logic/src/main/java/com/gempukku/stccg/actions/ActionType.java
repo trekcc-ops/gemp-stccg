@@ -43,5 +43,6 @@ public enum ActionType {
     UNDOCK_SHIP,
     USAGE_LIMIT, // Using a cost like normal card play or a "once per turn" limit
     USE_GAME_TEXT, // Compound game text action that consists of several sub-actions
+    VOLUNTEER_FOR_SELECTION,
     WALK_CARDS
 }

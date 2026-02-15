@@ -44,8 +44,14 @@ public interface UserInputSimulator {
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (TopLevelSelectableAction action : actionDecision.getActions()) {
                 if (action.getPerformingCard() == performingCard &&
-                        actionClass.isAssignableFrom(action.getClass()))
+                        actionClass.isAssignableFrom(action.getClass())) {
                     choice = action;
+                } else if (action instanceof UseGameTextAction useTextAction) {
+                    if (useTextAction.getPerformingCard() == performingCard &&
+                            actionClass.isAssignableFrom(useTextAction.getSubActions().getFirst().getClass())) {
+                        choice = action;
+                    }
+                }
             }
             actionDecision.decisionMade(choice);
             getGame().removeDecision(playerId);

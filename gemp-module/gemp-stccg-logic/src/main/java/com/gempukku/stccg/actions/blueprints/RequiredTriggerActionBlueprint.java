@@ -14,20 +14,20 @@ import java.util.List;
 public class RequiredTriggerActionBlueprint extends TriggerActionBlueprint {
 
     @JsonCreator
-    private RequiredTriggerActionBlueprint(@JsonProperty(value="triggerDuringSeed", required = true)
-                                      boolean triggerDuringSeed,
+    public RequiredTriggerActionBlueprint(@JsonProperty(value = "triggerDuringSeed", required = true)
+                                          boolean triggerDuringSeed,
                                           @JsonProperty("trigger")
-                                       TriggerChecker triggerChecker,
+                                          TriggerChecker triggerChecker,
                                           @JsonProperty("requires")
-                                       List<Requirement> requirements,
+                                          List<Requirement> requirements,
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                           @JsonProperty("cost")
                                           List<SubActionBlueprint> costs,
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                           @JsonProperty("effect")
-                                       List<SubActionBlueprint> effects,
-                                           @JsonProperty("player")
-                                           String playerText) throws InvalidCardDefinitionException {
+                                          List<SubActionBlueprint> effects,
+                                          @JsonProperty("player")
+                                          String playerText) throws InvalidCardDefinitionException {
         super(triggerChecker, requirements, costs, effects, triggerDuringSeed,
                 (playerText == null) ? new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText));
     }

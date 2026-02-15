@@ -160,4 +160,8 @@ public class AwayTeam implements AttemptingUnit {
     public int getAwayTeamId() {
         return _awayTeamId;
     }
+
+    public int size() {
+        return _cardsInAwayTeam.size();
+    }
 }
