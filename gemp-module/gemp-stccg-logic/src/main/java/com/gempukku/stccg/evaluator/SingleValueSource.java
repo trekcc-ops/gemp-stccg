@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type",
         defaultImpl = BasicSingleValueSource.class)
@@ -18,14 +17,14 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 })
 public interface SingleValueSource extends ValueSource {
 
-    default int getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    default int getMinimum(DefaultGame cardGame, ActionContext actionContext) {
         return evaluateExpression(cardGame, actionContext);
     }
 
-    default int getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    default int getMaximum(DefaultGame cardGame, ActionContext actionContext) {
         return evaluateExpression(cardGame, actionContext);
     }
 
-    int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException;
+    int evaluateExpression(DefaultGame cardGame, ActionContext actionContext);
 
 }

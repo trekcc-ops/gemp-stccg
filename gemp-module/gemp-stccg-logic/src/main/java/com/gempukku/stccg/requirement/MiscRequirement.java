@@ -60,7 +60,7 @@ public class MiscRequirement implements Requirement {
                 case HASCARDINDISCARD, HASCARDINHAND, HASCARDINPLAYPILE ->
                         player.hasCardInZone(cardGame, _requirementType.zone, count, filterable);
             };
-        } catch(PlayerNotFoundException | InvalidGameLogicException exp) {
+        } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
         }

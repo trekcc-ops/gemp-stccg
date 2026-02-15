@@ -3,7 +3,6 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 public class VariableRangeValueSource implements ValueSource {
 
@@ -20,12 +19,12 @@ public class VariableRangeValueSource implements ValueSource {
     }
 
     @Override
-    public int getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int getMinimum(DefaultGame cardGame, ActionContext actionContext) {
         return _fromValue.evaluateExpression(cardGame, actionContext);
     }
 
     @Override
-    public int getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int getMaximum(DefaultGame cardGame, ActionContext actionContext) {
         return _toValue.evaluateExpression(cardGame, actionContext);
     }
 

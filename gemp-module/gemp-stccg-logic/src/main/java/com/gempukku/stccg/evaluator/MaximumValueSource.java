@@ -3,27 +3,26 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
+
+import java.util.Collection;
 
 public class MaximumValueSource implements SingleValueSource {
 
-    private final SingleValueSource _first;
-    private final SingleValueSource _second;
+    private final static int MIN_VALUE = -99999;
+    private final Collection<SingleValueSource> _values;
 
     public MaximumValueSource(
-            @JsonProperty(value = "first", required = true)
-            SingleValueSource first,
-            @JsonProperty(value = "second", required = true)
-            SingleValueSource second) {
-        _first = first;
-        _second = second;
+            @JsonProperty(value = "values", required = true)
+            Collection<SingleValueSource> values) {
+        _values = values;
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
-        return Math.max(
-                _first.evaluateExpression(cardGame, actionContext),
-                _second.evaluateExpression(cardGame, actionContext)
-        );
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+        int maxValue = MIN_VALUE;
+        for (SingleValueSource value : _values) {
+            maxValue = Math.max(maxValue, value.evaluateExpression(cardGame, actionContext));
+        }
+        return maxValue;
     }
 }

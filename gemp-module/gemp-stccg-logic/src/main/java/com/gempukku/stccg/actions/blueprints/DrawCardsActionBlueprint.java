@@ -51,7 +51,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
             final String targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
             Player targetPlayer = cardGame.getPlayer(targetPlayerId);
             return targetPlayer.getCardsInDrawDeck().size() >= count;
-        } catch(PlayerNotFoundException | InvalidGameLogicException exp) {
+        } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
         }
