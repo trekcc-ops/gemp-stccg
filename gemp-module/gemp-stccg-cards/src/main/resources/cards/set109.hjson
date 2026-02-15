@@ -4,45 +4,43 @@
     gameType: First Edition
     cards: [
         {
-            blueprintId: 109_005
-            title: Blended
-            type: dilemma
-            mission-type: planet
-            property-logo: first-contact-logo
-            java-blueprint: true
-            icons: first-contact-icon
-            lore: "Sometimes obtaining information from locals requires consuming beverages of dubious nutritional value. It's best not to criticize such \"counseling\" techniques."
-            image-url: https://www.trekcc.org/1e/cardimages/fc/blended.gif
-/*            actions: [
+            "blueprintId": "109_005",
+            "title": "Blended",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Sometimes obtaining information from locals requires consuming beverages of dubious nutritional value. It's best not to criticize such \"counseling\" techniques.",
+            "property-logo": "first-contact-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/fc/blended.gif",
+            "rarity": "U",
+            "actions": [
                 {
-                    type: encounter
-                    effect: [
+                    "type": "encounter",
+                    "effect": [
                         {
-                            type: overcomeCondition
-                            requires: Empathy OR Diplomacy OR Morn OR any(Scotty)
-                        }
+                            "type": "overcomeCondition",
+                            "requires": "Empathy OR Diplomacy OR name(Morn) OR characteristic(Scotty)"
+                        },
                         {
-                            type: stop
-                            target: {
-                                type: select
-                                random: true
-                                filter: personnel + (Empathy OR Diplomacy OR Morn OR any(Scotty))
-                                count: {
-                                    type: if
-
-                                }
-                            }
-                            successEffect: {
-                                type: stop
-                                target: {
-                                    filter: personnel + (Empathy OR Diplomacy OR Morn OR any(Scotty))
-                                }
+                            "type": "randomSelection",
+                            "requires": {
+                                "type": "cardInPlay",
+                                "filter": "personnel + (Empathy OR Diplomacy OR name=Morn OR characteristic=Scotty) + presentWithThisCard",
+                                "countAtLeast": 2
+                            },
+                            "filter": "personnel + (Empathy OR Diplomacy OR name=Morn OR characteristic=Scotty) + encounteringThisCard",
+                            "saveToMemoryId": "excludedPersonnel"
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "selectAll",
+                                "filter": "personnel + (Empathy OR Diplomacy OR name=Morn OR characteristic=Scotty) + encounteringThisCard + not(memoryId=excludedPersonnel)"
                             }
                         }
                     ]
                 }
-            ] */
-        }
+            ]
+        },
         {
             blueprintId: 109_010
             title: Maglock

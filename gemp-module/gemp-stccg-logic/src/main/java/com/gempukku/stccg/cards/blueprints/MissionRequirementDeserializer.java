@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.common.filterable.PersonnelName;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.condition.missionrequirements.*;
@@ -128,10 +129,19 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
             String name = text.substring("name(".length(), text.length() - 1);
             return new PersonnelNameMissionRequirement(name);
         }
+        if (text.startsWith("name=") && !text.contains(" ")) {
+            String name = text.substring("name=".length());
+            return new PersonnelNameMissionRequirement(name);
+        }
         if (text.startsWith("personnelWith(") && text.endsWith(")")) {
             String requirement = text.substring(14,text.length()-1);
             MissionRequirement personnelRequirement = createRequirement(requirement);
             return new FromOnePersonnelMissionRequirement(personnelRequirement);
+        }
+        if (text.startsWith("characteristic(") && text.endsWith(")")) {
+            String characteristicText = text.substring("characteristic(".length(),text.length()-1);
+            Characteristic characteristic = Characteristic.findCharacteristic(characteristicText);
+            return new CharacteristicMissionRequirement(characteristic);
         }
         // If none of these worked, throw an exception
         throw new InvalidCardDefinitionException("Unable to process mission requirement: " + text);
