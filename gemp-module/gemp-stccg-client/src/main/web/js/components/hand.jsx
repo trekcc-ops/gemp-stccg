@@ -3,12 +3,12 @@ import CardStack from './card-stack.jsx';
 
 function get_hand(gamestate) {
     let player_id = gamestate["requestingPlayer"];
-    let player_data = gamestate["players"].filter((data) => data["playerId"] === player_id);
-    if (player_data.length !== 1) {
+    let player_data = gamestate.playerMap[player_id];
+    if (player_data == null) {
         console.error(`player with id ${player_id} not found`);
     }
     else {
-        let ids_in_hand = player_data[0]["cardGroups"]["HAND"]["cardIds"];
+        let ids_in_hand = player_data["cardGroups"]["HAND"]["cardIds"];
         // DEBUG: console.log(ids_in_hand);
         let resolved_cards = [];
         let visible_cards_in_game = gamestate["visibleCardsInGame"];

@@ -10,20 +10,22 @@ function get_your_player_id(gamestate) {
 // TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
 function get_opponent_player_id(gamestate) {
     let your_player_id = gamestate["requestingPlayer"];
-    let opponent_player_data = gamestate["players"].filter((data) => data["playerId"] != your_player_id);
-    return opponent_player_data[0]["playerId"];
+    let opponent_names = [];
+    for (const playerId of Object.keys(gamestate["playerMap"])) {
+        if (playerId != your_player_id) {
+            opponent_names.push(playerId);
+        }
+    }
+    return opponent_names[0]; // assume 1 opponent
 }
 
 function get_core_cards(gamestate, playerid) {
     let retarr = [];
-
     let ids_in_core = [];
-    for (const playerData of gamestate["players"]) {
-        if (playerData["playerId"] === playerid) {
-            for (const cardid of playerData["cardGroups"]["CORE"]["cardIds"]) {
-                ids_in_core.push(cardid.toString());
-            }
-        }
+
+    let playerData = gamestate.playerMap[playerid];
+    for (const cardid of playerData["cardGroups"]["CORE"]["cardIds"]) {
+        ids_in_core.push(cardid.toString());
     }
 
     let visible_cards_in_game = gamestate["visibleCardsInGame"];

@@ -8,8 +8,8 @@ import decipher_card_removed from '../../images/decipher_card_removed.svg?no-inl
 import '../../css/player-score-pane.css';
 
 function get_player_data(player_id, gamestate) {
-    let player_data = gamestate["players"].filter((data) => data["playerId"] === player_id);
-    if (player_data.length != 1) {
+    let player_data = gamestate.playerMap[player_id];
+    if (player_data == null) {
         console.error(`player with id ${player_id} not found`);
         // 0 here hides the number badges
         return {
@@ -23,12 +23,12 @@ function get_player_data(player_id, gamestate) {
         };
     }
     else {
-        let username = player_data[0]["playerId"];
-        let drawsize = player_data[0]["cardGroups"]["DRAW_DECK"]["cardCount"];
-        let handsize = player_data[0]["cardGroups"]["HAND"]["cardCount"];
-        let discardsize = player_data[0]["cardGroups"]["DISCARD"]["cardCount"];
-        let removedsize = player_data[0]["cardGroups"]["REMOVED"]["cardCount"];
-        let thescore = player_data[0]["score"];
+        let username = player_data["playerId"];
+        let drawsize = player_data["cardGroups"]["DRAW_DECK"]["cardCount"];
+        let handsize = player_data["cardGroups"]["HAND"]["cardCount"];
+        let discardsize = player_data["cardGroups"]["DISCARD"]["cardCount"];
+        let removedsize = player_data["cardGroups"]["REMOVED"]["cardCount"];
+        let thescore = player_data["score"];
 
         let player_clock;
         for (const clockObj of gamestate["playerClocks"]) {

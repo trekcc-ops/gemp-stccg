@@ -7,14 +7,11 @@ import decipher_card_core from '../../images/decipher_card_core.svg?url';
 
 function get_core_cards(gamestate, playerid) {
     let retarr = [];
-
     let ids_in_core = [];
-    for (const playerData of gamestate["players"]) {
-        if (playerData["playerId"] === playerid) {
-            for (const cardid of playerData["cardGroups"]["CORE"]["cardIds"]) {
-                ids_in_core.push(cardid.toString());
-            }
-        }
+
+    let playerData = gamestate.playerMap[playerid];
+    for (const cardid of playerData["cardGroups"]["CORE"]["cardIds"]) {
+        ids_in_core.push(cardid.toString());
     }
 
     let visible_cards_in_game = gamestate["visibleCardsInGame"];

@@ -2,27 +2,43 @@ import Box from '@mui/material/Box';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import CardTreeModel from '../lib/cardTreeModel.js';
 
+function get_your_player_id(gamestate) {
+    return gamestate["requestingPlayer"];
+}
+
+function get_opponent_player_id(gamestate) {
+    let your_player_id = gamestate["requestingPlayer"];
+    let opponent_names = [];
+    for (const playerId of Object.keys(gamestate["playerMap"])) {
+        if (playerId != your_player_id) {
+            opponent_names.push(playerId);
+        }
+    }
+    return opponent_names[0]; // assume 1 opponent
+}
+
 function cards_to_treeitems (gamestate) {
-    let player_id = gamestate["requestingPlayer"];
-    let player_data = gamestate["players"].filter((data) => data["playerId"] === player_id);
-    if (player_data.length != 1) {
+    let player_id = get_your_player_id(gamestate);
+    let player_data = gamestate.playerMap[player_id];
+    if (player_data == null) {
         console.error(`player with id ${player_id} not found`);
         return [{id: 'error', label: 'error'}];
     }
 
-    let opponent_player_data = gamestate["players"].filter((data) => data["playerId"] != player_id);
-    if (opponent_player_data.length != 1) {
-        console.error(`player with id ${player_id} not found`);
+    let opponent_player_id = get_opponent_player_id(gamestate);
+    let opponent_player_data = gamestate.playerMap[opponent_player_id];
+    if (opponent_player_data == null) {
+        console.error(`player with id ${opponent_player_id} not found`);
         return [{id: 'error', label: 'error'}];
     }
 
-    let card_ids_in_your_hand = player_data[0]["cardGroups"]["HAND"]["cardIds"];
-    let card_ids_in_your_core = player_data[0]["cardGroups"]["CORE"]["cardIds"];
-    let card_ids_in_your_discard = player_data[0]["cardGroups"]["DISCARD"]["cardIds"];
-    let card_ids_in_your_removed = player_data[0]["cardGroups"]["REMOVED"]["cardIds"];
-    let card_ids_in_opponent_core = opponent_player_data[0]["cardGroups"]["CORE"]["cardIds"];
-    let card_ids_in_opponent_discard = opponent_player_data[0]["cardGroups"]["DISCARD"]["cardIds"];
-    let card_ids_in_opponent_removed = opponent_player_data[0]["cardGroups"]["REMOVED"]["cardIds"];
+    let card_ids_in_your_hand = player_data["cardGroups"]["HAND"]["cardIds"];
+    let card_ids_in_your_core = player_data["cardGroups"]["CORE"]["cardIds"];
+    let card_ids_in_your_discard = player_data["cardGroups"]["DISCARD"]["cardIds"];
+    let card_ids_in_your_removed = player_data["cardGroups"]["REMOVED"]["cardIds"];
+    let card_ids_in_opponent_core = opponent_player_data["cardGroups"]["CORE"]["cardIds"];
+    let card_ids_in_opponent_discard = opponent_player_data["cardGroups"]["DISCARD"]["cardIds"];
+    let card_ids_in_opponent_removed = opponent_player_data["cardGroups"]["REMOVED"]["cardIds"];
 
     let visible_cards_obj = gamestate["visibleCardsInGame"];
     let visible_cards_in_game = Object.values(visible_cards_obj); // array
