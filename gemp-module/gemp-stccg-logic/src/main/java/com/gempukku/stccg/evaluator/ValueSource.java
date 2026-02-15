@@ -11,25 +11,22 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 @JsonSubTypes({@JsonSubTypes.Type(value = VariableRangeValueSource.class, name = "range"),
         @JsonSubTypes.Type(value = ConditionalValueSource.class, name = "requires"),
         @JsonSubTypes.Type(value = ForEachInMemoryValueSource.class, name = "forEachInMemory"),
-        @JsonSubTypes.Type(value = LimitValueSource.class, name = "limit"),
-        @JsonSubTypes.Type(value = ForEachInMemoryValueSource.class, name = "forEachInMemory"),
         @JsonSubTypes.Type(value = CountDiscardValueSource.class, name = "forEachInDiscard"),
         @JsonSubTypes.Type(value = MaximumValueSource.class, name = "max"),
         @JsonSubTypes.Type(value = MinimumValueSource.class, name = "min"),
         @JsonSubTypes.Type(value = SkillDotCountValueSource.class, name = "skillDotCount"),
         @JsonSubTypes.Type(value = ThisCardPointBoxValueSource.class, name = "thisCardPointBoxValue")
 })
-public abstract class ValueSource {
+public interface ValueSource {
 
-    public float getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    default float getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
         return evaluateExpression(cardGame, actionContext);
     }
 
-    public float getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    default float getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
         return evaluateExpression(cardGame, actionContext);
     }
 
-    public abstract float evaluateExpression(DefaultGame cardGame, ActionContext actionContext)
-            throws InvalidGameLogicException;
+    float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException;
 
 }

@@ -8,7 +8,7 @@ import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.List;
 
-public class ConditionalValueSource extends ValueSource {
+public class ConditionalValueSource implements ValueSource {
 
     private final ValueSource _trueValue;
     private final ValueSource _falseValue;

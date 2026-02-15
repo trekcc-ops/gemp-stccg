@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ForEachInMemoryValueSource extends ValueSource {
+public class ForEachInMemoryValueSource implements SingleValueSource {
 
     private final String _memory;
     private final int _limit;

@@ -13,7 +13,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Objects;
 
-public class CountDiscardValueSource extends ValueSource {
+public class CountDiscardValueSource implements SingleValueSource {
 
     private final int _multiplier;
     private final int _limit;

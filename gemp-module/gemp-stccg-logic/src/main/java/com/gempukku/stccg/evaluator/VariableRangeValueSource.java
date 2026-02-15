@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-public class VariableRangeValueSource extends ValueSource {
+public class VariableRangeValueSource implements ValueSource {
 
     private final ValueSource _fromValue;
     private final ValueSource _toValue;

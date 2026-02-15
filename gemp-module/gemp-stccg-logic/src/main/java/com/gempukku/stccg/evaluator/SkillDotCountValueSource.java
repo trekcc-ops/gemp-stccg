@@ -11,7 +11,7 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collection;
 
-public class SkillDotCountValueSource extends ValueSource {
+public class SkillDotCountValueSource implements SingleValueSource {
 
     private final TargetResolverBlueprint _personnelBlueprint;
 

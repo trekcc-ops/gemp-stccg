@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ConstantValueSource extends BasicValueSource {
+public class ConstantValueSource extends BasicValueSource implements SingleValueSource {
     private final int _value;
 
     @JsonCreator

@@ -5,16 +5,16 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-public class MaximumValueSource extends ValueSource {
+public class MaximumValueSource implements SingleValueSource {
 
-    private final ValueSource _first;
-    private final ValueSource _second;
+    private final SingleValueSource _first;
+    private final SingleValueSource _second;
 
     public MaximumValueSource(
             @JsonProperty(value = "first", required = true)
-            ValueSource first,
+            SingleValueSource first,
             @JsonProperty(value = "second", required = true)
-            ValueSource second) {
+            SingleValueSource second) {
         _first = first;
         _second = second;
     }

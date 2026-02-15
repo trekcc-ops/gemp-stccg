@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-public class ThisCardPointBoxValueSource extends ValueSource {
+public class ThisCardPointBoxValueSource implements SingleValueSource {
     @Override
     public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext)
             throws InvalidGameLogicException {

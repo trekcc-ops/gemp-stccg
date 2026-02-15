@@ -1,0 +1,38 @@
+{
+    "setId": "139",
+    "setName": "Homefront",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "139_013",
+            "title": "Picking Up the Pieces",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Parts of B-4's assembly were found strewn across the Kolaran system. Many planetary scans were required to locate all the positronic signatures.",
+            "property-logo": "nemesis-logo",
+            "java-blueprint": true,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront/HMF_13V.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Geology OR Computer Skill"
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "random": true,
+                                "filter": "personnel + (Geology OR Computer Skill)",
+                                "count": 1
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
