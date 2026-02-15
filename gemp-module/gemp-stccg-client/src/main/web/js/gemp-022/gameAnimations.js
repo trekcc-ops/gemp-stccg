@@ -222,9 +222,9 @@ export default class GameAnimations {
 
     drawCard(performingPlayerId, gameState) {
         this.game.updateGameStats(gameState); // update card counts in draw decks
-        for (const player of gameState.players) {
-            if (player.playerId == performingPlayerId && player.playerId == this.game.bottomPlayerId) {
-                for (const cardId of player.cardGroups["HAND"].cardIds) {
+        for (const playerData of Object.values(gameState.playerMap)) {
+            if (playerData.playerId == performingPlayerId && playerData.playerId == this.game.bottomPlayerId) {
+                for (const cardId of playerData.cardGroups["HAND"].cardIds) {
                     let cardDiv = getCardDivFromId(cardId);
                     if (cardDiv.length == 0) {
                         let card = gameState.visibleCardsInGame[cardId];
@@ -875,9 +875,9 @@ export default class GameAnimations {
                 if (that.game.allPlayerIds.includes(uiPlayer)) {
                     if (newPhase === "SEED_MISSION" && newPhaseName != currentPhaseName) {
                         // if initializing mission seed phase
-                        for (const player of gameState.players) {
-                            if (player.playerId === uiPlayer) {
-                                let missionPileCardIds = player.cardGroups["MISSIONS_PILE"].cardIds;
+                        for (const playerData of Object.values(gameState.playerMap)) {
+                            if (playerData.playerId === uiPlayer) {
+                                let missionPileCardIds = playerData.cardGroups["MISSIONS_PILE"].cardIds;
                                 for (let i = missionPileCardIds.length - 1; i >= 0; i--) {
                                     let card = gameState.visibleCardsInGame[missionPileCardIds[i]];
                                     that.addCardToHiddenZone(card, "MISSIONS_PILE", uiPlayer);
@@ -889,9 +889,9 @@ export default class GameAnimations {
                             /* All dilemma and facility phase cards are put in the hand group at the beginning of
                                 the dilemma seed phase, so this shouldn't be run again when the phase moves from
                                 dilemma phase to facility phase. */
-                        for (const player of gameState.players) {
-                            if (player.playerId === uiPlayer) {
-                                let seedDeckCardIds = player.cardGroups["SEED_DECK"].cardIds;
+                        for (const playerData of Object.values(gameState.playerMap)) {
+                            if (playerData.playerId === uiPlayer) {
+                                let seedDeckCardIds = playerData.cardGroups["SEED_DECK"].cardIds;
                                 for (const cardId of seedDeckCardIds) {
                                     let card = gameState.visibleCardsInGame[cardId];
                                     that.addCardToHiddenZone(card, "SEED_DECK", uiPlayer);

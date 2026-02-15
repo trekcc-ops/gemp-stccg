@@ -44,12 +44,13 @@ export function getUseDialog(decision, gameState, gameUi) {
                     cardIsVisible = true;
                 }
             }
-            for (let i = 0; i < gameState.players.length; i++) {
-                // Cards in hand don't need the dialog
-                if (gameState.players[i].playerName === yourPlayerName && gameState.players[i].cardGroups["HAND"].includes(cardId)) {
+
+            for (const playerData of Object.values(gameState.playerMap)) {
+                if (playerData.playerId === yourPlayerName && playerData.cardGroups["HAND"].includes(cardId)) {
                     cardIsVisible = true;
                 }
             }
+            
             if (!cardIsVisible) {
                 return true;
             }
