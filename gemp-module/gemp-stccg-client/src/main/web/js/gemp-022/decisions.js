@@ -46,7 +46,7 @@ export function getUseDialog(decision, gameState, gameUi) {
             }
 
             for (const playerData of Object.values(gameState.playerMap)) {
-                if (playerData.playerId === yourPlayerName && playerData.cardGroups["HAND"].includes(cardId)) {
+                if (playerData.playerId === yourPlayerName && playerData.cardGroups.HAND.cardIds.includes(cardId)) {
                     cardIsVisible = true;
                 }
             }
