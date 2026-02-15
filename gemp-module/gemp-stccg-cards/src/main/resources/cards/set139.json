@@ -22,12 +22,20 @@
                             "requires": "Geology OR Computer Skill"
                         },
                         {
+                            "type": "randomSelection",
+                            "requires": {
+                                "type": "cardInPlay",
+                                "filter": "personnel + (Geology OR Computer Skill) + presentWithThisCard",
+                                "countAtLeast": 2
+                            },
+                            "filter": "personnel + (Geology OR Computer Skill) + encounteringThisCard",
+                            "saveToMemoryId": "excludedPersonnel"
+                        },
+                        {
                             "type": "stop",
                             "target": {
-                                "type": "select",
-                                "random": true,
-                                "filter": "personnel + (Geology OR Computer Skill)",
-                                "count": 1
+                                "type": "selectAll",
+                                "filter": "personnel + (Geology OR Computer Skill) + encounteringThisCard + not(memoryId=excludedPersonnel)"
                             }
                         }
                     ]

@@ -67,4 +67,8 @@ public class RuleSet<T extends DefaultGame> {
                                     EnterPlayActionType type) {
         return true;
     }
+
+    public boolean cardsArePresentWithEachOther(DefaultGame cardGame, PhysicalCard... cards) {
+        return false;
+    }
 }

@@ -8,6 +8,8 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.evaluator.ConstantValueSource;
+import com.gempukku.stccg.evaluator.SingleValueSource;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
@@ -21,19 +23,18 @@ import java.util.*;
 public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
 
     private final List<FilterBlueprint> _filterBlueprints;
-    private final int _count;
+    private final SingleValueSource _count;
     private final boolean _randomSelection;
     private final PlayerSource _selectingPlayer;
 
     public SelectCardTargetBlueprint(@JsonProperty(value = "filter", required = true)
                               FilterBlueprint filterBlueprint,
                               @JsonProperty("count")
-                              Integer count,
+                             SingleValueSource count,
                               @JsonProperty("selectingPlayer") String selectingPlayerText,
                               @JsonProperty("random")
                               Boolean randomSelection) throws InvalidCardDefinitionException {
-        _filterBlueprints = new LinkedList<>();
-        _filterBlueprints.add(filterBlueprint);
+        _filterBlueprints = new ArrayList<>(List.of(filterBlueprint));
         if (Objects.equals(selectingPlayerText, "opponent")) {
             _selectingPlayer = new YourOpponentPlayerSource();
         } else if (selectingPlayerText == null) {
@@ -41,13 +42,8 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         } else {
             throw new InvalidCardDefinitionException("Could not process 'selectingPlayer' for SelectCardTargetBlueprint");
         }
-        _count = Objects.requireNonNullElse(count, 1);
+        _count = Objects.requireNonNullElse(count, new ConstantValueSource(1));
         _randomSelection = Objects.requireNonNullElse(randomSelection,false);
-
-        if (_count > 1 && _randomSelection) {
-            throw new InvalidCardDefinitionException("Have not implemented SelectCardTargetBlueprint for random " +
-                    "selection of multiple cards");
-        }
     }
 
     public SelectCardsResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
@@ -58,14 +54,11 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         }
         CardFilter finalFilter = Filters.and(selectableCardFilter);
         SelectCardsAction selectAction;
+        int count = _count.evaluateExpression(cardGame, context);
         if (_randomSelection) {
-            selectAction = new SelectRandomCardAction(
-                    cardGame, selectingPlayerName,
-                    finalFilter);
+            selectAction = new SelectRandomCardAction(cardGame, selectingPlayerName, finalFilter);
         } else {
-            selectAction = new SelectCardsFromDialogAction(
-                    cardGame, selectingPlayerName, "Select a card",
-                    finalFilter, _count);
+            selectAction = new SelectCardsFromDialogAction(cardGame, selectingPlayerName, finalFilter, count);
         }
         return new SelectCardsResolver(selectAction);
     }
@@ -78,7 +71,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         }
         CardFilter completeFilter = Filters.and(filters);
         Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, completeFilter);
-        return filteredCards.size() >= _count;
+        return filteredCards.size() >= _count.evaluateExpression(cardGame, context);
     }
 
     public void addFilter(FilterBlueprint... filterBlueprints) {

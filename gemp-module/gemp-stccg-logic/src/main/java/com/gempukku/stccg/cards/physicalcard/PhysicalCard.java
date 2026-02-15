@@ -206,4 +206,7 @@ public interface PhysicalCard {
         String thisCardPersona = getBlueprint().getPersona();
         return (thisCardPersona != null && Objects.equals(thisCardPersona, otherCard.getBlueprint().getPersona()));
     }
+
+    boolean isBeingEncounteredBy(DefaultGame cardGame, PhysicalCard encounteringCard);
+
 }

@@ -270,22 +270,6 @@ public class ST1EGameState extends GameState {
         _locationIds.put(location.getLocationId(), location);
     }
 
-    public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
-        for (PhysicalCard card1 : cards) {
-            for (PhysicalCard card2 : cards) {
-                boolean presentWithEachOther = card1.isAtSameLocationAsCard(card2) &&
-                            card1.getGameLocation(this) instanceof MissionLocation missionLocation &&
-                            card1.getAttachedToCardId() != null &&
-                            card1.getAttachedToCardId().equals(card2.getAttachedToCardId()) &&
-                            _spacelineLocations.contains(missionLocation);
-                if (!presentWithEachOther) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public void addCardToEligibleAwayTeam(ST1EGame game, ReportableCard card, MissionLocation mission) {
         // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
         // TODO - When there are multiple eligible away teams, there should be a player decision

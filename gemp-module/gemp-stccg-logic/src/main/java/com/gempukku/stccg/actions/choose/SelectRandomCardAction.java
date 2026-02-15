@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithRespondableInitiation;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.targetresolver.AllCardsMatchingFilterResolver;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
@@ -20,6 +21,15 @@ public class SelectRandomCardAction extends ActionyAction implements ActionWithR
     private PhysicalCard _selectedCard;
     private final AllCardsMatchingFilterResolver _targetResolver;
     private final List<PhysicalCard> _requiredCards = new ArrayList<>();
+    private String _saveToMemoryId;
+
+    public SelectRandomCardAction(DefaultGame cardGame, String selectingPlayerName, CardFilter cardFilter,
+                                  ActionContext context, String saveToMemoryId) {
+        super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS, context);
+        _targetResolver = new AllCardsMatchingFilterResolver(cardFilter);
+        _cardTargets.add(_targetResolver);
+        _saveToMemoryId = saveToMemoryId;
+    }
 
     public SelectRandomCardAction(DefaultGame cardGame, String selectingPlayerName, CardFilter cardFilter) {
         super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS);
@@ -37,6 +47,7 @@ public class SelectRandomCardAction extends ActionyAction implements ActionWithR
         try {
             if (!_requiredCards.isEmpty()) {
                 _selectedCard = Iterables.getOnlyElement(_requiredCards);
+                saveToContext();
                 setAsSuccessful();
             } else {
                 Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
@@ -48,6 +59,7 @@ public class SelectRandomCardAction extends ActionyAction implements ActionWithR
                     if (_selectedCard == null) {
                         setAsFailed();
                     } else {
+                        saveToContext();
                         setAsSuccessful();
                     }
                 }
@@ -74,5 +86,11 @@ public class SelectRandomCardAction extends ActionyAction implements ActionWithR
 
     public void setCardToRequired(PhysicalCard volunteeringCard) {
         _requiredCards.add(volunteeringCard);
+    }
+
+    private void saveToContext() {
+        if (_actionContext != null && _saveToMemoryId != null && _selectedCard != null) {
+            _actionContext.setCardMemory(_saveToMemoryId, _selectedCard);
+        }
     }
 }

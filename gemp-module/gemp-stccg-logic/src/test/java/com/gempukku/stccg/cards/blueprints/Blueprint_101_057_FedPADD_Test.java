@@ -40,7 +40,7 @@ public class Blueprint_101_057_FedPADD_Test extends AbstractAtTest {
 
         assertEquals(8, picard.getCunning(_game));
         playCard(P1, padd);
-        assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, padd));
+        assertTrue(_game.getRules().cardsArePresentWithEachOther(_game, picard, padd));
         assertEquals(10, picard.getCunning(_game));
         assertEquals(8, opposingPicard.getCunning(_game));
     }

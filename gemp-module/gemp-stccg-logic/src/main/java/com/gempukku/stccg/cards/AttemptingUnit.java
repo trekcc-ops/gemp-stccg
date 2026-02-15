@@ -35,4 +35,5 @@ public interface AttemptingUnit {
         return result;
     }
 
+    boolean includesInAttemptingUnit(DefaultGame cardGame, PhysicalCard encounteringCard);
 }

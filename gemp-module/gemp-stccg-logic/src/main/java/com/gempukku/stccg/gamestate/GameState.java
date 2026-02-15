@@ -374,8 +374,6 @@ public abstract class GameState {
         _currentGameProcess.continueProcess(cardGame);
     }
 
-    public abstract boolean cardsArePresentWithEachOther(PhysicalCard... cards);
-
     public LimitCounter getUntilEndOfGameLimitCounter(String playerName, PhysicalCard card,
                                                       ActionBlueprint actionBlueprint) {
         return _actionLimitCollection.getUntilEndOfGameLimitCounter(playerName, card, actionBlueprint);

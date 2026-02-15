@@ -216,6 +216,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             String cardTitle = value.substring(5, value.length() - 1);
             return new CardTitleFilterBlueprint(cardTitle);
         }
+        if (value.startsWith("memoryId=")) {
+            String memoryId = value.substring("memoryId=".length());
+            return (cardGame, actionContext) -> {
+                Collection<Integer> memoryCardIds = actionContext.getCardIdsFromMemory(memoryId);
+                return new InCardListFilter(memoryCardIds.stream().toList());
+            };
+        }
         if (value.startsWith("title(") && value.endsWith(")")) {
             String cardTitle = value.substring(6, value.length() - 1);
             return new CardTitleFilterBlueprint(cardTitle);
