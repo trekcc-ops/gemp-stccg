@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.evaluator.SingleValueSource;
 import com.gempukku.stccg.requirement.PhaseRequirement;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 public class DrawAdditionalCardsAtEndOfTurnActionBlueprint extends ActivateCardActionBlueprint {
 
     @JsonCreator
-    private DrawAdditionalCardsAtEndOfTurnActionBlueprint(@JsonProperty("count") ValueSource count,
+    private DrawAdditionalCardsAtEndOfTurnActionBlueprint(@JsonProperty("count") SingleValueSource count,
                                                           @JsonProperty("player") String playerText)
             throws InvalidCardDefinitionException {
         super(

@@ -49,8 +49,8 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
         int minCount;
         int maxCount;
         try {
-            minCount = (int) _count.getMinimum(cardGame, context);
-            maxCount = (int) _count.getMaximum(cardGame, context);
+            minCount = _count.getMinimum(cardGame, context);
+            maxCount = _count.getMaximum(cardGame, context);
         } catch(InvalidGameLogicException exp) {
             minCount = 0;
             maxCount = 0;

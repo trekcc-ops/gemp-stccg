@@ -19,14 +19,8 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 })
 public interface ValueSource {
 
-    default float getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
-        return evaluateExpression(cardGame, actionContext);
-    }
+    int getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException;
 
-    default float getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
-        return evaluateExpression(cardGame, actionContext);
-    }
-
-    float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException;
+    int getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException;
 
 }

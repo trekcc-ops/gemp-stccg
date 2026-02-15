@@ -26,13 +26,17 @@ public class ConditionalValueSource implements ValueSource {
         _falseValue = falseValue;
         _conditions = conditions;
     }
+    @Override
+    public int getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+        ValueSource sourceToUse = (actionContext.acceptsAllRequirements(cardGame, _conditions)) ?
+                _trueValue : _falseValue;
+        return sourceToUse.getMinimum(cardGame, actionContext);
+    }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
-        if (actionContext.acceptsAllRequirements(cardGame, _conditions)) {
-            return _trueValue.evaluateExpression(cardGame, actionContext);
-        } else {
-            return _falseValue.evaluateExpression(cardGame, actionContext);
-        }
+    public int getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+        ValueSource sourceToUse = (actionContext.acceptsAllRequirements(cardGame, _conditions)) ?
+                _trueValue : _falseValue;
+        return sourceToUse.getMaximum(cardGame, actionContext);
     }
 }

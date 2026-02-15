@@ -22,7 +22,7 @@ public class SkillDotCountValueSource implements SingleValueSource {
     }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
         ActionCardResolver resolver = _personnelBlueprint.getTargetResolver(cardGame, actionContext);
         Collection<PhysicalCard> cards = resolver.getCards(cardGame);
         int result = 0;

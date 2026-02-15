@@ -5,7 +5,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
-import com.gempukku.stccg.evaluator.ValueSource;
+import com.gempukku.stccg.evaluator.SingleValueSource;
 import com.gempukku.stccg.filters.AnyCardFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
@@ -32,13 +32,13 @@ public class MiscRequirement implements Requirement {
 
     private final RequirementType _requirementType;
     private final PlayerSource _playerSource;
-    private final ValueSource _valueSource;
+    private final SingleValueSource _valueSource;
     private final FilterBlueprint _filterBlueprint;
 
     public MiscRequirement(@JsonProperty("type")
                            RequirementType requirementType,
                            @JsonProperty(value = "count", required = true)
-                           ValueSource count,
+                           SingleValueSource count,
                            @JsonProperty(value="filter", required = true)
                            FilterBlueprint filterBlueprint) {
         _requirementType = requirementType;
@@ -52,7 +52,7 @@ public class MiscRequirement implements Requirement {
         try {
             final String playerId = _playerSource.getPlayerName(cardGame, actionContext);
             Player player = cardGame.getPlayer(playerId);
-            final int count = (int) _valueSource.evaluateExpression(cardGame, actionContext);
+            final int count = _valueSource.evaluateExpression(cardGame, actionContext);
             final Filterable filterable = _filterBlueprint.getFilterable(cardGame, actionContext);
             return switch (_requirementType) {
                 case CARDSINDECKCOUNT -> player.getCardsInDrawDeck().size() == count;

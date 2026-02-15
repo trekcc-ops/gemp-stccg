@@ -36,7 +36,7 @@ public class CountDiscardValueSource implements SingleValueSource {
     }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         try {
             String playerId = _playerSource.getPlayerName(cardGame, actionContext);
             Player player = cardGame.getPlayer(playerId);

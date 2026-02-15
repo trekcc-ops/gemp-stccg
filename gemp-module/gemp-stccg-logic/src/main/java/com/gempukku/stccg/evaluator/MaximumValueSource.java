@@ -20,7 +20,7 @@ public class MaximumValueSource implements SingleValueSource {
     }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
         return Math.max(
                 _first.evaluateExpression(cardGame, actionContext),
                 _second.evaluateExpression(cardGame, actionContext)
