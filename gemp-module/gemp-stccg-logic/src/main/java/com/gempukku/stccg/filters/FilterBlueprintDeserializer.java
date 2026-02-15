@@ -225,6 +225,14 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             FilterBlueprint engineerBlueprint = parseSTCCGFilter(engineerFilter);
             return new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);
         }
+        if (value.startsWith("highestTotalAttributes(") && value.endsWith(")")) {
+            String otherFilterText = value.substring("highestTotalAttributes(".length(), value.length() - 1);
+            FilterBlueprint otherFilterBlueprint = parseSTCCGFilter(otherFilterText);
+            return (cardGame, actionContext) -> {
+                CardFilter otherFilter = otherFilterBlueprint.getFilterable(cardGame, actionContext);
+                return new HighestTotalAttributeCardFilter(otherFilter);
+            };
+        }
         if (value.startsWith("integrity>")) {
             int integrityAmount = Integer.valueOf(value.substring("integrity>".length()));
             return (cardGame, actionContext) -> Filters.integrityGreaterThan(integrityAmount);

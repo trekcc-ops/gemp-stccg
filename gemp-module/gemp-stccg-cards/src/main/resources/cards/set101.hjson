@@ -17,15 +17,33 @@
             rarity: C
         } */
         {
-            blueprintId: 101_014
-            title: Archer
-            type: dilemma
-            mission-type: planet
-            lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
-            property-logo: tng-logo
-            java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR14.jpg
-            rarity: C
+            "blueprintId": "101_014",
+            "title": "Archer",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Indigenous inhabitants, such as this Mintakan bowman, often attack an Away Team out of fear.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR14.jpg",
+            "rarity": "C",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "SECURITY + MEDICAL",
+                        "discardDilemma": true,
+                        "failEffect": {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestTotalAttributes(personnel + encounteringThisCard)",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_015

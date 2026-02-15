@@ -6,8 +6,12 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -38,8 +42,19 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
         for (Action pendingAction : actionStack) {
             if (pendingAction instanceof EncounterSeedCardAction encounterAction &&
                     encounterAction.getEncounteredCard() == context.card()) {
-                result.add(new OvercomeDilemmaConditionAction(cardGame, context.card(),
-                        encounterAction, _conditions, encounterAction.getAttemptingUnit()));
+                if (_failEffects.size() == 1) {
+                    try {
+                        Action failAction = Iterables.getOnlyElement(_failEffects).createActions(cardGame, action, context).getFirst();
+                        result.add(new OvercomeDilemmaConditionAction(cardGame, context.card(),
+                                encounterAction, _conditions, encounterAction.getAttemptingUnit(), failAction,
+                                _discardDilemma));
+                    } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidCardDefinitionException ignored) {
+
+                    }
+                } else {
+                    result.add(new OvercomeDilemmaConditionAction(cardGame, context.card(),
+                            encounterAction, _conditions, encounterAction.getAttemptingUnit()));
+                }
             }
         }
         return result;

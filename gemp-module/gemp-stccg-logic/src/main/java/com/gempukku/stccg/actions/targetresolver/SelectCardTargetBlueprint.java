@@ -12,6 +12,9 @@ import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.PlayerSource;
+import com.gempukku.stccg.player.YouPlayerSource;
+import com.gempukku.stccg.player.YourOpponentPlayerSource;
 
 import java.util.*;
 
@@ -20,15 +23,24 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
     private final List<FilterBlueprint> _filterBlueprints;
     private final int _count;
     private final boolean _randomSelection;
+    private final PlayerSource _selectingPlayer;
 
     public SelectCardTargetBlueprint(@JsonProperty(value = "filter", required = true)
                               FilterBlueprint filterBlueprint,
                               @JsonProperty("count")
                               Integer count,
+                              @JsonProperty("selectingPlayer") String selectingPlayerText,
                               @JsonProperty("random")
                               Boolean randomSelection) throws InvalidCardDefinitionException {
         _filterBlueprints = new LinkedList<>();
         _filterBlueprints.add(filterBlueprint);
+        if (Objects.equals(selectingPlayerText, "opponent")) {
+            _selectingPlayer = new YourOpponentPlayerSource();
+        } else if (selectingPlayerText == null) {
+            _selectingPlayer = new YouPlayerSource();
+        } else {
+            throw new InvalidCardDefinitionException("Could not process 'selectingPlayer' for SelectCardTargetBlueprint");
+        }
         _count = Objects.requireNonNullElse(count, 1);
         _randomSelection = Objects.requireNonNullElse(randomSelection,false);
 
@@ -40,6 +52,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
 
     public SelectCardsResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
         List<Filterable> selectableCardFilter = new ArrayList<>();
+        String selectingPlayerName = _selectingPlayer.getPlayerName(cardGame, context);
         for (FilterBlueprint filterBlueprint : _filterBlueprints) {
             selectableCardFilter.add(filterBlueprint.getFilterable(cardGame, context));
         }
@@ -47,11 +60,11 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         SelectCardsAction selectAction;
         if (_randomSelection) {
             selectAction = new SelectRandomCardAction(
-                    cardGame, context.getPerformingPlayerId(),
+                    cardGame, selectingPlayerName,
                     finalFilter);
         } else {
             selectAction = new SelectCardsFromDialogAction(
-                    cardGame, context.getPerformingPlayerId(), "Select a card",
+                    cardGame, selectingPlayerName, "Select a card",
                     finalFilter, _count);
         }
         return new SelectCardsResolver(selectAction);

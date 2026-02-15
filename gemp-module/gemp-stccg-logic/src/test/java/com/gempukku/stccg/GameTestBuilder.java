@@ -140,6 +140,12 @@ public class GameTestBuilder {
         return shipCard;
     }
 
+    public ReportableCard addCardOnPlanetSurface(String blueprintId, String cardTitle, String ownerName,
+                                                 MissionCard mission)
+            throws InvalidGameOperationException, CardNotFoundException {
+        return addCardOnPlanetSurface(blueprintId, cardTitle, ownerName, mission, ReportableCard.class);
+    }
+
     public <T extends ReportableCard> T addCardOnPlanetSurface(String blueprintId, String cardTitle, String ownerName,
                                                MissionCard mission, Class<T> clazz)
             throws CardNotFoundException, InvalidGameOperationException {
