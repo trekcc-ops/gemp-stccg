@@ -2195,6 +2195,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR315.jpg
         }
         {
+            "blueprintId": "101_316",
+            "title": "Parem",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "staff",
+            "lore": "Male Romulan officer accidentally phased by an interphase generator experiment.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Treachery",
+            "integrity": 4,
+            "cunning": 8,
+            "strength": 9,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR316.jpg"
+        },
+        {
             blueprintId: 101_320
             title: Takket
             type: personnel

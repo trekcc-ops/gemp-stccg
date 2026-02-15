@@ -725,6 +725,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/emissarysup/73.jpg
         }
         {
+            "blueprintId": "112_238",
+            "title": "Karina",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "ds9-logo",
+            "classification": "V.I.P.",
+            "icons": "staff",
+            "lore": "Female Romulan \"delegate\" and saboteur. Assistant to Ruwon. Planned to help him sabotage the Bajoran wormhole and Deep Space 9.",
+            "species": "romulan",
+            "gender": "female",
+            "skill-box": "[*] Treachery [*] Transporter Skill [*] SCIENCE",
+            "integrity": 4,
+            "cunning": 8,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/ds9/karina.gif"
+        }
+        {
             blueprintId: 112_242
             title: Vakis
             type: personnel

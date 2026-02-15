@@ -216,7 +216,52 @@
             cunning: 7
             strength: 5
             image-url: https://www.trekcc.org/1e/cardimages/engage/45.jpg
-        }
+        },
+        {
+            "blueprintId": "161_046",
+            "title": "Parem",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "SECURITY",
+            "icons": "staff",
+            "lore": "Special security officer aboard the <i>Apnex</i>. Assigned to guard the prototype phase-inverting cloaking device. Worked as a bartender before joining the military.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Astrophysics"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Physics"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Treachery"
+                    },
+                    {
+                        "type": "specialModifier",
+                        "text": "Attributes all +1 when facing a dilemma.",
+                        "modifier": {
+                            "type": "addToAllAttributes",
+                            "modifiedCards": "thisCard",
+                            "amount": 1,
+                            "ifCondition": {
+                                "type": "thisCardIsFacingDilemma"
+                            }
+                        }
+                    }
+                ]
+            }
+            "integrity": 4,
+            "cunning": 6,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/84V.jpg"
+        },
         {
             blueprintId: 161_048
             title: "T'Jev"
