@@ -1,129 +1,91 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.GameTestBuilder;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GameStateSerializerTest extends AbstractAtTest {
 
-    // TODO - No longer running this test because the deserializer needs to be updated
-    public void gameStateSerializerTest() throws Exception {
-        initializeIntroductoryTwoPlayerGame();
+    private final static String VERSION_NUMBER = "1.1.0";
 
-        // Figure out which player is going first
-        String player1 = _game.getGameState().getPlayerOrder().getFirstPlayer();
-        String player2 = _game.getOpponent(player1);
+    @Test
+    public void serializeCompleteTest() throws Exception {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        builder.startGame();
 
-        autoSeedMissions();
+        JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeComplete());
+        assertEquals(17, gameStateJson.size());
+        assertTrue(gameStateJson.has("currentPhase"));
+        assertTrue(gameStateJson.has("phasesInOrder"));
+        assertTrue(gameStateJson.has("currentProcess"));
+        assertTrue(gameStateJson.has("playerOrder"));
+        assertTrue(gameStateJson.has("cardsInGame"));
+        assertTrue(gameStateJson.has("players"));
+        assertTrue(gameStateJson.has("playerMap"));
+        assertTrue(gameStateJson.has("spacelineLocations"));
+        assertTrue(gameStateJson.has("awayTeams"));
+        assertTrue(gameStateJson.has("actions"));
+        assertTrue(gameStateJson.has("performedActions"));
+        assertTrue(gameStateJson.has("playerClocks"));
+        assertTrue(gameStateJson.has("actionLimits"));
+        assertTrue(gameStateJson.has("modifiers"));
+        assertTrue(gameStateJson.has("gameLocations"));
+        assertTrue(gameStateJson.has("spacelineElements"));
+        assertTrue(gameStateJson.has("versionNumber"));
 
-        // There should now be 12 missions seeded
-        assertEquals(12, _game.getGameState().getSpacelineLocations().size());
-        for (MissionLocation location : _game.getGameState().getSpacelineLocations()) {
-            System.out.println((location.getLocationZoneIndex(_game) + 1) + " - " + location.getLocationName());
-        }
-
-        assertEquals(Phase.SEED_DILEMMA, _game.getCurrentPhase());
-        PhysicalCard archer = null;
-        PhysicalCard homeward = null;
-        PhysicalCard tarses = null;
-        for (PhysicalCard card : _game.getGameState().getAllCardsInGame()) {
-            if (Objects.equals(card.getTitle(), "Archer"))
-                archer = card;
-            if (Objects.equals(card.getTitle(), "Homeward"))
-                homeward = card;
-            if (Objects.equals(card.getTitle(), "Simon Tarses"))
-                tarses = card;
-        }
-
-        assertNotNull(archer);
-        assertNotNull(homeward);
-        MissionLocation homewardLocation = homeward.getLocationDeprecatedOnlyUseForTests();
-        assertNotNull(homewardLocation);
-        seedDilemma(archer, homewardLocation);
-
-        while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)
-            skipDilemma();
-
-        assertEquals(Phase.SEED_FACILITY, _game.getCurrentPhase());
-        assertEquals(1, homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().size());
-        assertTrue(homeward.getLocationDeprecatedOnlyUseForTests().getSeedCards().contains(archer));
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        List<PhysicalCard> cards = new LinkedList<>();
-        cards.add(archer);
-        cards.add(homeward);
-
-        String serialized4 = _game.getGameState().serializeComplete();
-        System.out.println(serialized4.replace(",",",\n"));
-
-        ST1EGameState oldGameState = _game.getGameState();
-        ST1EGameState newGameState = ST1EGameStateDeserializer.deserialize(_game, mapper.readTree(serialized4));
-
-        System.out.println("\nP1 card group sizes using getZoneCards\n");
-        for (Zone zone : Zone.values())
-            compareUsingGetZoneCards(oldGameState, newGameState, zone);
-
-        Iterable<PhysicalCard> allOldCards = oldGameState.getAllCardsInGame();
-        Iterable<PhysicalCard> allNewCards = newGameState.getAllCardsInGame();
-
-        System.out.println("\n" + P1 + " zone sizes using PhysicalCard getZone\n");
-        for (Zone zone : Zone.values()) {
-            compareUsingCardZones(allOldCards, allNewCards, zone, P1);
-        }
-
-        System.out.println("\n" + P2 + " zone sizes using PhysicalCard getZone\n");
-        for (Zone zone : Zone.values()) {
-            compareUsingCardZones(allOldCards, allNewCards, zone, P2);
-        }
-
+        assertEquals(VERSION_NUMBER, gameStateJson.get("versionNumber").textValue());
     }
 
-    private void compareUsingGetZoneCards(GameState oldGameState, GameState newGameState, Zone zone)
-            throws PlayerNotFoundException {
-        List<PhysicalCard> oldCards = oldGameState.getZoneCards(_game.getPlayer(P1), zone);
-        List<PhysicalCard> newCards = newGameState.getZoneCards(_game.getPlayer(P1), zone);
+    @Test
+    public void serializeForPlayerTest() throws Exception {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        builder.startGame();
 
-        String oldCount = (oldCards == null) ? "null" : String.valueOf(oldCards.size());
-        String newCount = (newCards == null) ? "null" : String.valueOf(newCards.size());
+        JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeForPlayer(P1));
+        assertEquals(15, gameStateJson.size());
+        assertTrue(gameStateJson.has("requestingPlayer"));
+        assertTrue(gameStateJson.has("currentPhase"));
+        assertTrue(gameStateJson.has("phasesInOrder"));
+        assertTrue(gameStateJson.has("playerOrder"));
+        assertTrue(gameStateJson.has("visibleCardsInGame"));
+        assertTrue(gameStateJson.has("players"));
+        assertTrue(gameStateJson.has("playerMap"));
+        assertTrue(gameStateJson.has("spacelineLocations"));
+        assertTrue(gameStateJson.has("awayTeams"));
+        assertTrue(gameStateJson.has("performedActions"));
+        assertTrue(gameStateJson.has("playerClocks"));
+        assertTrue(gameStateJson.has("pendingDecision"));
+        assertTrue(gameStateJson.has("gameLocations"));
+        assertTrue(gameStateJson.has("spacelineElements"));
+        assertTrue(gameStateJson.has("versionNumber"));
 
-        if (oldCount.equals(newCount))
-            System.out.println(zone.name() + ": " + oldCount);
-        else
-            System.out.println(zone.name() + ": " + oldCount + " (old), " + newCount + " (new)");
+        assertEquals(VERSION_NUMBER, gameStateJson.get("versionNumber").textValue());
     }
 
-    private void compareUsingCardZones(Iterable<PhysicalCard> allOldCards, Iterable<PhysicalCard> allNewCards,
-                                       Zone zone, String playerId) {
-        Collection<PhysicalCard> oldCards = new LinkedList<>();
-        Collection<PhysicalCard> newCards = new LinkedList<>();
+    @Test
+    public void spacelineElementsTest() throws Exception {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        builder.addMission("101_154", "Excavation", P1);
+        _game = builder.getGame();
+        builder.startGame();
 
-        for (PhysicalCard card : allOldCards)
-            if (card.getZone() == zone && Objects.equals(card.getOwnerName(), playerId))
-                oldCards.add(card);
-        for (PhysicalCard card : allNewCards)
-            if (card.getZone() == zone && Objects.equals(card.getOwnerName(), playerId))
-                newCards.add(card);
-
-        String oldCount = String.valueOf(oldCards.size());
-        String newCount = String.valueOf(newCards.size());
-
-        if (oldCount.equals(newCount))
-            System.out.println(zone.name() + ": " + oldCount);
-        else
-            System.out.println(zone.name() + ": " + oldCount + " (old), " + newCount + " (new)");
-
+        JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeForPlayer(P1));
+        JsonNode elementsJson = gameStateJson.get("spacelineElements");
+        assertTrue(elementsJson.isArray());
+        assertEquals(1, elementsJson.size());
+        JsonNode elementNode = elementsJson.get(0);
+        assertEquals(3, elementNode.size());
+        assertEquals("location", elementNode.get("type").textValue());
+        assertEquals(1, elementNode.get("locationId").intValue());
+        assertEquals("ALPHA", elementNode.get("quadrant").textValue());
     }
+
 
 }

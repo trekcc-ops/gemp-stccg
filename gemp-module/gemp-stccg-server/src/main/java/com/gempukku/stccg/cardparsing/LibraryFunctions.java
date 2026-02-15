@@ -7,6 +7,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import java.io.File;
 import java.util.*;
 
+@SuppressWarnings("all")
 public class LibraryFunctions {
     public static Map<String, CardData> createLibrary() {
         Map<String, CardData> _newLibraryMap = new HashMap<>();

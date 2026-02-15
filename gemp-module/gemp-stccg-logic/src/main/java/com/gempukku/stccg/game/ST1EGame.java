@@ -11,42 +11,50 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerClock;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
-import com.gempukku.stccg.rules.generic.RuleSet;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
 import com.gempukku.stccg.rules.st1e.ST1ERuleSet;
 
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class ST1EGame extends DefaultGame {
     private ST1EGameState _gameState;
     private final ST1ERuleSet _rules;
 
-    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
-                    final CardBlueprintLibrary library) {
-        super(format, decks, library, GameType.FIRST_EDITION);
-
-        _gameState = new ST1EGameState(decks.keySet(), this, clocks);
+    private ST1EGame(GameFormat format, Map<String, CardDeck> decks, CardBlueprintLibrary library,
+                     GameResultListener listener) {
+        super(format, decks, library, GameType.FIRST_EDITION, listener);
         _rules = new ST1ERuleSet();
-        _rules.applyRuleSet(this);
+    }
 
-        _gameState.createPhysicalCards(library, decks, this);
-        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+
+    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
+                    final CardBlueprintLibrary library, GameResultListener resultListener) {
+        this(format, decks, library, resultListener);
+        try {
+            _gameState = new ST1EGameState(decks.keySet(), clocks);
+            _gameState.createPhysicalCards(library, decks, this);
+            _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+        } catch(InvalidGameOperationException exp) {
+            sendErrorMessage(exp);
+            _cancelled = true;
+        }
+        _rules.applyRuleSet(this);
     }
 
     public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
-                    GameTimer gameTimer) {
-        super(format, decks, library, GameType.FIRST_EDITION);
+                    GameTimer gameTimer) throws InvalidGameOperationException {
+        this(format, decks, library, (GameResultListener) null);
 
-        _gameState = new ST1EGameState(decks.keySet(), this, gameTimer);
-        _rules = new ST1ERuleSet();
+        try {
+            _gameState = new ST1EGameState(decks.keySet(), gameTimer);
+            _gameState.createPhysicalCards(library, decks, this);
+            _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+        } catch(InvalidGameOperationException exp) {
+            sendErrorMessage(exp);
+            _cancelled = true;
+        }
         _rules.applyRuleSet(this);
-
-        _gameState.createPhysicalCards(library, decks, this);
-        _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
     }
 
 
@@ -60,31 +68,24 @@ public class ST1EGame extends DefaultGame {
     }
 
     @Override
-    public boolean shouldAutoPass(Phase phase) {
-            // If false for a given phase, the user will still be prompted to "Pass" even if they have no legal actions.
-        Collection<Phase> autoPassPhases = new LinkedList<>();
-        autoPassPhases.add(Phase.SEED_DOORWAY);
-        autoPassPhases.add(Phase.SEED_MISSION);
-        autoPassPhases.add(Phase.SEED_DILEMMA);
-        autoPassPhases.add(Phase.SEED_FACILITY);
-        autoPassPhases.add(Phase.CARD_PLAY);
-        autoPassPhases.add(Phase.END_OF_TURN);
-        return autoPassPhases.contains(phase);
+    public boolean shouldAutoPass(Phase phase, String playerName) {
+        return switch(phase) {
+            case SEED_DOORWAY, SEED_MISSION, SEED_DILEMMA, SEED_FACILITY -> true;
+            case CARD_PLAY, END_OF_TURN, START_OF_TURN -> true;
+            case EXECUTE_ORDERS -> !playerName.equals(getCurrentPlayerId());
+            case BETWEEN_TURNS, TRIBBLES_TURN -> false;
+        };
     }
 
     public ST1ERuleSet getRules() { return _rules; }
 
-    public PhysicalCard addCardToGame(String blueprintId, CardBlueprintLibrary library, String playerId)
+    public PhysicalCard addCardToGame(String blueprintId, String playerId)
             throws CardNotFoundException {
-        try {
-            int cardId = _gameState.getAndIncrementNextCardId();
-            PhysicalCard card = library.createST1EPhysicalCard(this, blueprintId, cardId, playerId);
-            _gameState.addCardToListOfAllCards(card);
-            card.setZone(Zone.VOID);
-            return card;
-        } catch(PlayerNotFoundException exp) {
-            throw new CardNotFoundException(exp.getMessage());
-        }
+        int cardId = _gameState.getAndIncrementNextCardId();
+        PhysicalCard card = createPhysicalCard(blueprintId, cardId, playerId);
+        _gameState.addCardToListOfAllCards(card);
+        card.setZone(Zone.VOID);
+        return card;
     }
 
 }

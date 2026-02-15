@@ -21,8 +21,51 @@
             mission-type: space
             lore: "Starship work is hazardous. When danger arises, one must place the good of the crew ahead of one's own life."
             property-logo: st2-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/homefront2/3.jpg
+            actions: [
+                {
+                    type: encounter
+                    effect: [
+                        {
+                            type: stop
+                            target: {
+                                type: select
+                                filter: unique + personnel + encounteringThisCard
+                                count: 1
+                                random: true
+                            }
+                            saveToMemoryId: stoppedPersonnel
+                        }
+                        {
+                            type: selectAndPerformSubAction
+                            actionDescriptions: [
+                                "Kill personnel"
+                                "Draw cards"
+                            ]
+                            subActions: [
+                                {
+                                    type: kill
+                                    target: {
+                                        type: memory
+                                        memoryId: stoppedPersonnel
+                                    }
+                                }
+                                {
+                                    type: drawCards
+                                    player: opponent
+                                    count: {
+                                        type: skillDotCount
+                                        personnel: {
+                                            type: memory
+                                            memoryId: stoppedPersonnel
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
             rarity: V
         }
         {
@@ -56,6 +99,8 @@
             lore: "Academy Superintendent during the Nova Squadron incident in 2368. Promoted to rear admiral prior to accepting the post. A formidable woman."
             classification: V.I.P.
             property-logo: tng-logo
+            species: human
+            gender: female
             skill-box: "[*] Leadership x2 [*] Navigation [*] Law [*] Transporter Skill"
             integrity: 6
             cunning: 7

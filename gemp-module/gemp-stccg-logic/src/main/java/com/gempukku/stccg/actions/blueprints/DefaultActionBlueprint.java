@@ -1,39 +1,36 @@
 package com.gempukku.stccg.actions.blueprints;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.DefaultActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.PlayerSource;
+import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public abstract class DefaultActionBlueprint implements ActionBlueprint {
     protected final List<Requirement> _requirements = new LinkedList<>();
-
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
-    protected final List<SubActionBlueprint> effects = new LinkedList<>();
+    protected final List<SubActionBlueprint> _effects = new LinkedList<>();
+    private final PlayerSource _performingPlayer;
+    private int _blueprintId;
 
-    public DefaultActionBlueprint(int limitPerTurn) {
-        if (limitPerTurn > 0)
-            setTurnLimit(limitPerTurn);
+    protected DefaultActionBlueprint(PlayerSource performingPlayer) {
+        _performingPlayer = performingPlayer;
     }
-    public DefaultActionBlueprint(int limitPerTurn, List<SubActionBlueprint> costs,
-                                  List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        this(limitPerTurn);
 
-        if ((costs == null || costs.isEmpty()) && (effects == null || effects.isEmpty()))
-            throw new InvalidCardDefinitionException("Action does not contain a cost, nor effect");
+    protected DefaultActionBlueprint(List<SubActionBlueprint> costs,
+                                     List<SubActionBlueprint> effects,
+                                     PlayerSource playerSource) {
+        this(playerSource);
 
         if (costs != null && !costs.isEmpty()) {
             for (SubActionBlueprint costBlueprint : costs) {
-                addRequirement(costBlueprint::isPlayableInFull);
+                addRequirement(new CostCanBePaidRequirement(costBlueprint));
                 addCost(costBlueprint);
             }
         }
@@ -41,7 +38,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         if (effects != null && !effects.isEmpty()) {
             for (SubActionBlueprint blueprint : effects) {
                 if (blueprint.isPlayabilityCheckedForEffect())
-                    addRequirement(blueprint::isPlayableInFull);
+                    addRequirement(new CostCanBePaidRequirement(blueprint));
                 addEffect(blueprint);
             }
         }
@@ -56,45 +53,33 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     }
 
     public void addEffect(SubActionBlueprint subActionBlueprint) {
-        effects.add(subActionBlueprint);
+        _effects.add(subActionBlueprint);
     }
 
     @Override
-    public boolean isValid(ActionContext actionContext) {
-        return actionContext.acceptsAllRequirements(_requirements);
+    public boolean isValid(DefaultGame cardGame, ActionContext actionContext) {
+        boolean isValidPlayer =
+                _performingPlayer.isPlayer(actionContext.getPerformingPlayerId(), cardGame, actionContext);
+        if (!isValidPlayer) {
+            return false;
+        } else {
+            return actionContext.acceptsAllRequirements(cardGame, _requirements);
+        }
+    }
+
+    protected boolean isActionForPlayer(String requestingPlayerName, DefaultGame cardGame, ActionContext context) {
+        return _performingPlayer.isPlayer(requestingPlayerName, cardGame, context);
     }
 
     @Override
-    public void appendActionToContext(TopLevelSelectableAction action, ActionContext actionContext) {
-        costs.forEach(cost -> cost.addEffectToAction(true, action, actionContext));
-        effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action, actionContext));
+    public void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action,
+                                      ActionContext actionContext) {
+        costs.forEach(cost -> cost.addEffectToAction(cardGame, true, action, actionContext));
+        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
     }
 
-    protected abstract TopLevelSelectableAction createActionAndAppendToContext(PhysicalCard card, ActionContext context);
-
-    public void setTurnLimit(int limitPerTurn) {
-        addRequirement((actionContext) ->
-                actionContext.getSource().checkTurnLimit(actionContext.getGame(), limitPerTurn));
-        addCost(
-                (action, actionContext) -> {
-                    Action usageLimitAction = new UseOncePerTurnAction(
-                            action, action.getPerformingCard(), actionContext.getPerformingPlayer());
-                    return Collections.singletonList(usageLimitAction);
-                });
-    }
-
-    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card) {
-        return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, null));
-    }
-
-    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, ActionResult actionResult) {
-        return createActionAndAppendToContext(card,
-                new DefaultActionContext(card.getOwnerName(), card, actionResult));
-    }
+    public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
+                                                          PhysicalCard thisCard);
 
 
-    public TopLevelSelectableAction createActionWithNewContext(PhysicalCard card, String playerId, ActionResult actionResult) {
-        return createActionAndAppendToContext(card, new DefaultActionContext(playerId, card, actionResult));
-    }
 }

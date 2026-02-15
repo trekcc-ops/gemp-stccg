@@ -1,12 +1,15 @@
 package com.gempukku.stccg.async.handler;
 
-import com.gempukku.stccg.cards.*;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardItem;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
-import com.gempukku.stccg.collection.CompleteCardCollection;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.MultipleComparator;
+import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.common.MultipleComparator;
 
 import java.text.Normalizer;
 import java.util.*;
@@ -67,7 +70,7 @@ public class SortAndFilterCards {
     }
 
     private static Comparator<CardItem> getCardItemComparator(String oneSort,
-                                                              Map<String, ? extends CardBlueprint> blueprintMap) {
+                                                              Map<String, CardBlueprint> blueprintMap) {
         Comparator<CardItem> comparator;
         switch (oneSort) {
             case "strength" -> comparator = new StrengthComparator(blueprintMap);

@@ -12,7 +12,7 @@
                 {
                     type: seedThis
                     limit: 1
-                    where: core
+                    toCore: true
                 }
                 {
                     type: optionalTrigger

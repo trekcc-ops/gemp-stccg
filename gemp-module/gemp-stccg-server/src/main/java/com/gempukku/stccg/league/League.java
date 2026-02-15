@@ -1,87 +1,110 @@
 package com.gempukku.stccg.league;
 
-import com.gempukku.stccg.draft.DraftFormatLibrary;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
-import com.gempukku.stccg.formats.FormatLibrary;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.gempukku.stccg.collection.CardCollection;
+import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.collection.CollectionsManager;
+import com.gempukku.stccg.competitive.PlayerStanding;
+import com.gempukku.stccg.database.User;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.util.Iterator;
+import java.util.List;
 
-public class League {
+@JsonIgnoreProperties(value = { "start", "end" }, allowGetters = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "class")
+public abstract class League implements Iterable<LeagueSeries> {
+    protected final Clock _clock;
     private final int _cost;
     private final String _name;
-    private final String _type;
-    private final String _clazz;
-    private final String _parameters;
-    private final int _status;
-    private LeagueData _leagueData;
+    private final int _leagueId;
+    int _status;
+    protected final CollectionType _collectionType;
+    protected final LeaguePrizes _leaguePrizes;
 
-    public League(int cost, String name, String type, String clazz, String parameters, int status) {
-        _cost = cost;
+    protected League(int cost, String name, int status, CollectionType collectionType, int leagueId,
+                  LeaguePrizes leaguePrizes, Clock clock) {
+        _leaguePrizes = leaguePrizes;
         _name = name;
-        _type = type;
-        _clazz = clazz;
-        _parameters = parameters;
+        _cost = cost;
+        _collectionType = collectionType;
         _status = status;
+        _leagueId = leagueId;
+        _clock = clock;
     }
 
+
+    protected League(int cost, String name, int status, CollectionType collectionType, int leagueId,
+                  LeaguePrizes leaguePrizes) {
+        this(cost, name, status, collectionType, leagueId, leaguePrizes, Clock.systemUTC());
+    }
+
+    @JsonProperty("cost")
     public int getCost() {
         return _cost;
     }
 
+    @JsonProperty("name")
     public String getName() {
         return _name;
     }
 
-    public String getType() {
-        return _type;
+    @JsonProperty("leagueId")
+    public int getLeagueId() {
+        return _leagueId;
     }
 
-    public synchronized LeagueData getLeagueData(CardBlueprintLibrary bpLibrary, FormatLibrary formatLibrary,
-                                                 DraftFormatLibrary draftFormatLibrary) {
-        if (_leagueData == null) {
-            try {
-                if(_clazz.equals(ConstructedLeagueData.class.getName())) {
-                    _leagueData = new ConstructedLeagueData(bpLibrary, formatLibrary, _parameters);
-                }
-                else if(_clazz.equals(NewConstructedLeagueData.class.getName())) {
-                    _leagueData = new NewConstructedLeagueData(bpLibrary, formatLibrary, _parameters);
-                }
-                else if(_clazz.equals(SealedLeagueData.class.getName())) {
-                    _leagueData = new SealedLeagueData(bpLibrary, formatLibrary, _parameters);
-                }
-                else if(_clazz.equals(NewSealedLeagueData.class.getName())) {
-                    _leagueData = new NewSealedLeagueData(bpLibrary, formatLibrary, _parameters);
-                }
-                else if(_clazz.equals(SoloDraftLeagueData.class.getName())) {
-                    _leagueData = new SoloDraftLeagueData(bpLibrary,  formatLibrary, draftFormatLibrary, _parameters);
-                }
-                else {
-                    throw new IllegalArgumentException(
-                            "Class '" + _clazz + "' does not have a constructor registered.");
-                }
-            } catch (Exception exp) {
-                throw new RuntimeException("Unable to create LeagueData", exp);
-            }
-        }
-        return _leagueData;
-    }
-
+    @JsonProperty("status")
     public int getStatus() {
         return _status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        League league = (League) o;
-
-        return Objects.equals(_type, league._type);
+    @JsonProperty("allSeries")
+    public abstract List<LeagueSeries> getAllSeries();
+    @JsonProperty("start")
+    public ZonedDateTime getStart() {
+        return getAllSeries().getFirst().getStart();
     }
 
-    @Override
-    public int hashCode() {
-        return _type != null ? _type.hashCode() : 0;
+    @JsonProperty("end")
+    public ZonedDateTime getEnd() {
+        return getAllSeries().getLast().getEnd();
     }
+
+    @JsonProperty("collectionType")
+    public CollectionType getCollectionType() {
+        return _collectionType;
+    }
+
+    @JsonIgnore
+    public abstract boolean isLimited();
+
+    @NotNull
+    @Override
+    public Iterator<LeagueSeries> iterator() {
+        return getAllSeries().iterator();
+    }
+
+    public abstract void process(CollectionsManager collectionsManager, List<? extends PlayerStanding> leagueStandings);
+
+    public abstract void joinLeague(CollectionsManager collectionsManager, User player);
+
+    public CardCollection getPrizeForLeagueMatchWinner(int winCountThisSeries) {
+        return _leaguePrizes.getPrizeForLeagueMatchWinner(winCountThisSeries);
+    }
+
+    @JsonIgnore
+    public int getMaxRepeatMatchesPerSeries() {
+        return 1;
+    }
+
+    public void setStatus(int newStatus) {
+        _status = newStatus;
+    }
+
 }

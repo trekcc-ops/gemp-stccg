@@ -1,7 +1,13 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -13,19 +19,38 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
+@JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
+        allowGetters = true)
 public class MissionCard extends ST1EPhysicalCard {
-    public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(game, cardId, owner, blueprint);
+
+    @JsonCreator
+    public MissionCard(
+            @JsonProperty("cardId")
+            int cardId,
+            @JsonProperty("owner")
+            String ownerName,
+            @JsonProperty("blueprintId")
+            String blueprintId,
+            @JacksonInject
+            CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
+        super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
     }
+
+
+    public MissionCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
+    }
+
 
     public int getPointsShown() { return _blueprint.getPointsShown(); }
 
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
-    @Override
-    public boolean canBeSeeded(DefaultGame game) { return true; }
 
-    public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
+    public boolean wasSeededBy(Player player) {
+        return Objects.equals(_ownerName, player.getPlayerId());
+    } // TODO - Does not address shared missions
 
     public String getMissionRequirements() {
         return _blueprint.getMissionRequirementsText();
@@ -36,7 +61,8 @@ public class MissionCard extends ST1EPhysicalCard {
         List<TopLevelSelectableAction> actions = new LinkedList<>();
         if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             try {
-                if (_currentGameLocation instanceof MissionLocation mission) {
+                if (cardGame instanceof ST1EGame stGame &&
+                        stGame.getGameState().getLocationById(_currentLocationId) instanceof MissionLocation mission) {
                     actions.add(new AttemptMissionAction(
                             cardGame, player, mission.getCardForActionSelection(player), mission));
                 }

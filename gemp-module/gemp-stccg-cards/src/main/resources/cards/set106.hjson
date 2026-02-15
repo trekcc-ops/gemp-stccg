@@ -172,7 +172,6 @@
         {
             blueprintId: 106_014
             title: Admiral McCoy
-            java-blueprint: true
             affiliation: federation
             type: personnel
             property-logo: tng-logo
@@ -180,6 +179,34 @@
             icons: staff
             characteristic: admiral
             lore: Not a psychiatrist, mechanic, coal miner, bricklayer, scientist, physicist, moon shuttle conductor, escalator, magician or fish peddler. Just an old country doctor.
+            species: human
+            gender: male
+            skill-box: {
+                skill-dots: 4
+                skills: [
+                    {
+                        type: regular
+                        name: MEDICAL
+                    }
+                    {
+                        type: regular
+                        name: Exobiology
+                    }
+                    {
+                        type: regular
+                        name: Cantankerousness
+                    }
+                    {
+                        type: specialModifier
+                        text: "Other MEDICAL are CUNNING +3 where present."
+                        modifier: {
+                            type: addCunning
+                            modifiedCards: medical + personnel + presentWithThisCard + notThisCard
+                            amount: 3
+                        }
+                    }
+                ]
+            }
             integrity: 8
             cunning: 6
             strength: 1
@@ -194,6 +221,8 @@
             classification: V.I.P.
             icons: command
             lore: "1/2 Vulcan, 1/2 Human son of Sarek and Amanda Grayson. Over 140-year-old ambassador. On private mission to Romulus. Mindmelded with Picard."
+            species: human,vulcan
+            gender: male
             skill-box: "[*] Diplomacy x2 [*] Computer Skill [*] Leadership [*] SCIENCE [*] Mindmeld"
             integrity: 9
             cunning: 10

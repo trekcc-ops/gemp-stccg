@@ -19,7 +19,7 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     private final LeagueMatchDAO _leagueMatchDAO;
     private final ReadWriteLock _readWriteLock = new ReentrantReadWriteLock();
 
-    private final Map<String, Collection<LeagueMatchResult>> _cachedMatches =
+    private final Map<Integer, Collection<LeagueMatchResult>> _cachedMatches =
             Collections.synchronizedMap(new LRUMap<>(5));
 
     public CachedLeagueMatchDAO(DbAccess dbAccess) {
@@ -45,7 +45,7 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     }
 
     @Override
-    public Collection<LeagueMatchResult> getLeagueMatches(String leagueId) {
+    public Collection<LeagueMatchResult> getLeagueMatches(int leagueId) {
         _readWriteLock.readLock().lock();
         try {
             Collection<LeagueMatchResult> leagueMatches = _cachedMatches.get(leagueId);
@@ -65,7 +65,8 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
         }
     }
 
-    private Collection<LeagueMatchResult> getLeagueMatchesInWriteLock(String leagueId) {
+
+    private Collection<LeagueMatchResult> getLeagueMatchesInWriteLock(int leagueId) {
         Collection<LeagueMatchResult> leagueMatches;
         leagueMatches = _cachedMatches.get(leagueId);
         if (leagueMatches == null) {
@@ -76,15 +77,15 @@ public class CachedLeagueMatchDAO implements LeagueMatchDAO, Cached {
     }
 
     @Override
-    public void addPlayedMatch(String leagueId, String seriesId, String winner, String loser) {
+    public void addPlayedMatch(int leagueId, String seriesName, String winner, String loser) {
         _readWriteLock.writeLock().lock();
         try {
-            LeagueMatchResult match = new LeagueMatchResult(seriesId, winner, loser);
-
+            LeagueMatchResult match = new LeagueMatchResult(seriesName, winner, loser);
             getLeagueMatchesInWriteLock(leagueId).add(match);
-            _leagueMatchDAO.addPlayedMatch(leagueId, seriesId, winner, loser);
+            _leagueMatchDAO.addPlayedMatch(leagueId, seriesName, winner, loser);
         } finally {
             _readWriteLock.writeLock().unlock();
         }
     }
+
 }

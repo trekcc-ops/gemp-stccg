@@ -1,64 +1,125 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.game.ActionOrderOfOperationException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.*;
 
-@JsonIncludeProperties({"actions"})
-public interface ActionsEnvironment {
+public class ActionsEnvironment {
+    private final Map<Integer, Action> _createdActionMap = new HashMap<>();
+    private final Stack<Action> _actionStack = new Stack<>();
+    private final List<ActionProxy> _actionProxies = new LinkedList<>();
+    private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
+    private final List<Action> _performedActions = new LinkedList<>();
+    private int _nextActionId = 1;
 
-    List<TopLevelSelectableAction> getRequiredAfterTriggers(ActionResult actionResult);
+    public void addAlwaysOnActionProxy(ActionProxy actionProxy) {
+        _actionProxies.add(actionProxy);
+    }
 
-    Map<TopLevelSelectableAction, ActionResult> getOptionalAfterTriggers(DefaultGame cardGame, Player player,
-                                                       Collection<? extends ActionResult> effectResults);
+    public void signalEndOfTurn() {
+        _actionProxies.removeAll(_untilEndOfTurnActionProxies);
+        _untilEndOfTurnActionProxies.clear();
+    }
 
-    List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, Player player,
-                                                           Collection<? extends ActionResult> effectResults);
+    public void addUntilEndOfTurnActionProxy(ActionProxy actionProxy) {
+        _actionProxies.add(actionProxy);
+        _untilEndOfTurnActionProxies.add(actionProxy);
+    }
 
-    void addUntilEndOfTurnActionProxy(ActionProxy actionProxy);
+    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
+        List<TopLevelSelectableAction> result = new LinkedList<>();
 
-    List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player);
+        for (ActionProxy actionProxy : _actionProxies) {
+            for (TopLevelSelectableAction action : actionProxy.getPhaseActions(cardGame, player)) {
+                if (action.canBeInitiated(cardGame)) {
+                    result.add(action);
+                }
+            }
+        }
+        return result;
+    }
 
-    void addActionToStack(Action action) throws InvalidGameLogicException;
 
-    void signalEndOfTurn();
-    void addAlwaysOnActionProxy(ActionProxy actionProxy);
+    public void addActionToStack(Action action) {
+        if (action != null) {
+            action.startPerforming(); // Set action status
+            _actionStack.add(action);
+        }
+    }
 
-    Stack<Action> getActionStack();
+    public Stack<Action> getActionStack() { return _actionStack; }
 
-    List<Action> getPerformedActions();
+    public List<Action> getPerformedActions() {
+        return _performedActions;
+    }
+    public void logCompletedAction(Action action) {
+        if (!_performedActions.contains(action)) {
+            _performedActions.add(action);
+        }
+    }
 
-    boolean hasNoActionsInProgress();
+    public boolean hasNoActionsInProgress() {
+        return _actionStack.isEmpty();
+    }
 
-    void removeCompletedActionFromStack(Action action) throws ActionOrderOfOperationException;
+    public void removeActionFromStack(Action action) {
+        _actionStack.remove(action);
+    }
 
-    Action getCurrentAction();
+    public Action getCurrentAction() {
+        if (_actionStack.isEmpty()) {
+            return null;
+        } else {
+            return _actionStack.peek();
+        }
+    }
 
-    int getNextActionId();
+    public int getNextActionId() {
+        return _nextActionId;
+    }
 
-    void incrementActionId();
+    public void incrementActionId() {
+        _nextActionId++;
+    }
 
-    Action getActionById(int actionId);
+    public Action getActionById(int actionId) {
+        return _createdActionMap.get(actionId);
+    }
 
-    void logAction(Action action);
+    public void logAction(Action action) {
+        _createdActionMap.put(action.getActionId(), action);
+    }
 
-    Map<Integer, Action> getAllActions();
+    public void logCompletedActionNotInStack(Action action) {
+        logAction(action);
+        _performedActions.add(action);
+    }
 
-    void logCompletedActionNotInStack(Action action);
+    public Map<Integer, Action> getAllActions() {
+        return _createdActionMap;
+    }
 
-    void executeNextSubAction(DefaultGame cardGame) throws InvalidGameOperationException,
-            PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException;
+    public void carryOutPendingActions(DefaultGame cardGame) throws InvalidGameOperationException {
+        if (hasNoActionsInProgress())
+            try {
+                cardGame.continueCurrentProcess();
+                cardGame.sendActionResultToClient();
+            } catch(InvalidGameLogicException exp) {
+                cardGame.sendErrorMessage(exp);
+            }
+        else {
+            Action currentAction = getCurrentAction();
+            currentAction.executeNextSubAction(this, cardGame);
+        }
+    }
 
-    void carryOutPendingActions(DefaultGame cardGame) throws InvalidGameOperationException,
-            PlayerNotFoundException, InvalidGameLogicException, CardNotFoundException;
+    public Collection<ActionProxy> getAllActionProxies() {
+        return _actionProxies;
+    }
+
 }

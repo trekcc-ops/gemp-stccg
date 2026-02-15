@@ -2,9 +2,10 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.player.Player;
 
 public interface GameLocation {
 
@@ -19,9 +20,17 @@ public interface GameLocation {
     int getDistanceToLocation(ST1EGame cardGame, GameLocation location, Player calculatingPlayer) 
             throws InvalidGameLogicException;
     
-    String getLocationName() throws InvalidGameLogicException;
+    String getLocationName();
 
     boolean isHomeworld();
 
     boolean hasCardSeededUnderneath(PhysicalCard card);
+    boolean isInRegion(Region region);
+    int getSpan(Player player) throws InvalidGameLogicException;
+
+    int getLocationId();
+
+    boolean isInSameQuadrantAs(GameLocation currentLocation);
+
+    PhysicalCard getMissionForPlayer(String playerId) throws InvalidGameLogicException;
 }

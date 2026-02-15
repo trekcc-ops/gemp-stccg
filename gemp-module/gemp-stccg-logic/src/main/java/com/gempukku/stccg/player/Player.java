@@ -1,7 +1,6 @@
 package com.gempukku.stccg.player;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.cardgroup.DiscardPile;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
@@ -12,7 +11,9 @@ import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InappropriateZoneException;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -29,20 +30,36 @@ public class Player {
     private boolean _decked;
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     @JsonProperty("cardGroups")
-    Map<Zone, PhysicalCardGroup> _cardGroups = new HashMap<>();
+    Map<Zone, PhysicalCardGroup<PhysicalCard>> _cardGroups = new HashMap<>();
     @JsonProperty("score")
     private int _currentScore;
-    private int _lastSyncedScore;
     @JsonProperty("drawDeck")
-    CardPile _drawDeck;
+    DrawDeck _drawDeck;
     @JsonProperty("discardPile")
-    CardPile _discardPile;
+    DiscardPile _discardPile;
 
     @JsonProperty("missionsPile")
-    CardPile _missionsPile;
+    CardPile<PhysicalCard> _missionsPile;
 
     @JsonProperty("seedDeck")
-    PhysicalCardGroup _seedDeck;
+    PhysicalCardGroup<PhysicalCard> _seedDeck;
+
+    @JsonCreator
+    public Player(
+            @JsonProperty("playerId")
+            String playerId,
+            @JsonProperty("decked")
+            boolean decked,
+            @JsonProperty("score")
+            int score,
+            @JsonProperty("cardGroups")
+            Map<Zone, PhysicalCardGroup<PhysicalCard>> cardGroups) {
+        _playerId = playerId;
+        _decked = decked;
+        _currentScore = score;
+        _cardGroups.putAll(cardGroups);
+    }
+
 
     public Player(String playerId) {
         _playerId = playerId;
@@ -82,14 +99,6 @@ public class Player {
     }
 
 
-    public boolean hasACopyOfCardInPlay(DefaultGame cardGame, PhysicalCard card) {
-        for (PhysicalCard cardInPlay : cardGame.getGameState().getAllCardsInPlay()) {
-            if (cardInPlay.isCopyOf(card) && cardInPlay.getOwner() == this)
-                return true;
-        }
-        return false;
-    }
-
     public int getScore() {
         return _currentScore;
     }
@@ -110,25 +119,17 @@ public class Player {
         return getCardsInGroup(Zone.REMOVED);
     }
 
-    public int getLastSyncedScore() {
-        return _lastSyncedScore;
-    }
-
-    public void syncScore() {
-        _lastSyncedScore = _currentScore;
-    }
-
     public void setScore(int score) {
         _currentScore = score;
     }
 
-    public void addCardGroup(Zone zone) throws InvalidGameLogicException {
-        PhysicalCardGroup group = switch(zone) {
+    public void addCardGroup(Zone zone) throws InvalidGameOperationException {
+        PhysicalCardGroup<PhysicalCard> group = switch(zone) {
             case SEED_DECK -> {
-                _seedDeck = new PhysicalCardGroup();
+                _seedDeck = new PhysicalCardGroup<>();
                 yield _seedDeck;
             }
-            case CORE, HAND -> new PhysicalCardGroup();
+            case CORE, HAND -> new PhysicalCardGroup<>();
             case DRAW_DECK -> {
                 _drawDeck = new DrawDeck();
                 yield _drawDeck;
@@ -138,40 +139,31 @@ public class Player {
                 yield _discardPile;
             }
             case MISSIONS_PILE -> {
-                _missionsPile = new CardPile();
+                _missionsPile = new CardPile<>();
                 yield _missionsPile;
             }
-            case PLAY_PILE, REMOVED -> new CardPile();
-            default -> throw new InvalidGameLogicException("Unable to create a card group for zone " + zone);
+            case PLAY_PILE, REMOVED, POINT_AREA -> new CardPile<>();
+            default -> throw new InappropriateZoneException("Unable to create a card group for zone " + zone);
         };
         _cardGroups.put(zone, group);
     }
 
-    public CardPile getMissionsPile() {
+    public CardPile<PhysicalCard> getMissionsPile() {
         return _missionsPile;
     }
 
     public List<PhysicalCard> getCardGroupCards(Zone zone) {
-        PhysicalCardGroup cardGroup = getCardGroup(zone);
+        PhysicalCardGroup<PhysicalCard> cardGroup = getCardGroup(zone);
         return (cardGroup == null) ? new ArrayList<>() : cardGroup.getCards();
     }
 
-    public PhysicalCardGroup getCardGroup(Zone zone) {
+    public PhysicalCardGroup<PhysicalCard> getCardGroup(Zone zone) {
         return _cardGroups.get(zone);
     }
 
 
-    public void addCardToGroup(Zone zone, PhysicalCard card) throws InvalidGameLogicException {
-        PhysicalCardGroup group = _cardGroups.get(zone);
-        if (group != null) {
-            group.addCard(card);
-        } else {
-            throw new InvalidGameLogicException("Cannot add card to zone " + zone);
-        }
-    }
-
     public List<PhysicalCard> getCardsInGroup(Zone zone) {
-        PhysicalCardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup<PhysicalCard> group = _cardGroups.get(zone);
         if (group == null) {
             return new LinkedList<>();
         } else {
@@ -185,7 +177,7 @@ public class Player {
     }
 
     public void setCardGroup(Zone zone, List<PhysicalCard> subDeck) throws InvalidGameLogicException {
-        PhysicalCardGroup group = _cardGroups.get(zone);
+        PhysicalCardGroup<PhysicalCard> group = _cardGroups.get(zone);
         if (group != null) {
             group.setCards(subDeck);
         } else {
@@ -197,12 +189,8 @@ public class Player {
         return _cardGroups.keySet();
     }
 
-    public CardPile getDrawDeck() {
+    public DrawDeck getDrawDeck() {
         return _drawDeck;
     }
 
-    public boolean canPerformAction(DefaultGame cardGame, Action action) {
-        return cardGame.getGameState().getModifiersQuerying().canPerformAction(_playerId, action) &&
-                action.canBeInitiated(cardGame);
-    }
 }

@@ -41,20 +41,16 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
         ST1EGameState gameState = getST1EGame(cardGame).getGameState();
         Phase currentPhase = gameState.getCurrentPhase();
 
-        if (playableActions.isEmpty() && cardGame.shouldAutoPass(currentPhase)) {
+        if (playableActions.isEmpty() && cardGame.shouldAutoPass(currentPhase, currentPlayer.getPlayerId())) {
             _consecutivePasses++;
         } else {
-            cardGame.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_PHASE_ACTION,
                             playableActions, cardGame, true) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                cardGame.getActionsEnvironment().addActionToStack(action);
-                            } catch(InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
-                            }
+                            Action action = getSelectedAction(result);
+                            cardGame.getActionsEnvironment().addActionToStack(action);
                         }
                     });
         }

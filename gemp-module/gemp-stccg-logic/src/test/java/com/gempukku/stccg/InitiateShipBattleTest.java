@@ -1,21 +1,14 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
-import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
-import com.gempukku.stccg.actions.playcard.SeedOutpostAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ShipBattleTargetDecision;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.player.PlayerOrder;
-import com.gempukku.stccg.processes.st1e.ST1EFacilitySeedPhaseProcess;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -24,64 +17,47 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class InitiateShipBattleTest extends AbstractAtTest {
 
-    private PhysicalShipCard attackingShip;
-    private PhysicalShipCard defendingTarget;
-    private PersonnelCard klag1;
-    private FacilityCard outpost1;
+    private ShipCard attackingShip;
+    private ShipCard defendingTarget;
 
-    private void setupGameState() throws CardNotFoundException, InvalidGameLogicException,
-            InvalidGameOperationException, DecisionResultInvalidException {
-        MissionCard mission = (MissionCard) newCardForGame("101_194", P1); // Wormhole Negotiations
+    private void initializeGame(String defendingCardTitle, boolean includeLeaderOnAttackingShip)
+            throws InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        MissionCard _mission = builder.addMission("101_194", "Wormhole Negotiations", P1);
+        attackingShip = builder.addShipInSpace("116_105", "I.K.C. Lukara", P1, _mission); // 7-7-7
 
-        klag1 = (PersonnelCard) newCardForGame("101_270", P1);
-        PersonnelCard klag2 = (PersonnelCard) newCardForGame("101_270", P2);
+        defendingTarget = switch(defendingCardTitle) {
+            case "K'Ratak" ->
+                    builder.addShipInSpace("103_118", "I.K.C. K'Ratak", P2, _mission); // 6-8-6
+            case "Yridian Shuttle" ->
+                    builder.addShipInSpace("101_355", "Yridian Shuttle", P2, _mission); // 6-1-3
+            default -> throw new CardNotFoundException(
+                    "Test not designed to work with defending target " + defendingCardTitle);
+        };
 
-        outpost1 = (FacilityCard) newCardForGame("101_105", P1); // Klingon Outpost
-        FacilityCard outpost2 = (FacilityCard) newCardForGame("101_105", P2); // Klingon Outpost
-        List<FacilityCard> outpostsToSeed = List.of(outpost1, outpost2);
-
-        SeedMissionCardAction seedAction = new SeedMissionCardAction(mission);
-        seedAction.setLocationZoneIndex(0);
-        seedAction.seedCard(_game);
-
-        for (FacilityCard facility : outpostsToSeed) {
-            SeedOutpostAction seedOutpostAction = new SeedOutpostAction(facility);
-            seedOutpostAction.setDestination(mission.getLocationDeprecatedOnlyUseForTests());
-            seedOutpostAction.processEffect(_game, facility.getOwner());
+        if (includeLeaderOnAttackingShip) {
+            builder.addCardAboardShipOrFacility(
+                    "101_270", "Klag", P1, attackingShip, PersonnelCard.class);
         }
 
-        this.attackingShip.reportToFacility(outpost1);
-        klag1.reportToFacility(outpost1);
-        defendingTarget.reportToFacility(outpost2);
-        klag2.reportToFacility(outpost2);
-
-        assertTrue(this.attackingShip.isDocked());
-        assertTrue(defendingTarget.isDocked());
-
-        _game.getGameState().initializePlayerOrder(new PlayerOrder(List.of(P1, P2)));
-        _game.getGameState().setCurrentProcess(new ST1EFacilitySeedPhaseProcess(2));
-
-        _game.startGame();
-
-        beamCard(P1, this.attackingShip, klag1, this.attackingShip);
-        undockShip(P1, this.attackingShip);
-
-        assertFalse(this.attackingShip.isDocked());
-        assertTrue(this.attackingShip.getCrew().contains(klag1));
+        builder.setPhase(Phase.EXECUTE_ORDERS);
+        builder.startGame();
     }
 
+
     @Test
-    public void initiateBattleTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
-        setupSimple1EGame(30);
-        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
-        defendingTarget = (PhysicalShipCard) newCardForGame("103_118", P2); // I.K.S. K'Ratak (6-8-6)
-        setupGameState();
-        defendingTarget.undockFromFacility();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
-        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
+    public void initiateBattleTest() throws DecisionResultInvalidException, InvalidGameOperationException,
+            CardNotFoundException {
+
+        // Initiate battle: Lukara vs. K'Ratak
+        // Should result in a "hit" with 50% HULL reduction
+        initializeGame("K'Ratak", true);
+        InitiateShipBattleAction battleAction = initiateBattle(P1);
+
+        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _game.getAwaitingDecision(P1);
         decision.decisionMade(List.of(attackingShip), defendingTarget);
-        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
+        _game.removeDecision(P1);
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
         assertTrue(attackingShip.isStopped());
@@ -91,17 +67,17 @@ public class InitiateShipBattleTest extends AbstractAtTest {
     }
 
     @Test
-    public void directHitBattleTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
-        setupSimple1EGame(30);
-        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
-        defendingTarget = (PhysicalShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
-        setupGameState();
-        defendingTarget.undockFromFacility();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
-        InitiateShipBattleAction battleAction = selectAction(InitiateShipBattleAction.class, null, P1);
-        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _userFeedback.getAwaitingDecision(P1);
+    public void directHitBattleTest() throws DecisionResultInvalidException, InvalidGameOperationException,
+            CardNotFoundException {
+
+        // Initiate battle: Lukara vs. Yridian Shuttle
+        // Should result in a "direct hit" with 100% HULL reduction
+        initializeGame("Yridian Shuttle", true);
+
+        InitiateShipBattleAction battleAction = initiateBattle(P1);
+        ShipBattleTargetDecision decision = (ShipBattleTargetDecision) _game.getAwaitingDecision(P1);
         decision.decisionMade(List.of(attackingShip), defendingTarget);
-        _game.getGameState().playerDecisionFinished(P1, _userFeedback);
+        _game.removeDecision(P1);
         _game.carryOutPendingActionsUntilDecisionNeeded();
         assertTrue(battleAction.wasWonBy(_game.getPlayer(P1)));
         assertTrue(attackingShip.isStopped());
@@ -111,23 +87,14 @@ public class InitiateShipBattleTest extends AbstractAtTest {
     }
 
     @Test
-    public void noWeaponsTest() throws DecisionResultInvalidException, PlayerNotFoundException, InvalidGameOperationException, InvalidGameLogicException, CardNotFoundException {
-        setupSimple1EGame(30);
-        attackingShip = (PhysicalShipCard) newCardForGame("116_105", P1); // I.K.S. Lukara (7-7-7)
-        defendingTarget = (PhysicalShipCard) newCardForGame("101_355", P2); // Yridian Shuttle (6-1-3)
-        setupGameState();
-        beamCard(P1, this.attackingShip, klag1, outpost1);
-        defendingTarget.undockFromFacility();
-        assertEquals(Phase.EXECUTE_ORDERS, _game.getCurrentPhase());
+    public void noWeaponsTest() throws DecisionResultInvalidException, InvalidGameOperationException,
+            CardNotFoundException {
 
-        boolean actionNotFound = false;
+        // Initiate battle: Lukara vs. Yridian Shuttle
+        // Beaming Klag off the ship means Lukara's WEAPONS are disabled and battle can't be initiated
+        initializeGame("Yridian Shuttle", false);
 
-        try {
-            selectAction(InitiateShipBattleAction.class, null, P1);
-        } catch(DecisionResultInvalidException exp) {
-            actionNotFound = true;
-        }
-        assertTrue(actionNotFound);
+        assertThrows(DecisionResultInvalidException.class, () -> initiateBattle(P1));
     }
 
 }

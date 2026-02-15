@@ -6,13 +6,14 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
@@ -27,8 +28,9 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     private final static int BONUS_POINTS = 25000;
     private String _discardingPlayerId;
 
-    public ActivateLaughterTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
-        super(actionContext, power);
+    public ActivateLaughterTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                              ActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, performingCard);
     }
 
     @Override
@@ -56,7 +58,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             }
         }
 
-        cardGame.getUserFeedback().sendAwaitingDecision(
+        cardGame.sendAwaitingDecision(
                 new MultipleChoiceAwaitingDecision(cardGame.getPlayer(_performingPlayerId),
                         "Choose a player to discard a card", players, cardGame) {
                     @Override
@@ -81,7 +83,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
         if (newSelectablePlayers.size() == 1)
             secondPlayerChosen(Iterables.getOnlyElement(newSelectablePlayers), game);
         else {
-            game.getUserFeedback().sendAwaitingDecision(
+            game.sendAwaitingDecision(
                     new MultipleChoiceAwaitingDecision(game.getPlayer(_performingPlayerId),
                             "Choose a player to place a card from hand on the bottom of their deck",
                             newSelectablePlayers, game) {
@@ -102,7 +104,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
             throws InvalidGameLogicException, PlayerNotFoundException {
         Player discardingPlayer = game.getPlayer(_discardingPlayerId);
         SelectVisibleCardAction discardSelectAction =
-                new SelectVisibleCardAction(game, discardingPlayer, "Choose a card to discard",
+                new SelectVisibleCardAction(game, _discardingPlayerId, "Choose a card to discard",
                         Filters.yourHand(discardingPlayer));
         appendEffect(new TribblesMultiDiscardActionBroken(game, _performingCard, discardingPlayer, discardSelectAction));
 

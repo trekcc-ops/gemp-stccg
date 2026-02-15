@@ -1,6 +1,7 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,11 +16,12 @@ public class FromOnePersonnelMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
         int numberWithRequirement = 0;
         for (PersonnelCard card : personnel) {
-            if (_requirement.canBeMetBy(List.of(card)))
-                    numberWithRequirement++;
+            if (_requirement.canBeMetBy(List.of(card), cardGame)) {
+                numberWithRequirement++;
+            }
         }
         return numberWithRequirement >= _numberOfPersonnelRequired;
     }

@@ -1,10 +1,9 @@
 package com.gempukku.stccg.rules.st1e;
 
-import com.gempukku.stccg.cards.CardWithHullIntegrity;
+import com.gempukku.stccg.cards.physicalcard.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
-import org.apache.logging.log4j.core.net.Facility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class ShipBattleRules {
         for (CardWithHullIntegrity attackingCard1 : initiatingPlayerCards) {
             List<PhysicalCard> canTargetCards = new ArrayList<>();
             for (CardWithHullIntegrity defendingCard : defendingCards) {
-                if (attackingCard1.getGameLocation() == defendingCard.getGameLocation()) {
+                if (attackingCard1.isAtSameLocationAsCard(defendingCard)) {
                     // TODO - check affiliation attack restrictions
                     canTargetCards.add(defendingCard);
                 }
@@ -55,9 +54,10 @@ public class ShipBattleRules {
                 List<PhysicalCard> canAttackWithCards = new ArrayList<>();
                 for (CardWithHullIntegrity attackingCard2 : initiatingPlayerCards) {
                         // TODO - This is pretty ugly but it gets the job done
-                    if (attackingCard1 != attackingCard2 && attackingCard2 instanceof PhysicalNounCard1E nounCard2 &&
-                            attackingCard1.isCompatibleWith(nounCard2) &&
-                            attackingCard1.getGameLocation() == attackingCard2.getGameLocation()) {
+                    if (attackingCard1 != attackingCard2 && attackingCard2 instanceof CardWithCompatibility nounCard2 &&
+                            attackingCard1 instanceof ShipCard ship &&
+                            ship.isCompatibleWith(stGame, nounCard2) &&
+                            attackingCard1.isAtSameLocationAsCard(attackingCard2)) {
                         canAttackWithCards.add(attackingCard2);
                     }
                 }

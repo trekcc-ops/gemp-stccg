@@ -1,6 +1,5 @@
 package com.gempukku.stccg.rules.generic;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.actions.ActionResult;
@@ -11,16 +10,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RequiredTriggersRule extends GenericRule {
-    public RequiredTriggersRule(DefaultGame game) {
-        super(game);
-    }
 
     @Override
-    public List<TopLevelSelectableAction> getRequiredAfterTriggers(ActionResult actionResult) {
+    public List<TopLevelSelectableAction> getRequiredAfterTriggers(DefaultGame cardGame, ActionResult actionResult) {
         List<TopLevelSelectableAction> result = new LinkedList<>();
-        for (PhysicalCard card : Filters.filterCardsInPlay(_game)) {
-            if (!card.hasTextRemoved(_game)) {
-                result.addAll(card.getRequiredResponseActions(actionResult));
+        for (PhysicalCard card : Filters.filterCardsInPlay(cardGame)) {
+            if (!card.hasTextRemoved(cardGame)) {
+                result.addAll(card.getRequiredResponseActions(cardGame, actionResult));
             }
         }
         return result;

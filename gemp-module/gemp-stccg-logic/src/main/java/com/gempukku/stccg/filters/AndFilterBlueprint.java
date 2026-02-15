@@ -2,8 +2,10 @@ package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class AndFilterBlueprint implements FilterBlueprint {
@@ -14,10 +16,14 @@ public class AndFilterBlueprint implements FilterBlueprint {
         _filterBlueprints = filterBlueprints;
     }
 
-    public Filterable getFilterable(ActionContext actionContext) {
+    public AndFilterBlueprint(Collection<FilterBlueprint> filterBlueprints) {
+        _filterBlueprints = filterBlueprints.toArray(new FilterBlueprint[0]);
+    }
+
+    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
         List<Filterable> filterables = new ArrayList<>();
         for (FilterBlueprint blueprint : _filterBlueprints) {
-            filterables.add(blueprint.getFilterable(actionContext));
+            filterables.add(blueprint.getFilterable(cardGame, actionContext));
         }
         return Filters.and(filterables);
     }

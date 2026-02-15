@@ -27,6 +27,17 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
         this(player, text, physicalCards, 0, physicalCards.size(), cardGame);
     }
 
+    public CardsSelectionDecision(String playerName, String text, Collection<? extends PhysicalCard> physicalCards,
+                                  int minimum, int maximum, DefaultGame cardGame) {
+        super(playerName, text, cardGame);
+        _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
+        _minimum = minimum;
+        _maximum = maximum;
+        _cardIds = new String[physicalCards.size()];
+        for (int i = 0; i < physicalCards.size(); i++)
+            _cardIds[i] = String.valueOf(_physicalCards.get(i).getCardId());
+    }
+
     public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
                                   int minimum, int maximum, DefaultGame cardGame) {
         super(player, text, cardGame);
@@ -112,6 +123,10 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
             result.add(mapToAdd);
         }
         return result;
+    }
+
+    public List<? extends PhysicalCard> getSelectableCards() {
+        return _physicalCards;
     }
 
 }

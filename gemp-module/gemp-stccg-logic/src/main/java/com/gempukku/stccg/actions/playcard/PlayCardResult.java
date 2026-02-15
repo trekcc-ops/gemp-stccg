@@ -9,7 +9,7 @@ public class PlayCardResult extends ActionResult {
     private final PhysicalCard _attachedTo;
 
     public PlayCardResult(Action action, PhysicalCard playedCard) {
-        super(ActionResult.Type.PLAY_CARD, action);
+        super(ActionResult.Type.JUST_PLAYED, action);
         _playedCard = playedCard;
         _attachedTo = null;
     }
@@ -22,5 +22,7 @@ public class PlayCardResult extends ActionResult {
     public PhysicalCard getAttachedTo() {
         return _attachedTo;
     }
+
+    public Action getAction() { return _action; }
 
 }

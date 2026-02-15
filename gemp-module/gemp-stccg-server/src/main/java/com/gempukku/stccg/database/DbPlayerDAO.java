@@ -470,4 +470,5 @@ public class DbPlayerDAO implements PlayerDAO {
             throw new RuntimeException("Unable to retrieve players", ex);
         }
     }
+
 }

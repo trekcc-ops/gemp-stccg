@@ -26,13 +26,13 @@ public class Blueprint155_010 extends CardBlueprint {
     public List<Action> getEncounterActionsFromJava(ST1EPhysicalCard thisCard, DefaultGame game, AttemptingUnit attemptingUnit,
                                                     EncounterSeedCardAction action, MissionLocation missionLocation) {
         List<Action> result = new LinkedList<>();
-        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel();
+        Collection<PersonnelCard> attemptingPersonnel = attemptingUnit.getAttemptingPersonnel(game);
 
         /* If Away Team/crew contains one personnel, Away Team/ship and crew is stopped.
             Replace dilemma under mission to be encountered again.
          */
         if (attemptingPersonnel.size() < 2) {
-            result.add(new FailDilemmaAction(attemptingUnit, thisCard, action));
+            result.add(new FailDilemmaAction(game, attemptingUnit, thisCard, action));
         }
 
         /* Randomly select two personnel to be stopped. If any [Q] card in play when dilemma is encountered,
@@ -41,8 +41,8 @@ public class Blueprint155_010 extends CardBlueprint {
         // TODO - No need to add the Q card condition yet, since Q cards are not in the current card pool
         else {
             Collection<PersonnelCard> personnelToStop = TextUtils.getRandomItemsFromList(attemptingPersonnel, 2);
-            result.add(new StopCardsAction(game, thisCard.getOwner(), personnelToStop));
-            result.add(new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), thisCard));
+            result.add(new StopCardsAction(game, thisCard.getOwnerName(), personnelToStop));
+            result.add(new RemoveDilemmaFromGameAction(game, attemptingUnit.getControllerName(), thisCard));
         }
         return result;
     }

@@ -1,13 +1,14 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.CardPerformedAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.tribblepower.*;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.LinkedList;
@@ -16,37 +17,38 @@ import java.util.List;
 public class ActivateTribblePowerEffectBlueprint implements SubActionBlueprint {
 
     @Override
-    public List<Action> createActions(CardPerformedAction action, ActionContext context)
-            throws InvalidCardDefinitionException, InvalidGameLogicException, PlayerNotFoundException {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
+            throws InvalidCardDefinitionException, PlayerNotFoundException {
 
         List<Action> result = new LinkedList<>();
-        TribblePower tribblePower = context.getSource().getBlueprint().getTribblePower();
-        if (context instanceof TribblesActionContext tribblesContext) {
+        PhysicalCard performingCard = context.card();
+        TribblePower tribblePower = performingCard.getBlueprint().getTribblePower();
+        if (cardGame instanceof TribblesGame tribblesGame) {
 
             Action activateAction = switch (tribblePower) {
-                case AVALANCHE -> new ActivateAvalancheTribblePowerAction(tribblesContext, tribblePower);
-                case CONVERT -> new ActivateConvertTribblePowerAction(tribblesContext, tribblePower);
-                case CYCLE -> new ActivateCycleTribblePowerAction(tribblesContext, tribblePower);
-                case DISCARD -> new ActivateDiscardTribblePowerAction(tribblesContext, tribblePower);
-                case DRAW -> new ActivateDrawTribblePowerAction(tribblesContext, tribblePower);
-                case EVOLVE -> new ActivateEvolveTribblePowerAction(tribblesContext, tribblePower);
-                case FAMINE -> new ActivateFamineTribblePowerAction(tribblesContext, tribblePower);
-                case GENEROSITY -> new ActivateGenerosityTribblePowerAction(tribblesContext, tribblePower);
-                case KILL -> new ActivateKillTribblePowerAction(tribblesContext, tribblePower);
-                case KINDNESS -> new ActivateKindnessTribblePowerAction(tribblesContext, tribblePower);
-                case LAUGHTER -> new ActivateLaughterTribblePowerAction(tribblesContext, tribblePower);
-                case MASAKA -> new ActivateMasakaTribblePowerAction(tribblesContext, tribblePower);
-                case MUTATE -> new ActivateMutateTribblePowerAction(tribblesContext, tribblePower);
-                case POISON -> new ActivatePoisonTribblePowerAction(tribblesContext, tribblePower);
-                case PROCESS -> new ActivateProcessTribblePowerAction(tribblesContext, tribblePower);
-                case RECYCLE -> new ActivateRecycleTribblePowerAction(tribblesContext, tribblePower);
-                case REVERSE -> new ActivateReverseTribblePowerAction(tribblesContext, tribblePower);
+                case AVALANCHE -> new ActivateAvalancheTribblePowerAction(tribblesGame, performingCard, context);
+                case CONVERT -> new ActivateConvertTribblePowerAction(tribblesGame, performingCard, context);
+                case CYCLE -> new ActivateCycleTribblePowerAction(tribblesGame, performingCard, context);
+                case DISCARD -> new ActivateDiscardTribblePowerAction(tribblesGame, performingCard, context);
+                case DRAW -> new ActivateDrawTribblePowerAction(tribblesGame, performingCard, context);
+                case EVOLVE -> new ActivateEvolveTribblePowerAction(tribblesGame, performingCard, context);
+                case FAMINE -> new ActivateFamineTribblePowerAction(tribblesGame, performingCard, context);
+                case GENEROSITY -> new ActivateGenerosityTribblePowerAction(tribblesGame, performingCard, context);
+                case KILL -> new ActivateKillTribblePowerAction(tribblesGame, performingCard, context);
+                case KINDNESS -> new ActivateKindnessTribblePowerAction(tribblesGame, performingCard, context);
+                case LAUGHTER -> new ActivateLaughterTribblePowerAction(tribblesGame, performingCard, context);
+                case MASAKA -> new ActivateMasakaTribblePowerAction(tribblesGame, performingCard, context);
+                case MUTATE -> new ActivateMutateTribblePowerAction(tribblesGame, performingCard, context);
+                case POISON -> new ActivatePoisonTribblePowerAction(tribblesGame, performingCard, context);
+                case PROCESS -> new ActivateProcessTribblePowerAction(tribblesGame, performingCard, context);
+                case RECYCLE -> new ActivateRecycleTribblePowerAction(tribblesGame, performingCard, context);
+                case REVERSE -> new ActivateReverseTribblePowerAction(tribblesGame, performingCard, context);
                 default -> throw new InvalidCardDefinitionException(
                         "Code not yet implemented for Tribble power " + tribblePower.getHumanReadable());
             };
             result.add(activateAction);
             return result;
         } else throw new InvalidCardDefinitionException(
-                "Could not create Tribbles power effect for a non-Tribbles context");
+                "Could not create Tribbles power effect for a non-Tribbles game");
     }
 }

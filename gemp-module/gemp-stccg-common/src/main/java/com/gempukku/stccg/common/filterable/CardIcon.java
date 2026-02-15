@@ -4,6 +4,7 @@ package com.gempukku.stccg.common.filterable;
 public enum CardIcon implements Filterable {
     AU_ICON("Alternate Universe", "https://www.trekcc.org/forum/images/smilies/icon_1e_au.jpg"),
     AU_ICON_2E("Alternate Universe", "https://www.trekcc.org/images/icons/au.gif"),
+    CLASSIC_FILMS_ICON("Classic Films", "https://www.trekcc.org/forum/images/smilies/icon_classicfilms.png"),
     COMMAND("Command", "https://www.trekcc.org/forum/images/smilies/icon_command.gif"),
     COMMUNICATIONS_SUBCOMMAND("Communications", "https://www.trekcc.org/forum/images/smilies/icon_sc_comm.png"),
     DEFENSE_SUBCOMMAND("Defense", "https://www.trekcc.org/forum/images/smilies/icon_sc_def.png"),
@@ -12,6 +13,7 @@ public enum CardIcon implements Filterable {
     ENT_ERA("22nd Century", "https://www.trekcc.org/forum/images/smilies/icon_22nd_century.png"),
     FUTURE("Future","https://www.trekcc.org/images/icons/future.gif"),
     FIRST_CONTACT_ICON("First Contact", "https://www.trekcc.org/images/icons/1e/icon_first_contact.jpg"),
+    HOLOGRAPHIC("holographic", "https://www.trekcc.org/forum/images/smilies/icon_hologram.jpg"),
     MAQUIS("Maquis", "https://www.trekcc.org/forum/images/smilies/icon_maquis.png"),
     NAVIGATION_SUBCOMMAND("Navigation", "https://www.trekcc.org/forum/images/smilies/icon_sc_nav.png"),
     ORB("Orb", "https://www.trekcc.org/forum/images/smilies/icon_orb.jpg"),

@@ -1,10 +1,10 @@
 package com.gempukku.stccg.async.handler.admin;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.service.AdminService;
@@ -17,24 +17,26 @@ public class BanUserMultipleRequestHandler implements UriRequestHandler, AdminRe
     // TODO - This doesn't work
 
     private final List<String> _userNames;
+    private final AdminService _adminService;
 
     BanUserMultipleRequestHandler(
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @JsonProperty(value = "userNames", required = true)
-            List<String> userNames
+            List<String> userNames,
+            @JacksonInject AdminService adminService
     ) {
         _userNames = userNames;
+        _adminService = adminService;
     }
 
     @Override
-    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
 
         validateAdmin(request);
-        AdminService adminService = serverObjects.getAdminService();
 
         for (String login : _userNames) {
-            if (!adminService.banUser(login))
+            if (!_adminService.banUser(login))
                 throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
         }
         responseWriter.writeJsonOkResponse();

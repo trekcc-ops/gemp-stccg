@@ -3,7 +3,6 @@ package com.gempukku.stccg.tournament;
 import com.gempukku.stccg.AbstractServerTest;
 import com.gempukku.stccg.competitive.BestOfOneStandingsProducer;
 import com.gempukku.stccg.competitive.PlayerStanding;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -60,7 +59,6 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
         SwissPairingMechanism pairing = new SwissPairingMechanism("swiss");
         for (int i = 1; i < 20; i++) {
             if (!pairing.isFinished(i - 1, players, droppedPlayers)) {
-                System.out.println("Pairing round " + i);
                 List<PlayerStanding> standings =
                         BestOfOneStandingsProducer.produceStandings(players, matches, 1, 0, byes);
 
@@ -89,8 +87,6 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
                     assertFalse(previouslyPaired.get(playerOne).contains(playerTwo));
                     assertFalse(previouslyPaired.get(playerTwo).contains(playerOne));
 
-                    System.out.println("Paired " + playerOne + " against " + playerTwo + " points - " +
-                            getPlayerPoints(standings, playerOne) + " vs " + getPlayerPoints(standings, playerTwo));
                     String winner = ThreadLocalRandom.current().nextBoolean() ? playerOne : playerTwo;
 
                     previouslyPaired.get(playerOne).add(playerTwo);
@@ -100,21 +96,6 @@ public class SwissPairingMechanismTest extends AbstractServerTest {
                 }
             }
         }
-        System.out.println("Final standings:");
-        List<PlayerStanding> standings =
-                BestOfOneStandingsProducer.produceStandings(players, matches, 1, 0, byes);
-        for (PlayerStanding standing : standings) {
-            String player = standing.getPlayerName();
-            System.out.println(standing.getStanding() + ". " + player + " points - " + standing.getPoints() +
-                    " played against: " + StringUtils.join(previouslyPaired.get(player), ","));
-        }
     }
 
-    private int getPlayerPoints(List<? extends PlayerStanding> standings, String player) {
-        for (PlayerStanding standing : standings) {
-            if (standing.getPlayerName().equals(player))
-                return standing.getPoints();
-        }
-        return -1;
-    }
 }

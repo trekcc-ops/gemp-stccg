@@ -1,0 +1,31 @@
+{
+    "setId": "178",
+    "setName": "Homefront VI",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "178_033",
+            "title": "Dominion Outpost",
+            "type": "facility",
+            "property-logo": "ds9-logo",
+            "facility-type": "outpost",
+            "affiliation": "dominion",
+            "uniqueness": "universal",
+            "quadrant": "gamma",
+            "lore": "The homeworld of the Founders of the Dominion is shrouded in mystery. The Dominion establishes outposts throughout its territory.",
+            "shields": 30,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront6/33.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "seedThis",
+                    "limit": 1
+                }
+            ],
+            "playThisCardAction": {
+                "type": "playThis",
+                "destination": "facilityEngineerRequirement(dominion)"
+            }
+        }
+    ]
+}

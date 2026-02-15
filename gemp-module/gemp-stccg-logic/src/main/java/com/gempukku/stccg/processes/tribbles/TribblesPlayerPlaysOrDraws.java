@@ -24,23 +24,19 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
         final List<TopLevelSelectableAction> playableActions =
                 _game.getActionsEnvironment().getPhaseActions(_game, currentPlayer);
 
-        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
+        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase(), currentPlayer.getPlayerId())) {
             _consecutivePasses++;
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            _game.getUserFeedback().sendAwaitingDecision(
+            cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    thisGame.getActionsEnvironment().addActionToStack(action);
-                                } else
-                                    _consecutivePasses++;
-                            } catch(InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
-                            }
+                            Action action = getSelectedAction(result);
+                            if (action != null) {
+                                thisGame.getActionsEnvironment().addActionToStack(action);
+                            } else
+                                _consecutivePasses++;
                         }
                     });
         }

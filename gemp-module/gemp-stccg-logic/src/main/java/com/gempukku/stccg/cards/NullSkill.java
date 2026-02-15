@@ -1,10 +1,14 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class NullSkill extends Skill {
 
-    // This class was only added to shortcut Robert DeSoto in
-    public NullSkill() {
-        super(null, "");
+    // Dummy class designed for skills that aren't ready to be implemented yet
+
+    @JsonCreator
+    public NullSkill(@JsonProperty("text") String text) {
     }
 
 }

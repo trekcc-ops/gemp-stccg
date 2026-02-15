@@ -4,27 +4,24 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.modifiers.ChangeAffiliationAction;
 import com.gempukku.stccg.cards.physicalcard.AffiliatedCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.game.ST1EGame;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class ST1EChangeAffiliationRule extends ST1ERule {
 
-    ST1EChangeAffiliationRule(ST1EGame game) {
-        super(game);
-    }
-
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
+    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
         LinkedList<TopLevelSelectableAction> result = new LinkedList<>();
-        if (player.getPlayerId().equals(_game.getCurrentPlayerId())) {
-            for (PhysicalCard card : Filters.filterYourActive(_game, player)) {
+        if (List.of(Phase.EXECUTE_ORDERS, Phase.CARD_PLAY).contains(cardGame.getCurrentPhase())) {
+            for (PhysicalCard card : Filters.filterYourCardsInPlay(cardGame, player)) {
                 if (card instanceof AffiliatedCard affiliatedCard && affiliatedCard.getAffiliationOptions().size() > 1) {
-                    ChangeAffiliationAction action = new ChangeAffiliationAction(_game, player, affiliatedCard);
-                    if (action.canBeInitiated(_game))
+                    ChangeAffiliationAction action = new ChangeAffiliationAction(cardGame, player, affiliatedCard);
+                    if (action.canBeInitiated(cardGame))
                         result.add(action);
                 }
             }

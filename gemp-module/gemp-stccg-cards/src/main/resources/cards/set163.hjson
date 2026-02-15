@@ -13,11 +13,67 @@
             classification: MEDICAL
             icons: command
             lore: Representative of espionage specialists serving in the Cardassian military. Posed as a monk to attack a Maquis cell at the Juhraya colony in 2370.
+            species: cardassian
+            gender: male
             skill-box: "[*] Transporter Skill [*] Anthropology [*] Obsidian Order [DL] Cardassian Disruptor"
             integrity: 6
             cunning: 7
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/tstl/26.jpg
+        }
+        {
+            blueprintId: 163_027
+            title: Nador
+            type: personnel
+            uniqueness: unique
+            affiliation: cardassian
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command,au-icon
+            lore: Elder gul encountered by the U.S.S. Enterprise in multiple realities. Commanded the Rokassa. Investigated espionage uses of the Argus Array.
+            species: cardassian
+            gender: male
+            skill-box: "[*] Treachery [*] Stellar Cartography [*] Law [*] Leadership [*] Anthropology"
+            integrity: 4
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/27.jpg
+        }
+        {
+            blueprintId: 163_029
+            title: D.C. Franklin
+            type: personnel
+            uniqueness: universal
+            affiliation: federation
+            property-logo: generations-logo
+            classification: SECURITY
+            icons: staff,au-icon,classic-films-icon
+            lore: Human tactical officer typical of those serving in the late 23rd century. Directed efforts to transport the S.S. Lakul survivors aboard the U.S.S. Enterprise-B.
+            species: human
+            gender: male
+            skill-box: "[*] Astrophysics [*] Transporter Skill"
+            integrity: 6
+            cunning: 6
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/29.jpg
+        }
+        {
+            blueprintId: 163_031
+            title: Marruu
+            type: personnel
+            uniqueness: universal
+            affiliation: federation
+            property-logo: generations-logo
+            classification: OFFICER
+            icons: staff,au-icon,classic-films-icon
+            lore: Human navigator typical of U.S.S. Enterprise-B staff officers. Befriended Demora Sulu. Enjoys strategy games and tales of the ancient American West.
+            species: human
+            gender: male
+            skill-box: "[*] Navigation [*] Computer Skill"
+            integrity: 6
+            cunning: 6
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/31.jpg
         }
         {
             blueprintId: 163_032
@@ -29,6 +85,8 @@
             classification: MEDICAL
             icons: staff,first-contact-icon
             lore: Typical nurse who served under Beverly Crusher for many years. Helped evacuate sickbay when the Borg boarded the U.S.S. Enterprise-E.
+            species: human
+            gender: male
             skill-box: "[*] Biology [*] Transporter Skill"
             integrity: 8
             cunning: 7
@@ -44,6 +102,8 @@
             classification: OFFICER
             icons: command
             lore: Experienced officer who often commanded the <i>U.S.S. Enterprise</i>. Defeated the Sisters of Duras at Veridian III. Well versed in saucer separations.
+            species: human
+            gender: male
             skill-box: "[*] Leadership [*] Navigation [*] Music [DL] Brace for Impact"
             integrity: 8
             cunning: 7
@@ -60,6 +120,8 @@
             classification: MEDICAL
             icons: staff
             lore: Typical Ferengi physician. Served aboard the Krayton in 2366. Distrusted Lwaxana Troi. Tried to study her empathic powers with a mind probe.
+            species: ferengi
+            gender: male
             skill-box: "[*] Exobiology [*] Treachery [*] Computer Skill"
             integrity: 3
             cunning: 7
@@ -74,11 +136,51 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: Betazoid ambassador held captive by Tog. Misled him about her willingness to cooperate. Later described Tog as slightly repulsive, but with a certain charm.
+            species: betazoid
+            gender: female
             skill-box: "[*] Empathy x2 [*] Anthropology [*] Computer Skill"
             integrity: 5
             cunning: 8
             strength: 2
             image-url: https://www.trekcc.org/1e/cardimages/tstl/35.jpg
+        }
+        {
+            blueprintId: 163_036
+            title: "B'Etor"
+            type: personnel
+            affiliation: klingon
+            property-logo: generations-logo
+            classification: V.I.P.
+            icons: command
+            lore: "Since failing to seize control of the Klingon Empire, B'Etor, sister of Duras, has been trying to acquire powerful weapons. Still the prettier sister."
+            species: klingon
+            gender: female
+            skill-box: {
+                skill-dots: 3
+                skills: [
+                    {
+                        type: regular
+                        name: Treachery
+                    }
+                    {
+                        type: regular
+                        name: Youth
+                    }
+                    {
+                        type: specialDownload
+                        text: "Lursa"
+                        downloadCardFilter: name(Lursa)
+                    }
+                    {
+                        type: specialNull
+                        text: "Once per game, may steal an Artifact present."
+                    }
+                ]
+            }
+            integrity: 2
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/36.jpg
         }
         {
             blueprintId: 163_037
@@ -90,11 +192,100 @@
             classification: OFFICER
             icons: staff
             lore: Characteristic of male Klingon warriors supporting attempts by the House of Duras to regain power after their defeat in the Klingon Civil War.
+            species: klingon
+            gender: male
             skill-box: "[*] Biology [*] Treachery [*] Transporter Skill"
             integrity: 5
             cunning: 5
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/tstl/37.jpg
+        }
+        {
+            "blueprintId": "163_038",
+            "title": "K'Vit",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "generations-logo",
+            "classification": "SECURITY",
+            "icons": "staff",
+            "lore": "Klingon helmsman serving the Sisters of Duras. Briefly worked as a bounty hunter. Warrior at heart. Surprised when his ship began to cloak at Veridian III.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Navigation",
+                        "level": 2
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Anthropology"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Treachery"
+                    },
+                    {
+                        "type": "specialModifier",
+                        "text": "If on Cha'Joh, it is RANGE +2.",
+                        "modifier": {
+                            "type": "addRange",
+                            "modifiedCards": "name(Cha'Joh) + thisCardIsAboard",
+                            "amount": 2
+                        }
+                    }
+                ]
+            },
+            "integrity": 3,
+            "cunning": 7,
+            "strength": 9,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/38.jpg",
+            "rarity": "V"
+        }
+        {
+            blueprintId: 163_039
+            title: Lursa
+            type: personnel
+            affiliation: klingon
+            property-logo: generations-logo
+            classification: V.I.P.
+            icons: command
+            lore: "Ambitious sister of Duras and B'Etor. Working to restore her family's previous position of power. Named her newborn son after her father, Ja'rod."
+            species: klingon
+            gender: female
+            skill-box: {
+                skill-dots: 3
+                skills: [
+                    {
+                        type: regular
+                        name: Treachery
+                    }
+                    {
+                        type: regular
+                        name: Leadership
+                    }
+                    {
+                        type: specialDownload
+                        text: "B'Etor"
+                        downloadCardFilter: "name(B'Etor)"
+                    }
+                    {
+                        type: specialModifier
+                        text: "Treachery Klingons present are attributes all +1."
+                        modifier: {
+                            type: addToAllAttributes
+                            modifiedCards: treachery + personnel + klingon + presentWithThisCard
+                            amount: 1
+                        }
+                    }
+                ]
+            }
+            integrity: 2
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/39.jpg
         }
         {
             blueprintId: 163_040
@@ -105,12 +296,112 @@
             uniqueness: universal
             classification: SECURITY
             lore: Typical disconnected Borg disciple of The One. Participated in the raid on Ohniaka III. Swore to avenge the death of his friend Torsus.
+            species: borg,human
+            gender: male
             icons: defense-subcommand
             skill-box: "[*] Astrophysics [*] Treachery [*] Navigation"
             integrity: 6
             cunning: 6
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
+        }
+        {
+            blueprintId: 163_044
+            title: Lieutenant Crosis
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            uniqueness: unique
+            classification: OFFICER
+            lore: "Renegade Borg who commanded the initial phase of raids on Federation outposts. Loyal aide to The One. Recruited Data to their cause."
+            species: borg,human
+            gender: male
+            icons: defense-subcommand
+            skill-box: {
+                skill-dots: 4
+                skills: [
+                    {
+                        type: regular
+                        name: Treachery
+                    }
+                    {
+                        type: regular
+                        name: Computer Skill
+                    }
+                    {
+                        type: regular
+                        name: SECURITY
+                    }
+                    {
+                        type: specialModifier
+                        text: "Investigate Raid has [NON], [non]."
+                        modifier: {
+                            type: addAffiliationIconToMission
+                            modifiedCards: name(Investigate Raid)
+                            affiliation: non-aligned
+                            bothSides: true
+                        }
+                    }
+                ]
+            }
+            integrity: 3
+            cunning: 9
+            strength: 9
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/44.jpg
+        }
+        {
+            blueprintId: 163_045
+            title: Millin
+            type: personnel
+            uniqueness: universal
+            affiliation: non-aligned
+            property-logo: generations-logo
+            classification: CIVILIAN
+            icons: au-icon,classic-films-icon
+            lore: Male El-Aurian representative of refugees rescued by the U.S.S. Enterprise-B from the S.S. Lakul before it was destroyed by the Nexus.
+            species: el-aurian
+            gender: male
+            skill-box: "[*] Honor [*] Anthropology"
+            integrity: 7
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/45.jpg
+        }
+        {
+            blueprintId: 163_048
+            title: Third of Five
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: ENGINEER
+            icons: navigation-subcommand
+            lore: "Borg befriended by Geordi La Forge. Became an individual, \"Hugh\", fracturing his hive's link to the Collective. Led those resisting Lore's leadership."
+            species: borg,human
+            gender: male
+            skill-box: "[*] Honor [*] Leadership [*] Biology [*] Exobiology [DL] Group of Individuals"
+            integrity: 7
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/48.jpg
+            rarity: V
+        }
+        {
+            blueprintId: 163_049
+            title: Relam
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Complex strategist affected by temporal irregularities in 2369. Once captained a D'deridex. Has a family tradition of military service."
+            species: romulan
+            gender: male
+            skill-box: "[*] Stellar Cartography [*] Treachery [*] SCIENCE"
+            integrity: 5
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/tstl/49.jpg
+            rarity: V
         }
         {
             blueprintId: 163_050
@@ -122,11 +413,27 @@
             classification: ENGINEER
             icons: staff
             lore: Typical Romulan pilot. Beamed aboard the <i>U.S.S. Enterprise</i> during an encounter with quantum singularity lifeforms in 2369. Enjoys chess.
+            species: romulan
+            gender: male
             skill-box: "[*] Navigation [*] Physics"
             integrity: 5
             cunning: 7
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/tstl/50.jpg
+        }
+        {
+            "blueprintId": "163_052",
+            "title": "Cha'Joh",
+            "type": "ship",
+            "affiliation": "klingon",
+            "property-logo": "generations-logo",
+            "ship-class": "CLASS D-12 SCOUT VESSEL",
+            "lore": "Bird-of-Prey commanded by Lursa and B'Etor, the Sisters of Duras. Fought at Veridian III.",
+            "gametext": "Cloaking Device",
+            "range": 7,
+            "weapons": 5,
+            "shields": 5,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/52.jpg"
         }
         {
             blueprintId: 163_054

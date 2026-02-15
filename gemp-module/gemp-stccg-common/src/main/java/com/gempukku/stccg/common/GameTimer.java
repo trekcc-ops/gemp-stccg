@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public record GameTimer(boolean longGame, String name, int maxSecondsPerPlayer, int maxSecondsPerDecision) {
 
-    private static final GameTimer DEBUG_TIMER =
+    public static final GameTimer DEBUG_TIMER =
             new GameTimer(false, "Debug", 60 * 120, 60 * 120);
     private static final GameTimer DEFAULT_TIMER =
             new GameTimer(false, "Default", 60 * 80, 60 * 5);

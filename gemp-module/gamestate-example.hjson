@@ -35,9 +35,9 @@
                 at the same time. If player2 has signaled they are finished, playersParticipating will only have
                 player1. */
     },
-    "players": [
-        // Information specific to a player. This array will have a similar JSON object for each player in the game.
-        {
+    "playerMap": {
+        // Information specific to a player. Map using the "playerId" field as a key.
+        "player2": {
             "playerId": "player2",
             "score": 0, // Player score. As of 1/25/25, no distinction between bonus and non-bonus points.
             "decked": false, // Tribbles only
@@ -45,6 +45,7 @@
                     /* Cards that are organized in a certain way on the table. Mostly important for piles like
                         discard piles and draw decks. If the cardGroup is a pile, the first element in the list is
                         the bottom card.
+                      The "cardCount" property only shows up in the player-specific view.
                       Some cards or entire card groups may not be public information for every player. In those
                         instances, the cardId values in a player-specific game state are replaced with -99.
                         */
@@ -62,11 +63,15 @@
                     "cardIds": [6,-99] // -99 here most likely represents a hidden agenda card
                 },
                 // etc.
-                // 1E uses DRAW_DECK, DISCARD, CORE, MISSIONS_PILE, REMOVED, HAND, and SEED_DECK.
+                // 1E uses DRAW_DECK, DISCARD, CORE, MISSIONS_PILE, REMOVED, HAND, POINT_AREA, and SEED_DECK.
                 // Tribbles uses DRAW_DECK, DISCARD, and PLAY_PILE.
         },
         // etc. for each player
     ],
+    "players": [
+        /* This item has been deprecated. The members of this list are in the same format as the
+            values in the new "playerMap" map. */
+    ]
     "playerOrder": {
         // Class members for the value in GameState._playerOrder
         "firstPlayer": "player2", // Player ID for player with first turn of the game
@@ -128,13 +133,34 @@
         // etc.
     },
     "spacelineLocations": [
-        /* List of spaceline locations for 1E game. This list in order from left to right.
-                    (As of 1/25/25, both players see the spaceline in the same left-to-right order.)
-            The locationId field is unique to each mission location and referenced by other objects, like cards
-                and away teams. If the spaceline is reorganized (for example, using Blade of Tkon), the locationId
-                values will not change, but the order of this list will.
+        /* This item is being deprecated. The members of this array are in the same format as the values
+            in the "gameLocations" map. The order of this array is in the same order as the
+            "spacelineElements" array. */
+    ]
+    "spacelineElements": [
+        /* List of elements in 1E spacelines. List is in order from left to right.
+            Contains two types of elements: locations and non-location cards.
+            Locations can be looked up by locationId in the gameLocations array, and non-location cards can be
+            looked up by cardId in the cardsInGame (or visibleCardsInGame) array.
             */
         {
+            "type": "location",
+            "locationId": 1,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "card",
+            "cardId": 1,
+            "quadrant": "ALPHA"
+        }
+    ],
+    "gameLocations": [
+        /* Map of locations in the game by locationId.
+            The locationId field is unique to each mission location and referenced by other objects, like cards
+                and away teams. If the spaceline is reorganized (for example, using Blade of Tkon), the locationId
+                values will not change.
+            */
+        "1": {
             "locationId": 1,
             "quadrant": "ALPHA", // ALPHA, DELTA, GAMMA, MIRROR
             "locationName": "Gravesworld", // There may be multiple locations with the same name if universal
@@ -146,7 +172,7 @@
             "seedCardCount": 2,
             "seedCardIds": [27,28] // This property is not shown in player-specific game states
         },
-        {
+        "2": {
             "locationId": 2,
             "quadrant": "ALPHA",
             "region": "ROMULUS_SYSTEM", // There will not be a region item if the location is not in one
@@ -193,11 +219,13 @@
     "playerClocks": [
         {
             "playerId": "player1",
-            "timeRemaining": 3600
+            "timeRemaining": 3600,
+            "maxTimeAllowed": 3600
         },
         {
             "playerId": "player2",
-            "timeRemaining": 3600
+            "timeRemaining": 3600,
+            "maxTimeAllowed": 3600
         }
     ],
     "pendingDecision": {

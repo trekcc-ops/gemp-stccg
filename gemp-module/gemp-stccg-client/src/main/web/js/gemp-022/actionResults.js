@@ -94,9 +94,9 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             break;
         case "SEED_CARD":
             // This action type covers seeding cards in core or at a location, but not under a mission
-            cardList.push(jsonAction.targetCardId);
+            cardList.push(jsonAction.seededCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            targetCard = jsonGameState.visibleCardsInGame[jsonAction.seededCardId];
             spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
             if (targetCard.cardType == "MISSION") {
                 let spacelineLocation = jsonGameState.spacelineLocations[spacelineIndex];
@@ -255,7 +255,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         }
         case "SEED_CARD":
             // Same message, whether the card is a mission or not
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            targetCard = jsonGameState.visibleCardsInGame[jsonAction.seededCardId];
             message = performingPlayerId + " seeded " + showLinkableCardTitle(targetCard);
             gameChat.appendMessage(message, "gameMessage");
             break;

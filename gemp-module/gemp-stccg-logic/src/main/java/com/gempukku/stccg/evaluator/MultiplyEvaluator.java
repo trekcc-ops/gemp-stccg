@@ -1,5 +1,7 @@
 package com.gempukku.stccg.evaluator;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
@@ -7,15 +9,15 @@ import java.util.List;
 
 public class MultiplyEvaluator extends Evaluator {
 
+    @JsonProperty("evaluators")
     private final List<Evaluator> _evaluators;
 
-    public MultiplyEvaluator(Evaluator... evaluators) {
-        super();
-        _evaluators = List.of(evaluators);
+    @JsonCreator()
+    private MultiplyEvaluator(@JsonProperty(value = "evaluators", required = true) List<Evaluator> evaluators) {
+        _evaluators = evaluators;
     }
 
     public MultiplyEvaluator(float multiplier, Evaluator... evaluators) {
-        super();
         _evaluators = new ArrayList<>();
         _evaluators.addAll(List.of(evaluators));
         _evaluators.add(new ConstantEvaluator(multiplier));
@@ -27,6 +29,6 @@ public class MultiplyEvaluator extends Evaluator {
         for (Evaluator evaluator : _evaluators) {
             subtotal = subtotal * evaluator.evaluateExpression(game);
         }
-        return subtotal;
+        return (float) Math.floor(subtotal);
     }
 }

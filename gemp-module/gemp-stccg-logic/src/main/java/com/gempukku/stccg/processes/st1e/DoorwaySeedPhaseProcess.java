@@ -16,10 +16,7 @@ import com.gempukku.stccg.processes.GameProcess;
 import com.google.common.collect.Iterables;
 
 import java.beans.ConstructorProperties;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @JsonTypeName("DoorwaySeedPhaseProcess")
 public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
@@ -34,12 +31,23 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
         for (Player player : cardGame.getPlayers()) {
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
             for (PhysicalCard seedCard : player.getCardsInGroup(Zone.SEED_DECK)) {
-                if (seedCard.getCardType() == CardType.DOORWAY)
-                    doorwaySeeds.add(seedCard);
+                if (seedCard.getCardType() == CardType.DOORWAY) {
+                    List<TopLevelSelectableAction> seedActions = seedCard.createSeedCardActions(cardGame);
+                    if (seedActions.size() == 1) {
+                        if (alreadyHasACopyInSeedList(seedCard, doorwaySeeds)) {
+                            if (!seedActions.getFirst().hasOncePerGameLimit()) {
+                                doorwaySeeds.add(seedCard);
+                            }
+                        } else {
+                            doorwaySeeds.add(seedCard);
+                        }
+                    }
+                }
             }
+
             if (!doorwaySeeds.isEmpty()) {
                 String message = "Select cards to seed during doorway phase";
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new ArbitraryCardsSelectionDecision(player, message, doorwaySeeds,
                                 cardGame) {
                             @Override
@@ -47,7 +55,8 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                                 try {
                                     List<PhysicalCard> cards = getSelectedCardsByResponse(result);
                                     for (PhysicalCard card : cards) {
-                                        List<TopLevelSelectableAction> seedActions = card.createSeedCardActions();
+                                        List<TopLevelSelectableAction> seedActions =
+                                                card.createSeedCardActions(cardGame);
                                         if (seedActions.size() != 1) {
                                             throw new InvalidGameLogicException("Could not create a seed action");
                                         } else {
@@ -74,5 +83,14 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                 Collections.shuffle(missionSeeds);
         }
         return new ST1EMissionSeedPhaseProcess();
+    }
+
+    private boolean alreadyHasACopyInSeedList(PhysicalCard cardToAdd, Collection<PhysicalCard> seedList) {
+        for (PhysicalCard card : seedList) {
+            if (card.isCopyOf(cardToAdd)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

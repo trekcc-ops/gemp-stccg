@@ -495,4 +495,8 @@ public class DefaultGameFormat implements GameFormat {
         return _noShuffle;
     }
 
+    public String toString() {
+        return getName();
+    }
+
 }

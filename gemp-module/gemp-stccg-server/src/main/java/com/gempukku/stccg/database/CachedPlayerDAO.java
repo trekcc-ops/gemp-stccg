@@ -122,7 +122,7 @@ public class CachedPlayerDAO implements PlayerDAO, Cached {
     }
 
     @Override
-    public final User loginUser(String login, String password) throws SQLException {
+    public final User loginUser(String login, String password) {
         return _delegate.loginUser(login, password);
     }
 

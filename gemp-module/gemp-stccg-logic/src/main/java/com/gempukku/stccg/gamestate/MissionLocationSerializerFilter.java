@@ -15,9 +15,7 @@ public class MissionLocationSerializerFilter extends SimpleBeanPropertyFilter {
 
         if (include(writer)) {
             String propertyName = writer.getName();
-            if (!propertyName.equals("seedCardIds")) {
-                writer.serializeAsField(pojo, jgen, provider);
-            } else if (showComplete) {
+            if (!propertyName.equals("seedCardIds") || showComplete) {
                 writer.serializeAsField(pojo, jgen, provider);
             }
         } else if (!jgen.canOmitFields()) { // since 2.3

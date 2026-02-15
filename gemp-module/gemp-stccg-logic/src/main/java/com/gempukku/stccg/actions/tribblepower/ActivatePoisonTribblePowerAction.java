@@ -3,14 +3,14 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.TribblePower;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -23,9 +23,9 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
 
     private enum Progress { playerSelected }
 
-    public ActivatePoisonTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        super(actionContext, power, Progress.values());
+    public ActivatePoisonTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                            ActionContext actionContext) {
+        super(cardGame, actionContext, performingCard, Progress.values());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
             if (playersWithCardsArr.length == 1)
                 playerChosen(playersWithCardsArr[0], cardGame);
             else
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new MultipleChoiceAwaitingDecision(performingPlayer, DecisionContext.SELECT_PLAYER,
                                 playersWithCardsArr, cardGame) {
                             @Override
@@ -72,7 +72,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
         Player chosenPlayer = game.getPlayer(chosenPlayerId);
         Player performingPlayer = game.getPlayer(_performingPlayerId);
         PhysicalCard discardingCard = chosenPlayer.getCardsInDrawDeck().getLast();
-        DiscardSingleCardAction discardAction = new DiscardSingleCardAction(_performingCard, chosenPlayer, discardingCard);
+        DiscardSingleCardAction discardAction = new DiscardSingleCardAction(game, _performingCard, chosenPlayerId, discardingCard);
         appendEffect(discardAction);
         appendEffect(new ScorePointsAction(game, _performingCard, performingPlayer,
                 discardingCard.getBlueprint().getTribbleValue()));

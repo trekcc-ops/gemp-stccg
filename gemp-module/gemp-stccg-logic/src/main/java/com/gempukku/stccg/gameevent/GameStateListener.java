@@ -1,5 +1,7 @@
 package com.gempukku.stccg.gameevent;
 
+import java.time.ZonedDateTime;
+
 public interface GameStateListener {
     String getPlayerId();
     void sendEvent(GameEvent gameEvent);
@@ -7,6 +9,7 @@ public interface GameStateListener {
     void sendMessageEvent(String message);
 
     void sendWarning(String playerId, String warning);
-    long getLastAccessed();
+
     int getChannelNumber();
+    ZonedDateTime getLastAccessed();
 }

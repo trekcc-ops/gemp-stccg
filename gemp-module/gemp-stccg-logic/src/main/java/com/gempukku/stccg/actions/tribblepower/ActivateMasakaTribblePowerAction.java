@@ -4,19 +4,20 @@ import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.game.TribblesGame;
 
 
 public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateMasakaTribblePowerAction(TribblesActionContext actionContext, TribblePower power) throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
+    public ActivateMasakaTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                            ActionContext actionContext) throws PlayerNotFoundException {
+        super(cardGame, actionContext, performingCard);
         for (Player player : cardGame.getPlayers()) {
             int handSize = player.getCardsInHand().size();
             SelectCardsAction selectAction = new SelectVisibleCardsAction(cardGame,
@@ -24,13 +25,13 @@ public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction
                     handSize, handSize);
             appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, player, selectAction));
             appendEffect(
-                    new DrawCardsAction(_performingCard, cardGame.getPlayer(_performingPlayerId), 3, cardGame));
+                    new DrawCardsAction(_performingCard, _performingPlayerId, 3, cardGame));
         }
     }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return _performingPlayer.getCardsInHand().size() >= 4;
+        return cardGame.getGameState().getCardGroup(_performingPlayerId, Zone.HAND).size() >= 4;
     }
 
 }

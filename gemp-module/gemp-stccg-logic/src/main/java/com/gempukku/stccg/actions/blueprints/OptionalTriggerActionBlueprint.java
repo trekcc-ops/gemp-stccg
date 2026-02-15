@@ -1,43 +1,41 @@
 package com.gempukku.stccg.actions.blueprints;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.turn.OptionalTriggerAction;
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.player.PlayerResolver;
+import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.trigger.TriggerChecker;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.List;
 
 public class OptionalTriggerActionBlueprint extends TriggerActionBlueprint {
 
-    public OptionalTriggerActionBlueprint(@JsonProperty(value="limitPerTurn", defaultValue="0")
-                                       int limitPerTurn,
-                                          @JsonProperty(value="triggerDuringSeed", required = true)
-                                      boolean triggerDuringSeed,
+    @JsonCreator
+    public OptionalTriggerActionBlueprint(@JsonProperty(value = "limit")
+                                          UsageLimitBlueprint usageLimit,
+                                          @JsonProperty(value = "triggerDuringSeed", required = true)
+                                          boolean triggerDuringSeed,
                                           @JsonProperty("trigger")
-                                       TriggerChecker triggerChecker,
+                                          TriggerChecker triggerChecker,
                                           @JsonProperty("requires")
-                                       List<Requirement> requirements,
+                                          List<Requirement> requirements,
                                           @JsonProperty("cost")
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                       List<SubActionBlueprint> costs,
+                                          List<SubActionBlueprint> costs,
                                           @JsonProperty("effect")
                                           @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                          List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-        super(limitPerTurn, triggerChecker, requirements, costs, effects, triggerDuringSeed);
+                                          List<SubActionBlueprint> effects,
+                                          @JsonProperty("player")
+                                          String playerText) throws InvalidCardDefinitionException {
+        super(triggerChecker, requirements, costs, effects, triggerDuringSeed,
+                (playerText == null) ? new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText));
+        if (usageLimit != null) {
+            usageLimit.applyLimitToActionBlueprint(this);
+        }
     }
 
-    @Override
-    protected OptionalTriggerAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
-        if (isValid(actionContext)) {
-                OptionalTriggerAction action = new OptionalTriggerAction(card, this);
-                appendActionToContext(action, actionContext);
-                return action;
-        }
-        return null;
-    }
 
 }

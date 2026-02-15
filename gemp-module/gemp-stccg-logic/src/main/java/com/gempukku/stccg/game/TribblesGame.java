@@ -8,7 +8,6 @@ import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.processes.tribbles.TribblesPlayerOrderProcess;
-import com.gempukku.stccg.rules.generic.RuleSet;
 import com.gempukku.stccg.rules.tribbles.TribblesRuleSet;
 
 import java.util.Map;
@@ -17,24 +16,37 @@ public class TribblesGame extends DefaultGame {
     private TribblesGameState _gameState;
     private final TribblesRuleSet _rules;
 
-    public TribblesGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
-                        final CardBlueprintLibrary library) {
-        super(format, decks, library, GameType.TRIBBLES);
-        _gameState = new TribblesGameState(decks.keySet(), this, clocks);
+    private TribblesGame(GameFormat format, Map<String, CardDeck> decks, CardBlueprintLibrary library,
+                         GameResultListener listener) {
+        super(format, decks, library, GameType.TRIBBLES, listener);
         _rules = new TribblesRuleSet();
         _rules.applyRuleSet(this);
-        _gameState.createPhysicalCards(this, library, decks);
-        _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
+    }
+
+    public TribblesGame(GameFormat format, Map<String, CardDeck> decks, Map<String, PlayerClock> clocks,
+                        final CardBlueprintLibrary library, GameResultListener listener) {
+        this(format, decks, library, listener);
+        try {
+            _gameState = new TribblesGameState(decks.keySet(), clocks);
+            _gameState.createPhysicalCards(this, library, decks);
+            _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
+        } catch(InvalidGameOperationException exp) {
+            sendErrorMessage(exp);
+            _cancelled = true;
+        }
     }
 
     public TribblesGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
                         GameTimer gameTimer) {
-        super(format, decks, library, GameType.TRIBBLES);
-        _gameState = new TribblesGameState(decks.keySet(), this, gameTimer);
-        _rules = new TribblesRuleSet();
-        _rules.applyRuleSet(this);
-        _gameState.createPhysicalCards(this, library, decks);
-        _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
+        this(format, decks, library, (GameResultListener) null);
+        try {
+            _gameState = new TribblesGameState(decks.keySet(), gameTimer);
+            _gameState.createPhysicalCards(this, library, decks);
+            _gameState.setCurrentProcess(new TribblesPlayerOrderProcess(this));
+        } catch(InvalidGameOperationException exp) {
+            sendErrorMessage(exp);
+            _cancelled = true;
+        }
     }
 
 

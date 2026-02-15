@@ -7,13 +7,30 @@
             blueprintId: 212_019
             title: Risk is Our Business
             type: incident
-            java-blueprint: true
+            java-blueprint: false
             property-logo: tos-logo
             image-url: https://www.trekcc.org/1e/cardimages/cage/19.jpg
             actions: [
                 {
                     type: seedThis
-                    where: core
+                    toCore: true
+                }
+                {
+                    type: optionalTrigger
+                    trigger: {
+                        type: startOfMissionAttempt
+                        player: you
+                        yourFirstAttemptOfThisMissionOnly: true
+                    }
+                    triggerDuringSeed: false
+                    effect: {
+                        type: download
+                        target: {
+                            type: select
+                            filter: title(Prepare Landing Party) OR title(Where No Man Has Gone Before) OR title(Where No One Has Gone Before) OR title(Preserver Obelisk) OR title(Recreation Room) OR title(Corbomite Device)
+                            count: 1
+                        }
+                    }
                 }
             ]
         }

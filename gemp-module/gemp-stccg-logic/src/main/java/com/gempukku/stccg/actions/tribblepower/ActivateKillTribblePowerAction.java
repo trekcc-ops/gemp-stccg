@@ -3,12 +3,12 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectPlayerAction;
 import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.filters.TopOfPlayPileFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Arrays;
@@ -17,14 +17,13 @@ import java.util.Arrays;
 public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
     private enum Progress { playerSelected, wasCarriedOut }
-    private Player _targetPlayer;
-    private SelectPlayerAction _selectPlayerAction;
-    private final TribblesActionContext _actionContext;
 
-    public ActivateKillTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        super(actionContext, power, Progress.values());
-        _actionContext = actionContext;
+    private String _targetPlayerName;
+    private SelectPlayerAction _selectPlayerAction;
+
+    public ActivateKillTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
+                                          ActionContext actionContext) {
+        super(cardGame, actionContext, performingCard, Progress.values());
     }
 
     @Override
@@ -37,17 +36,16 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
             // Choose a player...
             String[] players = cardGame.getAllPlayerIds();
             if (players.length == 1) {
-                _targetPlayer = cardGame.getPlayer(players[0]);
+                _targetPlayerName = players[0];
                 setProgress(Progress.playerSelected);
             }
             else {
                 if (_selectPlayerAction == null) {
                     _selectPlayerAction =
-                            new SelectPlayerAction(_actionContext, "selectedPlayer", Arrays.asList(players));
+                            new SelectPlayerAction(cardGame, _actionContext, "selectedPlayer", Arrays.asList(players));
                     return _selectPlayerAction;
                 } else {
-                    String targetPlayerId = _actionContext.getValueFromMemory("selectedPlayer");
-                    _targetPlayer = cardGame.getPlayer(targetPlayerId);
+                    _targetPlayerName = _actionContext.getValueFromMemory("selectedPlayer");
                     setProgress(Progress.playerSelected);
                 }
             }
@@ -55,7 +53,8 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
 
         if (!getProgress(Progress.wasCarriedOut)) {
             setProgress(Progress.wasCarriedOut);
-            return new TribblesMultiDiscardActionBroken(_performingCard, _targetPlayer, Filters.topOfPlayPile(_targetPlayer));
+            return new TribblesMultiDiscardActionBroken(cardGame, _performingCard, _targetPlayerName,
+                    new TopOfPlayPileFilter(_targetPlayerName));
         }
         return getNextAction();
     }

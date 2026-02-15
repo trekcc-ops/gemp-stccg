@@ -1,57 +1,109 @@
 package com.gempukku.stccg.gamestate;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.InvalidGameOperationException;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.player.PlayerOrder;
+import com.gempukku.stccg.processes.GameProcess;
 
 import java.util.*;
 
+@JsonIgnoreProperties(value = { "performedActions", "phasesInOrder" }, allowGetters = true)
 public class ST1EGameState extends GameState {
     @JsonProperty("spacelineLocations")
     final List<MissionLocation> _spacelineLocations = new ArrayList<>();
     @JsonProperty("awayTeams")
     final List<AwayTeam> _awayTeams = new ArrayList<>();
     private int _nextAttemptingUnitId = 1;
-    private int _nextLocationId = 1;
 
-    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, Map<String, PlayerClock> clocks) {
-        super(game, playerIds, clocks);
-        _currentPhase = Phase.SEED_DOORWAY;
-        try {
-            for (Player player : _players.values()) {
-                player.addCardGroup(Zone.CORE);
-                player.addCardGroup(Zone.MISSIONS_PILE);
-                player.addCardGroup(Zone.SEED_DECK);
+    @JsonProperty("gameLocations")
+    private final Map<Integer, GameLocation> _locationIds = new HashMap<>();
+
+    @SuppressWarnings("unused")
+    @JsonCreator
+    private ST1EGameState(@JsonProperty("currentPhase")
+                         Phase currentPhase,
+                         @JsonProperty("currentProcess")
+                         GameProcess currentProcess,
+                         @JsonProperty("playerClocks")
+                         PlayerClock[] playerClocks,
+                         @JsonProperty("playerOrder")
+                         PlayerOrder playerOrder,
+                         @JsonProperty("cardsInGame")
+                         Map<Integer, PhysicalCard> cardsInGame,
+                         @JsonProperty("actionLimits")
+                         ActionLimitCollection actionLimitCollection,
+                         @JsonProperty("players")
+                         List<Player> players,
+                         @JsonProperty("awayTeams")
+                         List<AwayTeam> awayTeams,
+                          @JsonProperty("spacelineLocations")
+                          List<MissionLocation> spacelineLocations,
+                          @JsonProperty("modifiers")
+                          List<Modifier> modifiers
+    ) {
+        super(players, playerClocks, actionLimitCollection);
+        _currentPhase = currentPhase;
+        setCurrentProcess(currentProcess);
+        _playerOrder = playerOrder;
+        _allCards.putAll(cardsInGame);
+        _nextCardId = Collections.max(_allCards.keySet()) + 1;
+        for (AwayTeam awayTeam : awayTeams) {
+            _awayTeams.add(awayTeam);
+            if (awayTeam.getAwayTeamId() >= _nextAttemptingUnitId) {
+                _nextAttemptingUnitId = awayTeam.getAwayTeamId() + 1;
             }
-        } catch(InvalidGameLogicException exp) {
-            game.sendErrorMessage(exp);
-            game.cancelGame();
+        }
+        for (MissionLocation location : spacelineLocations) {
+            _spacelineLocations.add(location);
+            int locationId = location.getLocationId();
+            _locationIds.put(locationId, location);
+        }
+        for (Modifier modifier : modifiers) {
+            _modifiersLogic.addAlwaysOnModifier(modifier);
         }
     }
 
-    public ST1EGameState(Iterable<String> playerIds, ST1EGame game, GameTimer gameTimer) {
-        super(game, playerIds, gameTimer);
+
+
+    public ST1EGameState(Iterable<String> playerIds, Map<String, PlayerClock> clocks)
+            throws InvalidGameOperationException {
+        super(playerIds, clocks);
         _currentPhase = Phase.SEED_DOORWAY;
-        try {
-            for (Player player : _players.values()) {
-                player.addCardGroup(Zone.CORE);
-                player.addCardGroup(Zone.MISSIONS_PILE);
-                player.addCardGroup(Zone.SEED_DECK);
-            }
-        } catch(InvalidGameLogicException exp) {
-            game.sendErrorMessage(exp);
-            game.cancelGame();
+        for (Player player : _players) {
+            player.addCardGroup(Zone.CORE);
+            player.addCardGroup(Zone.MISSIONS_PILE);
+            player.addCardGroup(Zone.SEED_DECK);
+            player.addCardGroup(Zone.POINT_AREA);
+        }
+    }
+
+    public ST1EGameState(Iterable<String> playerIds, GameTimer gameTimer)
+            throws InvalidGameOperationException {
+        super(playerIds, gameTimer);
+        _currentPhase = Phase.SEED_DOORWAY;
+        for (Player player : _players) {
+            player.addCardGroup(Zone.CORE);
+            player.addCardGroup(Zone.MISSIONS_PILE);
+            player.addCardGroup(Zone.SEED_DECK);
+            player.addCardGroup(Zone.POINT_AREA);
         }
     }
 
@@ -75,7 +127,7 @@ public class ST1EGameState extends GameState {
                     for (String blueprintId : entry.getValue()) {
                         try {
                             PhysicalCard card =
-                                    library.createST1EPhysicalCard(cardGame, blueprintId, _nextCardId, player);
+                                    library.createST1EPhysicalCard(blueprintId, _nextCardId, player);
                             subDeck.add(card);
                             _allCards.put(_nextCardId, card);
                             _nextCardId++;
@@ -103,8 +155,8 @@ public class ST1EGameState extends GameState {
         }
     }
 
-    public AwayTeam createNewAwayTeam(Player player, MissionLocation location) {
-        AwayTeam result = new AwayTeam(player, location, _nextAttemptingUnitId);
+    public AwayTeam createNewAwayTeam(String playerName, MissionLocation location) {
+        AwayTeam result = new AwayTeam(playerName, location, _nextAttemptingUnitId);
         _awayTeams.add(result);
         _nextAttemptingUnitId++;
         return result;
@@ -118,28 +170,13 @@ public class ST1EGameState extends GameState {
         return false;
     }
 
-    public void addMissionLocationToSpaceline(MissionCard newMission, int indexNumber) {
-        _spacelineLocations.add(indexNumber, new MissionLocation(newMission, _nextLocationId));
-        _nextLocationId++;
-        addCardToZoneWithoutSendingToClient(newMission, Zone.SPACELINE);
-    }
-
-    public void addMissionCardToSharedMission(MissionCard newMission, int indexNumber)
-            throws InvalidGameLogicException {
-        MissionLocation location = _spacelineLocations.get(indexNumber);
-        List<MissionCard> missionsAtLocation = location.getMissionCards();
-        if (missionsAtLocation.size() != 1 ||
-                Objects.equals(missionsAtLocation.getFirst().getOwnerName(), newMission.getOwnerName()))
-            throw new InvalidGameLogicException("Cannot seed " + newMission.getTitle() + " because " +
-                    newMission.getOwnerName() + " already has a mission at " +
-                    newMission.getBlueprint().getLocation());
-        location.addMission(newMission);
-        addCardToZoneWithoutSendingToClient(newMission, Zone.SPACELINE);
-    }
-
-    public void seedFacilityAtLocation(FacilityCard card, GameLocation location) {
-        card.setLocation(location);
-        addCardToZoneWithoutSendingToClient(card, Zone.AT_LOCATION);
+    @JsonIgnore
+    public int getNextLocationId() {
+        if (_locationIds.isEmpty()) {
+            return 1;
+        } else {
+            return Collections.max(_locationIds.keySet()) + 1;
+        }
     }
 
 
@@ -186,15 +223,8 @@ public class ST1EGameState extends GameState {
         return null;
     }
 
-    public int getSpacelineLocationsSize() { return _spacelineLocations.size(); }
-    public int getQuadrantLocationsSize(Quadrant quadrant) {
-        int x = 0;
-        for (MissionLocation location : _spacelineLocations) {
-            if (location.getQuadrant() == quadrant) x++;
-        }
-        return x;
-    }
-    public List<MissionLocation> getSpacelineLocations() { return _spacelineLocations; }
+    @JsonIgnore
+    public List<MissionLocation> getUnorderedMissionLocations() { return _spacelineLocations; }
 
 
     public List<AwayTeam> getAwayTeams() {
@@ -231,4 +261,88 @@ public class ST1EGameState extends GameState {
         _allCards.put(card.getCardId(), card);
     }
 
+    public GameLocation getLocationById(int locationId) {
+        return _locationIds.get(locationId);
+    }
+
+    public void addSpacelineLocation(int indexNumber, MissionLocation location) {
+        _spacelineLocations.add(indexNumber, location);
+        _locationIds.put(location.getLocationId(), location);
+    }
+
+    public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
+        for (PhysicalCard card1 : cards) {
+            for (PhysicalCard card2 : cards) {
+                boolean presentWithEachOther = card1.isAtSameLocationAsCard(card2) &&
+                            card1.getGameLocation(this) instanceof MissionLocation missionLocation &&
+                            card1.getAttachedToCardId() != null &&
+                            card1.getAttachedToCardId().equals(card2.getAttachedToCardId()) &&
+                            _spacelineLocations.contains(missionLocation);
+                if (!presentWithEachOther) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public void addCardToEligibleAwayTeam(ST1EGame game, ReportableCard card, MissionLocation mission) {
+        // TODO - Assumes owner is the owner of away teams. Won't work for some scenarios - temporary control, captives, infiltrators, etc.
+        // TODO - When there are multiple eligible away teams, there should be a player decision
+        String cardOwnerName = card.getOwnerName();
+        for (AwayTeam awayTeam : mission.getYourAwayTeamsOnSurface(game, cardOwnerName).toList()) {
+            if (awayTeam.isCompatibleWith(game, card) && !isCardInAnAwayTeam(card)) {
+                awayTeam.add(card);
+            }
+        }
+        if (!isCardInAnAwayTeam(card)) {
+            AwayTeam awayTeam = createNewAwayTeam(cardOwnerName, mission);
+            awayTeam.add(card);
+        }
+    }
+
+    private boolean isCardInAnAwayTeam(ReportableCard card) {
+        for (AwayTeam awayTeam : _awayTeams) {
+            if (awayTeam.getCards().contains(card)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeCardFromAwayTeam(ST1EGame cardGame, ReportableCard card) {
+        AwayTeam awayTeam = getAwayTeamForCard(card);
+        if (awayTeam != null) {
+            awayTeam.remove(cardGame, card);
+        }
+    }
+
+    public AwayTeam getAwayTeamForCard(ReportableCard card) {
+        for (AwayTeam awayTeam : _awayTeams) {
+            if (awayTeam.getCards().contains(card)) {
+                return awayTeam;
+            }
+        }
+        return null;
+    }
+
+    public List<GameLocation> getOrderedSpacelineLocations() {
+        List<GameLocation> result = new ArrayList<>();
+        for (SpacelineIndex index : getSpacelineElements()) {
+            if (index instanceof LocationSpacelineIndex locationIndex) {
+                GameLocation location = _locationIds.get(locationIndex.getLocationId());
+                result.add(location);
+            }
+        }
+        return result;
+    }
+
+    @JsonProperty("spacelineElements")
+    public List<SpacelineIndex> getSpacelineElements() {
+        List<SpacelineIndex> result = new ArrayList<>();
+        for (MissionLocation mission : _spacelineLocations) {
+            result.add(new LocationSpacelineIndex(mission));
+        }
+        return result;
+    }
 }

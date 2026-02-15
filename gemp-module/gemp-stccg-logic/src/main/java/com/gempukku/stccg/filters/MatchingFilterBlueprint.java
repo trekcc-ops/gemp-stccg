@@ -1,15 +1,12 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.actions.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 public class MatchingFilterBlueprint implements FilterBlueprint {
@@ -23,21 +20,16 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
 
     }
 
-    public Filterable getFilterable(DefaultGame cardGame) {
-        try {
-            CardFilter matchingFilter = Filters.matchingAffiliation(_cardTarget.getCards(cardGame));
-            List<Filterable> finalFilterables = new ArrayList<>();
-            finalFilterables.add(matchingFilter);
-            finalFilterables.addAll(_additionalFilters);
-            return Filters.and(finalFilterables);
-        } catch(InvalidGameLogicException exp) {
-            cardGame.sendErrorMessage(exp);
-            return null;
-        }
+    public CardFilter getFilterable(DefaultGame cardGame) {
+        CardFilter matchingFilter = new MatchingAffiliationFilter(_cardTarget.getCards(cardGame));
+        List<Filterable> finalFilterables = new ArrayList<>();
+        finalFilterables.add(matchingFilter);
+        finalFilterables.addAll(_additionalFilters);
+        return Filters.and(finalFilterables);
     }
 
     @Override
-    public Filterable getFilterable(ActionContext actionContext) {
-        return getFilterable(actionContext.getGame());
+    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+        return getFilterable(cardGame);
     }
 }

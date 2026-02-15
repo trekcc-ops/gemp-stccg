@@ -1,7 +1,6 @@
 package com.gempukku.stccg.player;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.player.Player;
 
 public class YouPlayerResolver {
 
@@ -11,8 +10,8 @@ public class YouPlayerResolver {
         _gameTextCard = gameTextCard;
     }
 
-    public Player getPlayer() {
-        return _gameTextCard.getController();
+    public String getPlayerName() {
+        return _gameTextCard.getControllerName();
     }
 
 }

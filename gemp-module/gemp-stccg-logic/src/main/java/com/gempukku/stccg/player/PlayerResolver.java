@@ -1,38 +1,20 @@
 package com.gempukku.stccg.player;
 
-import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.PlayerSource;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-
-import java.util.Locale;
 
 public class PlayerResolver {
 
     public static PlayerSource resolvePlayer(String type) throws InvalidCardDefinitionException {
 
-        if (type.equalsIgnoreCase("you"))
-            return ActionContext::getPerformingPlayerId;
-        if (type.equalsIgnoreCase("owner"))
-            return (actionContext) -> actionContext.getSource().getOwnerName();
-        else {
+        if (type.equalsIgnoreCase("you")) {
+            return new YouPlayerSource();
+        } else if (type.equalsIgnoreCase("opponent")) {
+            return new YourOpponentPlayerSource();
+        } else if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
             String memory = type.substring(type.indexOf("(") + 1, type.lastIndexOf(")"));
-            //noinspection SpellCheckingInspection
-            if (type.toLowerCase(Locale.ROOT).startsWith("ownerfrommemory(") && type.endsWith(")")) {
-                return (actionContext) -> {
-                    final PhysicalCard cardFromMemory = actionContext.getCardFromMemory(memory);
-                    if (cardFromMemory != null)
-                        return cardFromMemory.getOwnerName();
-                    else
-                        // Sensible default
-                        return actionContext.getPerformingPlayerId();
-                };
-            }
-            else //noinspection SpellCheckingInspection
-                if (type.toLowerCase().startsWith("frommemory(") && type.endsWith(")")) {
-                return (actionContext) -> actionContext.getValueFromMemory(memory);
-            }
+            return new PlayerSourceFromMemory(memory);
+        } else {
+            throw new InvalidCardDefinitionException("Unable to resolve player resolver of type: " + type);
         }
-        throw new InvalidCardDefinitionException("Unable to resolve player resolver of type: " + type);
     }
 }

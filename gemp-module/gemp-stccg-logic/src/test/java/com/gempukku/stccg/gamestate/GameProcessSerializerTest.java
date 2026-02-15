@@ -3,7 +3,8 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.st1e.ST1EEndOfTurnProcess;
@@ -16,12 +17,15 @@ public class GameProcessSerializerTest extends AbstractAtTest {
     private final ObjectMapper _mapper = new ObjectMapper();
 
     @Test
-    public void serializerTest() throws JsonProcessingException, DecisionResultInvalidException, InvalidGameOperationException {
-        initializeQuickMissionAttempt("Investigate Rogue Comet");
+    public void serializerTest() throws JsonProcessingException, InvalidGameOperationException, CardNotFoundException {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        builder.addMission("101_154", "Excavation", P1);
+        builder.addSeedDeckCard("101_104", "Federation Outpost", P1);
+        builder.startGame();
 
         // ST1EFacilitySeedPhaseProcess
         copyProcessAndAssertEqual(_game.getGameState().getCurrentProcess());
-
         copyProcessAndAssertEqual(new ST1EEndOfTurnProcess());
     }
 
@@ -32,9 +36,6 @@ public class GameProcessSerializerTest extends AbstractAtTest {
 
         assertEquals(processString1, processString2);
         assertEquals(process1.getClass(), process2.getClass());
-
-        System.out.println(processString1);
-        System.out.println(process1.getClass().getSimpleName());
     }
 
 }

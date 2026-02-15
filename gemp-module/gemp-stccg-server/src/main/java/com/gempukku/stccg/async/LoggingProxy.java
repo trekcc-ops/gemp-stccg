@@ -5,8 +5,11 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 public class LoggingProxy {
+
+    private static final List<String> METHODS_TO_IGNORE = List.of("isIpBanned", "getFutureScheduledTournamentQueues");
     private static final Logger LOGGER = LogManager.getLogger(LoggingProxy.class);
     private static final long ERROR_LEVEL = 3000;
     private static final long WARN_LEVEL = 1000;
@@ -35,7 +38,7 @@ public class LoggingProxy {
                             LOGGER.info("{}::{}(...) {}ms", simpleName, name, time);
                         else if (time >= DEBUG_LEVEL)
                             LOGGER.debug("{}::{}(...) {}ms", simpleName, name, time);
-                        else
+                        else if (!METHODS_TO_IGNORE.contains(name))
                             LOGGER.trace("{}::{}(...) {}ms", simpleName, name, time);
                     }
                 });

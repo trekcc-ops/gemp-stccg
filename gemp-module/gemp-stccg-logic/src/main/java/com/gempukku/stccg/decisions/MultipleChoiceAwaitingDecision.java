@@ -16,11 +16,16 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
     @JsonProperty("context")
     private final DecisionContext _context;
 
-    public MultipleChoiceAwaitingDecision(Player player, String text, String[] possibleResults,
+    public MultipleChoiceAwaitingDecision(String playerName, String text, String[] possibleResults,
                                           DefaultGame cardGame) {
-        super(player, text, cardGame);
+        super(playerName, text, cardGame);
         _possibleResults = possibleResults;
         _context = DecisionContext.GENERAL_MULTIPLE_CHOICE;
+    }
+
+    public MultipleChoiceAwaitingDecision(Player player, String text, String[] possibleResults,
+                                          DefaultGame cardGame) {
+        this(player.getPlayerId(), text, possibleResults, cardGame);
     }
 
     public MultipleChoiceAwaitingDecision(Player player, DecisionContext context, String[] possibleResults,
@@ -31,12 +36,24 @@ public abstract class MultipleChoiceAwaitingDecision extends AbstractAwaitingDec
     }
 
 
+    public MultipleChoiceAwaitingDecision(String playerName, String text, Collection<String> possibleResults,
+                                          DefaultGame cardGame) {
+        this(playerName, text, possibleResults.toArray(new String[0]), cardGame);
+    }
 
 
     public MultipleChoiceAwaitingDecision(Player player, String text, Collection<String> possibleResults,
                                           DefaultGame cardGame) {
         this(player, text, possibleResults.toArray(new String[0]), cardGame);
     }
+
+    public MultipleChoiceAwaitingDecision(String playerName, Collection<String> possibleResults,
+                                          DefaultGame cardGame, DecisionContext context) {
+        super(playerName, context, cardGame);
+        _possibleResults = possibleResults.toArray(new String[0]);
+        _context = context;
+    }
+
 
     public MultipleChoiceAwaitingDecision(Player player, Collection<String> possibleResults,
                                           DefaultGame cardGame, DecisionContext context) {

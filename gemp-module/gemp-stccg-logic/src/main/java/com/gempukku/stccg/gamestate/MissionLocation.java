@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
-import com.gempukku.stccg.cards.cardgroup.MissionCardPile;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
@@ -19,7 +18,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 import java.util.stream.Stream;
 
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId")
+@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="locationId",
+        scope = MissionLocation.class)
+@JsonIgnoreProperties(value = { "isHomeworld", "seedCardCount" }, allowGetters = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "quadrant", "region", "locationName", "locationId", "isCompleted", "isHomeworld",
         "missionCardIds", "seedCardCount", "seedCardIds" })
@@ -39,14 +40,37 @@ public class MissionLocation implements GameLocation {
     private boolean _isCompleted;
     @JsonProperty("locationId")
     private final int _locationId;
-    private final MissionCardPile _missionCards = new MissionCardPile();
-    private Map<Player, CardPile> _preSeedCards = new HashMap<>();
-    private final CardPile _seedCards;
-    public MissionLocation(MissionCard mission, int locationId) {
+    private final CardPile<MissionCard> _missionCards = new CardPile<>();
+    private final Map<String, CardPile<PhysicalCard>> _preSeedCards = new HashMap<>();
+    private final CardPile<PhysicalCard> _seedCards;
+
+    public MissionLocation(@JsonProperty("quadrant") Quadrant quadrant,
+                           @JsonProperty("region") Region region,
+                           @JsonProperty("locationName") String locationName,
+                           @JsonProperty("isCompleted") boolean isCompleted,
+                           @JsonProperty("locationId") Integer locationId,
+                           @JsonProperty("missionCardIds") @JsonIdentityReference(alwaysAsId = true)
+                           List<MissionCard> missionCards,
+                           // preseeds
+                            @JsonProperty("seedCardIds") @JsonIdentityReference(alwaysAsId = true)
+                           List<PhysicalCard> seedCards) {
+        _quadrant = quadrant;
+        _region = region;
+        _locationName = locationName;
+        _isCompleted = isCompleted;
+        _locationId = locationId;
+        _missionCards.setCards(missionCards);
+        _seedCards = new CardPile<>();
+        _seedCards.setCards(seedCards);
+    }
+
+
+
+    public MissionLocation(DefaultGame cardGame, MissionCard mission, int locationId) {
         this(mission.getBlueprint().getQuadrant(), mission.getBlueprint().getRegion(),
                 mission.getBlueprint().getLocation(), locationId);
-        _missionCards.addCard(mission);
-        mission.setLocation(this);
+        _missionCards.addCardToTop(mission);
+        mission.setLocation(cardGame, this);
     }
 
     public MissionLocation(Quadrant quadrant, Region region, String locationName, int locationId) {
@@ -54,14 +78,21 @@ public class MissionLocation implements GameLocation {
         _region = region;
         _locationName = locationName;
         _locationId = locationId;
-        _seedCards = new CardPile();
+        _seedCards = new CardPile<>();
     }
 
     public Stream<AwayTeam> getYourAwayTeamsOnSurface(ST1EGame game, Player player) {
         Stream<AwayTeam> teamsOnSurface =
                 game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
-        return teamsOnSurface.filter(awayTeam -> awayTeam.getPlayer() == player);
+        return teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), player.getPlayerId()));
     }
+
+    public Stream<AwayTeam> getYourAwayTeamsOnSurface(ST1EGame game, String playerName) {
+        Stream<AwayTeam> teamsOnSurface =
+                game.getGameState().getAwayTeams().stream().filter(awayTeam -> awayTeam.isOnSurface(this));
+        return teamsOnSurface.filter(awayTeam -> Objects.equals(awayTeam.getControllerName(), playerName));
+    }
+
 
 
     public Stream<AwayTeam> getAwayTeamsOnSurface(ST1EGame cardGame) {
@@ -123,7 +154,7 @@ public class MissionLocation implements GameLocation {
             LOGGER.error(errorMessage);
             throw new InvalidGameLogicException("Tried to calculate span between quadrants");
         } else {
-            List<MissionLocation> spaceline = cardGame.getGameState().getSpacelineLocations();
+            List<GameLocation> spaceline = cardGame.getGameState().getOrderedSpacelineLocations();
             int startingIndex = spaceline.indexOf(this);
             int endingIndex = spaceline.indexOf(location);
             int distance = 0;
@@ -143,13 +174,9 @@ public class MissionLocation implements GameLocation {
         }
     }
 
-    public int getLocationZoneIndex(ST1EGame cardGame) {
-        return cardGame.getGameState().getSpacelineLocations().indexOf(this);
-    }
-
-    private int getSpan(Player player) throws InvalidGameLogicException {
+    public int getSpan(Player player) throws InvalidGameLogicException {
         MissionCard card = getMissionForPlayer(player.getPlayerId());
-        if (card.getOwner() == player)
+        if (card.isOwnedBy(player.getPlayerId()))
             return card.getBlueprint().getOwnerSpan();
         else return card.getBlueprint().getOpponentSpan();
     }
@@ -157,8 +184,9 @@ public class MissionLocation implements GameLocation {
     @Override
     public boolean mayBeAttemptedByPlayer(Player player, ST1EGame cardGame) throws InvalidGameLogicException {
         // Rule 7.2.1, Paragraph 1
+        String playerName = player.getPlayerId();
         // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
-        MissionCard missionCard = getMissionForPlayer(player.getPlayerId());
+        MissionCard missionCard = getMissionForPlayer(playerName);
         MissionType missionType = missionCard.getBlueprint().getMissionType();
         if (missionCard.getBlueprint().hasNoPointBox())
             return false;
@@ -169,30 +197,27 @@ public class MissionLocation implements GameLocation {
                 return getYourAwayTeamsOnSurface(cardGame, player).anyMatch(
                         awayTeam -> awayTeam.canAttemptMission(cardGame, this));
             if (missionType == MissionType.SPACE)
-                return Filters.filterYourActive(cardGame, player, Filters.ship, Filters.atLocation(this))
-                        .stream().anyMatch(ship -> ((PhysicalShipCard) ship).canAttemptMission(this));
+                return Filters.filterYourCardsInPlay(cardGame, player, Filters.ship, Filters.atLocation(this))
+                        .stream().anyMatch(ship -> (cardGame.getRules().canShipAttemptMission((ShipCard) ship, _locationId,
+                                cardGame, playerName)));
         }
         return false;
     }
 
-    public Set<Affiliation> getAffiliationIcons(String playerId) {
+    public Set<Affiliation> getAffiliationIcons(DefaultGame cardGame, String playerId) {
+        Set<Affiliation> result = new HashSet<>();
         try {
             MissionCard card = getMissionForPlayer(playerId);
             CardBlueprint blueprint = card.getBlueprint();
             if (Objects.equals(playerId, card.getOwnerName())) {
-                return blueprint.getOwnerAffiliationIcons();
-            } else if (blueprint.getOpponentAffiliationIcons() == null) {
-                return blueprint.getOwnerAffiliationIcons();
+                result.addAll(blueprint.getOwnerAffiliationIcons());
             } else {
-                return blueprint.getOwnerAffiliationIcons();
+                result.addAll(blueprint.getOpponentAffiliationIcons());
             }
-        } catch(InvalidGameLogicException exp) {
-            return new HashSet<>();
+            result.addAll(cardGame.getAffiliationsAddedToMissionForPlayer(card, playerId));
+        } catch(InvalidGameLogicException ignored) {
         }
-    }
-
-    public Set<Affiliation> getAffiliationIconsForPlayer(Player player) {
-        return getAffiliationIcons(player.getPlayerId());
+        return result;
     }
 
     public MissionType getMissionType() {
@@ -218,7 +243,7 @@ public class MissionLocation implements GameLocation {
     }
 
     public int getPreSeedCardCountForPlayer(Player player) {
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile<PhysicalCard> preSeeds = _preSeedCards.get(player.getPlayerId());
         if (preSeeds == null) {
             return 0;
         } else {
@@ -231,7 +256,7 @@ public class MissionLocation implements GameLocation {
     }
 
     public Collection<PhysicalCard> getPreSeedCardsForPlayer(Player player) {
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile<PhysicalCard> preSeeds = _preSeedCards.get(player.getPlayerId());
         if (preSeeds == null) {
             return new LinkedList<>();
         } else {
@@ -240,54 +265,64 @@ public class MissionLocation implements GameLocation {
     }
 
     public void seedPreSeedsForSharedMissions(ST1EGame stGame) {
-        Player firstPlayer = _missionCards.getBottomCard().getOwner();
+        String firstPlayerName = _missionCards.getBottomCard().getOwnerName();
         List<Player> players = new LinkedList<>(stGame.getPlayers());
-        int currentIndex = players.indexOf(firstPlayer);
+        List<String> playerNames = new LinkedList<>(stGame.getPlayerIds());
+        int currentIndex = playerNames.indexOf(firstPlayerName);
 
         while (!_preSeedCards.isEmpty()) {
             if (currentIndex == players.size())
                 currentIndex = 0;
             Player currentPlayer = players.get(currentIndex);
-            CardPile currentPreSeedPile = _preSeedCards.get(currentPlayer);
+            CardPile<PhysicalCard> currentPreSeedPile = _preSeedCards.get(currentPlayer.getPlayerId());
             if (currentPreSeedPile == null) {
                 currentIndex++;
             } else if (currentPreSeedPile.isEmpty()) {
-                _preSeedCards.remove(currentPlayer);
+                _preSeedCards.remove(currentPlayer.getPlayerId());
                 currentIndex++;
             } else {
                 PhysicalCard card = currentPreSeedPile.getBottomCard();
                 currentPreSeedPile.removeCard(card);
-                seedCardOnTopOfMissionSeedCards(card);
+                seedCardOnTopOfMissionSeedCards(stGame, card);
             }
         }
     }
 
-    public void seedPreSeedsForYourMissions() {
-        Set<Player> playersWithSeeds = _preSeedCards.keySet();
-        for (Player player : playersWithSeeds) {
-            seedCardPileOnTopOfSeedCards(_preSeedCards.get(player));
+    public void seedPreSeedsForYourMissions(DefaultGame cardGame) {
+        Set<String> playersWithSeeds = _preSeedCards.keySet();
+        for (String player : playersWithSeeds) {
+            seedCardPileOnTopOfSeedCards(cardGame, _preSeedCards.get(player));
         }
     }
 
 
 
-    public void seedPreSeedsForOpponentsMissions() {
-        Set<Player> playersWithSeeds = _preSeedCards.keySet();
-        for (Player player : playersWithSeeds) {
-            seedCardPileOnBottomOfSeedCards(_preSeedCards.get(player), this);
+    public void seedPreSeedsForOpponentsMissions(DefaultGame cardGame) {
+        Set<String> playersWithSeeds = _preSeedCards.keySet();
+        for (String player : playersWithSeeds) {
+            seedCardPileOnBottomOfSeedCards(cardGame, _preSeedCards.get(player));
         }
     }
 
-    public void addCardToTopOfPreSeedPile(PhysicalCard card, Player player) {
-        if (_preSeedCards.get(player) == null) {
-            _preSeedCards.put(player, new CardPile());
+    public void addCardToTopOfPreSeedPile(PhysicalCard card, String playerName) {
+        if (_preSeedCards.get(playerName) == null) {
+            _preSeedCards.put(playerName, new CardPile<>());
         }
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile<PhysicalCard> preSeeds = _preSeedCards.get(playerName);
         preSeeds.addCardToTop(card);
     }
 
+
+    public void removePreSeedCard(PhysicalCard card, String playerName) {
+        CardPile<PhysicalCard> preSeeds = _preSeedCards.get(playerName);
+        if (preSeeds != null) {
+            preSeeds.removeCard(card);
+        }
+    }
+
+
     public void removePreSeedCard(PhysicalCard card, Player player) {
-        CardPile preSeeds = _preSeedCards.get(player);
+        CardPile<PhysicalCard> preSeeds = _preSeedCards.get(player.getPlayerId());
         if (preSeeds != null) {
             preSeeds.removeCard(card);
         }
@@ -316,47 +351,49 @@ public class MissionLocation implements GameLocation {
 
     public MissionCard getTopMissionCard() { return getMissionCards().getLast(); }
 
-    public void addMission(MissionCard newMission) {
+    public void addMission(DefaultGame cardGame, MissionCard newMission) {
         newMission.stackOn(_missionCards.getCards().getFirst());
-        _missionCards.addCard(newMission);
-        newMission.setLocation(this);
+        _missionCards.addCardToTop(newMission);
+        newMission.setLocation(cardGame, this);
     }
 
-    public boolean hasMatchingAffiliationIcon(Player contextPlayer, Collection<Affiliation> affiliationOptions) {
-        for (Affiliation affiliation : getAffiliationIconsForPlayer(contextPlayer)) {
+    public boolean hasMatchingAffiliationIcon(DefaultGame cardGame, String playerName,
+                                              Collection<Affiliation> affiliationOptions) {
+        for (Affiliation affiliation : getAffiliationIcons(cardGame, playerName)) {
             if (affiliationOptions.contains(affiliation))
                 return true;
         }
         return false;
     }
 
-    public void seedCardUnderMission(MissionLocation location, PhysicalCard card) {
+
+    public void seedCardUnderMission(DefaultGame cardGame, PhysicalCard card) {
         _seedCards.addCardToBottom(card);
-        card.setLocation(this);
+        card.setLocation(cardGame, this);
     }
 
-    public void seedCardOnTopOfMissionSeedCards(PhysicalCard card) {
+    public void seedCardOnTopOfMissionSeedCards(DefaultGame cardGame, PhysicalCard card) {
         _seedCards.addCardToTop(card);
-        card.setLocation(this);
+        card.setLocation(cardGame, this);
     }
 
     public void removeSeedCardFromMission(PhysicalCard card) {
         _seedCards.removeCard(card);
     }
 
-    public void seedCardPileOnBottomOfSeedCards(CardPile cardPile, MissionLocation missionLocation) {
+    public void seedCardPileOnBottomOfSeedCards(DefaultGame cardGame, CardPile<PhysicalCard> cardPile) {
         while (!cardPile.isEmpty()) {
             PhysicalCard card = cardPile.getTopCard();
             cardPile.removeCard(card);
-            seedCardUnderMission(missionLocation, card);
+            seedCardUnderMission(cardGame, card);
         }
     }
 
-    public void seedCardPileOnTopOfSeedCards(CardPile cardPile) {
+    public void seedCardPileOnTopOfSeedCards(DefaultGame cardGame, CardPile<PhysicalCard> cardPile) {
         while (!cardPile.isEmpty()) {
             PhysicalCard card = cardPile.getBottomCard();
             cardPile.removeCard(card);
-            seedCardOnTopOfMissionSeedCards(card);
+            seedCardOnTopOfMissionSeedCards(cardGame, card);
         }
     }
 
@@ -375,5 +412,18 @@ public class MissionLocation implements GameLocation {
 
     public boolean isInSameQuadrantAs(GameLocation currentLocation) {
         return currentLocation.isInQuadrant(_quadrant);
+    }
+
+    public boolean isInRegion(Region region) {
+        return _region == region;
+    }
+
+    public boolean wasSeededBy(String playerName) {
+        for (MissionCard mission : _missionCards.getCards()) {
+            if (mission.isOwnedBy(playerName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

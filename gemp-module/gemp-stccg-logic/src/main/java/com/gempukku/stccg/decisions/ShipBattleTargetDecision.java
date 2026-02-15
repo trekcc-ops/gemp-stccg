@@ -1,7 +1,7 @@
 package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.CardWithHullIntegrity;
+import com.gempukku.stccg.cards.physicalcard.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -18,6 +18,13 @@ public class ShipBattleTargetDecision extends AbstractAwaitingDecision {
     private CardWithHullIntegrity _defendingTarget;
 
     private final Map<PhysicalCard, Map<String, List<PhysicalCard>>> _targetMap;
+
+    public ShipBattleTargetDecision(String playerName, DecisionContext context,
+                                    Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap,
+                                    DefaultGame cardGame) {
+        super(playerName, context, cardGame);
+        _targetMap = targetMap;
+    }
 
     public ShipBattleTargetDecision(Player player, DecisionContext context,
                                     Map<PhysicalCard, Map<String, List<PhysicalCard>>> targetMap,

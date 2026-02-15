@@ -70,12 +70,43 @@
             type: objective
             uniqueness: unique
             property-logo: first-contact-logo
-            java-blueprint: true
+            java-blueprint: false
             image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
             actions: [
                 {
                     type: seedThis
-                    where: core
+                    toCore: true
+                }
+                {
+                    type: optionalTrigger
+                    player: you
+                    trigger: {
+                        type: thisCardPlayed
+                    }
+                    triggerDuringSeed: true
+                    effect: {
+                        type: downloadReportable
+                        target: {
+                            type: reportCards
+                            filter: youOwnNoCopiesInPlay + missionSpecialist
+                            count: 1-2
+                            differentCardsOnly: true
+                            destination: your + outpost
+                            specialReporting: true
+                        }
+                    }
+                }
+                {
+                    type: optionalTrigger
+                    player: you
+                    trigger: {
+                        type: startOfTurn
+                        turnPlayer: you
+                    }
+                    triggerDuringSeed: false
+                    effect: {
+                        type: discardThisCard
+                    }
                 }
             ]
         }
@@ -88,6 +119,8 @@
             icons: staff,first-contact-icon
             classification: MEDICAL
             lore: Lieutenant (j.g.) Alyssa Ogawa married shipmate Andrew Powell in 2370. A nurse assistant to Dr. Beverly Crusher, she is studying to be a doctor.
+            species: human
+            gender: female
             skill-box: "[*] Biology [*] Exobiology [DL] Medical Kit"
             integrity: 7
             cunning: 7
@@ -104,6 +137,8 @@
             icons: staff,first-contact-icon
             classification: SCIENCE
             lore: Male Bolian. Representative of Starfleet scientists. Molecular archaeologist on sabbatical from Daystrom Institute annex on Galor IV. Friend of Vash.
+            species: bolian
+            gender: male
             skill-box: "[*] Archaeology"
             integrity: 6
             cunning: 8
@@ -120,6 +155,8 @@
             icons: staff,first-contact-icon
             classification: ENGINEER
             lore: Typical diagnostic engineer on U.S.S. Enterprise-E. Assistant to Paul Porter. Female seismologist from Tycho City, Lunar Colony.
+            species: human
+            gender: female
             skill-box: "[*] Geology"
             integrity: 8
             cunning: 4
@@ -136,6 +173,8 @@
             icons: staff,first-contact-icon
             classification: SECURITY
             lore: Representative of the brave security personnel in Starfleet. Ensign Travis stood his ground against Borg intruders at defensive checkpoint 3 on deck 4.
+            species: human
+            gender: male
             skill-box: "[*] Honor [*] Youth"
             integrity: 8
             cunning: 5
@@ -151,6 +190,8 @@
             icons: staff,first-contact-icon
             classification: OFFICER
             lore: Ex-wife of a coalition arms merchant on Turkana IV. Misses her old lifestyle, but likes the opportunities offered by the Federation.
+            species: human
+            gender: female
             skill-box: "[*] Diplomacy [*] Greed"
             integrity: 4
             cunning: 8
@@ -167,6 +208,8 @@
             icons: staff,first-contact-icon
             classification: SECURITY
             lore: Ensign Obarakeh is typical of Starfleet security personnel. She monitors and administrates computer encryption safeguards. Plays the Algolian chimes.
+            species: human
+            gender: female
             skill-box: "[*] Music [*] Computer Skill"
             integrity: 6
             cunning: 6
@@ -183,6 +226,8 @@
             icons: staff,first-contact-icon
             classification: SCIENCE
             lore: Typical scientist. Ordered to scan the Neutral Zone on stardate 50893. Found 20 particles of space dust per cm³, 52 UV radiation spikes, and a class 2 comet.
+            species: human
+            gender: male
             skill-box: "[*] Stellar Cartography"
             integrity: 7
             cunning: 7

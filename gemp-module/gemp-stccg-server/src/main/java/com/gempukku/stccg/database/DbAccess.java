@@ -24,13 +24,12 @@ public class DbAccess extends PoolingDataSource {
     private static final int SLEEP_TIME_BETWEEN_ATTEMPTS = 500; // in milliseconds
 
     public DbAccess() {
+        super(createConnectionPool());
         try {
             Class.forName(AppConfig.getProperty("db.connection.class"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Couldn't find the DB driver", e);
         }
-        this._pool = createConnectionPool();
-
         if (!isConnectionEstablished()) {
             throw new RuntimeException("Couldn't establish database connection");
         }

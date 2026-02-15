@@ -12,6 +12,8 @@
             classification: V.I.P.
             icons: au-icon,ent-era
             lore: Inventor of the transporter and father figure to Jonathan Archer. Dreams big. Honorary president of the Association of Transporter Technicians.
+            species: human
+            gender: male
             skill-box: "[*] ENGINEER [*] Transporter Skill x3 [*] Physics [*] Computer Skill x2"
             integrity: 7
             cunning: 9

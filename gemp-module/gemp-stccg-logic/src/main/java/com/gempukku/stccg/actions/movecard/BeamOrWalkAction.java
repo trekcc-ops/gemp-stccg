@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -10,17 +9,16 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
+import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -34,7 +32,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    final PhysicalNounCard1E _cardSource;
+    final ST1EPhysicalCard _cardSource;
 
     @JsonProperty("originCardId")
     private PhysicalCard _origin;
@@ -42,7 +40,6 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     @JsonProperty("destinationCardId")
     private PhysicalCard _destination;
     private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen;
-    final Player _performingPlayer;
     final Collection<PhysicalCard> _destinationOptions;
     private SelectVisibleCardAction _selectOriginAction;
     private SelectVisibleCardAction _selectDestinationAction;
@@ -54,9 +51,8 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param player              the player
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
-    BeamOrWalkAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardSource, ActionType actionType) {
+    BeamOrWalkAction(DefaultGame cardGame, Player player, ST1EPhysicalCard cardSource, ActionType actionType) {
         super(cardGame, player, actionType);
-        _performingPlayer = player;
         _cardSource = cardSource;
         _destinationOptions = getDestinationOptions((ST1EGame) cardGame);
     }
@@ -68,23 +64,14 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     protected abstract Collection<PhysicalCard> getDestinationOptions(ST1EGame game);
     public abstract List<PhysicalCard> getValidFromCards(DefaultGame game);
 
-
-    @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, InvalidGameOperationException {
-//        if (!isAnyCostFailed()) {
-
-        Action cost = getNextCost();
-        if (cost != null)
-            return cost;
-
+    protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_fromCardChosen) {
             if (_selectOriginAction == null) {
-                _selectOriginAction = new SelectVisibleCardAction(cardGame, _performingPlayer,
+                _selectOriginAction = new SelectVisibleCardAction(cardGame, _performingPlayerId,
                         "Choose card to " + actionVerb() + " from", getValidFromCards(cardGame));
-                appendTargeting(_selectOriginAction);
-                return getNextCost();
+                cardGame.addActionToStack(_selectOriginAction);
             } else {
-                if (_selectOriginAction.wasCarriedOut()) {
+                if (_selectOriginAction.wasSuccessful()) {
                     _origin = _selectOriginAction.getSelectedCard();
                     _fromCardChosen = true;
                     if (_origin == _cardSource) {
@@ -95,59 +82,50 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                     }
                 }
             }
-        }
-
-        if (_destinationOptions.isEmpty())
+        } else if (_destinationOptions.isEmpty()) {
             throw new InvalidGameLogicException("Unable to locate a valid destination");
-
-        if (!_toCardChosen) {
+        } else if (!_toCardChosen) {
             if (_selectDestinationAction == null) {
-                _selectDestinationAction = new SelectVisibleCardAction(cardGame, _performingPlayer,
+                _selectDestinationAction = new SelectVisibleCardAction(cardGame, _performingPlayerId,
                         "Choose card to " + actionVerb() + " to ", _destinationOptions);
-                appendTargeting(_selectDestinationAction);
-                return getNextCost();
+                cardGame.addActionToStack(_selectDestinationAction);
             } else {
-                if (_selectDestinationAction.wasCarriedOut())
+                if (_selectDestinationAction.wasSuccessful())
                     setDestination(_selectDestinationAction.getSelectedCard());
             }
-        }
-
-        if (!_cardsToMoveChosen) {
+        } else if (!_cardsToMoveChosen) {
             if (_selectCardsToMoveAction == null) {
                 // TODO - No checks here yet to make sure cards can be moved (compatibility, etc.)
                 Collection<PhysicalCard> movableCards =
-                        Filters.filter(_origin.getAttachedCards(_origin.getGame()),
-                                Filters.your(_performingPlayer), Filters.or(Filters.personnel, Filters.equipment));
-                _selectCardsToMoveAction = new SelectVisibleCardsAction(cardGame, _performingPlayer,
+                        Filters.filter(_origin.getAttachedCards(cardGame), cardGame,
+                                Filters.your(_performingPlayerId), Filters.or(Filters.personnel, Filters.equipment));
+                _selectCardsToMoveAction = new SelectVisibleCardsAction(cardGame, _performingPlayerId,
                         "Choose cards to " + actionVerb() + " to " + _destination.getCardLink(),
                         movableCards, 1);
-                appendTargeting(_selectCardsToMoveAction);
-                return getNextCost();
+                cardGame.addActionToStack(_selectCardsToMoveAction);
             } else {
-                if (_selectCardsToMoveAction.wasCarriedOut())
+                if (_selectCardsToMoveAction.wasSuccessful())
                     setCardsToMove(_selectCardsToMoveAction.getSelectedCards());
             }
+        } else {
+            super.continueInitiation(cardGame);
         }
-
-        processEffect(cardGame);
-        return null;
     }
 
-    private void processEffect(DefaultGame cardGame) {
-        if (!_wasCarriedOut) {
-            GameLocation destinationLocation = _destination.getGameLocation();
-            for (PhysicalCard card : _cardsToMove) {
-                card.setZone(Zone.ATTACHED);
-                card.attachTo(_destination);
-                card.setLocation(destinationLocation);
-                if (_origin instanceof MissionCard)
-                    ((PhysicalReportableCard1E) card).leaveAwayTeam((ST1EGame) cardGame);
-                if (_destination instanceof MissionCard && destinationLocation instanceof MissionLocation mission)
-                    ((PhysicalReportableCard1E) card).joinEligibleAwayTeam(mission);
+    protected void processEffect(DefaultGame cardGame) {
+        GameLocation destinationLocation = _destination.getGameLocation((ST1EGame) cardGame);
+        for (PhysicalCard card : _cardsToMove) {
+            card.setZone(Zone.ATTACHED);
+            card.attachTo(_destination);
+            card.setLocationId(cardGame, _destination.getLocationId());
+            if (_origin instanceof MissionCard) {
+                ((ST1EGame) cardGame).getGameState().removeCardFromAwayTeam((ST1EGame) cardGame, (ReportableCard) card);
             }
-            _wasCarriedOut = true;
-            setAsSuccessful();
+            if (_destination instanceof MissionCard && destinationLocation instanceof MissionLocation mission) {
+                ((ST1EGame) cardGame).getGameState().addCardToEligibleAwayTeam((ST1EGame) cardGame, (ReportableCard) card, mission);
+            }
         }
+        setAsSuccessful();
     }
 
     public void setCardsToMove(Collection<? extends PhysicalCard> cards) {

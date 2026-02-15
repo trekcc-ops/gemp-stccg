@@ -1,85 +1,75 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
+import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalReportableCard1E;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.filters.MatchingFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-public class SelectAndReportForFreeCardAction extends ActionyAction implements TopLevelSelectableAction {
+public class SelectAndReportForFreeCardAction extends PlayCardAction {
 
     @JsonProperty("playCardAction")
     @JsonIdentityReference(alwaysAsId = true)
     private Action _playCardAction;
     private final PhysicalCard _performingCard;
-    private final ActionCardResolver _cardToPlayTarget;
+    private final SelectCardsResolver _cardToPlayTarget;
     private final MatchingFilterBlueprint _destinationFilterBlueprint;
 
-    public SelectAndReportForFreeCardAction(DefaultGame cardGame, Player player, ActionCardResolver playableCardTarget,
-                                            PhysicalCard performingCard, MatchingFilterBlueprint destinationFilterBlueprint) {
-        super(cardGame, player, "Report card from hand", ActionType.PLAY_CARD);
+    public SelectAndReportForFreeCardAction(DefaultGame cardGame, String performingPlayerName,
+                                            SelectCardsResolver playableCardTarget, PhysicalCard performingCard,
+                                            MatchingFilterBlueprint destinationFilterBlueprint) {
+        super(cardGame, performingCard, null, performingPlayerName, null, ActionType.PLAY_CARD);
         _cardToPlayTarget = playableCardTarget;
         _performingCard = performingCard;
         _destinationFilterBlueprint = destinationFilterBlueprint;
+        _cardTargets.add(playableCardTarget);
     }
+
 
 
     protected void playCard(DefaultGame cardGame, PhysicalCard selectedCard) throws InvalidGameLogicException {
         Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame);
-        Collection<PhysicalCard> eligibleDestinations = Filters.filter(cardGame, outpostFilter);
-
-        Action action = new ReportCardAction((PhysicalReportableCard1E) selectedCard,
-                true, eligibleDestinations);
+        Collection<PhysicalCard> eligibleDestinations = new ArrayList<>();
+        for (PhysicalCard card : Filters.filter(cardGame, outpostFilter)) {
+            if (card instanceof FacilityCard facility) {
+                eligibleDestinations.add(facility);
+            }
+        }
+        Action action = new ReportCardAction(cardGame, (ReportableCard) selectedCard, true,
+                eligibleDestinations, true);
         setPlayCardAction(action);
-        selectedCard.getGame().getActionsEnvironment().addActionToStack(getPlayCardAction());
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        if (_playCardAction == null)
-            return false;
-        if (_playCardAction instanceof PlayCardAction)
-            return _playCardAction.wasCarriedOut();
-        return true;
+        cardGame.getActionsEnvironment().addActionToStack(getPlayCardAction());
     }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardToPlayTarget.willProbablyBeEmpty(cardGame);
+        return !_cardToPlayTarget.cannotBeResolved(cardGame);
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Action nextCost = getNextCost();
-        if (nextCost != null)
-            return nextCost;
-
-        if (!_cardToPlayTarget.isResolved()) {
-            if (_cardToPlayTarget instanceof SelectCardsResolver selectTarget) {
-                if (selectTarget.getSelectionAction().wasCompleted()) {
-                    _cardToPlayTarget.resolve(cardGame);
-                } else {
-                    return selectTarget.getSelectionAction();
-                }
-            } else {
-                _cardToPlayTarget.resolve(cardGame);
-            }
+    public void processEffect(DefaultGame cardGame) {
+        try {
+            // The playCard method determines valid destinations
+            playCard(cardGame, Iterables.getOnlyElement(_cardToPlayTarget.getCards(cardGame)));
+            setAsSuccessful();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
-
-        // The playCard method determines valid destinations
-        playCard(cardGame, Iterables.getOnlyElement(_cardToPlayTarget.getCards(cardGame)));
-        setAsSuccessful();
-        return null;
     }
 
     protected Action getPlayCardAction() { return _playCardAction; }
@@ -88,5 +78,14 @@ public class SelectAndReportForFreeCardAction extends ActionyAction implements T
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
+    }
+
+    @JsonIgnore
+    public Collection<? extends PhysicalCard> getSelectableCardsToPlay(DefaultGame cardGame) {
+        return _cardToPlayTarget.getSelectableCards(cardGame);
+    }
+
+    public void setCardReporting(PhysicalCard cardToPlay) {
+        _cardToPlayTarget.setSelectedCards(List.of(cardToPlay));
     }
 }

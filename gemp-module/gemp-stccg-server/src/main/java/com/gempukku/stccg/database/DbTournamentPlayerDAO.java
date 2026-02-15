@@ -1,8 +1,6 @@
 package com.gempukku.stccg.database;
 
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.tournament.TournamentPlayerDAO;
 
 import java.sql.Connection;
@@ -20,11 +18,9 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
     private final static String GET_DROPPED_PLAYERS_STATEMENT =
             "select player from tournament_player where tournament_id=? and dropped=true";
     private final DbAccess _dbAccess;
-    private final ServerObjects _serverObjects;
 
-    public DbTournamentPlayerDAO(ServerObjects serverObjects, DbAccess dbAccess) {
+    public DbTournamentPlayerDAO(DbAccess dbAccess) {
         _dbAccess = dbAccess;
-        _serverObjects = serverObjects;
     }
 
     @Override
@@ -84,8 +80,7 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
                             String player = rs.getString(1);
                             String deckName = rs.getString(2);
                             String contents = rs.getString(3);
-                            GameFormat format = _serverObjects.getFormatLibrary().getFormatByName(formatName);
-                            result.put(player, new CardDeck(deckName, contents, format));
+                            result.put(player, new CardDeck(deckName, contents, formatName));
                         }
                         return result;
                     }
@@ -125,9 +120,8 @@ public class DbTournamentPlayerDAO implements TournamentPlayerDAO {
                     statement.setString(1, tournamentId);
                     statement.setString(2, playerName);
                     try (ResultSet rs = statement.executeQuery()) {
-                        GameFormat format = _serverObjects.getFormatLibrary().getFormatByName(formatName);
                         return (rs.next()) ?
-                                new CardDeck(rs.getString(1), rs.getString(2), format, "") :
+                                new CardDeck(rs.getString(1), rs.getString(2), formatName, "") :
                                 null;
                     }
                 }

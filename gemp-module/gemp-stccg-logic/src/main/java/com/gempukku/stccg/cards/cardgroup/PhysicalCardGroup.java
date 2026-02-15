@@ -7,27 +7,35 @@ import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "cardCount", "cardIds" })
-@JsonPropertyOrder({ "cardCount", "cardIds" })
-public class PhysicalCardGroup {
-    protected final List<PhysicalCard> _cards = new LinkedList<>();
+@JsonIncludeProperties({ "cardIds" })
+@JsonPropertyOrder({ "cardIds" })
+@JsonIgnoreProperties(value = { "cardCount" }, allowGetters = true)
+public class PhysicalCardGroup<T extends PhysicalCard> {
+    protected final List<T> _cards = new LinkedList<>();
 
     public PhysicalCardGroup() {
+
     }
 
-    public void addCard(PhysicalCard card) { _cards.add(card); }
+    public PhysicalCardGroup(@JsonProperty("cardIds")
+                             @JsonIdentityReference(alwaysAsId=true)
+                             List<T> cards) {
+        _cards.addAll(cards);
+    }
+
+    public void addCard(T card) { _cards.add(card); }
 
     @JsonProperty("cardIds")
     @JsonIdentityReference(alwaysAsId=true)
-    public final List<PhysicalCard> getCards() {
+    public final List<T> getCards() {
         return _cards;
     }
-    public void setCards(List<PhysicalCard> subDeck) {
+    public void setCards(List<T> subDeck) {
         _cards.clear();
         _cards.addAll(subDeck);
     }
 
-    @JsonProperty("cardCount")
+    @JsonIgnore
     public int size() {
         return _cards.size();
     }
@@ -37,4 +45,9 @@ public class PhysicalCardGroup {
     public PhysicalCard getFirst() {
         return _cards.getFirst();
     }
+
+    public boolean contains(PhysicalCard card) {
+        return _cards.contains(card);
+    }
+
 }

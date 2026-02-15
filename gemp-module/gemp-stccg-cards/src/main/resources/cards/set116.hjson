@@ -22,7 +22,7 @@
                 {
                     type: seedThis
                     limit: 1
-                    where: core
+                    toCore: true
                 }
             ]
             image-url: https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif
@@ -36,6 +36,8 @@
             classification: CIVILIAN
             icons: staff
             lore: Strong believer in the Prophets. While with Shakaar resistance cell, lost his left arm saving Kira Nerys from Cardassians. Refuses synthetic replacement.
+            species: bajoran
+            gender: male
             skill-box: "[*] ENGINEER [*] Biology [*] Geology [*] Resistance [DL] Sniper"
             integrity: 6
             cunning: 7
@@ -51,6 +53,8 @@
             classification: CIVILIAN
             icons: staff
             lore: Friend of Kira Nerys. Romantically involved with Furel. Member of Shakaar resistance cell. Fought provisional government over soil reclamators.
+            species: bajoran
+            gender: female
             skill-box: "[*] MEDICAL [*] Resistance [*] Smuggling [*] Computer Skill"
             integrity: 7
             cunning: 7
@@ -66,6 +70,8 @@
             classification: ENGINEER
             icons: staff
             lore: "Highly valued assistant to Chief O'Brien. Called \"Quique\" by his friends. Joked that he wants to grow up to be O'Brien - just not as old and grizzled."
+            species: human
+            gender: male
             skill-box: "[*] Computer Skill x2 [*] Honor [*] Navigation [*] Geology"
             integrity: 8
             cunning: 7
@@ -81,6 +87,8 @@
             classification: ENGINEER
             icons: staff
             lore: Chief of operations on Deep Space 9. Friend of Julian. Father of Molly and Kirayoshi. Husband of Keiko. Likes kayaking, darts and historical battle simulations.
+            species: human
+            gender: male
             skill-box: "[*] ENGINEER [*] Physics [*] Computer Skill [*] Honor [*] Transporter Skill [DL] Defense System Upgrade"
             integrity: 8
             cunning: 7
@@ -97,6 +105,8 @@
             uniqueness: universal
             icons: staff
             lore: Ensign Carson is one of the many talented navigators serving Starfleet. Former member of Nova Squadron. Assigned to bridge duty aboard U.S.S. Defiant.
+            species: human
+            gender: female
             skill-box: "[*] Navigation [*] SCIENCE"
             integrity: 6
             cunning: 7
@@ -112,6 +122,8 @@
             classification: OFFICER
             icons: command
             lore: "First officer and sole survivor of the I.K.C. Toh'Kaht. Briefly succeeded captain Kee'Bhor. Suffering from the influence of Saltah'na energy spheres."
+            species: klingon
+            gender: male
             skill-box: "[*] SCIENCE [*] Geology [*] Treachery"
             integrity: 6
             cunning: 6
@@ -128,6 +140,8 @@
             uniqueness: universal
             icons: staff
             lore: "Typical of young Klingons serving the Empire. Daughter of Tse'Dek. Assigned to tactical/weapons station on I.K.C. Rotarran by General Martok."
+            species: klingon
+            gender: female
             skill-box: "[*] Astrophysics [*] SCIENCE [*] Youth"
             integrity: 7
             cunning: 6
@@ -144,6 +158,8 @@
             uniqueness: universal
             icons: staff
             lore: "Typical front-line Klingon officer. Engaged Federation forces on Ajilon Prime. Once commanded the I.K.C. K'Ratak while its captain recovered from war injuries."
+            species: klingon
+            gender: male
             skill-box: "[*] Navigation [*] Stellar Cartography [*] Treachery"
             integrity: 4
             cunning: 6
@@ -160,6 +176,8 @@
             uniqueness: universal
             icons: staff
             lore: Typical Klingon inspired by tales of glorious battle against the Dominion. Learned diplomatic skills from his father, a former Klingon negotiator.
+            species: klingon
+            gender: male
             skill-box: "[*] Diplomacy [*] Stellar Cartography"
             integrity: 5
             cunning: 7
@@ -176,6 +194,8 @@
             uniqueness: universal
             icons: staff
             lore: Typical skilled Klingon serving in the fleet during the war with Cardassia. Her ship took part in a raid which destroyed an outpost on Korma in 2372.
+            species: klingon
+            gender: female
             skill-box: "[*] Biology"
             integrity: 6
             cunning: 7
@@ -192,6 +212,8 @@
             classification: SCIENCE
             icons: staff
             lore: Brilliant Romulan astro-archaeologist. Member of the Romulan underground. Works closely with Spock for reunification of the Vulcan and Romulan peoples.
+            species: romulan
+            gender: male
             skill-box: "[*] Astrophysics [*] Navigation [*] Youth"
             integrity: 5
             cunning: 7
@@ -207,6 +229,8 @@
             classification: CIVILIAN
             icons: staff
             lore: Brilliant Romulan astro-archaeologist. Member of the Romulan underground. Works closely with Spock for reunification of the Vulcan and Romulan peoples.
+            species: romulan
+            gender: male
             skill-box: "[*] ENGINEER [*] Archaeology [*] Honor [*] Stellar Cartography"
             integrity: 8
             cunning: 9
@@ -223,6 +247,8 @@
             icons: staff
             uniqueness: universal
             lore: Typical Romulan scientist. Led team of archaeologists on an unsuccessful mission to locate an Iconian gateway in Romulan territory.
+            species: romulan
+            gender: male
             skill-box: "[*] Archaeology"
             integrity: 7
             cunning: 7

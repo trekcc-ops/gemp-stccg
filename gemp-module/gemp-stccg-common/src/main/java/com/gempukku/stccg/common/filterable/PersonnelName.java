@@ -9,6 +9,8 @@ public enum PersonnelName implements Filterable {
     JEAN_LUC_PICARD ("Jean-Luc Picard"),
     MAROUK("Marouk"),
     MORN("Morn"),
+    NOG("Nog"),
+    QUARK_SON_OF_KELDAR("Quark Son of Keldar"),
     SIRNA_KOLRAMI("Sirna Kolrami"),
     TEBOK("Tebok");
 
