@@ -1,21 +1,7 @@
 import Box from '@mui/material/Box';
 import { RichTreeView } from '@mui/x-tree-view/RichTreeView';
 import CardTreeModel from '../lib/cardTreeModel.js';
-
-function get_your_player_id(gamestate) {
-    return gamestate["requestingPlayer"];
-}
-
-function get_opponent_player_id(gamestate) {
-    let your_player_id = gamestate["requestingPlayer"];
-    let opponent_names = [];
-    for (const playerId of Object.keys(gamestate["playerMap"])) {
-        if (playerId != your_player_id) {
-            opponent_names.push(playerId);
-        }
-    }
-    return opponent_names[0]; // assume 1 opponent
-}
+import { get_your_player_id, get_opponent_player_id } from './common.jsx';
 
 function cards_to_treeitems (gamestate) {
     let player_id = get_your_player_id(gamestate);

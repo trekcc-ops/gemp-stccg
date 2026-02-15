@@ -1,23 +1,7 @@
 import Stack from '@mui/material/Stack';
 import SpacelineLocation from './spaceline-location.jsx';
 import CardStack from './card-stack.jsx';
-
-// TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
-function get_your_player_id(gamestate) {
-    return gamestate["requestingPlayer"];
-}
-
-// TODO: Reuse the identical function from 1e-gamestate-layout.jsx.
-function get_opponent_player_id(gamestate) {
-    let your_player_id = gamestate["requestingPlayer"];
-    let opponent_names = [];
-    for (const playerId of Object.keys(gamestate["playerMap"])) {
-        if (playerId != your_player_id) {
-            opponent_names.push(playerId);
-        }
-    }
-    return opponent_names[0]; // assume 1 opponent
-}
+import { get_your_player_id, get_opponent_player_id } from './common.jsx';
 
 function get_core_cards(gamestate, playerid) {
     let retarr = [];
