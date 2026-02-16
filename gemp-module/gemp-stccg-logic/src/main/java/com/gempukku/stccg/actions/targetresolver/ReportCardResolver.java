@@ -53,7 +53,7 @@ public class ReportCardResolver implements ActionCardResolver {
                 selectDestination(stGame);
             } else if (!_isFailed && _cardEnteringPlay instanceof AffiliatedCard affiliatedCard &&
                     _affiliationToReportAs == null) {
-                selectAffiliation(affiliatedCard, stGame);
+                selectAffiliation(stGame);
             }
         } else {
             cardGame.sendErrorMessage("Cannot select cards to report in a non-1E game");
@@ -80,10 +80,10 @@ public class ReportCardResolver implements ActionCardResolver {
         }
     }
 
-    private void selectAffiliation(AffiliatedCard affiliatedCard, ST1EGame stGame) {
+    private void selectAffiliation(ST1EGame stGame) {
         Collection<Affiliation> affiliationOptions = _destinationAndAffiliationMap.get(_destinationCard);
         if (affiliationOptions.size() == 1) {
-            _affiliationToReportAs = Iterables.getOnlyElement(affiliatedCard.getAffiliationOptions());
+            _affiliationToReportAs = Iterables.getOnlyElement(affiliationOptions);
         } else if (affiliationOptions.isEmpty()) {
             _isFailed = true;
         } else if (_affiliationSelectionAction == null) {
