@@ -22,8 +22,8 @@ public class RandomSelectionInitiatedResult extends ActionResult {
         return !Filters.filter(_selectableCards, cardGame, cardFilter).isEmpty();
     }
 
-    public SelectRandomCardAction getAction() {
-        return (SelectRandomCardAction) _action;
+    public SelectRandomCardsAction getAction() {
+        return (SelectRandomCardsAction) _action;
     }
 
 }

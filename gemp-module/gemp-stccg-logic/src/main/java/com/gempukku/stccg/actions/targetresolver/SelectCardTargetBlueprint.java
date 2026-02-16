@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.targetresolver;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
-import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
+import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -56,7 +56,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         SelectCardsAction selectAction;
         int count = _count.evaluateExpression(cardGame, context);
         if (_randomSelection) {
-            selectAction = new SelectRandomCardAction(cardGame, selectingPlayerName, finalFilter);
+            selectAction = new SelectRandomCardsAction(cardGame, selectingPlayerName, finalFilter, count);
         } else {
             selectAction = new SelectCardsFromDialogAction(cardGame, selectingPlayerName, finalFilter, count);
         }

@@ -4,7 +4,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
+import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -36,7 +36,7 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
         if (_requirement.accepts(context, cardGame)) {
             CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
             String performingPlayer = cardGame.getOpponent(context.getPerformingPlayerId());
-            Action selectAction = new SelectRandomCardAction(cardGame, performingPlayer, filter, context, _saveToMemoryId);
+            Action selectAction = new SelectRandomCardsAction(cardGame, performingPlayer, filter, context, _saveToMemoryId, 1);
             result.add(selectAction);
         }
         return result;

@@ -102,11 +102,22 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                     _dilemmaDiscarded = true;
                     cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
                 } else {
-                    _encounterAction.setAsFailed();
-                    _encounterAction.getAttemptAction().setAsFailed();
-                    setAsFailed();
+                    completeActionWithFailure();
                 }
             }
         }
+    }
+
+    @Override
+    public void setAsFailed() {
+        _conditionsChecked = true;
+        _conditionsMet = false;
+        setAsInitiated();
+    }
+
+    private void completeActionWithFailure() {
+        super.setAsFailed();
+        _encounterAction.setAsFailed();
+        _encounterAction.getAttemptAction().setAsFailed();
     }
 }

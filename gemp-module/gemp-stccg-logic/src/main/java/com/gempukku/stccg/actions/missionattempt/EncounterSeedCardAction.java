@@ -20,7 +20,6 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
     private final AttemptingUnit _attemptingUnit;
-    private boolean _zoneSet;
 
     private final int _locationId;
     private boolean _subActionFailed;
@@ -95,4 +94,6 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
     public PhysicalCard getPerformingCard() {
         return _cardTarget.getCard();
     }
+
+
 }

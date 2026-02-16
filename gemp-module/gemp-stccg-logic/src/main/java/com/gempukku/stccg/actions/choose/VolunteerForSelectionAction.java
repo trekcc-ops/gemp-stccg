@@ -9,10 +9,10 @@ import com.gempukku.stccg.game.DefaultGame;
 public class VolunteerForSelectionAction extends ActionyAction implements TopLevelSelectableAction {
 
     private final PhysicalCard _volunteeringCard;
-    private final SelectRandomCardAction _selectAction;
+    private final SelectRandomCardsAction _selectAction;
 
     public VolunteerForSelectionAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard volunteeringCard,
-                                       SelectRandomCardAction selectAction) {
+                                       SelectRandomCardsAction selectAction) {
         super(cardGame, performingPlayerName, ActionType.VOLUNTEER_FOR_SELECTION);
         _volunteeringCard = volunteeringCard;
         _selectAction = selectAction;
