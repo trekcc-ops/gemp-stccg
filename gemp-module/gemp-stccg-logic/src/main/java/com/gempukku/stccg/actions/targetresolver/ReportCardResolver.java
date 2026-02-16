@@ -51,7 +51,7 @@ public class ReportCardResolver implements ActionCardResolver {
         if (cardGame instanceof ST1EGame stGame) {
             if (!_isFailed && _destinationCard == null) {
                 selectDestination(stGame);
-            } else if (!_isFailed && _cardEnteringPlay instanceof AffiliatedCard affiliatedCard &&
+            } else if (!_isFailed && _cardEnteringPlay instanceof AffiliatedCard &&
                     _affiliationToReportAs == null) {
                 selectAffiliation(stGame);
             }
