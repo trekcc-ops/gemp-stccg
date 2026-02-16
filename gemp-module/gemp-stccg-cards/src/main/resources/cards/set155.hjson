@@ -1,17 +1,37 @@
 {
-    setId: "155"
-    setName: The Next Generation
-    gameType: First Edition
-    cards: [
+    "setId": "155",
+    "setName": "The Next Generation",
+    "gameType": "First Edition",
+    "cards": [
         {
-            blueprintId: 155_009
-            title: Microbrain
-            java-blueprint: true
-            type: dilemma
-            mission-type: dual
-            lore: Small, solar-powered, inorganic collective life-form native to Velara III. Sabotaged Federation terraforming operations to protest the destruction of their home.
-            property-logo: tng-logo
-            image-url: https://www.trekcc.org/1e/cardimages/tng/9V.jpg
+            "blueprintId": "155_009",
+            "title": "Microbrain",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Small, solar-powered, inorganic collective life-form native to Velara III. Sabotaged Federation terraforming operations to protest the destruction of their home.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/9V.jpg",
+            "rarity": "V",
+            "nullifyWith": "personnelWith(Exobiology x3 OR Geology x3)",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "opponent",
+                                    "filter": "personnel + (Exobiology OR Geology) + encounteringThisCard",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
         },
         {
             "blueprintId": "155_010",
