@@ -4,6 +4,7 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -65,6 +66,37 @@ public class Blueprint_155_010_PinnedDown_Test extends AbstractAtTest {
         // Personnel was stopped because the dilemma was failed
         assertTrue(Iterables.getOnlyElement(attemptingPersonnel).isStopped());
     }
+
+    @Test
+    public void failDilemmaWithQCardTest() throws Exception {
+        initializeGame(1, true);
+        assertEquals(1, attemptingPersonnel.size());
+        attemptMission(P1, _mission);
+
+        // Because there weren't 2 personnel to stop, the dilemma was failed and re-seeded
+        assertNotEquals(Zone.REMOVED, pinnedDown.getZone());
+
+        // Personnel was stopped because the dilemma was failed
+        assertTrue(Iterables.getOnlyElement(attemptingPersonnel).isStopped());
+
+        /* Verify that only two stop actions were created:
+            The first one to stop 2 cards which failed to initiate
+            The second one to stop Larson and the ship when the dilemma is failed
+         */
+        List<StopCardsAction> stopCardsActions = new ArrayList<>();
+        for (Action action : _game.getActionsEnvironment().getAllActions().values()) {
+            if (action instanceof StopCardsAction stopAction) {
+                stopCardsActions.add(stopAction);
+            }
+        }
+
+        assertEquals(2, stopCardsActions.size());
+        assertFalse(stopCardsActions.get(0).wasInitiated());
+        assertTrue(stopCardsActions.get(0).wasFailed());
+        assertTrue(stopCardsActions.get(1).wasSuccessful());
+        assertEquals(2, stopCardsActions.get(1).getStoppedCards().size());
+    }
+
 
     @Test
     public void passDilemmaTestWithTwo() throws Exception {

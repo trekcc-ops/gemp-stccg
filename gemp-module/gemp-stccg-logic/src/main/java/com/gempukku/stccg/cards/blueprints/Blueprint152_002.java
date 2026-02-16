@@ -2,9 +2,8 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
-import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.actions.discard.KillSinglePersonnelAction;
+import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -37,9 +36,9 @@ public class Blueprint152_002 extends CardBlueprint {
                 new SelectRandomCardsAction(game, thisCard.getOwnerName(),
                         new EncounteringCardFilter(thisCard), 1));
 
-        OvercomeDilemmaConditionAction overcomeAction =
+/*        OvercomeDilemmaConditionAction overcomeAction =
                 new OvercomeDilemmaConditionAction(game, thisCard, action, fullCondition, attemptingUnit, killAction);
-        result.add(overcomeAction);
+        result.add(overcomeAction); */
         return result;
     }
 

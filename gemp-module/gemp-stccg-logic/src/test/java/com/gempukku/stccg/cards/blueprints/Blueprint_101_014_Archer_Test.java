@@ -41,6 +41,7 @@ public class Blueprint_101_014_Archer_Test extends AbstractAtTest {
         builder.startGame();
     }
 
+
     @Test
     public void killWilkinsTest() throws Exception {
         /* If Away Team is Richard Wilkins (7+7+5) and Darian Wallace (7+5+6),

@@ -24,6 +24,7 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
     private final boolean _discardDilemma;
     private final List<SubActionBlueprint> _failEffects;
     private final SubActionBlueprint _costAction;
+    private final List<SubActionBlueprint> _successEffects = new ArrayList<>();
 
     private OvercomeDilemmaConditionActionBlueprint(@JsonProperty(value = "requires")
             MissionRequirement conditions,
@@ -32,12 +33,17 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
                                                    @JsonProperty("costAction") SubActionBlueprint costAction,
                                                    @JsonProperty("failEffect")
                                                    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                                   List<SubActionBlueprint> failEffects)
+                                                   List<SubActionBlueprint> failEffects,
+                                                    @JsonProperty("successAction")
+                                                    SubActionBlueprint successAction)
             throws InvalidCardDefinitionException {
         _conditions = conditions;
         _discardDilemma = discardDilemma;
         _failEffects = Objects.requireNonNullElse(failEffects, new ArrayList<>());
         _costAction = costAction;
+        if (successAction != null) {
+            _successEffects.add(successAction);
+        }
         if (conditions == null && costAction == null) {
             throw new InvalidCardDefinitionException("Cannot create an overcome dilemma action with no requirement or cost");
         }
@@ -51,24 +57,10 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
         for (Action pendingAction : actionStack) {
             if (pendingAction instanceof EncounterSeedCardAction encounterAction &&
                     encounterAction.getEncounteredCard() == context.card()) {
-                if (!_failEffects.isEmpty()) {
-                    try {
-                        List<Action> failActions = new ArrayList<>();
-                        for (SubActionBlueprint subAction : _failEffects) {
-                            failActions.add(subAction.createActions(cardGame, action, context).getFirst());
-                        }
-                        actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
-                                encounterAction, _conditions, encounterAction.getAttemptingUnit(), failActions,
-                                _discardDilemma);
-                        result.add(actionToReturn);
-                    } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidCardDefinitionException ignored) {
-
-                    }
-                } else {
-                    actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
-                            encounterAction, _conditions, encounterAction.getAttemptingUnit());
-                    result.add(actionToReturn);
-                }
+                actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
+                        encounterAction, _conditions, encounterAction.getAttemptingUnit(), _failEffects,
+                        _successEffects, _discardDilemma, context);
+                result.add(actionToReturn);
                 break;
             }
         }

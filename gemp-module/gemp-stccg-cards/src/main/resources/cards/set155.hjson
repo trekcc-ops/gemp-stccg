@@ -36,19 +36,19 @@
                                     "count": 2,
                                     "random": true
                                 }
-                            }
-                        },
-                        {
-                            "type": "stop",
-                            "target": {
-                                "type": "select",
-                                "filter": "personnel + encounteringThisCard",
-                                "count": 1,
-                                "random": true
                             },
-                            "requires": {
-                                "type": "cardInPlay",
-                                "filter": "q-icon"
+                            "successAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "filter": "personnel + encounteringThisCard",
+                                    "count": 1,
+                                    "random": true
+                                },
+                                "requires": {
+                                    "type": "cardInPlay",
+                                    "filter": "q-icon"
+                                }
                             }
                         }
                     ]

@@ -17,9 +17,7 @@ import java.util.Collection;
 
 public class StopCardsAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
-    private String _saveToMemoryId;
-    @JsonProperty("targetCardIds")
-    @JsonIdentityReference(alwaysAsId=true)
+    private final String _saveToMemoryId;
     private Collection<PhysicalCard> _stoppedCards;
 
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
@@ -31,9 +29,7 @@ public class StopCardsAction extends ActionyAction {
     }
 
     private StopCardsAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardResolver) {
-        super(cardGame, performingPlayerName, ActionType.STOP_CARDS);
-        _cardTarget = cardResolver;
-        _cardTargets.add(cardResolver);
+        this(cardGame, performingPlayerName, cardResolver, null, null);
     }
 
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
@@ -72,6 +68,12 @@ public class StopCardsAction extends ActionyAction {
             cardGame.sendErrorMessage(exp);
             setAsFailed();
         }
+    }
+
+    @JsonProperty("targetCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
+    public Collection<PhysicalCard> getStoppedCards() {
+        return _stoppedCards;
     }
 
 }
