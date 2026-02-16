@@ -184,7 +184,6 @@ public class Filters {
         return new AtLocationFilter(locationId);
     }
 
-
     public static CardFilter atLocation(final GameLocation location) {
         return new AtLocationFilter(location.getLocationId());
     }

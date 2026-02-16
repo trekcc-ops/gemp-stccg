@@ -187,6 +187,9 @@ public class MissionLocation implements GameLocation {
         String playerName = player.getPlayerId();
         // TODO - Does not address shared missions, multiple copies of universal missions, or dual missions
         MissionCard missionCard = getMissionForPlayer(playerName);
+        if (cardGame.missionCannotBeAttemptedDueToModifier(missionCard)) {
+            return false;
+        }
         MissionType missionType = missionCard.getBlueprint().getMissionType();
         if (missionCard.getBlueprint().hasNoPointBox())
             return false;

@@ -12,8 +12,10 @@ import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 public class OvercomeDilemmaConditionAction extends ActionyAction {
 
@@ -25,9 +27,21 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     private final boolean _discardDilemma;
     private final PhysicalCard _dilemma;
     private boolean _cardsStopped;
-    private final Action _additionalFailAction;
-    private boolean _failActionSent;
+    private final List<Action> _additionalFailActions;
     private boolean _dilemmaDiscarded;
+
+    public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
+                                          EncounterSeedCardAction encounterAction, MissionRequirement conditions,
+                                          AttemptingUnit attemptingUnit, List<Action> failDilemmaActions, boolean discardDilemma) {
+        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA);
+        _dilemma = dilemma;
+        _attemptingUnit = attemptingUnit;
+        _additionalFailActions = failDilemmaActions;
+        _conditions = conditions;
+        _encounterAction = encounterAction;
+        _discardDilemma = discardDilemma;
+    }
+
 
     public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
                                           EncounterSeedCardAction encounterAction, MissionRequirement conditions,
@@ -35,7 +49,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA);
         _dilemma = dilemma;
         _attemptingUnit = attemptingUnit;
-        _additionalFailAction = failDilemmaAction;
+        _additionalFailActions = new ArrayList<>(List.of(failDilemmaAction));
         _conditions = conditions;
         _encounterAction = encounterAction;
         _discardDilemma = discardDilemma;
@@ -49,7 +63,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma, EncounterSeedCardAction action,
                                           MissionRequirement conditions, AttemptingUnit attemptingUnit) {
-        this(cardGame, dilemma, action, conditions, attemptingUnit, null, false);
+        this(cardGame, dilemma, action, conditions, attemptingUnit, new ArrayList<>(), false);
     }
 
 
@@ -68,9 +82,10 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                 cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
                 setAsSuccessful();
             } else {
-                if (_additionalFailAction != null && !_failActionSent) {
-                    cardGame.addActionToStack(_additionalFailAction);
-                    _failActionSent = true;
+                if (!_additionalFailActions.isEmpty()) {
+                    Action failAction = _additionalFailActions.getFirst();
+                    _additionalFailActions.remove(failAction);
+                    cardGame.addActionToStack(failAction);
                 } else if (!_cardsStopped) {
                     Collection<ST1EPhysicalCard> cardsToStop =
                             new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));

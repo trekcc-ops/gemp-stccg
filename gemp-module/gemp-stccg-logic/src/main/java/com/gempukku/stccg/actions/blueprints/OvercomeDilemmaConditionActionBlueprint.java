@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
@@ -11,11 +12,10 @@ import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 public class OvercomeDilemmaConditionActionBlueprint implements SubActionBlueprint {
@@ -29,10 +29,11 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
                                                    @JsonProperty("discardDilemma")
                                                    boolean discardDilemma,
                                                    @JsonProperty("failEffect")
-                                                           SubActionBlueprint failEffect) {
+                                                   @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                                   List<SubActionBlueprint> failEffects) {
         _conditions = conditions;
         _discardDilemma = discardDilemma;
-        _failEffects = (failEffect == null) ? new LinkedList<>() : List.of(failEffect);
+        _failEffects = Objects.requireNonNullElse(failEffects, new ArrayList<>());
     }
 
     @Override
@@ -42,11 +43,14 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
         for (Action pendingAction : actionStack) {
             if (pendingAction instanceof EncounterSeedCardAction encounterAction &&
                     encounterAction.getEncounteredCard() == context.card()) {
-                if (_failEffects.size() == 1) {
+                if (!_failEffects.isEmpty()) {
                     try {
-                        Action failAction = Iterables.getOnlyElement(_failEffects).createActions(cardGame, action, context).getFirst();
+                        List<Action> failActions = new ArrayList<>();
+                        for (SubActionBlueprint subAction : _failEffects) {
+                            failActions.add(subAction.createActions(cardGame, action, context).getFirst());
+                        }
                         result.add(new OvercomeDilemmaConditionAction(cardGame, context.card(),
-                                encounterAction, _conditions, encounterAction.getAttemptingUnit(), failAction,
+                                encounterAction, _conditions, encounterAction.getAttemptingUnit(), failActions,
                                 _discardDilemma));
                     } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidCardDefinitionException ignored) {
 

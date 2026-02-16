@@ -2,6 +2,7 @@ package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -15,6 +16,7 @@ public class ActionsEnvironment {
     private final List<ActionProxy> _actionProxies = new LinkedList<>();
     private final List<ActionProxy> _untilEndOfTurnActionProxies = new LinkedList<>();
     private final List<Action> _performedActions = new LinkedList<>();
+    private final Map<PhysicalCard, Integer> _countdowns = new HashMap<>();
     private int _nextActionId = 1;
 
     public void addAlwaysOnActionProxy(ActionProxy actionProxy) {
@@ -122,4 +124,21 @@ public class ActionsEnvironment {
         return _actionProxies;
     }
 
+    public void addActiveCountdown(PhysicalCard card, int countdown) {
+        _countdowns.put(card, countdown);
+    }
+
+    public void incrementCountdown(PhysicalCard card) {
+        if (_countdowns.get(card) != null) {
+            if (_countdowns.get(card) == 1) {
+                _countdowns.remove(card);
+            } else {
+                _countdowns.put(card, _countdowns.get(card) - 1);
+            }
+        }
+    }
+
+    public int getCountdown(PhysicalCard card) {
+        return _countdowns.get(card);
+    }
 }
