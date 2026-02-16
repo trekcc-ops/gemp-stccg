@@ -308,7 +308,6 @@ export function getActionInitiationCardActionMap(action, gameState) {
         case "STOP_CARDS": // What Does God Need with a Starship?
 
         // Action types that are expected to always be a sub-action or cost of another action
-        case "FAIL_DILEMMA":
         case "MAKE_DECISION":
         case "OVERCOME_DILEMMA":
         case "PLACE_CARD_ON_MISSION":

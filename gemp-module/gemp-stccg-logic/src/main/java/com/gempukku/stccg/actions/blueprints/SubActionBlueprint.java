@@ -33,6 +33,8 @@ import java.util.List;
         @JsonSubTypes.Type(value = OvercomeDilemmaConditionActionBlueprint.class, name = "overcomeCondition"),
         @JsonSubTypes.Type(value = PlaceCardsOnBottomOfDrawDeckSubactionBlueprint.class,
                 name = "placeCardsOnBottomOfDrawDeck"),
+        @JsonSubTypes.Type(value = PlaceCardsOnTopOfDrawDeckSubactionBlueprint.class,
+                name = "placeCardsOnTopOfDrawDeck"),
         @JsonSubTypes.Type(value = RandomSelectionSubActionBlueprint.class, name = "randomSelection"),
         @JsonSubTypes.Type(value = ScorePointsSubActionBlueprint.class, name = "scorePoints"),
         @JsonSubTypes.Type(value = SelectAndPerformSubActionBlueprint.class, name = "selectAndPerformSubAction"),

@@ -1457,6 +1457,22 @@
             rarity: C
         }
         {
+            "blueprintId": "101_243",
+            "title": "Tam Elbrun",
+            "type": "personnel",
+            "affiliation": "federation",
+            "property-logo": "tng-logo",
+            "classification": "V.I.P.",
+            "lore": "Betazoid male with exceptional empathic abilities. Participated in the notorious Ghorusda disaster. Specialist in first contact with new life-forms.",
+            "species": "betazoid",
+            "gender": "male",
+            "skill-box": "[*] Empathy x2 [*] Honor",
+            "integrity": 5,
+            "cunning": 7,
+            "strength": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR243.jpg"
+        },
+        {
             blueprintId: 101_245
             title: Taurik
             type: personnel

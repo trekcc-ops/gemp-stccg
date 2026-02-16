@@ -4,15 +4,33 @@
     gameType: First Edition
     cards: [
         {
-            blueprintId: 116_008
-            title: New Essentialists
-            type: dilemma
-            mission-type: planet
-            property-logo: ds9-logo
-            java-blueprint: true
-            lore: "The New Essentialists Movement asserts that decadence and complacency are eroding the foundations of the Federation. Worf was temporarily swayed by this group while on Risa."
-            image-url: https://www.trekcc.org/1e/cardimages/bog/newessentialists.gif
-        }
+            "blueprintId": "116_008",
+            "title": "New Essentialists",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "The New Essentialists Movement asserts that decadence and complacency are eroding the foundations of the Federation. Worf was temporarily swayed by this group while on Risa.",
+            "property-logo": "ds9-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/bog/newessentialists.gif",
+            "rarity": "U",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "INTEGRITY>40 + Honor x2 OR CUNNING>40 + Treachery x2",
+                        "failEffect": {
+                            "type": "placeCardsOnTopOfDrawDeck",
+                            "target": {
+                                "type": "select",
+                                "random": true,
+                                "filter": "personnel + encounteringThisCard + not(Borg)",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        },
         {
             blueprintId: 116_011
             title: Battle Bridge Door
