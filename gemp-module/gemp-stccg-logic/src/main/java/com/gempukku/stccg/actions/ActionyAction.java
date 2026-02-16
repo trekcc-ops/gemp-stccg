@@ -106,12 +106,6 @@ public abstract class ActionyAction implements Action {
         return true;
     }
 
-    public void setCardActionPrefix(String prefix) {
-        _cardActionPrefix = prefix;
-    }
-
-    public String getCardActionPrefix() { return _cardActionPrefix; }
-
     public int getActionId() { return _actionId; }
 
     @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)

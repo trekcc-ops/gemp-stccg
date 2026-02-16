@@ -18,8 +18,6 @@ import java.util.Collection;
         "destinationZone", "selectedIndex", "selectionOptions", "destination" })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public interface Action {
-    String getCardActionPrefix();
-    void setCardActionPrefix(String prefix);
 
     @JsonProperty("actionId")
     int getActionId();
