@@ -75,8 +75,12 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     @Override
     protected void processEffect(DefaultGame cardGame) {
         if (!_conditionsChecked) {
-            _conditionsMet = _conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame);
             _conditionsChecked = true;
+            if (_conditions != null) {
+                _conditionsMet = _conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame);
+            } else {
+                _conditionsMet = true;
+            }
         } else {
             if (_conditionsMet) {
                 cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));

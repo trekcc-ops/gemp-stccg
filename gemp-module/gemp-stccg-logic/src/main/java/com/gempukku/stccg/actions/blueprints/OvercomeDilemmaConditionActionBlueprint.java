@@ -23,23 +23,31 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
     private final MissionRequirement _conditions;
     private final boolean _discardDilemma;
     private final List<SubActionBlueprint> _failEffects;
+    private final SubActionBlueprint _costAction;
 
-    public OvercomeDilemmaConditionActionBlueprint(@JsonProperty(value = "requires", required = true)
+    private OvercomeDilemmaConditionActionBlueprint(@JsonProperty(value = "requires")
             MissionRequirement conditions,
                                                    @JsonProperty("discardDilemma")
                                                    boolean discardDilemma,
+                                                   @JsonProperty("costAction") SubActionBlueprint costAction,
                                                    @JsonProperty("failEffect")
                                                    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                                   List<SubActionBlueprint> failEffects) {
+                                                   List<SubActionBlueprint> failEffects)
+            throws InvalidCardDefinitionException {
         _conditions = conditions;
         _discardDilemma = discardDilemma;
         _failEffects = Objects.requireNonNullElse(failEffects, new ArrayList<>());
+        _costAction = costAction;
+        if (conditions == null && costAction == null) {
+            throw new InvalidCardDefinitionException("Cannot create an overcome dilemma action with no requirement or cost");
+        }
     }
 
     @Override
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
         List<Action> result = new ArrayList<>();
         Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
+        OvercomeDilemmaConditionAction actionToReturn = null;
         for (Action pendingAction : actionStack) {
             if (pendingAction instanceof EncounterSeedCardAction encounterAction &&
                     encounterAction.getEncounteredCard() == context.card()) {
@@ -49,16 +57,29 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
                         for (SubActionBlueprint subAction : _failEffects) {
                             failActions.add(subAction.createActions(cardGame, action, context).getFirst());
                         }
-                        result.add(new OvercomeDilemmaConditionAction(cardGame, context.card(),
+                        actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
                                 encounterAction, _conditions, encounterAction.getAttemptingUnit(), failActions,
-                                _discardDilemma));
+                                _discardDilemma);
+                        result.add(actionToReturn);
                     } catch(PlayerNotFoundException | InvalidGameLogicException | InvalidCardDefinitionException ignored) {
 
                     }
                 } else {
-                    result.add(new OvercomeDilemmaConditionAction(cardGame, context.card(),
-                            encounterAction, _conditions, encounterAction.getAttemptingUnit()));
+                    actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
+                            encounterAction, _conditions, encounterAction.getAttemptingUnit());
+                    result.add(actionToReturn);
                 }
+                break;
+            }
+        }
+        if (actionToReturn != null && _costAction != null) {
+            try {
+                List<Action> costActions = _costAction.createActions(cardGame, action, context);
+                for (Action costAction : costActions) {
+                    actionToReturn.appendCost(costAction);
+                }
+            } catch(PlayerNotFoundException | InvalidCardDefinitionException | InvalidGameLogicException ignored) {
+
             }
         }
         return result;

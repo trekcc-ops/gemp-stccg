@@ -54,6 +54,16 @@
             "cunning": 6,
             "strength": 6,
             "property-logo": "tng-logo"
+        },
+        {
+            "blueprintId": "991_006",
+            "title": "Dummy 1E Q Card",
+            "type": "event",
+            "icons": "q-icon",
+            "property-logo": "tng-logo",
+            "playThisCardAction": {
+                "type": "playThis"
+            }
         }
     ]
 }

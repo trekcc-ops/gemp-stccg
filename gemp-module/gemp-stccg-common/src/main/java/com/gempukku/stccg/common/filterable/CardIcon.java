@@ -18,6 +18,7 @@ public enum CardIcon implements Filterable {
     NAVIGATION_SUBCOMMAND("Navigation", "https://www.trekcc.org/forum/images/smilies/icon_sc_nav.png"),
     ORB("Orb", "https://www.trekcc.org/forum/images/smilies/icon_orb.jpg"),
     PAST("Past","https://www.trekcc.org/images/icons/past.gif"),
+    Q_ICON("Q icon", "https://www.trekcc.org/forum/images/smilies/icon_q.jpg"),
     REACTOR_CORE("Reactor Core", "https://www.trekcc.org/forum/images/smilies/icon_reactorcore.jpg"),
     SKILL_DOT("Skill dot", "https://www.trekcc.org/forum/images/smilies/icon_skilldot.png"),
     STAFF("Staff", "https://www.trekcc.org/forum/images/smilies/icon_staff.gif"),

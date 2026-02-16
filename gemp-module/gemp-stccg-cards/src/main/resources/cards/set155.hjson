@@ -12,16 +12,48 @@
             lore: Small, solar-powered, inorganic collective life-form native to Velara III. Sabotaged Federation terraforming operations to protest the destruction of their home.
             property-logo: tng-logo
             image-url: https://www.trekcc.org/1e/cardimages/tng/9V.jpg
-        }
+        },
         {
-            blueprintId: 155_010
-            title: Pinned Down
-            java-blueprint: true
-            type: dilemma
-            mission-type: dual
-            lore: "Confronted with Sir Guy of Gisbourne's archers, Jean-Luc Picard, posing as Robin Hood, ordered his crew deeper into Q's recreation of Sherwood Forest."
-            property-logo: tng-logo
-            image-url: https://www.trekcc.org/1e/cardimages/tng/10V.jpg
+            "blueprintId": "155_010",
+            "title": "Pinned Down",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Confronted with Sir Guy of Gisbourne's archers, Jean-Luc Picard, posing as Robin Hood, ordered his crew deeper into Q's recreation of Sherwood Forest.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/10V.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "filter": "personnel + encounteringThisCard",
+                                    "count": 2,
+                                    "random": true
+                                }
+                            }
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 1,
+                                "random": true
+                            },
+                            "requires": {
+                                "type": "cardInPlay",
+                                "filter": "q-icon"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
         {
             blueprintId: 155_012
