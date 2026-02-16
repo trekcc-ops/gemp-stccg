@@ -11,7 +11,25 @@
             "lore": "Deep underground passages such as those on Xantoras pose a problem for transporters. Without climbing skills, they may also pose a problem to away team personnel.",
             "property-logo": "ent-logo",
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/2.jpg",
-            "rarity": "V"
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "STRENGTH>40 OR Geology x2 + CUNNING>20",
+                        "failEffect": {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "random": true,
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
         },
         {
             "blueprintId": "152_003",
