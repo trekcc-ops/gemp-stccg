@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.CardsSelectionDecision;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -76,4 +77,8 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction implements Di
     }
 
 
+    @Override
+    public Zone getDestination() {
+        return Zone.DISCARD;
+    }
 }

@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.Iterables;
 
@@ -61,4 +62,8 @@ public class DiscardSingleCardAction extends ActionyAction implements DiscardAct
         }
     }
 
+    @Override
+    public Zone getDestination() {
+        return Zone.DISCARD;
+    }
 }

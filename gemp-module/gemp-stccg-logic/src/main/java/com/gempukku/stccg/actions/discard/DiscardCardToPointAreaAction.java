@@ -50,4 +50,8 @@ public class DiscardCardToPointAreaAction extends ActionyAction implements Disca
         setAsSuccessful();
     }
 
+    @Override
+    public Zone getDestination() {
+        return Zone.POINT_AREA;
+    }
 }
