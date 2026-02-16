@@ -10,7 +10,6 @@ import com.gempukku.stccg.filters.CanEnterPlayFilterBlueprint;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +47,8 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
         CardFilter destinationFilter = _destinationFilterBlueprint.getFilterable(cardGame, context);
         int minCount;
         int maxCount;
-        try {
-            minCount = (int) _count.getMinimum(cardGame, context);
-            maxCount = (int) _count.getMaximum(cardGame, context);
-        } catch(InvalidGameLogicException exp) {
-            minCount = 0;
-            maxCount = 0;
-        }
+        minCount = _count.getMinimum(cardGame, context);
+        maxCount = _count.getMaximum(cardGame, context);
         return new ReportMultipleCardsResolver(reportableFilter, destinationFilter, minCount, maxCount,
                 _differentCardsOnly, _specialReporting, cardGame, context.getPerformingPlayerId());
     }

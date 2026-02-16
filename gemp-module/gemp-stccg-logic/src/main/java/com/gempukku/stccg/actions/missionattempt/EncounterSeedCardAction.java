@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.ActionContext;
@@ -22,7 +23,9 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
     private final AttemptingUnit _attemptingUnit;
 
     private final int _locationId;
+    private boolean _nullified;
     private boolean _subActionFailed;
+    private boolean _nullifyAttempted;
 
     public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
@@ -62,7 +65,17 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
 
     @Override
     protected final void processEffect(DefaultGame cardGame) {
-        if (!_actionEffects.isEmpty()) {
+        if (!_nullifyAttempted) {
+            _nullifyAttempted = true;
+            if (getEncounteredCard().getNullifyRequirement() != null &&
+                    getEncounteredCard().getNullifyRequirement()
+                            .canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
+                cardGame.getActionsEnvironment().addActionToStack(new NullifyCardAction(cardGame, getEncounteredCard(),
+                        _performingPlayerId, new FixedCardResolver(getEncounteredCard())));
+                setAsSuccessful();
+                _nullified = true;
+            }
+        } else if (!_actionEffects.isEmpty()) {
             Action subAction = _actionEffects.getFirst();
             if (subAction.wasSuccessful()) {
                 _actionEffects.remove(subAction);
@@ -75,7 +88,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
         } else {
             setAsSuccessful();
         }
-        if (wasSuccessful()) {
+        if (wasSuccessful() && !_nullified) {
             PhysicalCard card = _cardTarget.getCard();
             if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
                 cardGame.addActionToStack(

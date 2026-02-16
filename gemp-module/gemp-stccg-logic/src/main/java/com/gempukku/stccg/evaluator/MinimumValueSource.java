@@ -3,24 +3,23 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
-public class MinimumValueSource extends ValueSource {
+public class MinimumValueSource implements SingleValueSource {
 
-    private final ValueSource _first;
-    private final ValueSource _second;
+    private final SingleValueSource _first;
+    private final SingleValueSource _second;
 
     public MinimumValueSource(
             @JsonProperty(value = "first", required = true)
-            ValueSource first,
+            SingleValueSource first,
             @JsonProperty(value = "second", required = true)
-            ValueSource second) {
+            SingleValueSource second) {
         _first = first;
         _second = second;
     }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         return Math.min(
                 _first.evaluateExpression(cardGame, actionContext),
                 _second.evaluateExpression(cardGame, actionContext)

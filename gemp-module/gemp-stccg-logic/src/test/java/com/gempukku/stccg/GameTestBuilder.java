@@ -3,17 +3,14 @@ package com.gempukku.stccg;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
+import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.SubDeck;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -119,6 +116,22 @@ public class GameTestBuilder {
         action.executeNextSubAction(_game.getActionsEnvironment(), _game);
     }
 
+    public MissionCard addMission(MissionType missionType, Affiliation affiliation, String ownerName)
+            throws CardNotFoundException, InvalidGameOperationException {
+        MissionCard mission = null;
+        if (missionType == MissionType.PLANET && affiliation == Affiliation.NON_ALIGNED) {
+            mission = addCardToGame("155_038", "Encounter at Farpoint", ownerName, MissionCard.class);
+        }
+        if (mission == null) {
+            throw new CardNotFoundException("addMission does not have a default card for " + missionType + " and " + affiliation);
+        }
+        _missions.add(mission);
+        SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, _missions.indexOf(mission));
+        executeAction(seedAction);
+        return mission;
+    }
+
+
     public MissionCard addMission(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
         MissionCard mission = addCardToGame(blueprintId, cardTitle, ownerName, MissionCard.class);
@@ -138,6 +151,12 @@ public class GameTestBuilder {
         assertTrue(shipCard.isInPlay());
         assertTrue(shipCard.isAtSameLocationAsCard(mission));
         return shipCard;
+    }
+
+    public ReportableCard addCardOnPlanetSurface(String blueprintId, String cardTitle, String ownerName,
+                                                 MissionCard mission)
+            throws InvalidGameOperationException, CardNotFoundException {
+        return addCardOnPlanetSurface(blueprintId, cardTitle, ownerName, mission, ReportableCard.class);
     }
 
     public <T extends ReportableCard> T addCardOnPlanetSurface(String blueprintId, String cardTitle, String ownerName,

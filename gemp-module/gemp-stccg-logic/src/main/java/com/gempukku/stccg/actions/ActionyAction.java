@@ -241,4 +241,8 @@ public abstract class ActionyAction implements Action {
         return false;
     }
 
+    public boolean wasOnlyVirtual() {
+        return _actionStatus == ActionStatus.virtual;
+    }
+
 }

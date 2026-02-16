@@ -11,27 +11,39 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.requirement.Requirement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StopActionBlueprint implements SubActionBlueprint {
 
     private final TargetResolverBlueprint _targetResolver;
     private final String _saveToMemoryId;
+    private final Requirement _requirement;
 
     public StopActionBlueprint(@JsonProperty(value = "target")
                                TargetResolverBlueprint target,
                                @JsonProperty(value = "saveToMemoryId")
-                               String saveToMemoryId) {
+                               String saveToMemoryId,
+                               @JsonProperty(value = "requires")
+                               Requirement requirement)
+            {
         _targetResolver = target;
         _saveToMemoryId = saveToMemoryId;
+        _requirement = requirement;
     }
 
     @Override
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        ActionCardResolver cardTarget = _targetResolver.getTargetResolver(cardGame, context);
-        return List.of(new StopCardsAction(cardGame, context.getPerformingPlayerId(), cardTarget, context, _saveToMemoryId));
+        List<Action> result = new ArrayList<>();
+        if (_requirement == null || _requirement.accepts(context, cardGame)) {
+            ActionCardResolver cardTarget = _targetResolver.getTargetResolver(cardGame, context);
+            result.add(new StopCardsAction(
+                    cardGame, context.getPerformingPlayerId(), cardTarget, context, _saveToMemoryId));
+        }
+        return result;
     }
 
 }

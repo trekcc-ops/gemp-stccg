@@ -62,7 +62,7 @@ public class KillSinglePersonnelAction extends ActionyAction implements DiscardA
     @SuppressWarnings("unused")
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    private PhysicalCard victimCard() {
+    public PhysicalCard getVictimCard() {
         return _victim;
     }
 

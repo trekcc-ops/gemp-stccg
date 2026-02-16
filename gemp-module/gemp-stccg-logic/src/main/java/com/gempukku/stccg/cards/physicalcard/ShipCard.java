@@ -222,4 +222,9 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
     public Collection<PersonnelCard> getAllPersonnel(DefaultGame cardGame) {
         return getPersonnelInCrew(cardGame);
     }
+
+    @Override
+    public boolean includesInAttemptingUnit(DefaultGame cardGame, PhysicalCard includedCard) {
+        return includedCard == this || getCardsAboard(cardGame).contains(includedCard);
+    }
 }

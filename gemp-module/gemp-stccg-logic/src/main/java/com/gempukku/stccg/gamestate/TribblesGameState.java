@@ -139,11 +139,6 @@ public final class TribblesGameState extends GameState {
         return List.of(getCurrentPhase());
     }
 
-    @Override
-    public boolean cardsArePresentWithEachOther(PhysicalCard... cards) {
-        return false;
-    }
-
     public void advanceRound() {
         // Each new round begins with a new "chain" (starting with a card worth 1 Tribble) and play proceeds clockwise.
         _chainBroken = false;

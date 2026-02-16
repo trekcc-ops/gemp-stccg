@@ -226,4 +226,9 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
         }
         return result;
     }
+
+    @Override
+    public boolean cardsArePresentWithEachOther(DefaultGame cardGame, PhysicalCard... cards) {
+        return PresentRule.cardsArePresentWithEachOther(cardGame, cards);
+    }
 }

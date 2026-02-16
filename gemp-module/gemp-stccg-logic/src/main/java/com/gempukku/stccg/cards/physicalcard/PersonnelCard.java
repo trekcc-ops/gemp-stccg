@@ -66,10 +66,6 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
     @Override
     public boolean hasSkill(SkillName skillName, DefaultGame cardGame) { return getSkillLevel(cardGame, skillName) >= 1; }
 
-    public int getTotalAttributes(DefaultGame cardGame) {
-        return getIntegrity(cardGame) + getCunning(cardGame) + getStrength(cardGame);
-    }
-
 
     public boolean isFacingADilemma(DefaultGame cardGame) {
         boolean result = false;

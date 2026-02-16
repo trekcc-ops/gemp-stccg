@@ -13,7 +13,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Objects;
 
-public class CountDiscardValueSource extends ValueSource {
+public class CountDiscardValueSource implements SingleValueSource {
 
     private final int _multiplier;
     private final int _limit;
@@ -36,7 +36,7 @@ public class CountDiscardValueSource extends ValueSource {
     }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         try {
             String playerId = _playerSource.getPlayerName(cardGame, actionContext);
             Player player = cardGame.getPlayer(playerId);

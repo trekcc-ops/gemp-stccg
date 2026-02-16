@@ -17,15 +17,33 @@
             rarity: C
         } */
         {
-            blueprintId: 101_014
-            title: Archer
-            type: dilemma
-            mission-type: planet
-            lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
-            property-logo: tng-logo
-            java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR14.jpg
-            rarity: C
+            "blueprintId": "101_014",
+            "title": "Archer",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Indigenous inhabitants, such as this Mintakan bowman, often attack an Away Team out of fear.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR14.jpg",
+            "rarity": "C",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "SECURITY + MEDICAL",
+                        "discardDilemma": true,
+                        "failEffect": {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestTotalAttributes(personnel + encounteringThisCard)",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_015
@@ -104,15 +122,25 @@
             rarity: C
         } */
         {
-            blueprintId: 101_054
-            title: Wind Dancer
-            type: dilemma
-            mission-type: planet
-            property-logo: tng-logo
-            java-blueprint: true
-            lore: Sentry of the Parallax Colony. Only allows those whose hearts are joyous to pass.
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR54.jpg
-            rarity: R
+            "blueprintId": "101_054",
+            "title": "Wind Dancer",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Sentry of the Parallax Colony. Only allows those whose hearts are joyous to pass.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR54.jpg",
+            "rarity": "R",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "name(Lwaxana Troi) OR personnelWith(Youth OR Music OR STRENGTH>9)"
+                        }
+                    ]
+                }
+            ]
         }
         {
             blueprintId: 101_055
@@ -1013,6 +1041,7 @@
             property-logo: tng-logo
             classification: OFFICER
             icons: command
+            characteristic: admiral
             lore: Human admiral and former captain of the U.S.S. Pegasus, which was lost in space following a failed experiment he oversaw.
             species: human
             gender: male
@@ -1429,6 +1458,22 @@
             rarity: C
         }
         {
+            "blueprintId": "101_243",
+            "title": "Tam Elbrun",
+            "type": "personnel",
+            "affiliation": "federation",
+            "property-logo": "tng-logo",
+            "classification": "V.I.P.",
+            "lore": "Betazoid male with exceptional empathic abilities. Participated in the notorious Ghorusda disaster. Specialist in first contact with new life-forms.",
+            "species": "betazoid",
+            "gender": "male",
+            "skill-box": "[*] Empathy x2 [*] Honor",
+            "integrity": 5,
+            "cunning": 7,
+            "strength": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR243.jpg"
+        },
+        {
             blueprintId: 101_245
             title: Taurik
             type: personnel
@@ -1776,23 +1821,6 @@
             rarity: C
         },
         {
-            "blueprintId": "101_269",
-            "title": "Konmel",
-            "type": "personnel",
-            "affiliation": "klingon",
-            "property-logo": "tng-logo",
-            "classification": "OFFICER",
-            "icons": "staff",
-            "lore": "Klingon warrior. He destroyed the cruiser <i>I.K.S. T'Acog</i> and hijacked the Talarian ship <i>Batris</i> with Korris.",
-            "species": "klingon",
-            "gender": "male",
-            "skill-box": "[*] Navigation",
-            "integrity": 8,
-            "cunning": 5,
-            "strength": 8,
-            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR272.jpg"
-        },
-        {
             blueprintId: 101_271
             title: "Kle'eg"
             type: personnel
@@ -1810,6 +1838,23 @@
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR271.jpg
             rarity: C
+        },
+        {
+            "blueprintId": "101_272",
+            "title": "Konmel",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "staff",
+            "lore": "Klingon warrior. He destroyed the cruiser <i>I.K.S. T'Acog</i> and hijacked the Talarian ship <i>Batris</i> with Korris.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": "[*] Navigation",
+            "integrity": 8,
+            "cunning": 5,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR272.jpg"
         },
         {
             "blueprintId": "101_275",
@@ -2081,6 +2126,7 @@
             property-logo: tng-logo
             classification: OFFICER
             icons: command
+            characteristic: admiral
             lore: Conscientious admiral who questioned Romulan policy. Eventually stole a scout ship and defected to the Federation in 2366.
             species: romulan
             gender: male
@@ -2176,6 +2222,23 @@
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR315.jpg
         }
+        {
+            "blueprintId": "101_316",
+            "title": "Parem",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "staff",
+            "lore": "Male Romulan officer accidentally phased by an interphase generator experiment.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Treachery",
+            "integrity": 4,
+            "cunning": 8,
+            "strength": 9,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR316.jpg"
+        },
         {
             blueprintId: 101_320
             title: Takket

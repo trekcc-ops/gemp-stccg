@@ -9,18 +9,21 @@ import java.util.Objects;
 
 public class PersonnelNameMissionRequirement implements MissionRequirement {
 
-    private final PersonnelName _name;
+    private final String _name;
     public PersonnelNameMissionRequirement(PersonnelName name) {
+        _name = name.getHumanReadable();
+    }
+    public PersonnelNameMissionRequirement(String name) {
         _name = name;
     }
 
     @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
-        return personnel.stream().anyMatch(card -> Objects.equals(card.getTitle(), _name.getHumanReadable()));
+        return personnel.stream().anyMatch(card -> Objects.equals(card.getTitle(), _name));
     }
 
     public String toString() {
-        return _name.getHumanReadable();
+        return _name;
     }
 
 }

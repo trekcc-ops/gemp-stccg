@@ -71,6 +71,11 @@ public class AwayTeam implements AttemptingUnit {
 
     public String getControllerName() { return _controllerName; }
 
+    @Override
+    public boolean includesInAttemptingUnit(DefaultGame cardGame, PhysicalCard encounteringCard) {
+        return _cardsInAwayTeam.contains(encounteringCard);
+    }
+
     public Collection<ReportableCard> getCards() { return _cardsInAwayTeam; }
 
     public boolean canAttemptMission(DefaultGame cardGame, MissionLocation mission) {

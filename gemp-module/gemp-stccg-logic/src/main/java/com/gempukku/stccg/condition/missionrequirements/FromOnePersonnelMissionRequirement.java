@@ -15,6 +15,11 @@ public class FromOnePersonnelMissionRequirement implements MissionRequirement {
         _numberOfPersonnelRequired = numberOfPersonnelRequired;
     }
 
+    public FromOnePersonnelMissionRequirement(MissionRequirement requirement) {
+        _requirement = requirement;
+        _numberOfPersonnelRequired = 1;
+    }
+
     @Override
     public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
         int numberWithRequirement = 0;

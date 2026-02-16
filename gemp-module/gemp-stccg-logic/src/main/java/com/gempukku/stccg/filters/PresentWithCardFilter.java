@@ -21,7 +21,7 @@ public class PresentWithCardFilter implements CardFilter {
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         try {
             PhysicalCard withCard = game.getCardFromCardId(_cardId);
-            return game.getGameState().cardsArePresentWithEachOther(physicalCard, withCard);
+            return game.cardsArePresentWithEachOther(physicalCard, withCard);
         } catch(CardNotFoundException exp) {
             game.sendErrorMessage(exp);
             return false;

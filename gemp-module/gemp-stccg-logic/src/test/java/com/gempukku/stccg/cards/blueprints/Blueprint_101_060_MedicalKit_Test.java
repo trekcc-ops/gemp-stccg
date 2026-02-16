@@ -42,7 +42,7 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         assertEquals(0, picard.getSkillLevel(_game, SkillName.MEDICAL));
         assertEquals(1, taris.getSkillLevel(_game, SkillName.MEDICAL));
         playCard(P1, medicalKit);
-        assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, medicalKit, taris));
+        assertTrue(_game.getRules().cardsArePresentWithEachOther(_game, picard, medicalKit, taris));
         assertEquals(1, picard.getSkillLevel(_game, SkillName.MEDICAL));
         assertEquals(2, taris.getSkillLevel(_game, SkillName.MEDICAL));
     }
@@ -56,7 +56,7 @@ public class Blueprint_101_060_MedicalKit_Test extends AbstractAtTest {
         playCard(P1, medicalKit);
         skipToNextTurnAndPhase(P1, Phase.CARD_PLAY);
         playCard(P1, medicalKit2);
-        assertTrue(_game.getGameState().cardsArePresentWithEachOther(picard, medicalKit2, medicalKit, taris));
+        assertTrue(_game.getRules().cardsArePresentWithEachOther(_game, picard, medicalKit2, medicalKit, taris));
         assertEquals(1, picard.getSkillLevel(_game, SkillName.MEDICAL));
         assertEquals(2, taris.getSkillLevel(_game, SkillName.MEDICAL));
     }

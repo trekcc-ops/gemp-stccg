@@ -4,14 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.discard.KillSinglePersonnelAction;
+import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,6 +74,47 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         throw new RuntimeException("Could not find JSON data for requested action");
     }
 
+    protected boolean cardWasNullified(PhysicalCard card) {
+        if (card.isInPlay()) {
+            return false;
+        }
+        boolean actionFound = false;
+        for (Action action : _game.getActionsEnvironment().getPerformedActions()) {
+            if (action instanceof NullifyCardAction nullifyAction &&
+                    nullifyAction.getNullifiedCard() == card) {
+                actionFound = true;
+                break;
+            }
+        }
+        return actionFound;
+    }
 
+    protected boolean personnelWasKilled(PersonnelCard personnel) {
+        if (personnel.getZone() != Zone.DISCARD) {
+            return false;
+        }
+        boolean actionFound = false;
+        for (Action action : _game.getActionsEnvironment().getPerformedActions()) {
+            if (action instanceof KillSinglePersonnelAction killAction &&
+                    killAction.getVictimCard() == personnel) {
+                actionFound = true;
+                break;
+            }
+        }
+        return actionFound;
+    }
+
+    protected boolean selectableCardsAre(Collection<? extends PhysicalCard> expectedCards, String playerName) {
+        try {
+            Collection<? extends PhysicalCard> selectableCards = getSelectableCards(playerName);
+            if (selectableCards.size() != expectedCards.size()) {
+                return false;
+            } else {
+                return selectableCards.containsAll(expectedCards);
+            }
+        } catch(DecisionResultInvalidException exp) {
+            return false;
+        }
+    }
 
 }

@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -206,4 +207,11 @@ public interface PhysicalCard {
         String thisCardPersona = getBlueprint().getPersona();
         return (thisCardPersona != null && Objects.equals(thisCardPersona, otherCard.getBlueprint().getPersona()));
     }
+
+    boolean isBeingEncounteredBy(DefaultGame cardGame, PhysicalCard encounteringCard);
+
+    default MissionRequirement getNullifyRequirement() {
+        return getBlueprint().getNullifyRequirement();
+    }
+
 }

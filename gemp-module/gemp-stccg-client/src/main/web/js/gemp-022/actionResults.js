@@ -56,11 +56,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             gameAnimations.flyShip(targetCard, spacelineIndex);
             break;
         case "PLACE_CARD_ON_TOP_OF_DRAW_DECK":
-            cardList.push(jsonAction.targetCardId);
-            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
-            break;
         case "PLACE_CARDS_BENEATH_DRAW_DECK":
         case "SHUFFLE_CARDS_INTO_DRAW_DECK": // same animation
             cardList = jsonAction.targetCardIds;
@@ -144,7 +139,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         // Actions with no specific animations
         case "ADD_MODIFIER": // No notifications sent when adding modifiers
         case "ATTEMPT_MISSION": // Note that ATTEMPT_MISSION is only sent when the mission attempt is ended, either by solving the mission or failing it.
-        case "FAIL_DILEMMA":
         case "KILL": // only the kill part of the action; typically this will result in a separate discard action
         case "NULLIFY": // only the kill part of the action; typically this will result in a separate discard action
         case "SCORE_POINTS":
@@ -281,7 +275,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             gameChat.appendMessage(message, "gameMessage");
             break;
         }
-        case "FAIL_DILEMMA":
         case "OVERCOME_DILEMMA":
             break;
         case "PLACE_CARD_ON_MISSION": {

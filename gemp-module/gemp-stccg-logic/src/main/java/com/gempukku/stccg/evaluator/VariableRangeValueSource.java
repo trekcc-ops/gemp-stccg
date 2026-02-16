@@ -3,35 +3,29 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
-public class VariableRangeValueSource extends ValueSource {
+public class VariableRangeValueSource implements ValueSource {
 
-    private final ValueSource _fromValue;
-    private final ValueSource _toValue;
+    private final SingleValueSource _fromValue;
+    private final SingleValueSource _toValue;
 
     public VariableRangeValueSource(
             @JsonProperty(value = "from", required = true)
-            ValueSource fromValue,
+            SingleValueSource fromValue,
             @JsonProperty(value = "to", required = true)
-            ValueSource toValue) {
+            SingleValueSource toValue) {
         _fromValue = fromValue;
         _toValue = toValue;
     }
 
     @Override
-    public float getMinimum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int getMinimum(DefaultGame cardGame, ActionContext actionContext) {
         return _fromValue.evaluateExpression(cardGame, actionContext);
     }
 
     @Override
-    public float getMaximum(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int getMaximum(DefaultGame cardGame, ActionContext actionContext) {
         return _toValue.evaluateExpression(cardGame, actionContext);
-    }
-
-    @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
-        throw new InvalidGameLogicException("Evaluator has resolved to range");
     }
 
 }

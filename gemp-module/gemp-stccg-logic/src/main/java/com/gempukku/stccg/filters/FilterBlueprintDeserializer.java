@@ -54,6 +54,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         // Affiliations and species
         appendSimpleFilter("android", (cardGame, actionContext) -> Filters.changeToFilter(Species.ANDROID));
         appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
+        appendSimpleFilter("borg", (cardGame, actionContext) -> Filters.Borg);
         appendSimpleFilter("cardassian", (cardGame, actionContext) -> Filters.Cardassian);
         appendSimpleFilter("dominion", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.DOMINION));
         appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
@@ -216,6 +217,17 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             String cardTitle = value.substring(5, value.length() - 1);
             return new CardTitleFilterBlueprint(cardTitle);
         }
+        if (value.startsWith("name=") && !value.contains(" ")) {
+            String cardTitle = value.substring("name=".length());
+            return new CardTitleFilterBlueprint(cardTitle);
+        }
+        if (value.startsWith("memoryId=")) {
+            String memoryId = value.substring("memoryId=".length());
+            return (cardGame, actionContext) -> {
+                Collection<Integer> memoryCardIds = actionContext.getCardIdsFromMemory(memoryId);
+                return new InCardListFilter(memoryCardIds.stream().toList());
+            };
+        }
         if (value.startsWith("title(") && value.endsWith(")")) {
             String cardTitle = value.substring(6, value.length() - 1);
             return new CardTitleFilterBlueprint(cardTitle);
@@ -224,6 +236,14 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             String engineerFilter = value.substring("facilityEngineerRequirement(".length(), value.length() - 1);
             FilterBlueprint engineerBlueprint = parseSTCCGFilter(engineerFilter);
             return new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);
+        }
+        if (value.startsWith("highestTotalAttributes(") && value.endsWith(")")) {
+            String otherFilterText = value.substring("highestTotalAttributes(".length(), value.length() - 1);
+            FilterBlueprint otherFilterBlueprint = parseSTCCGFilter(otherFilterText);
+            return (cardGame, actionContext) -> {
+                CardFilter otherFilter = otherFilterBlueprint.getFilterable(cardGame, actionContext);
+                return new HighestTotalAttributeCardFilter(otherFilter);
+            };
         }
         if (value.startsWith("integrity>")) {
             int integrityAmount = Integer.valueOf(value.substring("integrity>".length()));

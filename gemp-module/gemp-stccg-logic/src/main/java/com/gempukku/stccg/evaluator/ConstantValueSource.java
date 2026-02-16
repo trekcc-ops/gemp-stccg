@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class ConstantValueSource extends BasicValueSource {
+public class ConstantValueSource implements BasicValueSource, BasicSingleValueSource {
     private final int _value;
 
     @JsonCreator
     public ConstantValueSource(int value) { _value = value; }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         return _value;
     }
 }

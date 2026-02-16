@@ -1,11 +1,16 @@
 package com.gempukku.stccg.actions.discard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.Iterables;
@@ -54,13 +59,22 @@ public class NullifyCardAction extends ActionyAction implements DiscardAction, T
                     action.setAsFailed();
                 }
             }
-            cardGame.addActionToStack(new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId,
-                    _cardToNullify));
+            if (_cardToNullify.getCardType() == CardType.DILEMMA) {
+                cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardToNullify));
+            } else {
+                cardGame.addActionToStack(new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId,
+                        _cardToNullify));
+            }
             setAsSuccessful();
         } else {
             cardGame.sendErrorMessage("Tried to nullify too many cards at once");
             setAsFailed();
         }
+    }
+
+    @JsonIgnore
+    public PhysicalCard getNullifiedCard() {
+        return _cardToNullify;
     }
 
     @Override

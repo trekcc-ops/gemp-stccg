@@ -51,6 +51,7 @@ public class Filters {
     public static final CardFilter active = new ActiveCardFilter();
     public static final CardFilter any = new AnyCardFilter();
     public static final CardFilter Bajoran = Filters.or(Affiliation.BAJORAN, Species.BAJORAN);
+    public static final CardFilter Borg = Filters.or(Affiliation.BORG, Species.BORG);
     public static final CardFilter Cardassian = Filters.or(Affiliation.CARDASSIAN, Species.CARDASSIAN);
     public static final CardFilter controllerControlsMatchingPersonnelAboard =
             new ControllerControlsMatchingPersonnelAboardFilter();
@@ -182,7 +183,6 @@ public class Filters {
     public static CardFilter atLocation(int locationId) {
         return new AtLocationFilter(locationId);
     }
-
 
     public static CardFilter atLocation(final GameLocation location) {
         return new AtLocationFilter(location.getLocationId());

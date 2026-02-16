@@ -1,38 +1,110 @@
 {
-    setId: "155"
-    setName: The Next Generation
-    gameType: First Edition
-    cards: [
+    "setId": "155",
+    "setName": "The Next Generation",
+    "gameType": "First Edition",
+    "cards": [
         {
-            blueprintId: 155_009
-            title: Microbrain
-            java-blueprint: true
-            type: dilemma
-            mission-type: dual
-            lore: Small, solar-powered, inorganic collective life-form native to Velara III. Sabotaged Federation terraforming operations to protest the destruction of their home.
-            property-logo: tng-logo
-            image-url: https://www.trekcc.org/1e/cardimages/tng/9V.jpg
-        }
+            "blueprintId": "155_009",
+            "title": "Microbrain",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Small, solar-powered, inorganic collective life-form native to Velara III. Sabotaged Federation terraforming operations to protest the destruction of their home.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/9V.jpg",
+            "rarity": "V",
+            "nullifyWith": "personnelWith(Exobiology x3 OR Geology x3)",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "opponent",
+                                    "filter": "personnel + (Exobiology OR Geology) + encounteringThisCard",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         {
-            blueprintId: 155_010
-            title: Pinned Down
-            java-blueprint: true
-            type: dilemma
-            mission-type: dual
-            lore: "Confronted with Sir Guy of Gisbourne's archers, Jean-Luc Picard, posing as Robin Hood, ordered his crew deeper into Q's recreation of Sherwood Forest."
-            property-logo: tng-logo
-            image-url: https://www.trekcc.org/1e/cardimages/tng/10V.jpg
-        }
+            "blueprintId": "155_010",
+            "title": "Pinned Down",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Confronted with Sir Guy of Gisbourne's archers, Jean-Luc Picard, posing as Robin Hood, ordered his crew deeper into Q's recreation of Sherwood Forest.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/10V.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "filter": "personnel + encounteringThisCard",
+                                    "count": 2,
+                                    "random": true
+                                }
+                            },
+                            "successAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "filter": "personnel + encounteringThisCard",
+                                    "count": 1,
+                                    "random": true
+                                },
+                                "requires": {
+                                    "type": "cardInPlay",
+                                    "filter": "q-icon"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         {
-            blueprintId: 155_012
-            title: Tense Negotiations
-            java-blueprint: true
-            type: dilemma
-            mission-type: dual
-            lore: "Experienced diplomats are willing to meet their opponents on their terms and to confront challenges to their integrity with appropriate invectives when necessary."
-            property-logo: tng-logo
-            image-url: https://www.trekcc.org/1e/cardimages/tng/12V.jpg
-        }
+            "blueprintId": "155_012",
+            "title": "Tense Negotiations",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Experienced diplomats are willing to meet their opponents on their terms and to confront challenges to their integrity with appropriate invectives when necessary.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/12V.jpg",
+            "rarity": "V",
+            "nullifyWith": "personnelWith(Diplomacy x3 OR Leadership x3)",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "opponent",
+                                    "filter": "personnel + (Diplomacy OR Leadership) + encounteringThisCard",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         {
             blueprintId: 155_016
             title: Cowboy Diplomacy

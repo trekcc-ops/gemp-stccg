@@ -395,4 +395,8 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         return getGameState().getCurrentTurnNumber() > 0 &&
                 Objects.equals(getCurrentPlayerId(), playerName);
     }
+
+    public boolean cardsArePresentWithEachOther(PhysicalCard card1, PhysicalCard card2) {
+        return getRules().cardsArePresentWithEachOther(this, card1, card2);
+    }
 }

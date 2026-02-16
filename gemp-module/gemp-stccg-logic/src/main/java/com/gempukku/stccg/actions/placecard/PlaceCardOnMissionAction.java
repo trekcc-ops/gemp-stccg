@@ -12,6 +12,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.modifiers.Modifier;
 
 import java.util.List;
 
@@ -21,14 +22,17 @@ public class PlaceCardOnMissionAction extends ActionyAction {
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _cardBeingPlaced;
     private final int _locationId;
+    private final Modifier _modifier;
 
 
     public PlaceCardOnMissionAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardBeingPlaced,
-                                    MissionLocation mission) {
+                                    int locationId, Modifier modifier) {
         super(cardGame, performingPlayerName, ActionType.PLACE_CARD_ON_MISSION);
-        _locationId = mission.getLocationId();
+        _locationId = locationId;
         _cardBeingPlaced = cardBeingPlaced;
+        _modifier = modifier;
     }
+
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -52,10 +56,15 @@ public class PlaceCardOnMissionAction extends ActionyAction {
                 _cardBeingPlaced.setPlacedOnMission(true);
                 _cardBeingPlaced.setLocation(cardGame, mission);
                 gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
+                gameState.getModifiersLogic().addWhileThisCardInPlayModifiers(List.of(_modifier), _cardBeingPlaced);
 
                 for (GameLocation spacelineLocation : gameState.getOrderedSpacelineLocations()) {
                     if (spacelineLocation instanceof MissionLocation missionLoc &&
                             missionLoc.getSeedCards().contains(_cardBeingPlaced)) {
+                        Integer initialCountdown = _cardBeingPlaced.getBlueprint().getInitialCountdown();
+                        if (initialCountdown != null) {
+                            cardGame.getActionsEnvironment().addActiveCountdown(_cardBeingPlaced, initialCountdown);
+                        }
                         missionLoc.removeSeedCard(_cardBeingPlaced);
                     }
                 }

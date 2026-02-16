@@ -7,11 +7,10 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
 import java.util.Collection;
 
-public class SkillDotCountValueSource extends ValueSource {
+public class SkillDotCountValueSource implements SingleValueSource {
 
     private final TargetResolverBlueprint _personnelBlueprint;
 
@@ -22,7 +21,7 @@ public class SkillDotCountValueSource extends ValueSource {
     }
 
     @Override
-    public float evaluateExpression(DefaultGame cardGame, ActionContext actionContext) throws InvalidGameLogicException {
+    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
         ActionCardResolver resolver = _personnelBlueprint.getTargetResolver(cardGame, actionContext);
         Collection<PhysicalCard> cards = resolver.getCards(cardGame);
         int result = 0;

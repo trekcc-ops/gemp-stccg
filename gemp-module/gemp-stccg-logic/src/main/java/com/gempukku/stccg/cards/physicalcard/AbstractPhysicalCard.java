@@ -403,6 +403,20 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return false;
     }
 
+    public boolean isBeingEncounteredBy(DefaultGame cardGame, PhysicalCard encounteringCard) {
+        Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
+        for (Action action : actionStack) {
+            if (action instanceof EncounterSeedCardAction encounterAction &&
+                    encounterAction.getEncounteredCard() == this &&
+                    encounterAction.getAttemptingUnit().includesInAttemptingUnit(cardGame, encounteringCard)
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public boolean isBeingEncountered(DefaultGame cardGame) {
         Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
         for (Action action : actionStack) {

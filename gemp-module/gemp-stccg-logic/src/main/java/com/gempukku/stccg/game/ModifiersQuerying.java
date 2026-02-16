@@ -245,4 +245,13 @@ public interface ModifiersQuerying {
     boolean modifierIsInSkipSet(Modifier modifier);
     DefaultGame getGame();
 
+    default boolean missionCannotBeAttemptedDueToModifier(MissionCard missionCard) {
+        List<Modifier> modifiers = getModifiersAffectingCardByEffect(ModifierEffect.MISSION_ATTEMPT_MODIFIER, missionCard);
+        for (Modifier modifier : modifiers) {
+            if (modifier instanceof ThisMissionCannotBeAttemptedModifier && modifier.affectsCard(getGame(), missionCard)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

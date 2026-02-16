@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.RandomSelectionInitiatedResult;
-import com.gempukku.stccg.actions.choose.SelectRandomCardAction;
+import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
 import com.gempukku.stccg.actions.choose.VolunteerForSelectionAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -23,7 +23,7 @@ public class VolunteerForSelectionActionBlueprint extends DefaultActionBlueprint
         if (isValid(cardGame, context)) {
             if (cardGame.getCurrentActionResult() instanceof RandomSelectionInitiatedResult actionResult &&
                     actionResult.includesCardMatchingFilter(cardGame, Filters.card(thisCard))) {
-                SelectRandomCardAction selectAction = actionResult.getAction();
+                SelectRandomCardsAction selectAction = actionResult.getAction();
                 return new VolunteerForSelectionAction(cardGame, performingPlayerName,
                         thisCard, selectAction);
             }

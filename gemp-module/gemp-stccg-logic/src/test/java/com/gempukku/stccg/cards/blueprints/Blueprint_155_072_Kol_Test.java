@@ -38,7 +38,7 @@ public class Blueprint_155_072_Kol_Test extends AbstractAtTest {
         assertTrue(personnelAttributesAre(arridor, List.of(4, 8, 5)));
         playCard(P1, arridor);
 
-        assertTrue(_game.getGameState().cardsArePresentWithEachOther(arridor, kol));
+        assertTrue(_game.getRules().cardsArePresentWithEachOther(_game, arridor, kol));
 
         assertTrue(personnelAttributesAre(kol, List.of(8, 8, 7)));
         assertTrue(personnelAttributesAre(arridor, List.of(4, 8, 5)));

@@ -22,6 +22,7 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
     private final CardFilter _selectableCardFilter;
     private final String _decisionText;
 
+
     public SelectCardsFromDialogAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
                                        CardFilter cardFilter, int count) {
         super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS);
@@ -29,6 +30,11 @@ public class SelectCardsFromDialogAction extends ActionyAction implements Select
         _selectableCardFilter = cardFilter;
         _minimum = count;
         _maximum = count;
+    }
+
+    public SelectCardsFromDialogAction(DefaultGame cardGame, String selectingPlayerName, CardFilter cardFilter,
+                                       int count) {
+        this(cardGame, selectingPlayerName, "Select cards", cardFilter, count);
     }
 
 

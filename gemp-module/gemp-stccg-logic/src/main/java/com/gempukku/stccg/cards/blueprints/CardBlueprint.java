@@ -75,6 +75,12 @@ public class CardBlueprint {
     @JsonProperty("gender")
     protected Gender _gender;
 
+    @JsonProperty("countdown")
+    protected Integer _countdown;
+
+    @JsonProperty("nullifyWith")
+    protected MissionRequirement _nullifyRequirement;
+
     @JsonProperty("characteristic")
     private final List<Characteristic> _characteristics = new ArrayList<>();
 
@@ -277,6 +283,8 @@ public class CardBlueprint {
     public FacilityType getFacilityType() { return _facilityType; }
     public void addAffiliation(Affiliation affiliation) { _affiliations.add(affiliation); }
     public Set<Affiliation> getAffiliations() { return new HashSet<>(_affiliations); }
+
+    public Integer getInitialCountdown() { return _countdown; }
 
     public int getIntegrity() { return _integrity;
     }
@@ -561,6 +569,10 @@ public class CardBlueprint {
 
     public void setShipClass(ShipClass shipClass) {
         _shipClass = shipClass;
+    }
+
+    public MissionRequirement getNullifyRequirement() {
+        return _nullifyRequirement;
     }
 
     public void addSpecialEquipment(Collection<ShipSpecialEquipment> specialEquipment) {

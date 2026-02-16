@@ -1,0 +1,137 @@
+{
+    "setId": "152",
+    "setName": "Homefront II",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "152_002",
+            "title": "Dangerous Climb",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Deep underground passages such as those on Xantoras pose a problem for transporters. Without climbing skills, they may also pose a problem to away team personnel.",
+            "property-logo": "ent-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/2.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "STRENGTH>40 OR Geology x2 + CUNNING>20",
+                        "failEffect": {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "random": true,
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "blueprintId": "152_003",
+            "title": "Dedication to Duty",
+            "type": "dilemma",
+            "mission-type": "space",
+            "lore": "Starship work is hazardous. When danger arises, one must place the good of the crew ahead of one's own life.",
+            "property-logo": "st2-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/3.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "filter": "unique + personnel + encounteringThisCard",
+                                "count": 1,
+                                "random": true
+                            },
+                            "saveToMemoryId": "stoppedPersonnel"
+                        },
+                        {
+                            "type": "selectAndPerformSubAction",
+                            "actionDescriptions": [
+                                "Kill personnel",
+                                "Draw cards"
+                            ],
+                            "subActions": [
+                                {
+                                    "type": "kill",
+                                    "target": {
+                                        "type": "memory",
+                                        "memoryId": "stoppedPersonnel"
+                                    }
+                                },
+                                {
+                                    "type": "drawCards",
+                                    "player": "opponent",
+                                    "count": {
+                                        "type": "skillDotCount",
+                                        "personnel": {
+                                            "type": "memory",
+                                            "memoryId": "stoppedPersonnel"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "rarity": "V"
+        },
+        {
+            "blueprintId": "152_004",
+            "title": "Dignitaries and Witnesses",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "The bitterness of defeat and the exultation of triumph have taught many leaders a great lesson: they must preserve in peace what they have won in war.",
+            "property-logo": "ds9-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/4.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "INTEGRITY>20 + characteristic(admiral) OR STRENGTH>30 + characteristic(general) OR CUNNING>20 + Leadership x3 OR STRENGTH>20 + characteristic(maje)"
+                    }
+                }
+            ]
+        },
+        {
+            "blueprintId": "152_007",
+            "title": "Fractured Time",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "In 2370, Data suggested Worf would be able to use an inverse warp field to restore the barriers between quantum realities. Thankfully, Mr. Data was correct, in every reality.",
+            "property-logo": "tng-logo",
+            "java-blueprint": true,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/7.jpg",
+            "rarity": "V"
+        },
+        {
+            "blueprintId": "152_040",
+            "title": "Andrea Brand",
+            "type": "personnel",
+            "affiliation": "federation",
+            "icons": "command",
+            "lore": "Academy Superintendent during the Nova Squadron incident in 2368. Promoted to rear admiral prior to accepting the post. A formidable woman.",
+            "classification": "V.I.P.",
+            "property-logo": "tng-logo",
+            "species": "human",
+            "gender": "female",
+            "skill-box": "[*] Leadership x2 [*] Navigation [*] Law [*] Transporter Skill",
+            "integrity": 6,
+            "cunning": 7,
+            "strength": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/40.jpg",
+            "rarity": "V"
+        }
+    ]
+}

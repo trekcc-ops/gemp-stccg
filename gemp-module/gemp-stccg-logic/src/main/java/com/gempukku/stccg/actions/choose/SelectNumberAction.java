@@ -18,8 +18,8 @@ public class SelectNumberAction extends MakeDecisionAction {
     public SelectNumberAction(DefaultGame cardGame, ActionContext context, String choiceText, ValueSource valueSource,
                               String memoryId) throws InvalidGameLogicException {
         super(cardGame, context.getPerformingPlayerId(), choiceText);
-        _minimum = (int) valueSource.getMinimum(cardGame, context);
-        _maximum = (int) valueSource.getMaximum(cardGame, context);
+        _minimum = valueSource.getMinimum(cardGame, context);
+        _maximum = valueSource.getMaximum(cardGame, context);
         _memoryId = memoryId;
     }
 

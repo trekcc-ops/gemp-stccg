@@ -3,6 +3,7 @@ package com.gempukku.stccg.actions.targetresolver;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.filters.AllCardsMatchingFilterResolverBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -11,7 +12,8 @@ import com.gempukku.stccg.game.DefaultGame;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ReadCardMemoryBlueprint.class, name = "memory"),
         @JsonSubTypes.Type(value = ReportCardsResolverBlueprint.class, name = "reportCards"),
-        @JsonSubTypes.Type(value = SelectCardTargetBlueprint.class, name = "select")
+        @JsonSubTypes.Type(value = SelectCardTargetBlueprint.class, name = "select"),
+        @JsonSubTypes.Type(value = AllCardsMatchingFilterResolverBlueprint.class, name = "selectAll")
 })
 public interface TargetResolverBlueprint {
 
