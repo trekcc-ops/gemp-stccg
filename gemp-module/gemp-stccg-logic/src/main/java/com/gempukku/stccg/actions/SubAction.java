@@ -29,8 +29,6 @@ public class SubAction extends ActionWithSubActions implements CardPerformedActi
         return true;
     }
 
-    public String getCardActionPrefix() { return null; }
-
     @Override
     public PhysicalCard getPerformingCard() {
         return _parentAction.getPerformingCard();

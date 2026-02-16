@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.Iterables;
 
@@ -62,4 +63,8 @@ public class NullifyCardAction extends ActionyAction implements DiscardAction, T
         }
     }
 
+    @Override
+    public Zone getDestination() {
+        return Zone.DISCARD;
+    }
 }

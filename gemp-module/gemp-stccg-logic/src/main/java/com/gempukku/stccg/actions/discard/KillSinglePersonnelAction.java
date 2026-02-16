@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.google.common.collect.Iterables;
@@ -63,5 +64,10 @@ public class KillSinglePersonnelAction extends ActionyAction implements DiscardA
     @JsonIdentityReference(alwaysAsId=true)
     private PhysicalCard victimCard() {
         return _victim;
+    }
+
+    @Override
+    public Zone getDestination() {
+        return Zone.DISCARD;
     }
 }

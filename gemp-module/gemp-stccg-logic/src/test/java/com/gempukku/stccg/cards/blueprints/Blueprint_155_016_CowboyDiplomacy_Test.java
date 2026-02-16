@@ -1,7 +1,10 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.discard.DiscardCardToPointAreaAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -61,6 +64,22 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
         // Can't play twice
         assertThrows(DecisionResultInvalidException.class, () -> playCard(P1, diplomacy));
     }
+
+    @Test
+    public void serializationTest() throws Exception {
+        initializeGame(true);
+        playCard(P1, diplomacy);
+        Action discardAction = null;
+        for (Action action : _game.getActionsEnvironment().getPerformedActions()) {
+            if (action instanceof DiscardCardToPointAreaAction) {
+                discardAction = action;
+                break;
+            }
+        }
+        JsonNode node = getJsonForPerformedAction(_game.getGameState(), P1, discardAction);
+        assertEquals("POINT_AREA", node.get("destination").textValue());
+    }
+
 
     @Test
     public void playForFreeTest() throws InvalidGameOperationException, CardNotFoundException,
