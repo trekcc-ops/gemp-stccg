@@ -29,6 +29,7 @@
             title: Trilithium Weapon Control PADD
             type: equipment
             property-logo: generations-logo
+            characteristic: padd
             lore: PADD used by Dr. Tolian Soran to remotely control his solar probe and its trilithium-based nuclear inhibitor. Modified programming also governs launch and cloak functions.
             image-url: https://www.trekcc.org/1e/cardimages/homefront3/6.jpg
             rarity: V

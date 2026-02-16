@@ -893,23 +893,53 @@
             cunning: 7
             strength: 5
             image-url: https://www.trekcc.org/1e/cardimages/tng/75V.jpg
-        }
+        },
         {
-            blueprintId: 155_076
-            title: Quark
-            type: personnel
-            affiliation: ferengi
-            property-logo: tng-logo
-            classification: CIVILIAN
-            lore: "Opportunistic bartender on Deep Space 9. Traded information about the Sisters of Duras in exchange for erasing William T. Riker's gambling winnings."
-            species: ferengi
-            gender: male
-            skill-box: "[*] Computer Skill x2 [*] Acquisition [*] Greed [*] Diplomacy [*] Anthropology"
-            integrity: 5
-            cunning: 8
-            strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/tng/76V.jpg
-        }
+            "blueprintId": "155_076",
+            "title": "Quark",
+            "type": "personnel",
+            "affiliation": "ferengi",
+            "property-logo": "tng-logo",
+            "classification": "CIVILIAN",
+            "lore": "Opportunistic bartender on Deep Space 9. Traded information about the Sisters of Duras in exchange for erasing William T. Riker's gambling winnings.",
+            "species": "ferengi",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 5,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Computer Skill",
+                        "level": 2
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Acquisition"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Greed"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Diplomacy"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Anthropology"
+                    },
+                    {
+                        "type": "specialDownload",
+                        "text": "Any PADD",
+                        "downloadCardFilter": "padd"
+                    }
+                ]
+            },
+            "integrity": 5,
+            "cunning": 8,
+            "strength": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/76V.jpg"
+        },
         {
             blueprintId: 155_077
             title: Rata

@@ -51,7 +51,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         for (SkillName value : SkillName.values())
             appendFilter(value);
 
-        // Affiliations and species
+        // Characteristics
         appendSimpleFilter("android", (cardGame, actionContext) -> Filters.changeToFilter(Species.ANDROID));
         appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
         appendSimpleFilter("borg", (cardGame, actionContext) -> Filters.Borg);
