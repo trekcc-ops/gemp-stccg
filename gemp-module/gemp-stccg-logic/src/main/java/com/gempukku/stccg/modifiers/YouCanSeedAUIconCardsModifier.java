@@ -3,6 +3,7 @@ package com.gempukku.stccg.modifiers;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -20,13 +21,19 @@ public class YouCanSeedAUIconCardsModifier extends AbstractModifier {
     }
 
     public YouCanSeedAUIconCardsModifier(PhysicalCard performingCard) {
-        this(performingCard, Filters.any, new TrueCondition(), ModifierEffect.AU_CARDS_ENTER_PLAY);
+        this(performingCard, Filters.and(Filters.owner(performingCard.getOwnerName()), Filters.not(Filters.inPlay),
+                        CardIcon.AU_ICON),
+                new TrueCondition(), ModifierEffect.AU_CARDS_ENTER_PLAY);
     }
 
 
     @Override
     public String getCardInfoText(DefaultGame cardGame, PhysicalCard affectedCard) {
-        return "Can seed [AU] cards";
+        if (cardGame.getCurrentPhase().isSeedPhase()) {
+            return "Can seed [AU] cards";
+        } else {
+            return null;
+        }
     }
 
     public boolean canPlayerSeedAUCards(String playerName) {

@@ -714,7 +714,7 @@
             mission-requirements: Exobiology + Diplomacy
             point-box: 35
             span: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR170.jp
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR170.jpg
         }
         {
             blueprintId: 101_171
