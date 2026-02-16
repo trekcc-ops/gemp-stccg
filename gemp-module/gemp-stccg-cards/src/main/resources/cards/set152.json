@@ -92,9 +92,17 @@
             "mission-type": "dual",
             "lore": "The bitterness of defeat and the exultation of triumph have taught many leaders a great lesson: they must preserve in peace what they have won in war.",
             "property-logo": "ds9-logo",
-            "java-blueprint": true,
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/4.jpg",
-            "rarity": "V"
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "INTEGRITY>20 + characteristic(admiral) OR STRENGTH>30 + characteristic(general) OR CUNNING>20 + Leadership x3 OR STRENGTH>20 + characteristic(maje)"
+                    }
+                }
+            ]
         },
         {
             "blueprintId": "152_007",
