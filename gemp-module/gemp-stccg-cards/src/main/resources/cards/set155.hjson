@@ -54,17 +54,37 @@
                     ]
                 }
             ]
-        }
+        },
         {
-            blueprintId: 155_012
-            title: Tense Negotiations
-            java-blueprint: true
-            type: dilemma
-            mission-type: dual
-            lore: "Experienced diplomats are willing to meet their opponents on their terms and to confront challenges to their integrity with appropriate invectives when necessary."
-            property-logo: tng-logo
-            image-url: https://www.trekcc.org/1e/cardimages/tng/12V.jpg
-        }
+            "blueprintId": "155_012",
+            "title": "Tense Negotiations",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Experienced diplomats are willing to meet their opponents on their terms and to confront challenges to their integrity with appropriate invectives when necessary.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/12V.jpg",
+            "rarity": "V",
+            "nullifyWith": "personnelWith(Diplomacy x3 OR Leadership x3)",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "opponent",
+                                    "filter": "personnel + (Diplomacy OR Leadership) + encounteringThisCard",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         {
             blueprintId: 155_016
             title: Cowboy Diplomacy

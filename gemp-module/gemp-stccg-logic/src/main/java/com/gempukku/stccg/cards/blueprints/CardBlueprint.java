@@ -78,6 +78,9 @@ public class CardBlueprint {
     @JsonProperty("countdown")
     protected Integer _countdown;
 
+    @JsonProperty("nullifyWith")
+    protected MissionRequirement _nullifyRequirement;
+
     @JsonProperty("characteristic")
     private final List<Characteristic> _characteristics = new ArrayList<>();
 
@@ -566,6 +569,10 @@ public class CardBlueprint {
 
     public void setShipClass(ShipClass shipClass) {
         _shipClass = shipClass;
+    }
+
+    public MissionRequirement getNullifyRequirement() {
+        return _nullifyRequirement;
     }
 
     public void addSpecialEquipment(Collection<ShipSpecialEquipment> specialEquipment) {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.KillSinglePersonnelAction;
+import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -71,6 +72,21 @@ public abstract class AbstractAtTest implements UserInputSimulator {
             }
         }
         throw new RuntimeException("Could not find JSON data for requested action");
+    }
+
+    protected boolean cardWasNullified(PhysicalCard card) {
+        if (card.isInPlay()) {
+            return false;
+        }
+        boolean actionFound = false;
+        for (Action action : _game.getActionsEnvironment().getPerformedActions()) {
+            if (action instanceof NullifyCardAction nullifyAction &&
+                    nullifyAction.getNullifiedCard() == card) {
+                actionFound = true;
+                break;
+            }
+        }
+        return actionFound;
     }
 
     protected boolean personnelWasKilled(PersonnelCard personnel) {

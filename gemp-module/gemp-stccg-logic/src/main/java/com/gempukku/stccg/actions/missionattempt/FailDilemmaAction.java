@@ -38,12 +38,6 @@ public class FailDilemmaAction extends ActionyAction {
         this(cardGame, attemptingUnit, dilemma, encounterAction, false);
     }
 
-    public FailDilemmaAction(DefaultGame cardGame, AttemptingUnit attemptingUnit, PhysicalCard dilemma,
-                             Action additionalEffect, EncounterSeedCardAction encounterAction) {
-        this(cardGame, attemptingUnit, dilemma, encounterAction, false);
-        _additionalEffect = additionalEffect;
-    }
-
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
