@@ -181,9 +181,12 @@ public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint>
 
             for (JsonNode cardNode : setCardsNode) {
                 String blueprintId = cardNode.get("blueprintId").textValue();
-                if (blueprintId == null || !blueprintId.startsWith(setId + "_"))
+                if (blueprintId == null || !blueprintId.startsWith(setId + "_")) {
                     throw new InvalidCardDefinitionException(
                             "Card blueprintId " + blueprintId + " invalid for set " + setId);
+                } else if (_blueprints.get(blueprintId) != null) {
+                    throw new InvalidCardDefinitionException("Blueprint id " + blueprintId + " already added to library");
+                }
                 try {
                     final CardBlueprint cardBlueprint = loadCardFromDeserializer(blueprintId, gameType, cardNode);
                     _blueprints.put(blueprintId, cardBlueprint);
