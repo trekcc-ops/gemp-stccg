@@ -15,7 +15,6 @@
             "lore": "Vulcan is the homeworld of the highly logical Vulcan people. The Vulcan High Command established outposts throughout its territory.",
             "shields": 30,
             "image-url": "https://www.trekcc.org/1e/cardimages/pwp/76.jpg",
-            "rarity": "V",
             "actions": [
                 {
                     "type": "seedThis",
@@ -26,6 +25,25 @@
                 "type": "playThis",
                 "destination": "facilityEngineerRequirement(affiliation=vulcan)"
             }
+        },
+        {
+            "blueprintId": "194_084",
+            "title": "Strom",
+            "type": "personnel",
+            "property-logo": "ent-logo",
+            "affiliation": "vulcan",
+            "classification": "MEDICAL",
+            "icons": "au-icon,ent-era,staff",
+            "uniqueness": "universal",
+            "lore": "Typical Vulcan doctor. Attended an Interspecies Medical Exchange conference on Dekendi III. Diagnosed T'Pol from residue on a PADD.",
+            "skill-box": "[*] Exobiology [*] SCIENCE [*] Computer Skill [DL] Vulcan PADD",
+            "image-url": "https://www.trekcc.org/1e/cardimages/pwp/84.jpg",
+            "species": "vulcan",
+            "gender": "male",
+            "rarity": "P",
+            "integrity": 6,
+            "cunning": 8,
+            "strength": 7
         }
     ]
 }

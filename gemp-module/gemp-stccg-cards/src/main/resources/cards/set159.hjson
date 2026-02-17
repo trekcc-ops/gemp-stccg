@@ -1,20 +1,20 @@
 {
-    setId: "159"
-    setName: Homefront III
-    gameType: First Edition
-    cards: [
+    "setId": "159",
+    "setName": "Homefront III",
+    "gameType": "First Edition",
+    "cards": [
         {
-            blueprintId: 159_004
-            title: El-Aurian Phaser
-            type: equipment
-            property-logo: generations-logo
-            lore: Unusual, easily concealed weapon carried by Dr. Tolian Soran. Capable of producing powerful bursts of phased energy. Targeting scope increases accuracy, in the right hands.
-            image-url: https://www.trekcc.org/1e/cardimages/homefront3/4.jpg
-            rarity: V
-            modifiers: [
+            "blueprintId": 159_004
+            "title": El-Aurian Phaser
+            "type": equipment
+            "property-logo": generations-logo
+            "lore": "Unusual, easily concealed weapon carried by Dr. Tolian Soran. Capable of producing powerful bursts of phased energy. Targeting scope increases accuracy, in the right hands.",
+            "image-url": https://www.trekcc.org/1e/cardimages/homefront3/4.jpg
+            "rarity": V
+            "modifiers": [
                 {
                     type: addStrength
-                    modifiedCards: yours + presentWithThisCard + personnel + not(SCIENCE + Treachery)
+                    modifiedCards: "yours + presentWithThisCard + personnel + not(SCIENCE + Treachery)"
                     amount: 1
                 }
                 {
@@ -23,12 +23,13 @@
                     amount: 3
                 }
             ]
-        }
+        },
         {
-            blueprintId: 159_006
+            "blueprintId": 159_006
             title: Trilithium Weapon Control PADD
             type: equipment
             property-logo: generations-logo
+            characteristic: padd
             lore: PADD used by Dr. Tolian Soran to remotely control his solar probe and its trilithium-based nuclear inhibitor. Modified programming also governs launch and cloak functions.
             image-url: https://www.trekcc.org/1e/cardimages/homefront3/6.jpg
             rarity: V
@@ -82,21 +83,67 @@
             image-url: https://www.trekcc.org/1e/cardimages/homefront3/26.jpg
         }
         {
-            blueprintId: 159_029
-            title: Sabrun
-            type: personnel
-            affiliation: romulan
-            uniqueness: universal
-            property-logo: nemesis-logo
-            classification: V.I.P.
-            lore: Representative of the many senators navigating the perilous and delicate political landscape on Romulus. Seeks to better the Star Empire for his two sons.
-            species: romulan
-            gender: male
-            skill-box: "[*] Law [*] Diplomacy [*] Exobiology"
-            integrity: 5
-            cunning: 7
-            strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/homefront3/29.jpg
+            "blueprintId": "159_029",
+            "title": "Sabrun",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "uniqueness": "universal",
+            "property-logo": "nemesis-logo",
+            "classification": "V.I.P.",
+            "lore": "Representative of the many senators navigating the perilous and delicate political landscape on Romulus. Seeks to better the Star Empire for his two sons.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Law [*] Diplomacy [*] Exobiology",
+            "integrity": 5,
+            "cunning": 7,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront3/29.jpg"
+        },
+        {
+            "blueprintId": "159_031",
+            "title": "Tomalak",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "command",
+            "lore": "Beguiling adversary of the <i>U.S.S. Enterprise</i>. Plotted to display its broken hull on Romulus as a symbol of victory. Commanded the <i>Deranas</i>.",
+            "species": "romulan",
+            "gender": "male",
+            "integrity": 4,
+            "cunning": 7,
+            "strength": 9,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront3/29.jpg",
+            "skill-box": {
+                "skill-dots": 5,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Diplomacy"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Leadership"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Navigation"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Law"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Treachery"
+                    },
+                    {
+                        "type": "specialDownload",
+                        "text": "Any Captain's Order card",
+                        "downloadCardFilter": "captains-order"
+                    }
+                ]
+            }
         }
     ]
 }

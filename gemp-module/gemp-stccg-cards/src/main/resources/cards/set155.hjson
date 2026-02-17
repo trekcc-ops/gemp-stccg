@@ -893,23 +893,53 @@
             cunning: 7
             strength: 5
             image-url: https://www.trekcc.org/1e/cardimages/tng/75V.jpg
-        }
+        },
         {
-            blueprintId: 155_076
-            title: Quark
-            type: personnel
-            affiliation: ferengi
-            property-logo: tng-logo
-            classification: CIVILIAN
-            lore: "Opportunistic bartender on Deep Space 9. Traded information about the Sisters of Duras in exchange for erasing William T. Riker's gambling winnings."
-            species: ferengi
-            gender: male
-            skill-box: "[*] Computer Skill x2 [*] Acquisition [*] Greed [*] Diplomacy [*] Anthropology"
-            integrity: 5
-            cunning: 8
-            strength: 3
-            image-url: https://www.trekcc.org/1e/cardimages/tng/76V.jpg
-        }
+            "blueprintId": "155_076",
+            "title": "Quark",
+            "type": "personnel",
+            "affiliation": "ferengi",
+            "property-logo": "tng-logo",
+            "classification": "CIVILIAN",
+            "lore": "Opportunistic bartender on Deep Space 9. Traded information about the Sisters of Duras in exchange for erasing William T. Riker's gambling winnings.",
+            "species": "ferengi",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 5,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Computer Skill",
+                        "level": 2
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Acquisition"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Greed"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Diplomacy"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Anthropology"
+                    },
+                    {
+                        "type": "specialDownload",
+                        "text": "Any PADD",
+                        "downloadCardFilter": "padd"
+                    }
+                ]
+            },
+            "integrity": 5,
+            "cunning": 8,
+            "strength": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/76V.jpg"
+        },
         {
             blueprintId: 155_077
             title: Rata
@@ -1107,22 +1137,42 @@
             "cunning": 5,
             "strength": 8,
             "image-url": "https://www.trekcc.org/1e/cardimages/tng/84V.jpg"
-        }
+        },
         {
-            blueprintId: 155_085
-            title: Koroth
-            type: personnel
-            affiliation: klingon
-            property-logo: tng-logo
-            classification: SCIENCE
-            lore: High cleric of Boreth. Responsible for cloning Kahless in an attempt to restore hope to his people.
-            species: klingon
-            gender: male
-            skill-box: "[*] Archaeology [*] Biology [*] MEDICAL"
-            integrity: 7
-            cunning: 7
-            strength: 6
-            image-url: https://www.trekcc.org/1e/cardimages/tng/85V.jpg
+            "blueprintId": "155_085",
+            "title": "Koroth",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "tng-logo",
+            "classification": "SCIENCE",
+            "lore": "High cleric of Boreth. Responsible for cloning Kahless in an attempt to restore hope to his people.",
+            "species": "klingon",
+            "gender": "male",
+            "integrity": 7,
+            "cunning": 7,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/85V.jpg",
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Archaeology",
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Biology",
+                    },
+                    {
+                        "type": "regular",
+                        "name": "MEDICAL",
+                    },
+                    {
+                        "type": "specialNull",
+                        "text": "Once per game, if on Boreth, may download Kahless OR Clone Machine there."
+                    }
+                ]
+            }
         },
         {
             "blueprintId": "155_086",

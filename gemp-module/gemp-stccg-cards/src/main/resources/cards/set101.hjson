@@ -163,6 +163,7 @@
             title: Engineering PADD
             type: equipment
             property-logo: tng-logo
+            characteristic: padd
             lore: Representative of Personal Access Display Devices designed specifically for engineering functions. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR56.jpg
             rarity: C
@@ -179,6 +180,7 @@
             title: Federation PADD
             type: equipment
             property-logo: tng-logo
+            characteristic: padd
             lore: Standard Federation Personal Access Display Device for computerized information.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR57.jpg
             rarity: C
@@ -221,6 +223,7 @@
             title: Klingon PADD
             type: equipment
             property-logo: tng-logo
+            characteristic: padd
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR59.jpg
             rarity: C
             modifiers: [
@@ -294,6 +297,7 @@
             title: Romulan PADD
             type: equipment
             property-logo: tng-logo
+            characteristic: padd
             lore: Standard Romulan Personal Access Display Device for computerized information.
             rarity: C
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR63.jpg
@@ -467,15 +471,6 @@
                     discardAfter: true
                 }
             ]
-        }
-        {
-            blueprintId: 101_131
-            title: "Palor Toff: Alien Trader"
-            type: interrupt
-            property-logo: tng-logo
-            lore: Rich merchant and trader from an unknown race. Friend of Kivas Fajo. Snappy dresser.
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR131.jpg
-            rarity: C
         }
         {
             blueprintId: 101_146
