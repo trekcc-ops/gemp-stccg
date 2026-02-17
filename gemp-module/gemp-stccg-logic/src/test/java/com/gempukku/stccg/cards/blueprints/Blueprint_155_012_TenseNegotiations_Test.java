@@ -86,7 +86,7 @@ public class Blueprint_155_012_TenseNegotiations_Test extends AbstractAtTest {
         attemptMission(P1, _mission);
 
         // Verify P2 is allowed to select from personnel with Leadership or Diplomacy only
-        assertTrue(selectableCardsAre(List.of(jace1, jace2, jace3, taylor), P2));
+        assertTrue(selectableCardsAre(P2, List.of(jace1, jace2, jace3, taylor)));
         selectCard(P2, taylor);
 
         // Verify dilemma was overcome

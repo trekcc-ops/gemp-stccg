@@ -1,5 +1,6 @@
 package com.gempukku.stccg.requirement;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.ActionContext;
@@ -17,7 +18,7 @@ public class CardInPlayRequirement implements Requirement {
 
     @JsonCreator
     private CardInPlayRequirement(
-            @JsonProperty("filter") FilterBlueprint filterBlueprint,
+            @JsonProperty("filter") @JsonAlias("cardFilter") FilterBlueprint filterBlueprint,
             @JsonProperty("countAtLeast") Integer countAtLeast
     ) {
         _filterBlueprint = filterBlueprint;

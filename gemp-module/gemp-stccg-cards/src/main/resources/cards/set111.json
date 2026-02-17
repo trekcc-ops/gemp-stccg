@@ -17,7 +17,8 @@
             "actions": [
                 {
                     "type": "seedThis",
-                    "destinationLocation": {
+                    "destination": {
+                        "type": "atLocation",
                         "affiliation": "non-aligned"
                     }
                 },

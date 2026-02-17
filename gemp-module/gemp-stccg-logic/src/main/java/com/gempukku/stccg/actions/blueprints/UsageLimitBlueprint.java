@@ -2,8 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.requirement.PhaseRequirement;
 import com.gempukku.stccg.requirement.YourTurnRequirement;
 
 public class UsageLimitBlueprint {
@@ -18,26 +16,19 @@ public class UsageLimitBlueprint {
     @JsonProperty("count")
     private final int _count;
 
-    @JsonProperty("inPlaceOfNormalCardPlay")
-    private final boolean _inPlaceOfNormalCardPlay;
-
     @JsonCreator
     public UsageLimitBlueprint(@JsonProperty("type")
                                 LimitType type,
                                 @JsonProperty("count")
-                                int count,
-                               @JsonProperty("inPlaceOfNormalCardPlay")
-                               boolean inPlaceOfNormalCardPlay
+                                int count
     ) {
         _type = type;
         _count = count;
-        _inPlaceOfNormalCardPlay = inPlaceOfNormalCardPlay;
     }
 
     public UsageLimitBlueprint(String type, int count) {
         _type = LimitType.valueOf(type);
         _count = count;
-        _inPlaceOfNormalCardPlay = false;
     }
 
     public void applyLimitToActionBlueprint(ActionBlueprint actionBlueprint) {
@@ -52,12 +43,6 @@ public class UsageLimitBlueprint {
             case perGamePerCopy:
                 actionBlueprint.addCost(new UsePerGamePerCopyLimitActionBlueprint(actionBlueprint, _count));
                 break;
-        }
-
-        if (_inPlaceOfNormalCardPlay) {
-            actionBlueprint.addRequirement(new PhaseRequirement(Phase.CARD_PLAY));
-            actionBlueprint.addRequirement(new YourTurnRequirement());
-            actionBlueprint.addCost(new UseNormalCardPlayBlueprint());
         }
     }
 

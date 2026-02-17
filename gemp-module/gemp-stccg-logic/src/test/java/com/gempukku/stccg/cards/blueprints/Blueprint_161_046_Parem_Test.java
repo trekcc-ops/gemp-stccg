@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ public class Blueprint_161_046_Parem_Test extends AbstractAtTest {
         _game = builder.getGame();
         mission = builder.addMission("101_154", "Excavation", P1);
         builder.addSeedCardUnderMission("101_014", "Archer", P2, mission);
+        builder.addOutpost(Affiliation.ROMULAN, P1);
         parem = builder.addCardOnPlanetSurface("161_046", "Parem", P1, mission, PersonnelCard.class);
         oldParem = builder.addCardInHand("101_316", "Parem", P1);
         takket = builder.addCardInHand("101_320", "Takket", P1);

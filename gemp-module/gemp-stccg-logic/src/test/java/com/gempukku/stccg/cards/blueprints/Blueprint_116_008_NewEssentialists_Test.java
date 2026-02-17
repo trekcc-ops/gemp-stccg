@@ -146,14 +146,14 @@ public class Blueprint_116_008_NewEssentialists_Test extends AbstractAtTest {
         // if Away Team only has Borg, they won't go back to the draw deck
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
-        _mission = builder.addMission(MissionType.PLANET, Affiliation.NON_ALIGNED, P1);
-        PersonnelCard bosus = builder.addCardOnPlanetSurface("163_040", "Bosus", P1, _mission, PersonnelCard.class);
+        _mission = builder.addMission("101_170", "Investigate Raid", P1);
+        PersonnelCard crosis = builder.addCardOnPlanetSurface("163_044", "Lieutenant Crosis", P1, _mission, PersonnelCard.class);
         newEssentialists = builder.addSeedCardUnderMission("116_008", "New Essentialists", P2, _mission);
         builder.setPhase(Phase.EXECUTE_ORDERS);
         builder.startGame();
         attemptMission(P1, _mission);
-        assertTrue(bosus.isStopped());
-        assertNotEquals(Zone.DRAW_DECK, bosus.getZone());
+        assertTrue(crosis.isStopped());
+        assertNotEquals(Zone.DRAW_DECK, crosis.getZone());
         assertNotEquals(Zone.REMOVED, newEssentialists.getZone());
     }
 

@@ -20,16 +20,13 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
 
     }
 
-    public CardFilter getFilterable(DefaultGame cardGame) {
-        CardFilter matchingFilter = new MatchingAffiliationFilter(_cardTarget.getCards(cardGame));
+    @Override
+    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+        CardFilter matchingFilter =
+                new MatchingAffiliationFilter(_cardTarget.getCards(cardGame), actionContext.getPerformingPlayerId());
         List<Filterable> finalFilterables = new ArrayList<>();
         finalFilterables.add(matchingFilter);
         finalFilterables.addAll(_additionalFilters);
         return Filters.and(finalFilterables);
-    }
-
-    @Override
-    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
-        return getFilterable(cardGame);
     }
 }

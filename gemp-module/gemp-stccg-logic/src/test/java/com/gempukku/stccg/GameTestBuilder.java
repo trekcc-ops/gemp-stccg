@@ -118,13 +118,36 @@ public class GameTestBuilder {
 
     public MissionCard addMission(MissionType missionType, Affiliation affiliation, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
-        MissionCard mission = null;
-        if (missionType == MissionType.PLANET && affiliation == Affiliation.NON_ALIGNED) {
-            mission = addCardToGame("155_038", "Encounter at Farpoint", ownerName, MissionCard.class);
-        }
-        if (mission == null) {
+        List<String> cardSpecs = (missionType == MissionType.PLANET) ?
+                switch(affiliation) {
+                    case FEDERATION, KLINGON -> List.of("113_003", "Botanical Research");
+//                    case NON_ALIGNED -> List.of("155_038", "Encounter at Farpoint"); // not universal
+                    case FERENGI -> List.of("113_006", "Search for Weapons");
+                    case BAJORAN, CARDASSIAN, ROMULAN -> List.of("161_021", "Advanced Combat Training");
+                    case BORG, DOMINION, HIROGEN, KAZON, NEUTRAL, NON_ALIGNED, STARFLEET, VIDIIAN, VULCAN, XINDI -> null;
+                } :
+                switch(affiliation) {
+                    case BAJORAN -> null;
+                    case BORG -> null;
+                    case CARDASSIAN -> null;
+                    case DOMINION -> null;
+                    case FEDERATION -> null;
+                    case FERENGI -> null;
+                    case HIROGEN -> null;
+                    case KAZON -> null;
+                    case KLINGON -> null;
+                    case NEUTRAL -> null;
+                    case NON_ALIGNED -> null;
+                    case ROMULAN -> null;
+                    case STARFLEET -> null;
+                    case VIDIIAN -> null;
+                    case VULCAN -> null;
+                    case XINDI -> null;
+                };
+        if (cardSpecs == null) {
             throw new CardNotFoundException("addMission does not have a default card for " + missionType + " and " + affiliation);
         }
+        MissionCard mission = addCardToGame(cardSpecs.get(0), cardSpecs.get(1), ownerName, MissionCard.class);
         _missions.add(mission);
         SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, _missions.indexOf(mission));
         executeAction(seedAction);
@@ -179,11 +202,8 @@ public class GameTestBuilder {
         return cardToAdd;
     }
 
-    public FacilityCard addOutpost(Affiliation affiliation, String ownerName)
+    public FacilityCard addOutpost(Affiliation affiliation, String ownerName, MissionCard mission)
             throws CardNotFoundException, InvalidGameOperationException {
-        if (_missions.isEmpty()) {
-            addMission(DEFAULT_MISSION, DEFAULT_MISSION_TITLE, ownerName);
-        }
         String facilityBlueprintId = switch(affiliation) {
             case BAJORAN -> "112_078";
             case CARDASSIAN -> "112_080";
@@ -197,7 +217,15 @@ public class GameTestBuilder {
             case BORG, HIROGEN, KAZON, NEUTRAL, STARFLEET, VIDIIAN, XINDI ->
                     throw new CardNotFoundException("Could not find blueprint for outpost of affiliation " + affiliation);
         };
-        return addFacility(facilityBlueprintId, ownerName, _missions.getFirst());
+        return addFacility(facilityBlueprintId, ownerName, mission);
+    }
+
+    public FacilityCard addOutpost(Affiliation affiliation, String ownerName)
+            throws CardNotFoundException, InvalidGameOperationException {
+        if (_missions.isEmpty()) {
+            addMission(DEFAULT_MISSION, DEFAULT_MISSION_TITLE, ownerName);
+        }
+        return addOutpost(affiliation, ownerName, _missions.getFirst());
     }
 
     public FacilityCard addFacility(String facilityBlueprintId, String ownerName, MissionCard mission)

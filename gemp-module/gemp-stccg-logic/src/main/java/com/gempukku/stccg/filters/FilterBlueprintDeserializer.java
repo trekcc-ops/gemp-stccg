@@ -11,6 +11,8 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.io.IOException;
 import java.util.*;
@@ -65,6 +67,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         // Other
         appendSimpleFilter("another", (cardGame, actionContext) ->
                 Filters.not(Filters.cardId(actionContext.getPerformingCardId())));
+        appendSimpleFilter("atNonHomeworldMission", (cardGame, actionContext) -> (game, physicalCard) ->
+                game instanceof ST1EGame stGame &&
+                        physicalCard.getGameLocation(stGame) instanceof MissionLocation missionLocation &&
+                        !missionLocation.isHomeworld());
         appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
         appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.getPerformingPlayerId()));

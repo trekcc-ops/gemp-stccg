@@ -64,6 +64,22 @@
             "playThisCardAction": {
                 "type": "playThis"
             }
+        },
+        {
+            "blueprintId": "991_007",
+            "title": "Dummy 1E Multi-Affiliation Klingon",
+            "type": "personnel",
+            "affiliation": "klingon,non-aligned",
+            "classification": "SCIENCE",
+            "skill-box": "[*] SCIENCE",
+            "species": "klingon",
+            "lore": "blork",
+            "gender": "male",
+            "uniqueness": "universal",
+            "integrity": 6,
+            "cunning": 6,
+            "strength": 6,
+            "property-logo": "tng-logo"
         }
     ]
 }

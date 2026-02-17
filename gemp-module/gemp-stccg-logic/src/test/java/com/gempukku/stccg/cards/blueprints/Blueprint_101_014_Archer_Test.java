@@ -61,7 +61,7 @@ public class Blueprint_101_014_Archer_Test extends AbstractAtTest {
         attemptMission(P1, _mission);
         assertFalse(personnelWasKilled(wilkins));
         assertNotEquals(Zone.REMOVED, archer.getZone());
-        assertTrue(selectableCardsAre(List.of(wilkins, wilkins2), P2));
+        assertTrue(selectableCardsAre(P2, List.of(wilkins, wilkins2)));
         selectCard(P2, wilkins2);
         assertTrue(personnelWasKilled(wilkins2));
         assertEquals(Zone.REMOVED, archer.getZone());
