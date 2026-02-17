@@ -324,8 +324,8 @@
                     ]
                 }
             ]
-        }
-/*        {
+        },
+        {
             "blueprintId": "155_027",
             "title": "Legitimate Leader of the Empire",
             "type": "incident",
@@ -338,10 +338,12 @@
             "actions": [
                 {
                     "type": "downloadCardToDestination",
-                    "downloadingCardFilter": "name(Gowron)",
-                    "destinationType": "toFacility",
-                    "destinationFilter": "yours + facility",
-                    "inPlaceOfNormalCardPlay": true
+                    "inPlaceOfNormalCardPlay": true,
+                    "filter": "name(Gowron)",
+                    "destination": {
+                        "type": "toCard",
+                        "destinationCardFilter": "yours + facility"
+                    }
                 },
                 {
                     "type": "playCardForFree",
@@ -353,15 +355,14 @@
                         "type": "cardInPlay",
                         "cardFilter": "yours + name(Gowron) + atNonHomeworldMission"
                     },
-                    "target": {
-                        "type": "reportCard",
-                        "reportingFilter": "not(Treachery) + affiliation=klingon + tng-icon",
-                        "destinationType": "toCard"
-                        "destinationFilter": "yours + name(Gowron) + atNonHomeworldMission OR yours + affiliation=klingon + outpost"
-                    }
+                    "destination": {
+                        "type": "toCard",
+                        "destinationCardFilter": "yours + name(Gowron) + atNonHomeworldMission OR yours + affiliation=klingon + outpost"
+                    },
+                    "filter": "not(Treachery) + affiliation=klingon + tng-icon"
                 }
             ]
-        } */
+        },
         {
             blueprintId: 155_035
             title: Acquire Surplus Ships

@@ -4,23 +4,21 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
-import com.gempukku.stccg.actions.playcard.DownloadReportableCardToDestinationAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.PhaseRequirement;
+import com.gempukku.stccg.requirement.Requirement;
 import com.gempukku.stccg.requirement.YourTurnRequirement;
 
 import java.util.Collection;
@@ -39,9 +37,10 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
                                           @JsonProperty(value = "limit")
                                        UsageLimitBlueprint usageLimit,
                                           @JsonProperty(value = "filter")
-                                          FilterBlueprint filterBlueprint
-    )
-            throws InvalidCardDefinitionException {
+                                          FilterBlueprint filterBlueprint,
+                                          @JsonProperty("requires")
+                                          Requirement requirement
+    ) {
         super(new YouPlayerSource());
         _destinationBlueprint = destinationBlueprint;
         if (usageLimit != null) {
@@ -49,6 +48,9 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
         }
         _filterBlueprint = filterBlueprint;
         _requirements.addAll(List.of(new PhaseRequirement(Phase.CARD_PLAY), new YourTurnRequirement()));
+        if (requirement != null) {
+            _requirements.add(requirement);
+        }
     }
 
     @Override
