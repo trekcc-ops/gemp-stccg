@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
+import com.gempukku.stccg.actions.playcard.DownloadReportableCardToDestinationAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
@@ -11,25 +12,30 @@ import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.*;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.PhaseRequirement;
 import com.gempukku.stccg.requirement.YourTurnRequirement;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
 
-    String _destination;
+    private final DestinationBlueprint _destinationBlueprint;
     FilterBlueprint _filterBlueprint;
 
     @JsonCreator
-    public PlayCardForFreeActionBlueprint(@JsonProperty(value = "destination")
-                                       String destination,
+    public PlayCardForFreeActionBlueprint(@JsonProperty(value = "destination", required = true)
+                                       DestinationBlueprint destinationBlueprint,
                                           @JsonProperty(value = "limit")
                                        UsageLimitBlueprint usageLimit,
                                           @JsonProperty(value = "filter")
@@ -37,11 +43,7 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
     )
             throws InvalidCardDefinitionException {
         super(new YouPlayerSource());
-        if (destination.equals("yourMatchingOutpost")) {
-            _destination = destination;
-        } else {
-            throw new InvalidCardDefinitionException("No definition if not reporting to your matching outpost");
-        }
+        _destinationBlueprint = destinationBlueprint;
         if (usageLimit != null) {
             usageLimit.applyLimitToActionBlueprint(this);
         }
@@ -64,22 +66,29 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
         );
 
         Collection<PhysicalCard> playableCards = Filters.filter(cardGame, playableCardFilter);
-        if (!playableCards.isEmpty()) {
+
+        if (!playableCards.isEmpty() && cardGame instanceof ST1EGame stGame) {
+            Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap = new HashMap<>();
+            for (PhysicalCard card : playableCards) {
+                if (card instanceof ReportableCard reportable) {
+                    Collection<PhysicalCard> destinations =
+                            _destinationBlueprint.getDestinationOptions(stGame, performingPlayerName, card, actionContext);
+                    Map<PhysicalCard, List<Affiliation>> destinationMap = stGame.getRules()
+                            .getDestinationAndAffiliationMapForReportingCard(reportable, stGame, destinations, true);
+                    targetMap.put(card, destinationMap);
+                }
+            }
 
             SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
-                    "Select a card to report", playableCards);
+                    "Select a card to play", targetMap.keySet());
             SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
 
-            if (_destination.equals("yourMatchingOutpost")) {
-                MatchingFilterBlueprint destinationFilterBlueprint =
-                        new MatchingFilterBlueprint(cardTarget, Filters.your(performingPlayerName), FacilityType.OUTPOST);
-                SelectAndReportForFreeCardAction action1 =
-                        new SelectAndReportForFreeCardAction(cardGame, actionContext.card().getOwnerName(), cardTarget, actionContext.card(),
-                                destinationFilterBlueprint);
-                appendActionToContext(cardGame, action1, actionContext);
-                if (action1.canBeInitiated(cardGame)) {
-                    return action1;
-                }
+            SelectAndReportForFreeCardAction reportAction =
+                    new SelectAndReportForFreeCardAction(cardGame, actionContext.card().getOwnerName(), cardTarget, actionContext.card(),
+                            targetMap);
+            appendActionToContext(cardGame, reportAction, actionContext);
+            if (reportAction.canBeInitiated(cardGame)) {
+                return reportAction;
             }
         }
         return null;

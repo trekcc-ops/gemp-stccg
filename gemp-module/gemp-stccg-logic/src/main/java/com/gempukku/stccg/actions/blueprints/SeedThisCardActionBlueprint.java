@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.filters.AtLocationDestinationBlueprint;
 import com.gempukku.stccg.filters.DestinationBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -23,7 +24,7 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
     private final boolean _toCore;
     private final DestinationBlueprint _destinationBlueprint;
 
-    public SeedThisCardActionBlueprint(@JsonProperty(value = "destinationLocation")
+    public SeedThisCardActionBlueprint(@JsonProperty(value = "destination")
                                        DestinationBlueprint destinationBlueprint,
                                        @JsonProperty(value = "limit")
                                    Integer limit,
@@ -44,9 +45,9 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
                 cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.SEED)) {
             SeedCardAction action;
             if (thisCard instanceof FacilityCard facility && cardGame instanceof ST1EGame stGame) {
-                if (_destinationBlueprint != null) {
+                if (_destinationBlueprint instanceof AtLocationDestinationBlueprint locationBlueprint) {
                     Collection<MissionLocation> destinationOptions =
-                            _destinationBlueprint.getDestinationOptions(stGame, performingPlayerName);
+                            locationBlueprint.getDestinationOptions(stGame, performingPlayerName);
                     Map<PhysicalCard, List<Affiliation>> destinationMap =
                             stGame.getRules().getDestinationMapForSeedingFacilityWithGameTextDestinations(
                                     facility, performingPlayerName, destinationOptions, stGame);

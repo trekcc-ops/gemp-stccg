@@ -144,23 +144,31 @@
                     toCore: true
                 }
                 {
-                    type: playCardForFree
-                    limit: {
-                        type: eachOfYourTurns
-                        count: 1
-                    }
+                    "type": "playCardForFree",
+                    "limit": {
+                        "type": "eachOfYourTurns",
+                        "count": 1
+                    },
+                    "destination": {
+                        "type": "toCard",
+                        "matching": true,
+                        "destinationCardFilter": "yours + outpost"
+                    },
                     filter: personnel + universal + tng-icon + youOwnNoCopiesInPlay + not(android) + not(hologram) + not(au-icon) + youControlAMatchingOutpost
-                    destination: yourMatchingOutpost
                 }
                 {
-                    type: downloadCard
-                    limit: {
-                        type: perGame
-                        count: 1
-                        inPlaceOfNormalCardPlay: true
-                    }
+                    "type": "downloadCardToDestination",
+                    "limit": {
+                        "type": "perGame",
+                        "count": 1
+                    },
+                    "inPlaceOfNormalCardPlay": true,
+                    "destination": {
+                        "type": "toCard",
+                        "matching": true,
+                        "destinationCardFilter": "yours + outpost"
+                    },
                     filter: universal + ship + tng-icon + youControlAMatchingOutpost
-                    destination: yourMatchingOutpost
                 }
             ]
             playThisCardAction: {
@@ -317,6 +325,43 @@
                 }
             ]
         }
+/*        {
+            "blueprintId": "155_027",
+            "title": "Legitimate Leader of the Empire",
+            "type": "incident",
+            "icons": "warp-core",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/27V.jpg",
+            "playThisCardAction": {
+                "type": "playThis"
+            }
+            "actions": [
+                {
+                    "type": "downloadCardToDestination",
+                    "downloadingCardFilter": "name(Gowron)",
+                    "destinationType": "toFacility",
+                    "destinationFilter": "yours + facility",
+                    "inPlaceOfNormalCardPlay": true
+                },
+                {
+                    "type": "playCardForFree",
+                    "limit": {
+                        "type": "eachOfYourTurns",
+                        "count": 1
+                    },
+                    "requires": {
+                        "type": "cardInPlay",
+                        "cardFilter": "yours + name(Gowron) + atNonHomeworldMission"
+                    },
+                    "target": {
+                        "type": "reportCard",
+                        "reportingFilter": "not(Treachery) + affiliation=klingon + tng-icon",
+                        "destinationType": "toCard"
+                        "destinationFilter": "yours + name(Gowron) + atNonHomeworldMission OR yours + affiliation=klingon + outpost"
+                    }
+                }
+            ]
+        } */
         {
             blueprintId: 155_035
             title: Acquire Surplus Ships

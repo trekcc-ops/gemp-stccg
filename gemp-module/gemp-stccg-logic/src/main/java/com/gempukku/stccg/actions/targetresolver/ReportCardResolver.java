@@ -36,6 +36,13 @@ public class ReportCardResolver implements ActionCardResolver {
                         false);
     }
 
+    public ReportCardResolver(ReportableCard cardEnteringPlay, Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap) {
+        _cardEnteringPlay = cardEnteringPlay;
+        _performingPlayerName = cardEnteringPlay.getOwnerName();
+        _destinationAndAffiliationMap = calculatedDestinationMap;
+    }
+
+
 
     public ReportCardResolver(DefaultGame cardGame, ReportableCard cardEnteringPlay,
                               Collection<PhysicalCard> eligibleDestinations, boolean specialReporting) {

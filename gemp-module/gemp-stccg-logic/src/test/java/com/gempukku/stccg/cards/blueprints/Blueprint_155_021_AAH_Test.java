@@ -5,12 +5,10 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.actions.playcard.DownloadReportableCardToDestinationAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
@@ -26,18 +24,37 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
     private List<PhysicalCard> playableCards;
     private List<PhysicalCard> unplayableCards;
     private PhysicalCard attention;
-    private ShipCard runabout;
+    private ShipCard runaboutInHand;
     private PhysicalCard galaxy;
-    private FacilityCard outpost;
+    private FacilityCard yourFedOutpost;
+    private FacilityCard opponentsFedOutpost;
+    private MissionCard mission;
+    private MissionCard mission2;
+    private FacilityCard yourKlingonOutpost;
+    private ShipCard runaboutInPlay;
+    private FacilityCard yourGammaFedOutpost;
+    private MissionCard gammaMission;
+    private FacilityCard yourNonAlignedOutpost;
 
     @SuppressWarnings("SpellCheckingInspection")
-    public void initializeGame(boolean larsonInPlay) throws CardNotFoundException, DecisionResultInvalidException,
+    public void initializeGame(boolean larsonInPlay, boolean multipleDestinations)
+            throws CardNotFoundException, DecisionResultInvalidException,
             InvalidGameOperationException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
+        mission = builder.addMission(MissionType.PLANET, Affiliation.FEDERATION, P1);
         builder.addCardToCoreAsSeeded("155_022", "Continuing Mission", P1);
         attention = builder.addCardToCoreAsSeeded("155_021", "Attention All Hands", P1);
-        outpost = builder.addOutpost(Affiliation.FEDERATION, P1);
+        yourFedOutpost = builder.addOutpost(Affiliation.FEDERATION, P1);
+        if (multipleDestinations) {
+            opponentsFedOutpost = builder.addOutpost(Affiliation.FEDERATION, P2);
+            mission2 = builder.addMission(MissionType.PLANET, Affiliation.KLINGON, P2);
+            yourKlingonOutpost = builder.addOutpost(Affiliation.KLINGON, P1, mission2);
+            runaboutInPlay = builder.addShipInSpace("101_331", "Runabout", P1, mission);
+            gammaMission = builder.addMission("112_105", "Access Relay Station", P1);
+            yourGammaFedOutpost = builder.addOutpost(Affiliation.FEDERATION, P1, gammaMission);
+            yourNonAlignedOutpost = builder.addOutpost(Affiliation.NON_ALIGNED, P1, mission2);
+        }
 
         // playable
         lopez1 = builder.addCardInHand("155_063", "Lopez", P1, PersonnelCard.class);
@@ -53,11 +70,11 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         unplayableCards.addAll(List.of(picard, jace, rmal));
 
         PhysicalCard larsonInHand = builder.addCardInHand("101_220", "Linda Larson", P1, PersonnelCard.class);
-        runabout = builder.addCardInHand("101_331", "Runabout", P1, ShipCard.class);
+        runaboutInHand = builder.addCardInHand("101_331", "Runabout", P1, ShipCard.class);
         galaxy = builder.addDrawDeckCard("101_336", "U.S.S. Galaxy", P1);
 
         if (larsonInPlay) {
-            builder.addCardAboardShipOrFacility("101_220", "Linda Larson", P1, outpost, PersonnelCard.class);
+            builder.addCardAboardShipOrFacility("101_220", "Linda Larson", P1, yourFedOutpost, PersonnelCard.class);
             unplayableCards.add(larsonInHand);
         } else {
             playableCards.add(larsonInHand);
@@ -74,7 +91,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
     }
 
     public void testThis(boolean larsonInPlay) throws Exception {
-        initializeGame(larsonInPlay);
+        initializeGame(larsonInPlay, false);
 
         selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
         for (PhysicalCard card : playableCards) {
@@ -94,13 +111,24 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
 
     @Test
     public void downloadShipTest() throws Exception {
-        initializeGame(false);
+        initializeGame(false, false);
         assertEquals(1, _game.getGameState().getNormalCardPlaysAvailable(P1));
         selectAction(DownloadReportableCardToDestinationAction.class, attention, P1);
-        assertTrue(getSelectableCards(P1).containsAll(List.of(galaxy, runabout)));
-        selectCard(P1, runabout);
-        assertTrue(runabout.isDockedAtCardId(outpost.getCardId()));
+        assertTrue(getSelectableCards(P1).containsAll(List.of(galaxy, runaboutInHand)));
+        selectCard(P1, runaboutInHand);
+        assertTrue(runaboutInHand.isDockedAtCardId(yourFedOutpost.getCardId()));
         assertEquals(0, _game.getGameState().getNormalCardPlaysAvailable(P1));
+    }
+
+    @Test
+    public void validDestinationsTest() throws Exception {
+        initializeGame(true, true);
+        selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
+        selectCard(P1, lopez1);
+        assertFalse(lopez1.isInPlay());
+
+        // Can report to your Fed outpost in either quadrant, but not any other destinations
+        assertTrue(selectableCardsAre(List.of(yourFedOutpost, yourGammaFedOutpost), P1));
     }
 
 }

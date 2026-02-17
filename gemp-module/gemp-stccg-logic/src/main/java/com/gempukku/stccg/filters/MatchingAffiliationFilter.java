@@ -14,11 +14,16 @@ public class MatchingAffiliationFilter implements CardFilter {
     @JsonProperty("cardIdsToMatch")
     private final Collection<Integer> _cardIdsToMatch = new ArrayList<>();
 
-    public MatchingAffiliationFilter(Collection<PhysicalCard> cardsToMatch) {
+    @JsonProperty("performingPlayerName")
+    private final String _performingPlayerName;
+
+    public MatchingAffiliationFilter(Collection<PhysicalCard> cardsToMatch, String performingPlayerName) {
         for (PhysicalCard card : cardsToMatch) {
             _cardIdsToMatch.add(card.getCardId());
         }
+        _performingPlayerName = performingPlayerName;
     }
+
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         boolean matching = true;

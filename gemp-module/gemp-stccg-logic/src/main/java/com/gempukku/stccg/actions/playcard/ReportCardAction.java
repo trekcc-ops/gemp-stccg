@@ -17,13 +17,14 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class ReportCardAction extends PlayCardAction {
     private final ReportCardResolver _targetResolver;
 
     private ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
                              ReportCardResolver targetResolver) {
-        // TODO - Zone is null because these will be attached and the implementation is weird
         super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
         if (!forFree)
             appendCost(new UseNormalCardPlayAction(cardGame, _performingPlayerId));
@@ -40,6 +41,16 @@ public class ReportCardAction extends PlayCardAction {
         this(cardGame, cardToPlay, forFree,
                 new ReportCardResolver(cardGame, cardToPlay, destinationOptions, specialReporting));
     }
+
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
+                            Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap) {
+        super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
+        if (!forFree)
+            appendCost(new UseNormalCardPlayAction(cardGame, _performingPlayerId));
+        _targetResolver = new ReportCardResolver(cardToPlay, calculatedDestinationMap);
+        _cardTargets.add(_targetResolver);
+    }
+
 
 
     @Override

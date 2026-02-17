@@ -7,32 +7,31 @@ import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
-import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.Iterables;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class DownloadReportableCardToDestinationAction extends ActionWithSubActions implements DownloadAction {
 
     private final PhysicalCard _performingCard;
     private final SelectCardsResolver _cardToDownloadTarget;
-    private final FilterBlueprint _destinationFilterBlueprint;
+    private final Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> _targetMap;
 
 
     public DownloadReportableCardToDestinationAction(DefaultGame cardGame, String playerName,
                                                      SelectCardsResolver cardTarget, PhysicalCard performingCard,
-                                                     FilterBlueprint destinationFilterBlueprint) {
+                                                     Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap) {
         super(cardGame, playerName, ActionType.DOWNLOAD_CARD, new ActionContext(performingCard, playerName));
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
-        _destinationFilterBlueprint = destinationFilterBlueprint;
+        _targetMap = targetMap;
         _cardTargets.add(cardTarget);
     }
+
 
 
     @Override
@@ -45,9 +44,8 @@ public class DownloadReportableCardToDestinationAction extends ActionWithSubActi
         Collection<PhysicalCard> cardsToDownload = _cardToDownloadTarget.getCards(cardGame);
         if (cardsToDownload.size() == 1 &&
                 Iterables.getOnlyElement(cardsToDownload) instanceof ReportableCard reportable) {
-            Filterable outpostFilter = _destinationFilterBlueprint.getFilterable(cardGame, _actionContext);
-            Collection<PhysicalCard> eligibleDestinations = new ArrayList<>(Filters.filter(cardGame, outpostFilter));
-            Action _playCardAction = new ReportCardAction(cardGame, reportable, true, eligibleDestinations, true);
+            Map<PhysicalCard, List<Affiliation>> destinationMap = _targetMap.get(reportable);
+            Action _playCardAction = new ReportCardAction(cardGame, reportable, true, destinationMap);
             cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
             setAsSuccessful();
         } else {

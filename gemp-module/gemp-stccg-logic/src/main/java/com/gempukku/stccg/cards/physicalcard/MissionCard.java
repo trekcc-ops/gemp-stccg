@@ -20,10 +20,11 @@ import com.gempukku.stccg.player.Player;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
         allowGetters = true)
-public class MissionCard extends ST1EPhysicalCard {
+public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliations {
 
     @JsonCreator
     public MissionCard(
@@ -78,5 +79,27 @@ public class MissionCard extends ST1EPhysicalCard {
 
     public boolean hasAffiliationIconForOwner(Affiliation affiliation) {
         return _blueprint.getOwnerAffiliationIcons().contains(affiliation);
+    }
+
+    @Override
+    public boolean hasAffiliation(ST1EGame stGame, Affiliation affiliation, String requestingPlayerName) {
+        if (getGameLocation(stGame) instanceof MissionLocation location) {
+            return location.hasMatchingAffiliationIcon(stGame, requestingPlayerName, List.of(affiliation));
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean matchesAffiliationOfCard(ST1EGame stGame, CardWithAffiliations otherCard, String requestingPlayerName) {
+        if (getGameLocation(stGame) instanceof MissionLocation location) {
+            Set<Affiliation> affiliations = location.getAffiliationIcons(stGame, requestingPlayerName);
+            for (Affiliation affiliation : affiliations) {
+                if (otherCard.hasAffiliation(stGame, affiliation, requestingPlayerName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

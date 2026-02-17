@@ -586,7 +586,7 @@ public class CardBlueprint {
         for (ActionBlueprint actionBlueprint : _actionBlueprints) {
             if (actionBlueprint instanceof ActivateCardActionBlueprint ||
                     actionBlueprint instanceof PlayCardForFreeActionBlueprint ||
-                    actionBlueprint instanceof DownloadCardActionBlueprint) {
+                    actionBlueprint instanceof DownloadCardToDestinationActionBlueprint) {
                 TopLevelSelectableAction action = actionBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
                 if (action != null) result.add(action);
             }

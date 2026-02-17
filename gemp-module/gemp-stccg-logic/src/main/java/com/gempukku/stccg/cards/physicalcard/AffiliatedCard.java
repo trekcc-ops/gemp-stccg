@@ -13,7 +13,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.*;
 
-public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWithCompatibility {
+public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWithCompatibility, CardWithAffiliations {
 
     protected List<Affiliation> _currentAffiliations = new ArrayList<>();
     private Affiliation _defaultCardArtAffiliation;
@@ -141,4 +141,18 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
     public void clearProxyAffiliation() {
         _proxyAffiliation = null;
     }
+
+    public boolean hasAffiliation(ST1EGame stGame, Affiliation affiliation, String requestingPlayerName) {
+        return isAffiliation(affiliation);
+    }
+
+    public boolean matchesAffiliationOfCard(ST1EGame stGame, CardWithAffiliations otherCard, String requestingPlayerName) {
+        for (Affiliation affiliation : getCurrentAffiliations()) {
+            if (otherCard.hasAffiliation(stGame, affiliation, requestingPlayerName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
