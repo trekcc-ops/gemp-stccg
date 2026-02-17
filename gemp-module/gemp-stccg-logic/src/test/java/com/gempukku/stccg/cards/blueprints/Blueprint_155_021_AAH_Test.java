@@ -128,7 +128,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         assertFalse(lopez1.isInPlay());
 
         // Can report to your Fed outpost in either quadrant, but not any other destinations
-        assertTrue(selectableCardsAre(List.of(yourFedOutpost, yourGammaFedOutpost), P1));
+        assertTrue(selectableCardsAre(P1, List.of(yourFedOutpost, yourGammaFedOutpost)));
     }
 
 }

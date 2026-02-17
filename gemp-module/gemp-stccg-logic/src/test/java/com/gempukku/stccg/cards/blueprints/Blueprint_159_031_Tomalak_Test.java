@@ -39,7 +39,7 @@ public class Blueprint_159_031_Tomalak_Test extends AbstractAtTest {
     public void downloadTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame();
         useGameText(tomalak, P1);
-        assertTrue(selectableCardsAre(List.of(lowerDecks, lowerDecks2), P1));
+        assertTrue(selectableCardsAre(P1, List.of(lowerDecks, lowerDecks2)));
         selectCard(P1, lowerDecks);
         assertTrue(lowerDecks.isInPlay());
         assertEquals(Zone.CORE, lowerDecks.getZone());

@@ -43,16 +43,6 @@ public class ReportCardResolver implements ActionCardResolver {
     }
 
 
-
-    public ReportCardResolver(DefaultGame cardGame, ReportableCard cardEnteringPlay,
-                              Collection<PhysicalCard> eligibleDestinations, boolean specialReporting) {
-        _cardEnteringPlay = cardEnteringPlay;
-        _performingPlayerName = cardEnteringPlay.getOwnerName();
-        _destinationAndAffiliationMap = ((ST1EGame) cardGame).getRules()
-                .getDestinationAndAffiliationMapForReportingCard(cardEnteringPlay, (ST1EGame) cardGame,
-                        eligibleDestinations, specialReporting);
-    }
-
     @Override
     public void resolve(DefaultGame cardGame) throws InvalidGameLogicException {
         if (cardGame instanceof ST1EGame stGame) {
@@ -118,7 +108,8 @@ public class ReportCardResolver implements ActionCardResolver {
 
     @Override
     public boolean cannotBeResolved(DefaultGame cardGame) {
-        return _isFailed || (!(cardGame instanceof ST1EGame));
+        return _isFailed || (!(cardGame instanceof ST1EGame)) ||
+                _destinationAndAffiliationMap.isEmpty();
     }
 
     public PhysicalCard getDestination() {

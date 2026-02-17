@@ -96,19 +96,24 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                     Collection<PhysicalCard> destinations =
                             _destinationBlueprint.getDestinationOptions(stGame, performingPlayerName, card, actionContext);
                     Map<PhysicalCard, List<Affiliation>> destinationMap = stGame.getRules()
-                            .getDestinationAndAffiliationMapForReportingCard(reportable, stGame, destinations, true);
-                    targetMap.put(card, destinationMap);
+                            .getDestinationAndAffiliationMapForReportingCard(reportable, stGame, destinations, true,
+                                    downloadableCardFilter);
+                    if (!destinationMap.isEmpty()) {
+                        targetMap.put(card, destinationMap);
+                    }
                 }
             }
-            SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
-                    "Select a card to download", targetMap.keySet());
-            SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
-            DownloadReportableCardToDestinationAction downloadAction =
-                    new DownloadReportableCardToDestinationAction(cardGame, performingPlayerName, cardTarget,
-                            thisCard, targetMap);
-            appendActionToContext(cardGame, downloadAction, actionContext);
-            if (downloadAction.canBeInitiated(cardGame)) {
-                return downloadAction;
+            if (!targetMap.isEmpty()) {
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
+                        "Select a card to download", targetMap.keySet());
+                SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
+                DownloadReportableCardToDestinationAction downloadAction =
+                        new DownloadReportableCardToDestinationAction(cardGame, performingPlayerName, cardTarget,
+                                thisCard, targetMap);
+                appendActionToContext(cardGame, downloadAction, actionContext);
+                if (downloadAction.canBeInitiated(cardGame)) {
+                    return downloadAction;
+                }
             }
         } else if (!downloadableCards.isEmpty() && _specialDownload && cardGame instanceof ST1EGame stGame) {
             SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,

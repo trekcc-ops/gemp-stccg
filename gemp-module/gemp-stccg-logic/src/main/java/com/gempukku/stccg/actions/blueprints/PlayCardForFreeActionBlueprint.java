@@ -76,7 +76,8 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
                     Collection<PhysicalCard> destinations =
                             _destinationBlueprint.getDestinationOptions(stGame, performingPlayerName, card, actionContext);
                     Map<PhysicalCard, List<Affiliation>> destinationMap = stGame.getRules()
-                            .getDestinationAndAffiliationMapForReportingCard(reportable, stGame, destinations, true);
+                            .getDestinationAndAffiliationMapForReportingCard(reportable, stGame, destinations, true,
+                                    playableCardFilter);
                     targetMap.put(card, destinationMap);
                 }
             }

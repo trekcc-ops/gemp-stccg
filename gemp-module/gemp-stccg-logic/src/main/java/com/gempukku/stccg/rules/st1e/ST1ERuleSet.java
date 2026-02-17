@@ -169,8 +169,17 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
             boolean specialReporting
     ) {
         return PlayCardDestinationRules.getDestinationAndAffiliationMapForReportingCards(
-                reportingCard, cardGame, eligibleDestinations, specialReporting);
+                reportingCard, cardGame, eligibleDestinations, specialReporting, Filters.any);
     }
+
+    public Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCard(
+            ReportableCard reportingCard, ST1EGame cardGame, Collection<PhysicalCard> eligibleDestinations,
+            boolean specialReporting, CardFilter applicableFilterForReportingCard
+    ) {
+        return PlayCardDestinationRules.getDestinationAndAffiliationMapForReportingCards(
+                reportingCard, cardGame, eligibleDestinations, specialReporting, applicableFilterForReportingCard);
+    }
+
 
 
     public Map<PhysicalCard, List<Affiliation>> getDestinationMapForSeedingFacilityWithGameTextDestinations(

@@ -17,7 +17,6 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = ThisCardAtMissionCondition.class, name = "thisCardAtMission"),
         @JsonSubTypes.Type(value = TribbleSequenceBrokenCondition.class, name = "tribbleSequenceBroken"),
         @JsonSubTypes.Type(value = TrueCondition.class, name = "true"),
-            // TODO - Need to fix
         @JsonSubTypes.Type(value = HigherScoreThanAllOtherPlayersCondition.class, name = "higherScoreThanAllOtherPlayers"),
         @JsonSubTypes.Type(value = MoreCardsInHandThanAllOtherPlayersCondition.class, name = "higherScoreThanAllOtherPlayers")
 })

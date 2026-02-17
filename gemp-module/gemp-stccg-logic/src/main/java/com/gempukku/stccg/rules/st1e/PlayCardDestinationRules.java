@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -98,7 +99,7 @@ public class PlayCardDestinationRules {
 
     public static Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCards(
             ReportableCard reportingCard, ST1EGame cardGame, Collection<PhysicalCard> eligibleDestinations,
-            boolean specialReporting
+            boolean specialReporting, CardFilter applicableFilterForReportingCard
     ) {
         Map<PhysicalCard, List<Affiliation>> result = new HashMap<>();
         String performingPlayerName = reportingCard.getOwnerName();
@@ -112,10 +113,21 @@ public class PlayCardDestinationRules {
                         missionCard.getGameLocation(cardGame) instanceof MissionLocation missionLocation &&
                         missionLocation.getMissionForPlayer(performingPlayerName) == missionCard &&
                         specialReporting) {
+
+                    List<Affiliation> allowedAffiliations = new ArrayList<>();
+                    if (reportingCard instanceof AffiliatedCard affiliatedCard) {
+                        for (Affiliation affiliation : currentAffiliationOptions) {
+                            affiliatedCard.setProxyAffiliation(affiliation);
+                            if (applicableFilterForReportingCard.accepts(cardGame, affiliatedCard)) {
+                                allowedAffiliations.add(affiliation);
+                            }
+                        }
+                    }
+
                     if (reportingCard instanceof ShipCard && missionLocation.isSpace()) {
-                        result.put(destinationOption, currentAffiliationOptions);
+                        result.put(destinationOption, allowedAffiliations);
                     } else if (missionLocation.isPlanet()) {
-                        result.put(destinationOption, currentAffiliationOptions);
+                        result.put(destinationOption, allowedAffiliations);
                     }
                 } else if (destinationOption instanceof CardWithCrew cardWithCrew) {
 
@@ -123,7 +135,8 @@ public class PlayCardDestinationRules {
                         List<Affiliation> affiliationOptions = new ArrayList<>();
                         for (Affiliation selectedAffiliation : currentAffiliationOptions) {
                             affilCard.setProxyAffiliation(selectedAffiliation);
-                            if (canReportableBePlayedToFacilityOrShip(cardWithCrew, reportingCard, specialReporting, cardGame)) {
+                            if (applicableFilterForReportingCard.accepts(cardGame, affilCard) &&
+                                    canReportableBePlayedToFacilityOrShip(cardWithCrew, reportingCard, specialReporting, cardGame)) {
                                 affiliationOptions.add(selectedAffiliation);
                             }
                         }
@@ -144,7 +157,6 @@ public class PlayCardDestinationRules {
         }
         return result;
     }
-
 
     public static Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCards(
             ReportableCard reportingCard, ST1EGame cardGame, boolean specialReporting

@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.Skill;
@@ -199,11 +198,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public String getFullName() { return _blueprint.getFullName(); }
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame) {
-        if (this instanceof ReportableCard reportable) {
-            return new ReportCardAction(cardGame, reportable, false);
-        } else {
-            return getPlayCardAction(cardGame, false);
-        }
+        return getPlayCardAction(cardGame, false);
     }
 
     public abstract TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree);
