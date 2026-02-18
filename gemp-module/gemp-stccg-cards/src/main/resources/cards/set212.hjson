@@ -7,7 +7,6 @@
             blueprintId: 212_019
             title: Risk is Our Business
             type: incident
-            java-blueprint: false
             property-logo: tos-logo
             image-url: https://www.trekcc.org/1e/cardimages/cage/19.jpg
             actions: [
