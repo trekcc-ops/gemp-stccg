@@ -319,6 +319,7 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
                 disableRestoreFocus
             >
                 <Stack direction="column">
+                    <Typography align="center">{cardTooltipTitle(anchorCard, gamestate)}</Typography>
                     {isStaffed ? <Chip icon={<CheckIcon />} label="Staffed" variant="outlined" /> : null}
                     {(isShip || isFacility || isPlanet) ? <Chip icon={<PersonIcon />} label={`${numPersonnelAttached(gamestate, anchor_id)} Personnel`} variant="outlined" /> : null}
                 </Stack>
