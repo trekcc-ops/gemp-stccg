@@ -304,7 +304,25 @@
             cunning: 6
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
-        }
+        },
+        {
+            "blueprintId": "163_042",
+            "title": "Goval",
+            "type": "personnel",
+            "affiliation": "non-aligned",
+            "property-logo": "tng-logo",
+            "uniqueness": "universal",
+            "classification": "SCIENCE",
+            "icons": "navigation-subcommand",
+            "lore": "Representative of lost Borg who found a new sense of purpose with The One. Temporarily separated himself from his new collective.",
+            "species": "borg,human",
+            "gender": "male",
+            "skill-box": "[*] Biology [*] Archaeology [*] Exobiology",
+            "integrity": 4,
+            "cunning": 6,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/42.jpg"
+        },
         {
             blueprintId: 163_044
             title: Lieutenant Crosis
