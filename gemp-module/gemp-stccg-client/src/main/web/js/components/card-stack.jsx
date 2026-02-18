@@ -9,6 +9,7 @@ import Chip from "@mui/material/Chip";
 import PersonIcon from '@mui/icons-material/Person';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
+import QuizIcon from '@mui/icons-material/Quiz';
 import { useState } from "react";
 import Card from "./card.jsx";
 import { theme } from '../../js/gemp-022/common.js';
@@ -109,6 +110,14 @@ function numPersonnelAttached(gamestate, anchor_id) {
     return beneath_arr.length;
 }
 
+function numSeedCards(gamestate, anchor_id) {
+    for (const [id, cardData] of Object.entries(gamestate["spacelineLocations"])) {
+        if (cardData.missionCardIds.includes(anchor_id)) {
+            return cardData.seedCardCount;
+        }
+    }
+}
+
 function cardInStackHasValidAction(gamestate, allCardsInStack) {
     if (Object.hasOwn(gamestate, "pendingDecision")) {
         if (gamestate.pendingDecision.context === "SELECT_PHASE_ACTION") {
@@ -179,16 +188,7 @@ function cardTooltipTitle(card, gamestate) {
             }
         }
 
-        let retstring = "";
-        if (locationData) {
-            if (locationData.region) {
-                retstring = `${card.title} (${locationData.quadrant}, ${locationData.region})`;
-            }
-            else {
-                retstring = `${card.title} (${locationData.quadrant})`;
-            }
-        }
-        return(retstring);
+        return(card.title);
     }
     else {
         // TODO: Do we want to show anything unique for these in the tooltip?
@@ -212,6 +212,31 @@ function cardTooltipTitle(card, gamestate) {
         // Tribble
         // Trouble
         return(card.title);
+    }
+}
+
+function missionQuadrantAndRegion(card, gamestate) {
+    if (card.cardType === "MISSION") {
+        let locationData;
+        for (let spacelineLocation of Object.values(gamestate["spacelineLocations"])) {
+            if (spacelineLocation.locationId === card.locationId) {
+                locationData = spacelineLocation;
+            }
+        }
+
+        let retstring = "";
+        if (locationData) {
+            if (locationData.region) {
+                retstring = `${locationData.quadrant}, ${locationData.region}`;
+            }
+            else {
+                retstring = `${locationData.quadrant}`;
+            }
+        }
+        return(retstring);
+    }
+    else {
+        return "";
     }
 }
 
@@ -254,7 +279,7 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
     // anchor card data for chip display
     const isShip = (anchorCard.cardType === "SHIP");
     const isFacility = (anchorCard.cardType === "FACILITY");
-    const isPlanet = (anchorCard.cardType === "MISSION");
+    const isMission = (anchorCard.cardType === "MISSION");
     const isStaffed = (anchorCard.cardType === "SHIP"); // TODO: staffing check
 
     // Set minimum size of the stack as a whole.
@@ -320,8 +345,10 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
             >
                 <Stack direction="column">
                     <Typography align="center">{cardTooltipTitle(anchorCard, gamestate)}</Typography>
+                    {isMission ? <Typography align="center">{missionQuadrantAndRegion(anchorCard, gamestate)}</Typography> : null}
                     {isStaffed ? <Chip icon={<CheckIcon />} label="Staffed" variant="outlined" /> : null}
-                    {(isShip || isFacility || isPlanet) ? <Chip icon={<PersonIcon />} label={`${numPersonnelAttached(gamestate, anchor_id)} Personnel`} variant="outlined" /> : null}
+                    {(isShip || isFacility || isMission) ? <Chip icon={<PersonIcon />} label={`${numPersonnelAttached(gamestate, anchor_id)} Personnel`} variant="outlined" /> : null}
+                    {isMission ? <Chip icon={<QuizIcon />} label={`${numSeedCards(gamestate, anchor_id)} Seed Cards`} variant="outlined" /> : null}
                 </Stack>
             </Popover>
             <Popover
