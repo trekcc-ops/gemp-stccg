@@ -4,6 +4,7 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,6 +22,10 @@ public class Blueprint_155_095_WillRiker_Test extends AbstractAtTest {
         builder.startGame();
         assertTrue(riker.isCompatibleWith(_game, riker));
         assertTrue(riker.isCompatibleWith(_game, runabout));
+        assertFalse(riker.isCompatibleWith(_game, picard));
+        riker.setCurrentAffiliation(Affiliation.FEDERATION);
+        assertTrue(riker.isAffiliation(Affiliation.FEDERATION));
+        assertFalse(riker.isAffiliation(Affiliation.NON_ALIGNED));
         assertFalse(riker.isCompatibleWith(_game, picard));
     }
 }
