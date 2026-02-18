@@ -9,6 +9,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -53,8 +54,7 @@ public class PlaceCardOnMissionAction extends ActionyAction {
             GameLocation location = gameState.getLocationById(_locationId);
             if (location instanceof MissionLocation mission) {
                 gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
-                _cardBeingPlaced.setPlacedOnMission(true);
-                _cardBeingPlaced.setLocation(cardGame, mission);
+                _cardBeingPlaced.setParentCardRelationship(mission.getTopMissionCard(), ChildCardRelationshipType.ATOP);
                 gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
                 gameState.getModifiersLogic().addWhileThisCardInPlayModifiers(List.of(_modifier), _cardBeingPlaced);
 

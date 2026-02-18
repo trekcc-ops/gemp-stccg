@@ -300,8 +300,7 @@ public class GameTestBuilder {
         executeAction(reportAction);
 
         assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isAttachedTo(cardWithCrew));
-        assertTrue(cardWithCrew.hasCardInCrew(cardToAdd));
+        assertTrue(cardToAdd.isAboard(cardWithCrew));
         return cardToAdd;
     }
 
@@ -317,8 +316,7 @@ public class GameTestBuilder {
         executeAction(reportAction);
 
         assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isAttachedTo(cardWithCrew));
-        assertTrue(cardWithCrew.hasCardInCrew(cardToAdd));
+        assertTrue(cardToAdd.isAboard(cardWithCrew));
         return cardToAdd;
     }
 
@@ -332,8 +330,7 @@ public class GameTestBuilder {
         executeAction(reportAction);
 
         assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isDocked());
-        assertTrue(cardToAdd.isAttachedTo(facility));
+        assertTrue(cardToAdd.isDockedAtCardId(facility.getCardId()));
         return cardToAdd;
     }
 

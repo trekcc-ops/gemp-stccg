@@ -168,10 +168,10 @@ public abstract class GameState {
                 stGame.getGameState().removeCardFromAwayTeam(stGame, reportable);
             }
 
-            if (card.isInPlay())
+            if (card.isInPlay()) {
                 _inPlay.remove(card);
-            if (card.getAttachedToCardId() != null)
-                card.detach();
+            }
+            card.clearParentCardRelationship();
         }
 
         for (PhysicalCard card : cards) {

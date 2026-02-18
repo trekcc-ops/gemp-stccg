@@ -126,7 +126,7 @@ public class PlayCardDestinationRules {
 
                     if (reportingCard instanceof ShipCard && missionLocation.isSpace()) {
                         result.put(destinationOption, allowedAffiliations);
-                    } else if (missionLocation.isPlanet()) {
+                    } else if (missionCard.isPlanet()) {
                         result.put(destinationOption, allowedAffiliations);
                     }
                 } else if (destinationOption instanceof CardWithCrew cardWithCrew) {

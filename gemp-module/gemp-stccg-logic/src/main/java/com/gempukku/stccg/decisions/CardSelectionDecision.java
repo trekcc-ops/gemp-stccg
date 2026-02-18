@@ -9,6 +9,6 @@ public interface CardSelectionDecision extends AwaitingDecision {
     String[] getCardIds();
 
     List<? extends PhysicalCard> getSelectableCards();
-    void decisionMade(List<PhysicalCard> cardsSelected) throws DecisionResultInvalidException;
+    void decisionMade(List<? extends PhysicalCard> cardsSelected) throws DecisionResultInvalidException;
 
 }

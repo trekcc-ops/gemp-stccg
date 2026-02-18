@@ -50,7 +50,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
 
         // leave Data at the outpost to not meet the 3 OFFICER with STRENGTH >5 requirement
         beamCards(P1, runabout, List.of(data), outpost);
-        assertFalse(runabout.hasCardInCrew(data));
+        assertFalse(data.isAboard(runabout));
 
         attemptMission(P1, _mission);
         for (PersonnelCard personnel : runabout.getAttemptingPersonnel(_game)) {
@@ -69,7 +69,7 @@ public class Blueprint_109_010_Maglock_Test extends AbstractAtTest {
 
         // Leave Troi at the outpost; still meet requirement
         beamCards(P1, runabout, List.of(troi), outpost);
-        assertFalse(runabout.hasCardInCrew(troi));
+        assertTrue(troi.isAboard(outpost));
 
         attemptMission(P1, _mission);
         for (PersonnelCard personnel : runabout.getAttemptingPersonnel(_game)) {

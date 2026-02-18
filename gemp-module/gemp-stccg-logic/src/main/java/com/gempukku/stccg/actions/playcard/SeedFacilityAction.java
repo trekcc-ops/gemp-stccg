@@ -8,6 +8,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -37,8 +38,8 @@ public class SeedFacilityAction extends SeedCardAction {
                 stGame.getGameState().removeCardsFromZoneWithoutSendingToClient(stGame, List.of(_cardEnteringPlay));
                 performingPlayer.addPlayedAffiliation(selectedAffiliation);
                 MissionCard destinationCard = _targetResolver.getDestinationMission();
-                facility.setLocationId(stGame, destinationCard.getLocationId());
                 stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
+                facility.setParentCardRelationship(destinationCard, ChildCardRelationshipType.IN_SPACE);
                 saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
                 setAsSuccessful();
             } else {

@@ -17,6 +17,7 @@ import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -135,4 +136,17 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName) {
         return _blueprint.createSeedPhaseActions(cardGame, performingPlayerName, this);
     }
+
+    public void setAsAboard(PhysicalCard destination) {
+        setParentCardRelationship(destination, ChildCardRelationshipType.ABOARD);
+    }
+
+    public void setAsOnPlanet(PhysicalCard destination) {
+        setParentCardRelationship(destination, ChildCardRelationshipType.ON_PLANET);
+    }
+
+    public void setAsInSpaceAtLocation(PhysicalCard destination) {
+        setParentCardRelationship(destination, ChildCardRelationshipType.IN_SPACE);
+    }
+
 }

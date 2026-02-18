@@ -7,7 +7,9 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 
 public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
     private final ShipCard _performingCard;
@@ -23,7 +25,12 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
 
     @Override
     public void processEffect(DefaultGame cardGame) {
-        _performingCard.undockFromFacility();
+        PhysicalCard dockedAtCard = _performingCard.getDockedAtCard();
+        if (dockedAtCard != null && dockedAtCard.getCardType() == CardType.FACILITY) {
+            _performingCard.setParentCardRelationship(dockedAtCard.getParentCard(), ChildCardRelationshipType.IN_SPACE);
+        } else if (dockedAtCard != null && dockedAtCard.getCardType() == CardType.SITE) {
+            _performingCard.setParentCardRelationship(dockedAtCard.getParentCard().getParentCard(), ChildCardRelationshipType.IN_SPACE);
+        }
         setAsSuccessful();
     }
 

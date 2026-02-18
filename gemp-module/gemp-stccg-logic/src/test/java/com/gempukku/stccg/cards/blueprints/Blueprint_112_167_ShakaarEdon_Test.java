@@ -47,7 +47,7 @@ public class Blueprint_112_167_ShakaarEdon_Test extends AbstractAtTest {
 
         // report Shakaar to facility
         playCard(P1, shakaar);
-        assertTrue(outpost.hasCardInCrew(shakaar));
+        assertTrue(shakaar.isAboard(outpost));
 
         // Verify Shakaar has no impact on cards on planet or himself, but does increase STRENGTH for Bajoran on facility
         assertEquals(6, sitoOnPlanet.getStrength(_game));

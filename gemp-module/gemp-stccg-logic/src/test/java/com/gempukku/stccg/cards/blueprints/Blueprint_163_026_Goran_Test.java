@@ -57,7 +57,7 @@ public class Blueprint_163_026_Goran_Test extends AbstractAtTest {
         selectCard(P1, outpost);
 
         assertTrue(disruptor1.isInPlay());
-        assertTrue(disruptor1.isAttachedTo(outpost));
+        assertTrue(disruptor1.isAboard(outpost));
 
         // Skip to next turn. Should be able to play another copy of Lopez, but his special download can't be reused.
         skipToNextTurnAndPhase(P1, Phase.CARD_PLAY);

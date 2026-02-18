@@ -50,7 +50,7 @@ public class Blueprint_106_014_AdmiralMcCoy_Test extends AbstractAtTest {
 
         // report McCoy to facility
         playCard(P1, mccoy);
-        assertTrue(outpost.hasCardInCrew(mccoy));
+        assertTrue(mccoy.isAboard(outpost));
 
         // Verify McCoy increases CUNNING of all MEDICAL aboard facility except himself
         assertEquals(9, ogawa.getCunning(_game));

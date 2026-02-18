@@ -7,6 +7,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -138,7 +139,7 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         _proxyAffiliation = null;
     }
 
-    public boolean hasAffiliation(ST1EGame stGame, Affiliation affiliation, String requestingPlayerName) {
+    public boolean hasAffiliation(DefaultGame cardGame, Affiliation affiliation, String requestingPlayerName) {
         return isAffiliation(affiliation);
     }
 

@@ -14,6 +14,7 @@ import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -52,8 +53,6 @@ public interface PhysicalCard {
     String getOwnerName();
 
     CardBlueprint getBlueprint();
-    void attachTo(PhysicalCard physicalCard);
-    void detach();
 
     @JsonIgnore
     PhysicalCard getAttachedTo(DefaultGame cardGame);
@@ -74,6 +73,7 @@ public interface PhysicalCard {
     GameLocation getGameLocation(ST1EGameState gameSate);
 
     GameLocation getGameLocation(ST1EGame cardGame);
+    void setLocationId(int locationId);
     void setLocationId(DefaultGame cardGame, int locationId);
     void setLocation(DefaultGame cardGame, GameLocation location);
 
@@ -95,8 +95,6 @@ public interface PhysicalCard {
     List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult);
 
     boolean isUnique();
-
-    Integer getNumberOfCopiesSeededByPlayer(String playerName, DefaultGame cardGame);
 
     boolean isCopyOf(PhysicalCard card);
     List<TopLevelSelectableAction> createSeedCardActions(DefaultGame cardGame);
@@ -124,8 +122,6 @@ public interface PhysicalCard {
     String getControllerName();
 
     int getCost();
-
-    void setPlacedOnMission(boolean placedOnMission);
 
     @JsonProperty("isPlacedOnMission")
     boolean isPlacedOnMission();
@@ -176,8 +172,6 @@ public interface PhysicalCard {
 
     boolean isActive();
 
-    boolean isAttachedTo(PhysicalCard card);
-
     @JsonProperty("locationId")
     int getLocationId();
 
@@ -218,4 +212,14 @@ public interface PhysicalCard {
     default List<Modifier> getAlwaysOnModifiers(DefaultGame cardGame) {
         return getBlueprint().getAlwaysOnModifiers(cardGame,this);
     }
+
+    void clearParentCardRelationship();
+    void clearChildRelationship(PhysicalCard childCard);
+
+    void addChildCardRelationship(PhysicalCard childCard, ChildCardRelationshipType childCardRelationshipType);
+
+    PhysicalCard getParentCard();
+    boolean isAboard(PhysicalCard card);
+    void setParentCardRelationship(PhysicalCard parentCard, ChildCardRelationshipType relationshipType);
+
 }

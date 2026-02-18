@@ -12,7 +12,6 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,15 +43,14 @@ public class Blueprint_163_044_LtCrosis_Test extends AbstractAtTest {
         assertTrue(mission2.isInPlay());
         assertEquals(_mission.getGameLocation(_game), mission2.getGameLocation(_game));
 
-        MissionLocation missionLocation = (MissionLocation) _mission.getGameLocation(_game);
-        assertFalse(missionLocation.getAffiliationIcons(_game, P1).contains(Affiliation.NON_ALIGNED));
-        assertFalse(missionLocation.getAffiliationIcons(_game, P2).contains(Affiliation.NON_ALIGNED));
+        assertFalse(_mission.hasAffiliation(_game, Affiliation.NON_ALIGNED, P1));
+        assertFalse(_mission.hasAffiliation(_game, Affiliation.NON_ALIGNED, P2));
 
         skipToNextTurnAndPhase(P1, Phase.CARD_PLAY);
         playCard(P1, crosis);
 
-        assertTrue(missionLocation.getAffiliationIcons(_game, P1).contains(Affiliation.NON_ALIGNED));
-        assertTrue(missionLocation.getAffiliationIcons(_game, P2).contains(Affiliation.NON_ALIGNED));
+        assertTrue(_mission.hasAffiliation(_game, Affiliation.NON_ALIGNED, P1));
+        assertTrue(_mission.hasAffiliation(_game, Affiliation.NON_ALIGNED, P2));
 
         beamCard(P1, outpost, crosis, _mission);
         AwayTeam awayTeam = _game.getGameState().getAwayTeamForCard(crosis);
@@ -60,9 +58,9 @@ public class Blueprint_163_044_LtCrosis_Test extends AbstractAtTest {
 
         attemptMission(P1, _mission);
 
-        // Confirm that Crosis was killed; missions are no longer non-aligned
+        // Confirm that Crosis was killed; mission is no longer non-aligned
         assertEquals(Zone.DISCARD, crosis.getZone());
-        assertFalse(missionLocation.getAffiliationIcons(_game, P1).contains(Affiliation.NON_ALIGNED));
-        assertFalse(missionLocation.getAffiliationIcons(_game, P2).contains(Affiliation.NON_ALIGNED));
+        assertFalse(_mission.hasAffiliation(_game, Affiliation.NON_ALIGNED, P1));
+        assertFalse(_mission.hasAffiliation(_game, Affiliation.NON_ALIGNED, P2));
     }
 }

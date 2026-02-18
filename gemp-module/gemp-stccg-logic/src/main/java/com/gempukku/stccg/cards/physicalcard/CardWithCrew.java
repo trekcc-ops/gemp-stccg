@@ -1,11 +1,9 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 public interface CardWithCrew extends CardWithCompatibility, CardWithHullIntegrity {
 
@@ -21,11 +19,4 @@ public interface CardWithCrew extends CardWithCompatibility, CardWithHullIntegri
         }
         return personnelInCrew;
     }
-
-
-    default boolean hasCardInCrew(PhysicalCard crewCard) {
-        return crewCard.isAttachedTo(this) &&
-                List.of(CardType.PERSONNEL, CardType.EQUIPMENT).contains(crewCard.getCardType());
-    }
-
 }
