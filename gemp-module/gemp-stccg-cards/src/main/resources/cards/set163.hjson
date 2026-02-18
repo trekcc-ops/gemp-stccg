@@ -366,7 +366,33 @@
             cunning: 7
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/tstl/45.jpg
-        }
+        },
+        {
+            "blueprintId": "163_047",
+            "title": "The One",
+            "type": "personnel",
+            "affiliation": "non-aligned",
+            "property-logo": "tng-logo",
+            "classification": "V.I.P.",
+            "icons": "command,nemesis-descent-left",
+            "persona": "Lore",
+            "lore": "The Soong-type android <b>Lore</b> found his calling giving purpose to the disconnected Borg drones.",
+            "restriction-box": {
+                "text": "Does not work with [Fed] affiliation.",
+                "modifier": {
+                    "type": "thisCardIncompatibleWith",
+                    "cardFilter": "affiliation=federation"
+                }
+            },
+            "species": "android",
+            "gender": "male",
+            "skill-box": "[*] Treachery x2 [*] Leadership [*] Computer Skill [*] Diplomacy [*] Transporter Skill [DL] Lore's Fingernail",
+            "integrity": 1,
+            "cunning": 13,
+            "strength": 12,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/47.jpg",
+            "rarity": "V"
+        },
         {
             blueprintId: 163_048
             title: Third of Five

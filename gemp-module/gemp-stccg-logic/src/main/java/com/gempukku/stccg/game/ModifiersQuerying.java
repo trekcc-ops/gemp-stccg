@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.physicalcard.CardWithCompatibility;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -249,6 +250,17 @@ public interface ModifiersQuerying {
         List<Modifier> modifiers = getModifiersAffectingCardByEffect(ModifierEffect.MISSION_ATTEMPT_MODIFIER, missionCard);
         for (Modifier modifier : modifiers) {
             if (modifier instanceof ThisMissionCannotBeAttemptedModifier && modifier.affectsCard(getGame(), missionCard)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    default boolean cardsAreIncompatiblePerModifiers(CardWithCompatibility card1, CardWithCompatibility card2) {
+        List<Modifier> modifiers = getModifiersInEffect(ModifierEffect.COMPATIBILITY_MODIFIER);
+        for (Modifier modifier : modifiers) {
+            if (modifier instanceof ThisCardIncompatibleWithModifier incompatibilityModifier &&
+                    incompatibilityModifier.cardsAreIncompatible(getGame(), card1, card2)) {
                 return true;
             }
         }

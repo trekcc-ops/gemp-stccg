@@ -9,7 +9,7 @@ public interface CardWithCompatibility extends PhysicalCard {
                 affil1.doesNotWorkWith(affil2)) {
             return false;
         } else {
-            return stGame.getRules().areCardsCompatiblePerRules(this, card);
+            return stGame.getRules().areCardsCompatiblePerRules(stGame, this, card);
         }
     }
 

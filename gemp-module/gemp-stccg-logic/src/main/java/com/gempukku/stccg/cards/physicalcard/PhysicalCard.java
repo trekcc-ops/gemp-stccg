@@ -17,6 +17,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
@@ -214,4 +215,7 @@ public interface PhysicalCard {
         return getBlueprint().getNullifyRequirement();
     }
 
+    default List<Modifier> getAlwaysOnModifiers(DefaultGame cardGame) {
+        return getBlueprint().getAlwaysOnModifiers(cardGame,this);
+    }
 }
