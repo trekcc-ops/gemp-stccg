@@ -478,7 +478,22 @@
             "weapons": 5,
             "shields": 5,
             "image-url": "https://www.trekcc.org/1e/cardimages/tstl/52.jpg"
-        }
+        },
+        {
+            "blueprintId": "163_053",
+            "title": "Assimilator",
+            "type": "ship",
+            "affiliation": "non-aligned",
+            "property-logo": "tng-logo",
+            "ship-class": "BORG ASSIMILATOR",
+            "lore": "Large Borg ship operated by a group of renegade Borg. First encountered the <i>U.S.S. Enterprise</i> while raiding the Federation outpost on Ohniaka III.",
+            "gametext": "Tractor Beam",
+            "staffing": "navigation-subcommand,navigation-subcommand,defense-subcommand"
+            "range": 7,
+            "weapons": 12,
+            "shields": 12,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/53.jpg"
+        },
         {
             blueprintId: 163_054
             title: Stolen Ship
