@@ -525,10 +525,6 @@ public class CardBlueprint {
         else return _persona;
     }
 
-    public boolean doesNotWorkWithPerRestrictionBox(AffiliatedCard thisCard, AffiliatedCard otherCard) {
-        return false;
-    }
-
     public String getBaseBlueprintId() { return _baseBlueprintId; }
     public void setBaseBlueprintId(String baseBlueprintId) { _baseBlueprintId = baseBlueprintId; }
 

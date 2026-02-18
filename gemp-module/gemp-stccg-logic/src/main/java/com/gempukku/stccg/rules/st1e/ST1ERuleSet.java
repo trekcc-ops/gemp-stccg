@@ -73,7 +73,7 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
 
 
 
-    public boolean areCardsCompatiblePerRules(ST1EGame stGame, CardWithCompatibility card1, CardWithCompatibility card2) {
+    public boolean areCardsCompatible(ST1EGame stGame, CardWithCompatibility card1, CardWithCompatibility card2) {
         if (stGame.cardsAreIncompatiblePerModifiers(card1, card2)) {
             return false;
         } else {
