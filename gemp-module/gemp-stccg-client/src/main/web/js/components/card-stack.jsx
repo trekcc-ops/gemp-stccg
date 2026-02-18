@@ -2,6 +2,9 @@
 // We will display up to three cards on top of it
 // We will display up to three cards beneath it.
 import Box from "@mui/material/Box";
+import Popover from '@mui/material/Popover';
+import Typography from '@mui/material/Typography';
+import { useState } from "react";
 import Card from "./card.jsx";
 import { theme } from '../../js/gemp-022/common.js';
 
@@ -120,12 +123,98 @@ function cardInStackHasValidAction(gamestate, allCardsInStack) {
     return false;
 }
 
+function cardTooltipTitle(card, gamestate) {
+    if (card.cardType === "PERSONNEL") {
+        {/* TODO: Card stats from GameState; waiting on GameState. */}
+        let retstring = "";
+        if (card.uniqueness === "UNIVERSAL") {
+            const universalDiamond = `\u2756`.normalize();
+            retstring = `${universalDiamond} ${card.title}`;
+        }
+        else {
+            retstring = `${card.title}`;
+        }
+        return(retstring);
+    }
+    else if (card.cardType === "FACILITY") {
+        {/* TODO: Card stats from GameState; waiting on GameState. */}
+        return(card.title);
+    }
+    else if (card.cardType === "SHIP") {
+        {/* TODO: Card stats from GameState; waiting on GameState. */}
+        let retstring = "";
+        if (card.uniqueness === "UNIVERSAL") {
+            const universalDiamond = `\u2756`.normalize();
+            retstring = `${universalDiamond} ${card.title}`;
+        }
+        else {
+            retstring = `${card.title}`;
+        }
+        return(retstring);
+    }
+    else if (card.cardType === "MISSION") {
+        let locationData;
+        for (let spacelineLocation of Object.values(gamestate["spacelineLocations"])) {
+            if (spacelineLocation.locationId === card.locationId) {
+                locationData = spacelineLocation;
+            }
+        }
+
+        let retstring = "";
+        if (locationData) {
+            if (locationData.region) {
+                retstring = `${card.title} (${locationData.quadrant}, ${locationData.region})`;
+            }
+            else {
+                retstring = `${card.title} (${locationData.quadrant})`;
+            }
+        }
+        return(retstring);
+    }
+    else {
+        // TODO: Do we want to show anything unique for these in the tooltip?
+        // Artifact
+        // Damage Marker
+        // Dilemma
+        // Doorway
+        // Equipment
+        // Event
+        // Incident
+        // Interrupt
+        // Objective
+        // Q Artifact
+        // Q Dilemma
+        // Q Event
+        // Q Interrupt
+        // Q Mission
+        // Site
+        // Tactic
+        // Time Location
+        // Tribble
+        // Trouble
+        return(card.title);
+    }
+}
+
 export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, sx} ) {
     /* CardStack sets a grid with columns that are smaller than the content.
      * By setting a z-index and the minimum card width and height to values larger than the
      *   width and height of the cell, the card image overflows its grid cell
      *   giving the illusion of cards stacking on top of each other.
      */
+
+    // Display Popover containing stack data on hover.
+    // setup state
+    const [onHoverAnchorElement, setOnHoverAnchorElement] = useState(null);
+    // setup interactivity
+    const onHoverOpen = (event) => {
+        setOnHoverAnchorElement(event.currentTarget);
+    };
+    const onHoverClose = () => {
+        setOnHoverAnchorElement(null);
+    };
+    // default closed
+    const showChips = Boolean(onHoverAnchorElement);
 
 
     // Set minimum size of cards in the stack.
@@ -168,19 +257,43 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
     );
 
     return(
-        <Box
-            data-cardstackanchorid={anchor_id}
-            sx={{
-                minWidth: stackMinWidth,
-                minHeight: stackMinHeight,
-                display: "grid",
-                gridTemplateColumns: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
-                gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
-                border: stackBorder,
-                borderRadius: stackBorderRadius,
-                ...sx //also use incoming styles from parent
-            }}>
-            {reactCardObjs}
+        <Box>
+            <Box
+                aria-owns={open ? `${anchor_id}-hover-popover` : undefined}
+                aria-haspopup="true"
+                onMouseEnter={onHoverOpen}
+                onMouseLeave={onHoverClose}
+                data-cardstackanchorid={anchor_id}
+                sx={{
+                    minWidth: stackMinWidth,
+                    minHeight: stackMinHeight,
+                    display: "grid",
+                    gridTemplateColumns: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
+                    gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
+                    border: stackBorder,
+                    borderRadius: stackBorderRadius,
+                    ...sx //also use incoming styles from parent
+                }}>
+                {reactCardObjs}
+            </Box>
+            <Popover
+                id={`${anchor_id}-hover-popover`}
+                sx={{ pointerEvents: 'none' }}
+                open={showChips}
+                anchorEl={onHoverAnchorElement}
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                }}
+                onClose={onHoverClose}
+                disableRestoreFocus
+            >
+                <Typography sx={{ p: 1 }}>{cardTooltipTitle(anchorCard, gamestate)}</Typography>
+            </Popover>
         </Box>
     );
 }
