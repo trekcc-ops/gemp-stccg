@@ -3,7 +3,12 @@
 // We will display up to three cards beneath it.
 import Box from "@mui/material/Box";
 import Popover from '@mui/material/Popover';
+import Stack from "@mui/material/Stack";
 import Typography from '@mui/material/Typography';
+import Chip from "@mui/material/Chip";
+import PersonIcon from '@mui/icons-material/Person';
+import CheckIcon from '@mui/icons-material/Check';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useState } from "react";
 import Card from "./card.jsx";
 import { theme } from '../../js/gemp-022/common.js';
@@ -88,6 +93,20 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
         }
     }
     return retarr;
+}
+
+function numPersonnelAttached(gamestate, anchor_id) {
+    let beneath_arr = [];
+    for (const [id, cardData] of Object.entries(gamestate["visibleCardsInGame"])) {
+        if ((cardData.attachedToCardId != null) &&
+            (cardData.attachedToCardId === anchor_id) &&
+            (cardData.cardType === "PERSONNEL") &&
+            (cardData.isInPlay)) {
+                beneath_arr.push(cardData);
+        }
+    }
+
+    return beneath_arr.length;
 }
 
 function cardInStackHasValidAction(gamestate, allCardsInStack) {
@@ -214,7 +233,8 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
         setOnHoverAnchorElement(null);
     };
     // default closed
-    const showChips = Boolean(onHoverAnchorElement);
+    const showLeftChips = false; // TODO
+    const showRightChips = Boolean(onHoverAnchorElement);
 
 
     // Set minimum size of cards in the stack.
@@ -230,6 +250,12 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
     let cards_above = flat_create_card_objs_above(gamestate, anchor_id)
     let cards_beneath = flat_create_card_objs_beneath(gamestate, anchor_id);
     let allCards = cards_above.concat([anchorCard], cards_beneath);
+
+    // anchor card data for chip display
+    const isShip = (anchorCard.cardType === "SHIP");
+    const isFacility = (anchorCard.cardType === "FACILITY");
+    const isPlanet = (anchorCard.cardType === "MISSION");
+    const isStaffed = (anchorCard.cardType === "SHIP"); // TODO: staffing check
 
     // Set minimum size of the stack as a whole.
     // Dependent on quantity of cards in the stack, calculated above.
@@ -259,7 +285,7 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
     return(
         <Box>
             <Box
-                aria-owns={open ? `${anchor_id}-hover-popover` : undefined}
+                aria-owns={open ? `${anchor_id}-right-popover, ${anchor_id}-left-popover` : undefined}
                 aria-haspopup="true"
                 onMouseEnter={onHoverOpen}
                 onMouseLeave={onHoverClose}
@@ -277,22 +303,43 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
                 {reactCardObjs}
             </Box>
             <Popover
-                id={`${anchor_id}-hover-popover`}
+                id={`${anchor_id}-right-popover`}
                 sx={{ pointerEvents: 'none' }}
-                open={showChips}
+                open={showRightChips}
                 anchorEl={onHoverAnchorElement}
                 anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
+                    vertical: 'center',
+                    horizontal: 'right',
                 }}
                 transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
+                    vertical: 'center',
+                    horizontal: 'left',
                 }}
                 onClose={onHoverClose}
                 disableRestoreFocus
             >
-                <Typography sx={{ p: 1 }}>{cardTooltipTitle(anchorCard, gamestate)}</Typography>
+                <Stack direction="column">
+                    {isStaffed ? <Chip icon={<CheckIcon />} label="Staffed" variant="outlined" /> : null}
+                    {(isShip || isFacility || isPlanet) ? <Chip icon={<PersonIcon />} label={`${numPersonnelAttached(gamestate, anchor_id)} Personnel`} variant="outlined" /> : null}
+                </Stack>
+            </Popover>
+            <Popover
+                id={`${anchor_id}-left-popover`}
+                sx={{ pointerEvents: 'none' }}
+                open={showLeftChips}
+                anchorEl={onHoverAnchorElement}
+                anchorOrigin={{
+                    vertical: 'center',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'right',
+                }}
+                onClose={onHoverClose}
+                disableRestoreFocus
+            >
+                {/* TODO: Decide if I'm going to split these L/R or do one big stack */}
             </Popover>
         </Box>
     );
