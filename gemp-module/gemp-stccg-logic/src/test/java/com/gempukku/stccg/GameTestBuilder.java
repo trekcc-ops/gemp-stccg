@@ -164,6 +164,16 @@ public class GameTestBuilder {
         return mission;
     }
 
+    public ShipCard addShipInSpace(String shipBlueprintId, String cardTitle, String ownerName)
+            throws CardNotFoundException, InvalidGameOperationException {
+        if (_missions.isEmpty()) {
+            addMission(DEFAULT_MISSION, DEFAULT_MISSION_TITLE, ownerName);
+        }
+        MissionCard destination = _missions.getFirst();
+        return addShipInSpace(shipBlueprintId, cardTitle, ownerName, destination);
+    }
+
+
     public ShipCard addShipInSpace(String shipBlueprintId, String cardTitle, String ownerName, MissionCard mission)
             throws CardNotFoundException, InvalidGameOperationException {
         ShipCard shipCard = addCardToGame(shipBlueprintId, cardTitle, ownerName, ShipCard.class);
