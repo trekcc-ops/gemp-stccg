@@ -39,9 +39,14 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     protected int _currentLocationId;
     private boolean _revealedSeedCard = false;
 
+    @JsonProperty("parentCard")
     protected PhysicalCard _parentCard;
+
+    @JsonProperty("relationToParent")
     protected ChildCardRelationshipType _parentCardRelationship;
 
+
+    @JsonProperty("childrenCards")
     protected final Map<ChildCardRelationshipType, List<PhysicalCard>> _childrenCards = new HashMap<>();
 
     public AbstractPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {

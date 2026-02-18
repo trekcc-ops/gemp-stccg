@@ -30,10 +30,14 @@ import java.util.Objects;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "title", "blueprintId", "cardId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission" })
+        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission",
+        "childrenCards", "parentCard", "relationToParent"
+})
 @JsonPropertyOrder({ "cardId", "title", "blueprintId", "owner", "locationId",
         "affiliation", "attachedToCardId", "stackedOnCardId", "isStopped", "dockedAtCardId", "rangeAvailable",
-        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission" })
+        "imageUrl", "cardType", "uniqueness", "hasUniversalIcon", "isInPlay", "isPlacedOnMission",
+        "childrenCards", "parentCard", "relationToParent"
+})
 @JsonIgnoreProperties(value = { "title" }, allowGetters = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, include = JsonTypeInfo.As.PROPERTY, property = "className")
 public interface PhysicalCard {
