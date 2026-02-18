@@ -304,7 +304,25 @@
             cunning: 6
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/tstl/40.jpg
-        }
+        },
+        {
+            "blueprintId": "163_042",
+            "title": "Goval",
+            "type": "personnel",
+            "affiliation": "non-aligned",
+            "property-logo": "tng-logo",
+            "uniqueness": "universal",
+            "classification": "SCIENCE",
+            "icons": "navigation-subcommand",
+            "lore": "Representative of lost Borg who found a new sense of purpose with The One. Temporarily separated himself from his new collective.",
+            "species": "borg,human",
+            "gender": "male",
+            "skill-box": "[*] Biology [*] Archaeology [*] Exobiology",
+            "integrity": 4,
+            "cunning": 6,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/42.jpg"
+        },
         {
             blueprintId: 163_044
             title: Lieutenant Crosis
@@ -366,7 +384,33 @@
             cunning: 7
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/tstl/45.jpg
-        }
+        },
+        {
+            "blueprintId": "163_047",
+            "title": "The One",
+            "type": "personnel",
+            "affiliation": "non-aligned",
+            "property-logo": "tng-logo",
+            "classification": "V.I.P.",
+            "icons": "command,nemesis-descent-left",
+            "persona": "Lore",
+            "lore": "The Soong-type android <b>Lore</b> found his calling giving purpose to the disconnected Borg drones.",
+            "restriction-box": {
+                "text": "Does not work with [Fed] affiliation.",
+                "modifier": {
+                    "type": "thisCardIncompatibleWith",
+                    "cardFilter": "affiliation=federation"
+                }
+            },
+            "species": "android",
+            "gender": "male",
+            "skill-box": "[*] Treachery x2 [*] Leadership [*] Computer Skill [*] Diplomacy [*] Transporter Skill [DL] Lore's Fingernail",
+            "integrity": 1,
+            "cunning": 13,
+            "strength": 12,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/47.jpg",
+            "rarity": "V"
+        },
         {
             blueprintId: 163_048
             title: Third of Five
@@ -434,7 +478,22 @@
             "weapons": 5,
             "shields": 5,
             "image-url": "https://www.trekcc.org/1e/cardimages/tstl/52.jpg"
-        }
+        },
+        {
+            "blueprintId": "163_053",
+            "title": "Assimilator",
+            "type": "ship",
+            "affiliation": "non-aligned",
+            "property-logo": "tng-logo",
+            "ship-class": "BORG ASSIMILATOR",
+            "lore": "Large Borg ship operated by a group of renegade Borg. First encountered the <i>U.S.S. Enterprise</i> while raiding the Federation outpost on Ohniaka III.",
+            "gametext": "Tractor Beam",
+            "staffing": "navigation-subcommand,navigation-subcommand,defense-subcommand"
+            "range": 7,
+            "weapons": 12,
+            "shields": 12,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tstl/53.jpg"
+        },
         {
             blueprintId: 163_054
             title: Stolen Ship

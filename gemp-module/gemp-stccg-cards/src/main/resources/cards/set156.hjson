@@ -6,7 +6,6 @@
         {
             blueprintId: 156_010
             title: Surprise Party
-            java-blueprint: false
             type: event
             property-logo: tng-logo
             lore: "Planning Lt. Worf's party was easy; translating \"For He's a Jolly Good Fellow\" into Klingon was hard. There didn't seem to be a Klingon word for \"jolly.\""

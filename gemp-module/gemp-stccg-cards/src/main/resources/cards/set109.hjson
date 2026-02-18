@@ -68,7 +68,6 @@
             type: objective
             uniqueness: unique
             property-logo: first-contact-logo
-            java-blueprint: false
             image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
             actions: [
                 {

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
@@ -19,7 +18,6 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -118,7 +116,7 @@ public class ST1EGameState extends GameState {
     }
 
 
-    public void createPhysicalCards(CardBlueprintLibrary library, Map<String, CardDeck> decks, ST1EGame cardGame) {
+    public void createPhysicalCards(Map<String, CardDeck> decks, ST1EGame cardGame) {
         try {
             for (Player player : getPlayers()) {
                 String playerId = player.getPlayerId();
@@ -126,12 +124,11 @@ public class ST1EGameState extends GameState {
                     List<PhysicalCard> subDeck = new LinkedList<>();
                     for (String blueprintId : entry.getValue()) {
                         try {
-                            PhysicalCard card =
-                                    library.createST1EPhysicalCard(blueprintId, _nextCardId, player);
+                            PhysicalCard card = cardGame.addCardToGame(blueprintId, playerId);
                             subDeck.add(card);
                             _allCards.put(_nextCardId, card);
                             _nextCardId++;
-                        } catch (CardNotFoundException | PlayerNotFoundException e) {
+                        } catch (CardNotFoundException e) {
                             cardGame.sendErrorMessage(e);
                         }
                     }

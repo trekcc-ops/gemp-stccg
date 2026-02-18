@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.processes.st1e.ST1EPlayerOrderProcess;
 import com.gempukku.stccg.rules.st1e.AffiliationAttackRestrictions;
@@ -33,7 +34,7 @@ public class ST1EGame extends DefaultGame {
         this(format, decks, library, resultListener);
         try {
             _gameState = new ST1EGameState(decks.keySet(), clocks);
-            _gameState.createPhysicalCards(library, decks, this);
+            _gameState.createPhysicalCards(decks, this);
             _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
         } catch(InvalidGameOperationException exp) {
             sendErrorMessage(exp);
@@ -48,7 +49,7 @@ public class ST1EGame extends DefaultGame {
 
         try {
             _gameState = new ST1EGameState(decks.keySet(), gameTimer);
-            _gameState.createPhysicalCards(library, decks, this);
+            _gameState.createPhysicalCards(decks, this);
             _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
         } catch(InvalidGameOperationException exp) {
             sendErrorMessage(exp);
@@ -85,6 +86,9 @@ public class ST1EGame extends DefaultGame {
         PhysicalCard card = createPhysicalCard(blueprintId, cardId, playerId);
         _gameState.addCardToListOfAllCards(card);
         card.setZone(Zone.VOID);
+        for (Modifier modifier : card.getAlwaysOnModifiers(this)) {
+            _gameState.getModifiersLogic().addAlwaysOnModifier(modifier);
+        }
         return card;
     }
 

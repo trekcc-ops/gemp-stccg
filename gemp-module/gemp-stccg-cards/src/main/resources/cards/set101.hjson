@@ -424,7 +424,6 @@
             blueprintId: 101_108
             title: Amanda Rogers
             type: interrupt
-            java-blueprint: false
             property-logo: tng-logo
             lore: Female Q raised as a human on Earth. Was taken to the Q continuum by Q after she could not resist the benevolent use of her powers.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR108.jpg
@@ -451,7 +450,6 @@
         {
             blueprintId: 101_125
             title: Klingon Death Yell
-            java-blueprint: false
             type: interrupt
             property-logo: tng-logo
             lore: Warning for the dead to beware; a Klingon warrior is about to arrive. In Klingon myth, killed warriors with honor go to Sto-Vo-Kor. Dishonored dead go to Gre-thor.

@@ -133,7 +133,6 @@
         {
             blueprintId: 155_021
             title: Attention All Hands
-            java-blueprint: false
             type: incident
             icons: warp-core
             property-logo: tng-logo
@@ -1424,7 +1423,6 @@
             blueprintId: 155_095
             title: Will Riker
             type: personnel
-            java-blueprint: true
             affiliation: non-aligned,federation
             property-logo: tng-logo
             classification: OFFICER
@@ -1433,6 +1431,13 @@
             lore: "<b>William T. Riker</b> \"went renegade\" to penetrate Baran's crew during the hunt for the Stone of Gol."
             species: human
             gender: male
+            "restriction-box": {
+                "text": "Does not work with other [Fed] affiliation personnel.",
+                "modifier": {
+                    "type": "thisCardIncompatibleWith",
+                    "cardFilter": "affiliation=federation + personnel + not(thisCard)"
+                }
+            },
             skill-box: "[*] SECURITY [*] Diplomacy [*] Anthropology [*] Treachery [*] Transporter Skill [DL] Dropping In"
             integrity: 5
             cunning: 7

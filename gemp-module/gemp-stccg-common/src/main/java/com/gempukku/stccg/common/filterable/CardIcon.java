@@ -16,6 +16,8 @@ public enum CardIcon implements Filterable {
     HOLOGRAPHIC("holographic", "https://www.trekcc.org/forum/images/smilies/icon_hologram.jpg"),
     MAQUIS("Maquis", "https://www.trekcc.org/forum/images/smilies/icon_maquis.png"),
     NAVIGATION_SUBCOMMAND("Navigation", "https://www.trekcc.org/forum/images/smilies/icon_sc_nav.png"),
+    NEMESIS_DESCENT_LEFT("Nemesis", "https://www.trekcc.org/images/icons/1e/Nemesis_Yellow_Left.jpg"),
+    NEMESIS_DESCENT_RIGHT("Nemesis", "https://www.trekcc.org/images/icons/1e/Nemesis_Yellow_Right.jpg"),
     ORB("Orb", "https://www.trekcc.org/forum/images/smilies/icon_orb.jpg"),
     PAST("Past","https://www.trekcc.org/images/icons/past.gif"),
     Q_ICON("Q icon", "https://www.trekcc.org/forum/images/smilies/icon_q.jpg"),

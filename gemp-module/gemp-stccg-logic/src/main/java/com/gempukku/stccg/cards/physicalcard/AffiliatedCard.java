@@ -94,10 +94,6 @@ public abstract class AffiliatedCard extends ST1EPhysicalCard implements CardWit
         return _blueprint.getAffiliations();
     }
 
-    boolean doesNotWorkWith(AffiliatedCard otherCard) {
-        return getBlueprint().doesNotWorkWithPerRestrictionBox(this, otherCard);
-    }
-
     public boolean matchesAffiliationOf(AffiliatedCard otherCard) {
         for (Affiliation affiliation : getCurrentAffiliations()) {
             if (otherCard.isAffiliation(affiliation)) {

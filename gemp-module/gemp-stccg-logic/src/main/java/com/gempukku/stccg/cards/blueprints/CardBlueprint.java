@@ -145,6 +145,9 @@ public class CardBlueprint {
     @JsonProperty("shields")
     protected int _shields;
 
+    @JsonProperty("restriction-box")
+    protected RestrictionBox _restrictionBox;
+
     @JsonProperty("skill-box")
     protected SkillBox _skillBox;
 
@@ -522,10 +525,6 @@ public class CardBlueprint {
         else return _persona;
     }
 
-    public boolean doesNotWorkWithPerRestrictionBox(AffiliatedCard thisCard, AffiliatedCard otherCard) {
-        return false;
-    }
-
     public String getBaseBlueprintId() { return _baseBlueprintId; }
     public void setBaseBlueprintId(String baseBlueprintId) { _baseBlueprintId = baseBlueprintId; }
 
@@ -662,6 +661,18 @@ public class CardBlueprint {
                 if (seedAction != null && seedAction.canBeInitiated(cardGame)) {
                     result.add(seedAction);
                 }
+            }
+        }
+        return result;
+    }
+
+    public List<Modifier> getAlwaysOnModifiers(DefaultGame cardGame, PhysicalCard thisCard) {
+        List<Modifier> result = new ArrayList<>();
+        if (_restrictionBox != null) {
+            ActionContext context = new ActionContext(thisCard, thisCard.getOwnerName());
+            Modifier modifier =_restrictionBox.getModifier(cardGame, thisCard, context);
+            if (modifier != null) {
+                result.add(modifier);
             }
         }
         return result;
