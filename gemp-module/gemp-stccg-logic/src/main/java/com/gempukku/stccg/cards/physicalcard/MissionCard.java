@@ -118,6 +118,11 @@ public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliation
         return _blueprint.hasMissionType(MissionType.PLANET);
     }
 
+    @JsonProperty("missionTypes")
+    public List<MissionType> getMissionTypes() {
+        return List.of(_blueprint.getMissionType());
+    }
+
     public MissionCard getBottomMission() {
         return Objects.requireNonNullElse(_parentCard, this);
     }

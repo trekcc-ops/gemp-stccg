@@ -1,5 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
@@ -40,6 +41,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     private boolean _revealedSeedCard = false;
 
     @JsonProperty("parentCard")
+    @JsonIdentityReference(alwaysAsId=true)
     protected PhysicalCard _parentCard;
 
     @JsonProperty("relationToParent")
@@ -47,6 +49,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
 
     @JsonProperty("childrenCards")
+    @JsonIdentityReference(alwaysAsId=true)
     protected final Map<ChildCardRelationshipType, List<PhysicalCard>> _childrenCards = new HashMap<>();
 
     public AbstractPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
