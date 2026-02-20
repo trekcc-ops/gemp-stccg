@@ -314,8 +314,9 @@ public abstract class GameState {
     }
 
     public String serializeForPlayer(String playerId) throws JsonProcessingException {
-        return new GameStateMapper().writer(false).writeValueAsString(
-                new GameStateView(playerId, this));
+        return new GameStateMapper()
+                .writer(false)
+                .writeValueAsString(new GameStateView(playerId, this));
     }
 
     @SuppressWarnings("unused")

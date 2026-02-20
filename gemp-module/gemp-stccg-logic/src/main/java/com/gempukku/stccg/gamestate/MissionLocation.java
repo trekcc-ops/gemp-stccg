@@ -32,7 +32,6 @@ import java.util.stream.Stream;
         "missionCardIds", "seedCardCount", "seedCardIds" })
 @JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted", "isHomeworld",
         "missionCardIds", "seedCardCount", "seedCardIds" })
-@JsonFilter("missionLocationSerializerFilter")
 public class MissionLocation implements GameLocation {
 
     private static final Logger LOGGER = LogManager.getLogger(MissionLocation.class);
@@ -142,6 +141,7 @@ public class MissionLocation implements GameLocation {
 
     @JsonProperty("seedCardIds")
     @JsonIdentityReference(alwaysAsId=true)
+    @JsonView(GameStateViews.AdminView.class)
     public List<PhysicalCard> getSeedCards() {
         return _seedCards.getCards();
     }

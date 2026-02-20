@@ -15,12 +15,12 @@ import com.gempukku.stccg.player.PlayerView;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder", "visibleCardsInGame",
-        "versionNumber",
-        "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations"})
-@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "versionNumber",
-        "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations" })
+@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder",
+        "visibleCardsInGame", "versionNumber", "spacelineLocations", "awayTeams", "lastAction", "performedActions",
+        "playerClocks", "pendingDecision", "spacelineElements", "gameLocations"})
+@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder",
+        "visibleCardsInGame", "spacelineLocations", "versionNumber", "awayTeams", "actions", "lastAction",
+        "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations" })
 public class GameStateView {
 
     @JsonProperty("versionNumber")
