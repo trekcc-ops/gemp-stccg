@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import CssBaseline from '@mui/material/CssBaseline';
 import { theme } from '../../gemp-022/common.js';
 import { ThemeProvider } from "@emotion/react";
-import CardTreeView from "../card-tree-view.jsx";
+import CardStack from "../card-stack.jsx";
 
 const root = createRoot(document.getElementById("root"));
 
@@ -17,12 +17,13 @@ function get_gamestate() {
 }
 
 let gamestate = get_gamestate();
+let anchor_id = 1; // Romulan Shuttle
 
 root.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <CardTreeView gamestate={gamestate} />
+      <CardStack gamestate={gamestate} anchor_id={anchor_id} />
     </ThemeProvider>
   </StrictMode>
 );

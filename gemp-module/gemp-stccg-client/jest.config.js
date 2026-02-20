@@ -29,8 +29,7 @@ const config = {
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
     "/node_modules/",
-    "/src/main/web/js/jquery/",
-    "/src/main/web/js/lib/"
+    "/src/main/web/js/jquery/"
   ],
 
   // Indicates which provider should be used to instrument code for coverage

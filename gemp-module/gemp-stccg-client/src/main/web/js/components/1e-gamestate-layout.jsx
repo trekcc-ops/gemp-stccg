@@ -1,6 +1,7 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -19,38 +20,19 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
-import CardTree from './card-tree.jsx';
+import CardTreeView from './card-tree-view.jsx';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
-import PhaseIndicator from './phase-indicator.jsx';
-import { Tooltip } from '@mui/material';
+import ChatIcon from '@mui/icons-material/Chat';
+import HistoryIcon from '@mui/icons-material/History';
+import SourceIcon from '@mui/icons-material/Source';
+import Tooltip from '@mui/material/Tooltip';
+import ChangeDataSourceDialog from './change-data-source-dialog.jsx';
 import ActiveCardPane from './active-card-pane.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
-import Hand from './hand.jsx';
 import Card from './card.jsx';
-
-// Change this function to change the JSON input source.
-function get_gamestate() {
-    let request = new XMLHttpRequest();
-    request.open("GET", "player_state.json", false);
-    request.send(null)
-    let the_state = JSON.parse(request.responseText);
-    return the_state;
-}
-
-// DEBUG / DEMO DATA
-let card_in_active_pane = {
-    "cardId": 55,
-    "title": "Jadzia Dax",
-    "blueprintId": "112_208",
-    "owner": "andrew",
-    "locationId": 7,
-    "attachedToCardId": 48,
-    "isStopped": true,
-    "imageUrl": "https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif",
-    "cardType": "PERSONNEL",
-    "uniqueness": "UNIQUE"
-  }
-//let card_in_active_pane;
+import MainLayoutGrid from './main-layout-grid.jsx';
+import player_state from '../../player_state.json?url';
+import { get_your_player_id, get_opponent_player_id } from './common.jsx';
 
 const drawerWidth = 240;
 
@@ -140,8 +122,23 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function MiniDrawer() {
+    const [dataSource, setDataSource] = useState(player_state);
+    const [changeDataSourceDialogOpen, setChangeDataSourceDialogOpen] = useState(false);
+    const [loadedGameState, setLoadedGameState] = useState(null);
+    
+    useEffect(() => {
+        // Change this function to change the JSON input source.
+        const fetchData = async () => {
+            const response = await fetch(dataSource);
+            const newData = await response.json();
+            setLoadedGameState(newData);
+        };
+
+        fetchData();
+    },[]);
+
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -151,202 +148,277 @@ export default function MiniDrawer() {
         setOpen(false);
     };
 
-    return (
-        <Box sx={{ display: 'flex' }}>
-            {/* top bar */}
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
-                    <IconButton
-                        aria-label="open drawer"
-                        onClick={handleDrawerOpen}
-                        edge="start"
-                        sx={[
-                            {
-                                marginRight: 5,
-                            },
-                            open && { display: 'none' },
-                        ]}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Box sx={{flexGrow: 1}} /> {/* expanding box to push icons right */}
-                    <Tooltip title="Account">
+    // Don't render unless we have something
+    if (loadedGameState){
+        return (
+            <Box sx={{ display: 'flex' }}>
+                {/* top bar */}
+                <AppBar position="fixed" open={open}>
+                    <Toolbar>
                         <IconButton
-                            aria-label="account"
+                            aria-label="open drawer"
+                            onClick={handleDrawerOpen}
+                            edge="start"
+                            sx={[
+                                {
+                                    marginRight: 5,
+                                },
+                                open && { display: 'none' },
+                            ]}
                         >
-                            <ManageAccountsIcon />
+                            <MenuIcon />
                         </IconButton>
-                    </Tooltip>
-                </Toolbar>
-            </AppBar>
-            {/* left side drawer */}
-            <Drawer variant="permanent" open={open}>
-                <DrawerHeader>{/* box on top of drawer/padding */}
-                    {/* Close drawer button */}
-                    <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                    </IconButton>
-                </DrawerHeader>
-                <Divider />
-                {/* inside the drawer */}
-                <List>
-                    {/* Card Tree button */}
-                    <ListItem disablePadding sx={{display: 'block'}}
-                    >
-                        <ListItemButton sx={[
-                                    {
-                                        minHeight: 48,
-                                        px: 2.5,
-                                    },
-                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
-                                ]}
-                            >
-                            <ListItemIcon sx={[
-                                    {
-                                        minWidth: 0,
-                                        justifyContent: 'center',
-                                    },
-                                    /* Adjust right margin when closed */
-                                    open ? {mr: 3,} : {mr: 'auto',}, // BUG: Offset with new list item
-                                ]}>
-                                <AccountTreeIcon />
-                            </ListItemIcon>
-                            <ListItemText sx={[
-                                        open ? {opacity: 1,} : {opacity: 0,},
-                                    ]} >
-                                    <CardTree gamestate={get_gamestate()} ></CardTree>
-                            </ListItemText>
-                        </ListItemButton>
-                    </ListItem>
+                        <Stack
+                            direction="row"
+                            spacing={2}
+                            sx={{
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                flexGrow: 1
+                            }}>
 
+                            <PlayerScorePane id="opponent-player-score-pane" gamestate={loadedGameState} player_id={get_opponent_player_id(loadedGameState)}/>
+                            <Tooltip title="Data Source">
+                                <IconButton aria-label="Data Source" onClick={() => {setChangeDataSourceDialogOpen(true)}}>
+                                    <SourceIcon />
+                                </IconButton>
+                                <ChangeDataSourceDialog open={changeDataSourceDialogOpen} onCloseFunc={setChangeDataSourceDialogOpen} dataSource={dataSource} setDataSource={setDataSource} />
+                            </Tooltip>
+                            <PlayerScorePane id="your-player-score-pane" gamestate={loadedGameState} player_id={get_your_player_id(loadedGameState)}/>
+                                
+                        </Stack>
+                        <Divider orientation="vertical" flexItem sx={{padding: "10px"}} />
+                        <Tooltip title="Account">
+                            <IconButton
+                                aria-label="account"
+                            >
+                                <ManageAccountsIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Toolbar>
+                </AppBar>
+                {/* left side drawer */}
+                <Drawer variant="permanent" open={open}>
+                    <DrawerHeader>{/* box on top of drawer/padding */}
+                        {/* Close drawer button */}
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        </IconButton>
+                    </DrawerHeader>
                     <Divider />
-                    
-                    {/* Bookmarks button */}
-                    <ListItem disablePadding sx={{display: 'block'}}
-                    >
-                        <ListItemButton sx={[
-                                    {
-                                        minHeight: 48,
-                                        px: 2.5,
-                                    },
-                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
-                                ]}
-                            >
-                            <ListItemIcon sx={[
-                                    {
-                                        minWidth: 0,
-                                        justifyContent: 'center',
-                                    },
-                                    /* Adjust right margin when closed */
-                                    open ? {mr: 3,} : {mr: 'auto',},
-                                ]}>
-                                <BookmarksIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Bookmarks"
-                                sx={[
-                                        /* Hide text when closed */
-                                        open ? {opacity: 1,} : {opacity: 0,},
+                    {/* inside the drawer */}
+                    <List>
+                        {/* Card Tree button */}
+                        <ListItem disablePadding sx={{display: 'block'}}
+                        >
+                            <ListItemButton sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
                                     ]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                    
-                    {/* Built-in stuff */}
-                    
-                    {/*
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={[
-                                    {
-                                        minHeight: 48,
-                                        px: 2.5,
-                                    },
-                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
-                                ]}
-                            >
-                                <ListItemIcon
-                                    sx={[
+                                >
+                                <ListItemIcon sx={[
                                         {
                                             minWidth: 0,
                                             justifyContent: 'center',
                                         },
-                                        open ? {mr: 3,} : {mr: 'auto',},
-                                    ]}
-                                >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                        /* Adjust right margin when closed */
+                                        open ? {mr: 3,} : {mr: 'auto',}, // BUG: Offset with new list item
+                                    ]}>
+                                    <AccountTreeIcon />
                                 </ListItemIcon>
-                                <ListItemText
-                                    primary={text}
-                                    sx={[
-                                        open ? {opacity: 1,} : {opacity: 0,},
-                                    ]}
-                                />
+                                <ListItemText sx={[
+                                            open ? {opacity: 1,} : {opacity: 0,},
+                                        ]} >
+                                        <CardTreeView gamestate={loadedGameState} ></CardTreeView>
+                                </ListItemText>
                             </ListItemButton>
                         </ListItem>
-                    ))}
-                    */}
-                </List>
-                <Divider />
 
-                {/*
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                                sx={[
-                                    {
-                                        minHeight: 48,
-                                        px: 2.5,
-                                    },
-                                    open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
-                                ]}
-                            >
-                                <ListItemIcon
-                                    sx={[
+                        <Divider />
+                        
+                        {/* Bookmarks button */}
+                        <ListItem disablePadding sx={{display: 'block'}}
+                        >
+                            <ListItemButton sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                    ]}
+                                >
+                                <ListItemIcon sx={[
                                         {
                                             minWidth: 0,
                                             justifyContent: 'center',
                                         },
+                                        /* Adjust right margin when closed */
                                         open ? {mr: 3,} : {mr: 'auto',},
-                                    ]}
-                                >
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                    ]}>
+                                    <BookmarksIcon />
                                 </ListItemIcon>
                                 <ListItemText
-                                    primary={text}
+                                    primary="Bookmarks"
                                     sx={[
-                                        open ? {opacity: 1,} : {opacity: 0,},
-                                    ]}
+                                            /* Hide text when closed */
+                                            open ? {opacity: 1,} : {opacity: 0,},
+                                        ]}
                                 />
                             </ListItemButton>
                         </ListItem>
-                    ))}
-                </List>
-                */}
-            </Drawer>
-            {/* content */}
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
-                <div id="main-layout-grid">
-                    <div id="table">TABLE</div>
-                    <div id="hand-pane"><Hand gamestate={get_gamestate()} /></div>
-                    <div id="active-card-pane">
-                        <ActiveCardPane style={{height: 240}} card={card_in_active_pane} />
-                        {
-                        /*
-                        For other demo cases:
-                        <ActiveCardPane style={{height: 240}} />
-                        */
-                        }
-                    </div>
-                    <div id="phase-pane"><PhaseIndicator gamestate={get_gamestate()} /></div>
-                    <div id="player-score-pane"><PlayerScorePane gamestate={get_gamestate()}/></div>
-                    <div id="chat-pane">CHAT</div>
-                </div>
-                
+
+                        <Divider />
+                        
+                        {/* Chat button */}
+                        <ListItem disablePadding sx={{display: 'block'}}
+                        >
+                            <ListItemButton sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                    ]}
+                                >
+                                <ListItemIcon sx={[
+                                        {
+                                            minWidth: 0,
+                                            justifyContent: 'center',
+                                        },
+                                        /* Adjust right margin when closed */
+                                        open ? {mr: 3,} : {mr: 'auto',},
+                                    ]}>
+                                    <ChatIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary="Chat"
+                                    sx={[
+                                            /* Hide text when closed */
+                                            open ? {opacity: 1,} : {opacity: 0,},
+                                        ]}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <Divider />
+                        
+                        {/* Chat button */}
+                        <ListItem disablePadding sx={{display: 'block'}}
+                        >
+                            <ListItemButton sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                    ]}
+                                >
+                                <ListItemIcon sx={[
+                                        {
+                                            minWidth: 0,
+                                            justifyContent: 'center',
+                                        },
+                                        /* Adjust right margin when closed */
+                                        open ? {mr: 3,} : {mr: 'auto',},
+                                    ]}>
+                                    <HistoryIcon />
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary="Card Play History"
+                                    sx={[
+                                            /* Hide text when closed */
+                                            open ? {opacity: 1,} : {opacity: 0,},
+                                        ]}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                        
+                        {/* Built-in stuff */}
+                        
+                        {/*
+                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                    ]}
+                                >
+                                    <ListItemIcon
+                                        sx={[
+                                            {
+                                                minWidth: 0,
+                                                justifyContent: 'center',
+                                            },
+                                            open ? {mr: 3,} : {mr: 'auto',},
+                                        ]}
+                                    >
+                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={text}
+                                        sx={[
+                                            open ? {opacity: 1,} : {opacity: 0,},
+                                        ]}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                        */}
+                    </List>
+                    <Divider />
+
+                    {/*
+                    <List>
+                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+                                <ListItemButton
+                                    sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open ? {justifyContent: 'initial',} : {justifyContent: 'center',},
+                                    ]}
+                                >
+                                    <ListItemIcon
+                                        sx={[
+                                            {
+                                                minWidth: 0,
+                                                justifyContent: 'center',
+                                            },
+                                            open ? {mr: 3,} : {mr: 'auto',},
+                                        ]}
+                                    >
+                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={text}
+                                        sx={[
+                                            open ? {opacity: 1,} : {opacity: 0,},
+                                        ]}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        ))}
+                    </List>
+                    */}
+                </Drawer>
+                {/* content */}
+                <Box component="main" sx={{ flexGrow: 1 }}>
+                    <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
+                    <MainLayoutGrid gamestate={loadedGameState} />
+                </Box>
             </Box>
-        </Box>
-    );
+        );
+    }
+    else {
+        return(<Box></Box>);
+    }
 }
