@@ -108,7 +108,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
 
                 List<PhysicalCard> seedCards = missionLocation.getSeedCards();
 
-                if (!seedCards.isEmpty()) {
+                if (!seedCards.isEmpty() && !wasFailed()) {
                     PhysicalCard firstSeedCard = seedCards.getFirst();
                     if (_lastCardRevealed != firstSeedCard) {
                         _lastCardRevealed = firstSeedCard;
@@ -127,7 +127,7 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
                         throw new InvalidGameLogicException(firstSeedCard.getTitle() +
                                 " was already encountered, but not removed from under the mission");
                     }
-                } else {
+                } else if (!wasFailed()) {
                     if (cardGame.canPlayerSolveMission(_performingPlayerId, missionLocation)) {
                         MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
                         if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
