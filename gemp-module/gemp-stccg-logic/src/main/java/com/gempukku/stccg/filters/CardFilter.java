@@ -38,7 +38,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = MatchingAffiliationFilter.class, name = "matchingAffiliation"),
         @JsonSubTypes.Type(value = MatchingAttributeFilter.class, name = "matchingAttribute"),
         @JsonSubTypes.Type(value = MissionPointValueFilter.class, name = "missionPointValue"),
-        @JsonSubTypes.Type(value = MissionAffiliationIconForOwnerFilter.class, name = "missionAffiliationIconForOwner"),
+        @JsonSubTypes.Type(value = MissionAffiliationIconFilter.class, name = "missionAffiliationIconForOwner"),
         @JsonSubTypes.Type(value = MissionTypeFilter.class, name = "missionType"),
         @JsonSubTypes.Type(value = NotAllFilter.class, name = "notAll"),
         @JsonSubTypes.Type(value = NotAnyFilter.class, name = "notAny"),

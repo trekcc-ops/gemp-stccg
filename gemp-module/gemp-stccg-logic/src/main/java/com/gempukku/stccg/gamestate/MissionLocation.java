@@ -2,13 +2,19 @@ package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.AwayTeam;
-import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
-import com.gempukku.stccg.cards.physicalcard.*;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.MissionType;
+import com.gempukku.stccg.common.filterable.Quadrant;
+import com.gempukku.stccg.common.filterable.Region;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
@@ -26,7 +32,6 @@ import java.util.stream.Stream;
         "missionCardIds", "seedCardCount", "seedCardIds" })
 @JsonPropertyOrder({ "quadrant", "region", "locationName", "locationId", "isCompleted", "isHomeworld",
         "missionCardIds", "seedCardCount", "seedCardIds" })
-@JsonFilter("missionLocationSerializerFilter")
 public class MissionLocation implements GameLocation {
 
     private static final Logger LOGGER = LogManager.getLogger(MissionLocation.class);
@@ -136,6 +141,7 @@ public class MissionLocation implements GameLocation {
 
     @JsonProperty("seedCardIds")
     @JsonIdentityReference(alwaysAsId=true)
+    @JsonView(GameStateViews.AdminView.class)
     public List<PhysicalCard> getSeedCards() {
         return _seedCards.getCards();
     }
@@ -208,19 +214,8 @@ public class MissionLocation implements GameLocation {
     }
 
     public Set<Affiliation> getAffiliationIcons(DefaultGame cardGame, String playerId) {
-        Set<Affiliation> result = new HashSet<>();
-        try {
-            MissionCard card = getMissionForPlayer(playerId);
-            CardBlueprint blueprint = card.getBlueprint();
-            if (Objects.equals(playerId, card.getOwnerName())) {
-                result.addAll(blueprint.getOwnerAffiliationIcons());
-            } else {
-                result.addAll(blueprint.getOpponentAffiliationIcons());
-            }
-            result.addAll(cardGame.getAffiliationsAddedToMissionForPlayer(card, playerId));
-        } catch(InvalidGameLogicException ignored) {
-        }
-        return result;
+        MissionCard topMission = getTopMissionCard();
+        return new HashSet<>(topMission.getAffiliationIcons(cardGame, playerId));
     }
 
     public MissionType getMissionType() {

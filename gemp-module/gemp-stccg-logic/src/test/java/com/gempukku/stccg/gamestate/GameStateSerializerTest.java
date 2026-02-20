@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.Phase;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,6 +48,8 @@ public class GameStateSerializerTest extends AbstractAtTest {
     public void serializeForPlayerTest() throws Exception {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
+        builder.addOutpost(Affiliation.FEDERATION, P1);
+        builder.setPhase(Phase.EXECUTE_ORDERS);
         builder.startGame();
 
         JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeForPlayer(P1));
@@ -63,6 +68,9 @@ public class GameStateSerializerTest extends AbstractAtTest {
         assertTrue(gameStateJson.has("gameLocations"));
         assertTrue(gameStateJson.has("spacelineElements"));
         assertTrue(gameStateJson.has("versionNumber"));
+
+        // Stuff that shouldn't be there
+        Assertions.assertFalse(gameStateJson.has("currentProcess"));
 
         assertEquals(VERSION_NUMBER, gameStateJson.get("versionNumber").textValue());
     }

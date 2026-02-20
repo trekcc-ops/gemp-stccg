@@ -167,10 +167,10 @@ public abstract class GameState {
                 stGame.getGameState().removeCardFromAwayTeam(stGame, reportable);
             }
 
-            if (card.isInPlay())
+            if (card.isInPlay()) {
                 _inPlay.remove(card);
-            if (card.getAttachedToCardId() != null)
-                card.detach();
+            }
+            card.clearParentCardRelationship();
         }
 
         for (PhysicalCard card : cards) {
@@ -313,8 +313,9 @@ public abstract class GameState {
     }
 
     public String serializeForPlayer(String playerId) throws JsonProcessingException {
-        return new GameStateMapper().writer(false).writeValueAsString(
-                new GameStateView(playerId, this));
+        return new GameStateMapper()
+                .writer(false)
+                .writeValueAsString(new GameStateView(playerId, this));
     }
 
     @SuppressWarnings("unused")

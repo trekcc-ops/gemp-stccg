@@ -5,6 +5,7 @@ import com.gempukku.stccg.GameTestBuilder;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -50,14 +51,14 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
         assertNotNull(_game.getAwaitingDecision(P1));
 
 
-        List<PhysicalCard> specialists = List.of(tarses1, wallace1);
+        List<PersonnelCard> specialists = List.of((PersonnelCard) tarses1, (PersonnelCard) wallace1);
         assertTrue(getSelectableCards(P1).containsAll(specialists));
         assertFalse(getSelectableCards(P1).containsAll(List.of(tarses2, wallace2)));
 
         selectCards(P1, specialists);
-        for (PhysicalCard specialist : specialists) {
+        for (PersonnelCard specialist : specialists) {
             assertTrue(specialist.isInPlay());
-            assertTrue(outpost.hasCardInCrew(specialist));
+            assertTrue(specialist.isAboard(outpost));
         }
 
         while (_game.getCurrentPhase() == Phase.SEED_FACILITY) {

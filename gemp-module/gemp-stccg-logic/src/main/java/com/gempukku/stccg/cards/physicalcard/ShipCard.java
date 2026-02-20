@@ -13,11 +13,11 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.player.Player;
 import com.google.common.collect.Lists;
 
@@ -32,15 +32,19 @@ import java.util.stream.Stream;
 public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWithCrew, CardWithHullIntegrity,
         ReportableCard {
 
-    private boolean _docked = false;
-    @JsonProperty("dockedAtCardId")
-    private Integer _dockedAtCardId;
     int _rangeAvailable;
     int _usedRange;
     private int _hullIntegrity = 100;
 
+    public ShipCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
+        _childrenCards.computeIfAbsent(ChildCardRelationshipType.ABOARD, k -> new ArrayList<>());
+        _childrenCards.computeIfAbsent(ChildCardRelationshipType.ATOP, k -> new ArrayList<>());
+    }
+
+    @SuppressWarnings("unused")
     @JsonCreator
-    public ShipCard(
+    private ShipCard(
             @JsonProperty("cardId")
             int cardId,
             @JsonProperty("owner")
@@ -49,12 +53,7 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
             String blueprintId,
             @JacksonInject
             CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
-        super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
-    }
-
-
-    public ShipCard(int cardId, String ownerName, CardBlueprint blueprint) {
-        super(cardId, ownerName, blueprint);
+        this(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
     }
 
     @Override
@@ -84,30 +83,28 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
         return actions;
     }
 
-    public boolean isDocked() { return _docked; }
+    public boolean isDocked() { return _parentCardRelationship == ChildCardRelationshipType.DOCKED; }
 
-    public void dockAtFacility(FacilityCard facilityCard) {
-        _docked = true;
-        _dockedAtCardId = facilityCard.getCardId();
+    public PhysicalCard getDockedAtCard() {
+        if (isDocked()) {
+            return _parentCard;
+        } else {
+            return null;
+        }
     }
 
-    public void undockFromFacility() {
-        _docked = false;
-        _dockedAtCardId = null;
-        setZone(Zone.AT_LOCATION);
-        detach();
-    }
-
-    public PhysicalCard getDockedAtCard(DefaultGame cardGame) {
-        try {
-            return cardGame.getCardFromCardId(_dockedAtCardId);
-        } catch(Exception exp) {
+    @JsonProperty("dockedAtCardId")
+    private Integer getDockedAtCardId() {
+        if (_parentCardRelationship == ChildCardRelationshipType.DOCKED) {
+            return _parentCard.getCardId();
+        } else {
             return null;
         }
     }
 
     public boolean isDockedAtCardId(int facilityCardId) {
-        return _dockedAtCardId != null && _dockedAtCardId == facilityCardId;
+        return _parentCard != null && _parentCardRelationship == ChildCardRelationshipType.DOCKED &&
+                _parentCard.getCardId() == facilityCardId;
     }
 
     public Collection<PhysicalCard> getCrew(DefaultGame cardGame) {
@@ -199,7 +196,7 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
 
     public boolean isExposed() {
         // TODO - can't be cloaked, landed, or carried
-        return !_docked;
+        return !isDocked();
     }
 
     public Collection<PersonnelCard> getPersonnelAboard(DefaultGame cardGame) {
@@ -214,7 +211,7 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
 
     @Override
     public Collection<PhysicalCard> getCardsAboard(DefaultGame cardGame) {
-        return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.or(Filters.personnel, Filters.equipment, Filters.ship));
+        return new ArrayList<>(_childrenCards.get(ChildCardRelationshipType.ABOARD));
     }
 
 
@@ -227,4 +224,9 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
     public boolean includesInAttemptingUnit(DefaultGame cardGame, PhysicalCard includedCard) {
         return includedCard == this || getCardsAboard(cardGame).contains(includedCard);
     }
+
+    public void setAsDockedAt(FacilityCard facility) {
+        setParentCardRelationship(facility, ChildCardRelationshipType.DOCKED);
+    }
+
 }

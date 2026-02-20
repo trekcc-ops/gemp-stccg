@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -78,6 +79,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                             throw new InvalidGameLogicException("Cannot seed " + mission.getTitle() + " because " +
                                     mission.getOwnerName() + " already has a mission at " +
                                     mission.getBlueprint().getLocation());
+                        mission.setParentCardRelationship(location.getTopMissionCard(), ChildCardRelationshipType.TOP_SHARED_MISSION);
                         location.addMission(game, mission);
                         gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
                     }

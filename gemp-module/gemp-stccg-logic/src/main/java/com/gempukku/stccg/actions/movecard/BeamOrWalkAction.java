@@ -7,11 +7,7 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.cards.physicalcard.MissionCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ReportableCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -115,9 +111,11 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
     protected void processEffect(DefaultGame cardGame) {
         GameLocation destinationLocation = _destination.getGameLocation((ST1EGame) cardGame);
         for (PhysicalCard card : _cardsToMove) {
-            card.setZone(Zone.ATTACHED);
-            card.attachTo(_destination);
-            card.setLocationId(cardGame, _destination.getLocationId());
+            if (_destination instanceof CardWithCrew && card instanceof ReportableCard reportable) {
+                reportable.setAsAboard(_destination);
+            } else if (_destination instanceof MissionCard && card instanceof ReportableCard reportable) {
+                reportable.setAsOnPlanet(_destination);
+            }
             if (_origin instanceof MissionCard) {
                 ((ST1EGame) cardGame).getGameState().removeCardFromAwayTeam((ST1EGame) cardGame, (ReportableCard) card);
             }

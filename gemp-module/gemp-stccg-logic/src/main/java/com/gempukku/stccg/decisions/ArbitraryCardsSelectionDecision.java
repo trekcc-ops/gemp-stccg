@@ -160,7 +160,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
     }
 
 
-    public void decisionMade(List<PhysicalCard> cards) throws DecisionResultInvalidException {
+    public void decisionMade(List<? extends PhysicalCard> cards) throws DecisionResultInvalidException {
         StringJoiner sj = new StringJoiner(",");
         for (PhysicalCard card : cards) {
             if (_physicalCards.contains(card))

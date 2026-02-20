@@ -25,7 +25,7 @@ public class WalkCardsAction extends BeamOrWalkAction {
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
         Collection<PhysicalCard> result = new LinkedList<>();
         if (_cardSource instanceof ShipCard ship && ship.isDocked())
-            result.add(ship.getDockedAtCard(game));
+            result.add(ship.getDockedAtCard());
         else if (_cardSource instanceof FacilityCard)
             result.addAll(Filters.filter(
                     _cardSource.getAttachedCards(game), game, Filters.ship, Filters.your(_performingPlayerId)));

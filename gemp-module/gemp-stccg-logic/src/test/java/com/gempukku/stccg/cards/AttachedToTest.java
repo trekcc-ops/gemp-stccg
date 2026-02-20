@@ -46,7 +46,7 @@ public class AttachedToTest extends AbstractAtTest {
 
         performAction(P1, UndockAction.class, runabout);
         assertFalse(runabout.isDocked());
-        assertNull(runabout.getAttachedTo(_game));
+        assertEquals(mission, runabout.getAttachedTo(_game));
 
         performAction(P1, DockAction.class, runabout);
         assertEquals(outpost, runabout.getAttachedTo(_game));

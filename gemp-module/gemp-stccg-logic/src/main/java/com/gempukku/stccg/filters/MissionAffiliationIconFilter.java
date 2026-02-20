@@ -6,17 +6,21 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class MissionAffiliationIconForOwnerFilter implements CardFilter {
+public class MissionAffiliationIconFilter implements CardFilter {
 
     @JsonProperty("affiliation")
     private final Affiliation _affiliation;
 
-    public MissionAffiliationIconForOwnerFilter(Affiliation affiliation) {
+    private final String _requestingPlayerName;
+
+    public MissionAffiliationIconFilter(Affiliation affiliation,
+                                        String requestingPlayerName) {
         _affiliation = affiliation;
+        _requestingPlayerName = requestingPlayerName;
     }
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         return physicalCard instanceof MissionCard missionCard &&
-                missionCard.hasAffiliationIconForOwner(_affiliation);
+                missionCard.hasAffiliation(game, _affiliation, _requestingPlayerName);
     }
 }

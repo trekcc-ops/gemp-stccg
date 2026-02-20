@@ -58,7 +58,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertTrue(troi.isStopped());
 
         playerDecided(P1, "0");
-        assertFalse(runabout.hasCardInCrew(troi));
+        assertFalse(troi.isAboard(runabout));
         assertEquals(Zone.DISCARD, troi.getZone());
         assertFalse(runabout.isStopped());
     }
@@ -75,7 +75,7 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         playerDecided(P1, "1");
         int handSizeAfter = _game.getPlayer(P2).getCardsInHand().size();
 
-        assertTrue(runabout.hasCardInCrew(troi));
+        assertTrue(troi.isAboard(runabout));
         assertEquals(handSizeBefore, handSizeAfter - 2);
         assertFalse(runabout.isStopped());
     }

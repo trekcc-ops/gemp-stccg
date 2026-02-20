@@ -16,7 +16,9 @@ public class AtLocationDestinationBlueprint implements DestinationBlueprint {
 
     private final Affiliation _affiliation;
 
-    public AtLocationDestinationBlueprint(@JsonProperty(value = "affiliation", required = true) Affiliation affiliation) {
+    public AtLocationDestinationBlueprint(
+            @JsonProperty(value = "affiliation", required = true) Affiliation affiliation
+    ) {
         _affiliation = affiliation;
     }
 

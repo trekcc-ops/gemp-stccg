@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -17,14 +18,14 @@ import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
         allowGetters = true)
 public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliations {
+
+    private MissionCard _parentCard;
+    private MissionCard _childMissionCard;
 
     @JsonCreator
     public MissionCard(
@@ -43,7 +44,6 @@ public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliation
     public MissionCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
     }
-
 
     public int getPointsShown() { return _blueprint.getPointsShown(); }
 
@@ -75,31 +75,55 @@ public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliation
         return actions;
     }
 
-    public int getPoints() { return _blueprint.getPointsShown(); }
-
-    public boolean hasAffiliationIconForOwner(Affiliation affiliation) {
-        return _blueprint.getOwnerAffiliationIcons().contains(affiliation);
+    public int getPoints() {
+        return _blueprint.getPointsShown();
     }
 
     @Override
-    public boolean hasAffiliation(ST1EGame stGame, Affiliation affiliation, String requestingPlayerName) {
-        if (getGameLocation(stGame) instanceof MissionLocation location) {
-            return location.hasMatchingAffiliationIcon(stGame, requestingPlayerName, List.of(affiliation));
-        } else {
-            return false;
-        }
+    public boolean hasAffiliation(DefaultGame stGame, Affiliation affiliation, String requestingPlayerName) {
+        return getAffiliationIcons(stGame, requestingPlayerName).contains(affiliation);
     }
 
     @Override
-    public boolean matchesAffiliationOfCard(ST1EGame stGame, CardWithAffiliations otherCard, String requestingPlayerName) {
-        if (getGameLocation(stGame) instanceof MissionLocation location) {
-            Set<Affiliation> affiliations = location.getAffiliationIcons(stGame, requestingPlayerName);
-            for (Affiliation affiliation : affiliations) {
-                if (otherCard.hasAffiliation(stGame, affiliation, requestingPlayerName)) {
-                    return true;
-                }
+    public boolean matchesAffiliationOfCard(ST1EGame stGame, CardWithAffiliations otherCard,
+                                            String requestingPlayerName) {
+        Set<Affiliation> affiliations = getAffiliationIcons(stGame, requestingPlayerName);
+        for (Affiliation affiliation : affiliations) {
+            if (otherCard.hasAffiliation(stGame, affiliation, requestingPlayerName)) {
+                return true;
             }
         }
         return false;
+    }
+
+    private MissionCard getMissionCardForPlayer(String playerId) {
+        if (_childMissionCard != null && _childMissionCard.isOwnedBy(playerId)) {
+            return _childMissionCard;
+        } else if (_parentCard != null && _parentCard.isOwnedBy(playerId)) {
+            return _parentCard;
+        } else {
+            return this;
+        }
+    }
+
+    public Set<Affiliation> getAffiliationIcons(DefaultGame cardGame, String playerId) {
+        MissionCard relevantMission = getMissionCardForPlayer(playerId);
+        boolean isOwner = relevantMission.isOwnedBy(playerId);
+        Set<Affiliation> result = new HashSet<>(relevantMission.getBlueprint().getMissionAffiliationIcons(isOwner));
+        result.addAll(cardGame.getAffiliationsAddedToMissionForPlayer(this, playerId));
+        return result;
+    }
+
+    public boolean isPlanet() {
+        return _blueprint.hasMissionType(MissionType.PLANET);
+    }
+
+    @JsonProperty("missionTypes")
+    public List<MissionType> getMissionTypes() {
+        return List.of(_blueprint.getMissionType());
+    }
+
+    public MissionCard getBottomMission() {
+        return Objects.requireNonNullElse(_parentCard, this);
     }
 }

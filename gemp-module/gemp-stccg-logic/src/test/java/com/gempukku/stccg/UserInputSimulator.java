@@ -140,7 +140,7 @@ public interface UserInputSimulator {
         }
     }
 
-    default void selectCards(String playerId, List<PhysicalCard> cards)
+    default void selectCards(String playerId, List<? extends PhysicalCard> cards)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof CardSelectionDecision cardSelection) {

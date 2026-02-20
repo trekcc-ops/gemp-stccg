@@ -39,7 +39,7 @@ public class Blueprint017_087 extends CardBlueprint {
 
         // While this ship is at a [NA] mission or a mission worth 40 or more points, it is Weapons +4 and Shields +4.
         CardFilter locationFilter = Filters.or(
-                new MissionAffiliationIconForOwnerFilter(Affiliation.NON_ALIGNED),
+                new MissionAffiliationIconFilter(Affiliation.NON_ALIGNED, thisCard.getOwnerName()),
                 new MissionPointValueFilter(40, ComparatorType.GREATER_THAN_OR_EQUAL_TO));
         Condition locationCondition = new ThisCardAtMissionCondition(thisCard, locationFilter);
         modifiers.add(new AttributeModifier(thisCard, thisCard, locationCondition, 4,

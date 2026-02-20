@@ -1,12 +1,12 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialResponseActionSkill;
@@ -14,6 +14,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.NullLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
@@ -23,6 +24,8 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.*;
 
+import static com.gempukku.stccg.gamestate.ChildCardRelationshipType.ATOP;
+
 public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     protected final CardBlueprint _blueprint;
@@ -31,13 +34,23 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     @JsonProperty("cardId")
     protected int _cardId;
     protected Zone _zone;
-    protected Integer _attachedToCardId;
     private Integer _stackedOnCardId;
 
     @JsonProperty("locationId")
     protected int _currentLocationId;
-    private boolean _placedOnMission = false;
     private boolean _revealedSeedCard = false;
+
+    @JsonProperty("parentCard")
+    @JsonIdentityReference(alwaysAsId=true)
+    protected PhysicalCard _parentCard;
+
+    @JsonProperty("relationToParent")
+    protected ChildCardRelationshipType _parentCardRelationship;
+
+
+    @JsonProperty("childrenCards")
+    @JsonIdentityReference(alwaysAsId=true)
+    protected final Map<ChildCardRelationshipType, List<PhysicalCard>> _childrenCards = new HashMap<>();
 
     public AbstractPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
         _cardId = cardId;
@@ -96,29 +109,16 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint;
     }
 
-    public void attachTo(PhysicalCard physicalCard) {
-        _attachedToCardId = physicalCard.getCardId();
-    }
-
-    public void detach() {
-        _attachedToCardId = null;
-    }
-
     public Integer getAttachedToCardId() {
-        return _attachedToCardId;
+        if (_parentCard == null) {
+            return null;
+        } else {
+            return _parentCard.getCardId();
+        }
     }
 
     public PhysicalCard getAttachedTo(DefaultGame cardGame) {
-        if (_attachedToCardId == null) {
-            return null;
-        } else {
-            try {
-                return cardGame.getCardFromCardId(_attachedToCardId);
-            } catch(CardNotFoundException exp) {
-                cardGame.sendErrorMessage(exp);
-                return null;
-            }
-        }
+        return _parentCard;
     }
 
 
@@ -181,6 +181,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public void setLocation(DefaultGame cardGame, GameLocation location) {
         setLocationId(cardGame, location.getLocationId());
+    }
+
+    public void setLocationId(int locationId) {
+        _currentLocationId = locationId;
+        for (ChildCardRelationshipType relationshipType : _childrenCards.keySet()) {
+            for (PhysicalCard card : _childrenCards.get(relationshipType)) {
+                card.setLocationId(locationId);
+            }
+        }
     }
 
     public void setLocationId(DefaultGame cardGame, int locationId) {
@@ -253,20 +262,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _blueprint.isUnique();
     }
 
-    public Integer getNumberOfCopiesSeededByPlayer(String playerName, DefaultGame cardGame) {
-        int total = 0;
-        Collection<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
-        for (Action action : performedActions) {
-            if (action instanceof SeedCardAction seedCardAction) {
-                if (Objects.equals(seedCardAction.getPerformingPlayerId(), playerName) &&
-                        seedCardAction.getCardEnteringPlay().isCopyOf(this))
-                    total += 1;
-            }
-        }
-        return total;
-    }
-
-
 
     public boolean isCopyOf(PhysicalCard card) {
         return card.getBlueprint() == _blueprint;
@@ -318,11 +313,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public int getCost() { return _blueprint.getCost(); }
 
-    public void setPlacedOnMission(boolean placedOnMission) {
-        _placedOnMission = placedOnMission;
+    public boolean isPlacedOnMission() { return _parentCardRelationship == ATOP &&
+            _parentCard instanceof MissionCard;
     }
-
-    public boolean isPlacedOnMission() { return _placedOnMission; }
 
     public boolean isKnownToPlayer(String playerName) {
         return _zone.isPublic() || _ownerName.equals(playerName) ||
@@ -343,10 +336,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
-
-    public boolean isAttachedTo(PhysicalCard card) {
-        return _attachedToCardId != null && _attachedToCardId == card.getCardId();
-    }
 
     @JsonProperty("cardId")
     public void setCardId(int cardId) {
@@ -421,6 +410,42 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
             }
         }
         return false;
+    }
+
+    public void setParentCardRelationship(PhysicalCard parentCard, ChildCardRelationshipType relationshipType) {
+        clearParentCardRelationship();
+        _parentCard = (parentCard instanceof MissionCard mission) ? mission.getBottomMission() : parentCard;
+        _parentCardRelationship = relationshipType;
+        parentCard.addChildCardRelationship(this, relationshipType);
+        setLocationId(parentCard.getLocationId());
+    }
+
+    public void clearParentCardRelationship() {
+        if (_parentCard != null) {
+            _parentCard.clearChildRelationship(this);
+            _parentCard = null;
+            _parentCardRelationship = null;
+        }
+    }
+
+    public void clearChildRelationship(PhysicalCard childCard) {
+        // Assumes this is only ever called from childCard's "clearParentCardRelationship" method
+        for (ChildCardRelationshipType relationshipType : _childrenCards.keySet()) {
+            _childrenCards.get(relationshipType).remove(childCard);
+        }
+    }
+
+    public void addChildCardRelationship(PhysicalCard childCard, ChildCardRelationshipType childCardRelationshipType) {
+        _childrenCards.computeIfAbsent(childCardRelationshipType, k -> new ArrayList<>());
+        _childrenCards.get(childCardRelationshipType).add(childCard);
+    }
+
+    public PhysicalCard getParentCard() {
+        return _parentCard;
+    }
+
+    public boolean isAboard(PhysicalCard card) {
+        return _parentCardRelationship == ChildCardRelationshipType.ABOARD && card == _parentCard;
     }
 
 }

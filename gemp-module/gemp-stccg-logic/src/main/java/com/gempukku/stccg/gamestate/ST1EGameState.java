@@ -126,8 +126,6 @@ public class ST1EGameState extends GameState {
                         try {
                             PhysicalCard card = cardGame.addCardToGame(blueprintId, playerId);
                             subDeck.add(card);
-                            _allCards.put(_nextCardId, card);
-                            _nextCardId++;
                         } catch (CardNotFoundException e) {
                             cardGame.sendErrorMessage(e);
                         }

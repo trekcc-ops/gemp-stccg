@@ -65,7 +65,7 @@ public class Blueprint_161_039_AmbassadorSpock_Test extends AbstractAtTest {
         selectCard(P1, outpost);
 
         assertTrue(nefets.isInPlay());
-        assertTrue(nefets.isAttachedTo(outpost));
+        assertTrue(nefets.isAboard(outpost));
     }
 
 }

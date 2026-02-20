@@ -68,10 +68,6 @@
         },
         // etc. for each player
     ],
-    "players": [
-        /* This item has been deprecated. The members of this list are in the same format as the
-            values in the new "playerMap" map. */
-    ]
     "playerOrder": {
         // Class members for the value in GameState._playerOrder
         "firstPlayer": "player2", // Player ID for player with first turn of the game

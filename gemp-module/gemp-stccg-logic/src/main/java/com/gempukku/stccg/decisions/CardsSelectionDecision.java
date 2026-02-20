@@ -105,7 +105,7 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision im
         decisionMade(String.valueOf(card.getCardId()));
     }
 
-    public void decisionMade(List<PhysicalCard> cards) throws DecisionResultInvalidException {
+    public void decisionMade(List<? extends PhysicalCard> cards) throws DecisionResultInvalidException {
         StringJoiner sj = new StringJoiner(",");
         for (PhysicalCard card : cards) {
             sj.add(String.valueOf(card.getCardId()));

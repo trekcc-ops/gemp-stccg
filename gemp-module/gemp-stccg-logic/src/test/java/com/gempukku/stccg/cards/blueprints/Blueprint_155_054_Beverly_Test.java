@@ -48,7 +48,7 @@ public class Blueprint_155_054_Beverly_Test extends AbstractAtTest {
 
         selectCard(P1, outpost);
         assertTrue(phaser.isInPlay());
-        assertTrue(phaser.isAttachedTo(outpost));
+        assertTrue(phaser.isAboard(outpost));
     }
 
 }

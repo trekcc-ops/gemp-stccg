@@ -27,7 +27,6 @@ public class RevealSeedCardAction extends ActionyAction {
         super(cardGame, performingPlayerName, ActionType.REVEAL_SEED_CARD);
         _revealedCardId = revealedCard.getCardId();
         _locationId = mission.getLocationId();
-        revealedCard.reveal();
     }
 
 
@@ -43,6 +42,7 @@ public class RevealSeedCardAction extends ActionyAction {
             if (!_misSeedResolved) {
                 if (cardGame.getCardFromCardId(_revealedCardId) instanceof ST1EPhysicalCard revealedCard &&
                         cardGame instanceof ST1EGame stGame) {
+                    revealedCard.reveal();
                     _misSeedResolved = true;
                     if (stGame.getGameState().getLocationById(_locationId) instanceof MissionLocation missionLocation) {
                         if (revealedCard.isMisSeed(cardGame, missionLocation)) {

@@ -51,7 +51,8 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
 
         beamCards(P1, outpost, personnelBeaming, _mission);
         for (PersonnelCard card : personnelBeaming) {
-            assertFalse(outpost.hasCardInCrew(card));
+            assertFalse(card.isAboard(outpost));
+            assertTrue(card.isOnPlanet(_game));
         }
 
         attemptMission(P1, _mission);

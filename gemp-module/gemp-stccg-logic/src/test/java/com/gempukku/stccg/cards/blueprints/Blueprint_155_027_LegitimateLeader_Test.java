@@ -128,7 +128,7 @@ public class Blueprint_155_027_LegitimateLeader_Test extends AbstractAtTest {
                 List.of(yourAlphaKlingonOutpost, yourGammaKlingonOutpost, yourEmptyNonAlignedOutpost)));
         selectCard(P1, yourAlphaKlingonOutpost);
         assertTrue(gowronToDownload.isInPlay());
-        assertTrue(gowronToDownload.isAttachedTo(yourAlphaKlingonOutpost));
+        assertTrue(gowronToDownload.isAboard(yourAlphaKlingonOutpost));
     }
 
     @Test

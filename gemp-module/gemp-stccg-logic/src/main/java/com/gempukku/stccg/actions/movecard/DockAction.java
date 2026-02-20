@@ -2,14 +2,15 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -44,10 +45,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
         Collection<PhysicalCard> selectedCards = _dockingTargetResolver.getCards(cardGame);
         if (selectedCards.size() == 1 && Iterables.getOnlyElement(selectedCards) instanceof FacilityCard facility) {
             setAsSuccessful();
-            _cardToDock.dockAtFacility(facility);
-            _cardToDock.setZone(Zone.ATTACHED);
-            _cardToDock.attachTo(facility);
-            setAsSuccessful();
+            _cardToDock.setAsDockedAt(facility);
         } else {
             cardGame.sendErrorMessage("Unable to dock");
             setAsFailed();

@@ -116,7 +116,9 @@ public class CardBlueprint {
 
     @JsonProperty("affiliation-icons")
     private final List<Affiliation> _ownerAffiliationIcons = new ArrayList<>();
-    private final List<Affiliation> _opponentAffiliationIcons = new ArrayList<>();
+
+    @JsonProperty("opponent-affiliation-icons")
+    private List<Affiliation> _opponentAffiliationIcons;
     private int _span;
     private Integer _opponentSpan;
 
@@ -269,9 +271,14 @@ public class CardBlueprint {
     }
 
     public boolean hasNoPointBox() { return _pointBox == null; }
-    public void addOwnerAffiliationIcon(Affiliation affiliation) { _ownerAffiliationIcons.add(affiliation); }
+
     public Set<Affiliation> getOwnerAffiliationIcons() { return new HashSet<>(_ownerAffiliationIcons); }
-    public Set<Affiliation> getOpponentAffiliationIcons() { return new HashSet<>(_ownerAffiliationIcons); }
+
+    public Set<Affiliation> getMissionAffiliationIcons(boolean isOwner) {
+        return (isOwner || _opponentAffiliationIcons == null) ? new HashSet<>(_ownerAffiliationIcons) :
+                new HashSet<>(_opponentAffiliationIcons);
+    }
+    public Set<Affiliation> getOpponentAffiliationIcons() { return new HashSet<>(_opponentAffiliationIcons); }
     public void setSpan(int span) { _span = span; }
     public void setOpponentSpan(int span) { _opponentSpan = span; }
     public int getOwnerSpan() { return _span; }
@@ -676,5 +683,9 @@ public class CardBlueprint {
             }
         }
         return result;
+    }
+
+    public boolean hasMissionType(MissionType missionType) {
+        return _missionType == missionType;
     }
 }

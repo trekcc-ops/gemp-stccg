@@ -39,27 +39,27 @@ public class SeedCardToDestinationAction extends SeedCardAction {
             GameState gameState = stGame.getGameState();
             PhysicalCard destination = _targetResolver.getDestination();
             cardGame.removeCardsFromZone(List.of(reportable));
-            setAsSuccessful();
+            gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
             if (destination instanceof CardWithCrew cardWithCrew) {
                 // if reporting to a ship or facility
-                reportable.attachTo(destination);
-                gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
+                if (reportable.getCardType() != CardType.SHIP) {
+                    reportable.setAsAboard(destination);
+                }
                 if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
-                    ship.dockAtFacility(facility);
+                    ship.setAsDockedAt(facility);
                 }
             } else if (reportable.getCardType() == CardType.SHIP) {
                 // if reporting a ship in space at a location
-                gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
+                reportable.setAsInSpaceAtLocation(destination);
             } else {
                 // if reporting another reportable to a location
-                gameState.addCardToZone(cardGame, reportable, Zone.ATTACHED, _actionContext);
-                reportable.attachTo(destination);
-                reportable.setLocationId(cardGame, destination.getLocationId());
+                reportable.setAsOnPlanet(destination);
                 if (destination instanceof MissionCard missionDestination &&
                         missionDestination.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
                     stGame.getGameState().addCardToEligibleAwayTeam(stGame, reportable, missionLocation);
                 }
             }
+            setAsSuccessful();
         } else {
             cardGame.sendErrorMessage("Unable to process seed card action");
             setAsFailed();

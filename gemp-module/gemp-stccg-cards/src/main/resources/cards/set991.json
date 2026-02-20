@@ -5,17 +5,12 @@
     "cards": [
         {
             "blueprintId": "991_001",
-            "title": "Dummy 1E Dilemma",
-            "type": "dilemma",
-            "property-logo": "tng-logo"
-        },
-        {
-            "blueprintId": "991_002",
-            "title": "Dummy 1E AU Dilemma",
+            "title": "Fake Dilemma",
             "type": "dilemma",
             "mission-type": "dual",
             "icons": "au-icon",
-            "property-logo": "tng-logo"
+            "property-logo": "ccg-logo",
+            "image-url": "../../images/cardart/991_001_FakeDilemma.jpg"
         },
         {
             "blueprintId": "991_003",
