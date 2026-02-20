@@ -116,6 +116,52 @@
             "rarity": "V"
         },
         {
+            "blueprintId": "152_022",
+            "title": "Diplomatic Contact",
+            "type": "incident",
+            "property-logo": "ds9-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/22.jpg",
+            "rarity": "V",
+            "playThisCardAction": {
+                "type": "playThis",
+                "destination": "yours + not(affiliation=Borg) + personnel + Diplomacy + Treachery"
+            },
+            "actions": [
+                {
+                    "type": "activate",
+                    "limit": {
+                        "type": "eachOfYourTurns",
+                        "count": 1
+                    },
+                    "cost": {
+                        "type": "discard",
+                        "cards": {
+                            "type": "select",
+                            "filter": "not(personnel) + inYourHand"
+                        }
+                    },
+                    "effect": [
+                        {
+                            "type": "placeCardsOnTopOfDrawDeck",
+                            "target": {
+                                "type": "select",
+                                "filter": "personnel + inYourDiscard",
+                                "saveToMemoryId": "recoveredPersonnel"
+                            }
+                        },
+                        {
+                            "type": "discardThisCard",
+                            "requires": {
+                                "type": "cardsAreSameAffiliation",
+                                "card1": "recoveredPersonnel",
+                                "card2": "thisPersonnel"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "152_040",
             "title": "Andrea Brand",
             "type": "personnel",

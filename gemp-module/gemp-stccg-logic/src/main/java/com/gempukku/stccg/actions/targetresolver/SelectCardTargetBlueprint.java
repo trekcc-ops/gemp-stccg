@@ -26,6 +26,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
     private final SingleValueSource _count;
     private final boolean _randomSelection;
     private final PlayerSource _selectingPlayer;
+    private final String _saveToMemoryId;
 
     public SelectCardTargetBlueprint(@JsonProperty(value = "filter", required = true)
                               FilterBlueprint filterBlueprint,
@@ -33,7 +34,8 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
                              SingleValueSource count,
                               @JsonProperty("selectingPlayer") String selectingPlayerText,
                               @JsonProperty("random")
-                              Boolean randomSelection) throws InvalidCardDefinitionException {
+                              Boolean randomSelection,
+                             @JsonProperty("saveToMemoryId") String saveToMemoryId) throws InvalidCardDefinitionException {
         _filterBlueprints = new ArrayList<>(List.of(filterBlueprint));
         if (Objects.equals(selectingPlayerText, "opponent")) {
             _selectingPlayer = new YourOpponentPlayerSource();
@@ -44,6 +46,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         }
         _count = Objects.requireNonNullElse(count, new ConstantValueSource(1));
         _randomSelection = Objects.requireNonNullElse(randomSelection,false);
+        _saveToMemoryId = Objects.requireNonNullElse(saveToMemoryId, "temp");
     }
 
     public SelectCardsResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
@@ -60,7 +63,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         } else {
             selectAction = new SelectCardsFromDialogAction(cardGame, selectingPlayerName, finalFilter, count);
         }
-        return new SelectCardsResolver(selectAction);
+        return new SelectCardsResolver(selectAction, context, _saveToMemoryId);
     }
 
     public boolean canBeResolved(DefaultGame cardGame, ActionContext context) {

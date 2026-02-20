@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.targetresolver;
 
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -12,10 +13,21 @@ import java.util.Objects;
 public class SelectCardsResolver implements ActionCardResolver {
     private final SelectCardsAction _selectAction;
     private boolean _resolved;
+    private final ActionContext _context;
+    private final String _saveToMemoryId;
     private Collection<PhysicalCard> _selectedCards;
     public SelectCardsResolver(SelectCardsAction selectAction) {
         _selectAction = selectAction;
         _resolved = false;
+        _context = null;
+        _saveToMemoryId = null;
+    }
+
+    public SelectCardsResolver(SelectCardsAction selectAction, ActionContext context, String saveToMemoryId) {
+        _selectAction = selectAction;
+        _resolved = false;
+        _context = context;
+        _saveToMemoryId = saveToMemoryId;
     }
 
     @Override
@@ -26,6 +38,9 @@ public class SelectCardsResolver implements ActionCardResolver {
             } else if (_selectAction.wasSuccessful()) {
                 _selectedCards = _selectAction.getSelectedCards();
                 _resolved = true;
+                if (_context != null && _saveToMemoryId != null) {
+                    _context.setCardMemory(_saveToMemoryId, _selectedCards);
+                }
             } else if (_selectAction.wasFailed()) {
                 throw new InvalidGameLogicException("Unable to resolve cards");
             }

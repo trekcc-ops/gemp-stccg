@@ -77,6 +77,8 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.getPerformingCardId()));
         appendSimpleFilter("inplay", (cardGame, actionContext) -> Filters.inPlay);
+        appendSimpleFilter("inYourDiscard", (cardGame, actionContext) ->
+                new InYourDiscardFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("inYourHand", (cardGame, actionContext) ->
                 new InYourHandFilter(actionContext.getPerformingPlayerId()));
         appendSimpleFilter("inYourDrawDeck", (cardGame, actionContext) ->

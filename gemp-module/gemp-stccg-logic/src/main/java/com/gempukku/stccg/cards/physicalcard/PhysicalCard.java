@@ -226,4 +226,5 @@ public interface PhysicalCard {
     boolean isAboard(PhysicalCard card);
     void setParentCardRelationship(PhysicalCard parentCard, ChildCardRelationshipType relationshipType);
 
+    PhysicalCard getAtopCard();
 }

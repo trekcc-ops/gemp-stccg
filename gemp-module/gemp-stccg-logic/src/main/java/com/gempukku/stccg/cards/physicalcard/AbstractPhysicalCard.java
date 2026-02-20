@@ -420,6 +420,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         setLocationId(parentCard.getLocationId());
     }
 
+    @Override
+    public PhysicalCard getAtopCard() {
+        if (_parentCardRelationship == ChildCardRelationshipType.ATOP) {
+            return _parentCard;
+        } else {
+            return null;
+        }
+    }
+
     public void clearParentCardRelationship() {
         if (_parentCard != null) {
             _parentCard.clearChildRelationship(this);
