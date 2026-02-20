@@ -15,17 +15,17 @@ import com.gempukku.stccg.player.PlayerView;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder", "visibleCardsInGame",
+@JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame",
         "versionNumber",
         "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations"})
-@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "players", "playerMap", "playerOrder", "visibleCardsInGame", "spacelineLocations",
+@JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame", "spacelineLocations",
         "versionNumber",
         "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations" })
 public class GameStateView {
 
     @JsonProperty("versionNumber")
     @SuppressWarnings("unused")
-    private final String VERSION_NUMBER = "1.1.0";
+    private final String VERSION_NUMBER = "1.2.0";
 
     @JsonProperty("requestingPlayer")
     private final String _requestingPlayerId;
@@ -100,15 +100,6 @@ public class GameStateView {
             return result;
         }
         else return null;
-    }
-
-    @JsonProperty("players")
-    private List<PlayerView> getPlayers() {
-        List<PlayerView> result = new LinkedList<>();
-        for (Player player : _gameState.getPlayers()) {
-            result.add(new PlayerView(player, _requestingPlayerId));
-        }
-        return result;
     }
 
     @JsonProperty("playerMap")

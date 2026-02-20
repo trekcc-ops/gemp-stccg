@@ -34,16 +34,16 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(value = { "performedActions", "phasesInOrder" }, allowGetters = true)
-@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "playerMap", "spacelineLocations",
+@JsonIncludeProperties({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "playerMap", "spacelineLocations",
         "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers", "gameLocations", "spacelineElements",
 "versionNumber" })
-@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "players", "playerMap", "spacelineLocations",
+@JsonPropertyOrder({ "currentPhase", "phasesInOrder", "currentProcess", "playerOrder", "cardsInGame", "playerMap", "spacelineLocations",
         "awayTeams", "actions", "performedActions", "playerClocks", "actionLimits", "modifiers", "gameLocations", "spacelineElements",
 "versionNumber" })
 public abstract class GameState {
 
     @JsonProperty("versionNumber")
-    protected final String VERSION_NUMBER = "1.1.0";
+    protected final String VERSION_NUMBER = "1.2.0";
     Phase _currentPhase;
     PlayerOrder _playerOrder;
     protected final Map<Integer, PhysicalCard> _allCards = new HashMap<>();
@@ -57,7 +57,6 @@ public abstract class GameState {
     @JsonProperty("turnNumber")
     private int _currentTurnNumber;
     private final Map<String, PlayerClock> _playerClocks;
-    @JsonProperty("players")
     List<Player> _players = new ArrayList<>();
 
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
