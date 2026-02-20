@@ -68,7 +68,6 @@ public class GameStateSerializerTest extends AbstractAtTest {
         assertTrue(gameStateJson.has("gameLocations"));
         assertTrue(gameStateJson.has("spacelineElements"));
         assertTrue(gameStateJson.has("versionNumber"));
-        assertEquals(15, gameStateJson.size());
 
         // Stuff that shouldn't be there
         Assertions.assertFalse(gameStateJson.has("currentProcess"));

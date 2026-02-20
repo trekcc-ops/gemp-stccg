@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MissionLocationSerializerTest extends AbstractAtTest {
 
-    private final static String VERSION_NUMBER = "1.1.0";
+    private final static String VERSION_NUMBER = "1.2.0";
     
     @Test
     public void dataForPlayerTest() throws Exception {
