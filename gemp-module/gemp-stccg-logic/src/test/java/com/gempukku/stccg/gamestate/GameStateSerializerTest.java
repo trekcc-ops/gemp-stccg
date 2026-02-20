@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GameStateSerializerTest extends AbstractAtTest {
 
-    private final static String VERSION_NUMBER = "1.1.0";
+    private final static String VERSION_NUMBER = "1.2.0";
 
     @Test
     public void serializeCompleteTest() throws Exception {
@@ -23,13 +23,12 @@ public class GameStateSerializerTest extends AbstractAtTest {
         builder.startGame();
 
         JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeComplete());
-        assertEquals(17, gameStateJson.size());
+        assertEquals(16, gameStateJson.size());
         assertTrue(gameStateJson.has("currentPhase"));
         assertTrue(gameStateJson.has("phasesInOrder"));
         assertTrue(gameStateJson.has("currentProcess"));
         assertTrue(gameStateJson.has("playerOrder"));
         assertTrue(gameStateJson.has("cardsInGame"));
-        assertTrue(gameStateJson.has("players"));
         assertTrue(gameStateJson.has("playerMap"));
         assertTrue(gameStateJson.has("spacelineLocations"));
         assertTrue(gameStateJson.has("awayTeams"));
@@ -54,12 +53,12 @@ public class GameStateSerializerTest extends AbstractAtTest {
         builder.startGame();
 
         JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeForPlayer(P1));
+        assertEquals(14, gameStateJson.size());
         assertTrue(gameStateJson.has("requestingPlayer"));
         assertTrue(gameStateJson.has("currentPhase"));
         assertTrue(gameStateJson.has("phasesInOrder"));
         assertTrue(gameStateJson.has("playerOrder"));
         assertTrue(gameStateJson.has("visibleCardsInGame"));
-        assertTrue(gameStateJson.has("players"));
         assertTrue(gameStateJson.has("playerMap"));
         assertTrue(gameStateJson.has("spacelineLocations"));
         assertTrue(gameStateJson.has("awayTeams"));

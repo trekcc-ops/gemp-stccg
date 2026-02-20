@@ -1104,7 +1104,7 @@ export default class GameTableUI {
             let cardsStillToAdd = Object.keys(gameState.visibleCardsInGame);
             let cardToAdd;
 
-            if (gameState.players != null && gameState.players.length > 0) {
+            if (gameState.playerMap != null && Object.keys(gameState.playerMap).length > 0) {
                 // console.log("Calling initializePlayerOrder from initializeGameState");
                 this.initializePlayerOrder(gameState);
                 this.updateGameStats(gameState);
@@ -1112,7 +1112,7 @@ export default class GameTableUI {
 
             this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
 
-            for (const player of gameState.players) {
+            for (const player of Object.values(gameState.playerMap)) {
                 for (const cardId of player.cardGroups["CORE"].cardIds) {
                     cardToAdd = gameState.visibleCardsInGame[cardId];
                     if (cardToAdd == null) {
@@ -1333,8 +1333,7 @@ export default class GameTableUI {
         this.bottomPlayerId = gameState.requestingPlayer;
         this.allPlayerIds = new Array();
 
-        for (var i =0; i < gameState.players.length; i++) {
-            let playerId = gameState.players[i].playerId;
+        for (const playerId of Object.keys(gameState.playerMap)) {
             this.allPlayerIds.push(playerId);
             this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
             this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
@@ -1342,7 +1341,8 @@ export default class GameTableUI {
 
         var index = this.getPlayerIndex(this.bottomPlayerId);
         if (index == -1) {
-            this.bottomPlayerId = gameState.players[1].playerId;
+            const last_index = Object.keys(gameState.playerMap).length - 1;
+            this.bottomPlayerId = Object.values(gameState.playerMap)[last_index].playerId;
             this.spectatorMode = true;
         } else {
             this.spectatorMode = false;
@@ -2047,7 +2047,7 @@ export class ST1EGameTableUI extends GameTableUI {
         var that = this;
         $("#main").queue(
             function (next) {
-                for (const player of gameState.players) {
+                for (const player of Object.values(gameState.playerMap)) {
                     let playerId = player.playerId;
                     let drawDeckSize = player.cardGroups["DRAW_DECK"].cardCount;
                     let handSize = player.cardGroups["HAND"].cardCount;

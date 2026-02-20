@@ -5,6 +5,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   base: "/gemp-module/",
+  server: {
+    port: "17001"
+  },
   build: {
     sourcemap: true,
     rollupOptions: {

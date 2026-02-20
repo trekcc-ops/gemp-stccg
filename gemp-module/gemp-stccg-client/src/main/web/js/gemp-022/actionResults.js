@@ -237,10 +237,10 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         }
         case "SCORE_POINTS": {
             // Update points for both players because why not
-            for (const player of jsonGameState.players) {
-                let playerId = player.playerId;
+            for (const playerData of Object.values(jsonGameState.playerMap)) {
+                let playerId = playerData.playerId;
                 let playerIndex = gameUi.getPlayerIndex(playerId);
-                gameUi.playerScores[playerIndex] = player.score;
+                gameUi.playerScores[playerIndex] = playerData.score;
             }
             message = performingPlayerId + " scored " + jsonAction.pointsScored + " points from " +
                 showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
