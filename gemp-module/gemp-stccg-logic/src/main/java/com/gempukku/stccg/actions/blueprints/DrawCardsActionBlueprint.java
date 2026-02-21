@@ -27,7 +27,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
                                     SingleValueSource count,
                                     @JsonProperty(value = "player")
                                     String playerText) throws InvalidCardDefinitionException {
-        _drawingPlayerSource = (playerText == null) ? null : PlayerResolver.resolvePlayer(playerText);
+        _drawingPlayerSource = PlayerResolver.resolvePlayer(Objects.requireNonNullElse(playerText, "you"));
         _countSource = Objects.requireNonNullElse(count, new ConstantValueSource(1));
     }
 
@@ -35,11 +35,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         final String targetPlayerId;
-        if (_drawingPlayerSource != null) {
-            targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
-        } else {
-            targetPlayerId = context.getPerformingPlayerId();
-        }
+        targetPlayerId = context.getPerformingPlayerId();
         final int count = _countSource.evaluateExpression(cardGame, context);
         return List.of(new DrawCardsAction(context.card(), targetPlayerId, count, cardGame));
     }

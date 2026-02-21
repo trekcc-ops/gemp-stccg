@@ -6,6 +6,7 @@ import com.gempukku.stccg.cards.physicalcard.EquipmentCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -55,7 +56,7 @@ public class Blueprint_152_030_WinnAdami_Test extends AbstractAtTest {
     }
 
     @Test
-    public void playCardTest() throws Exception {
+    public void useSpecialDownloadTest() throws Exception {
         initializeGame();
         useGameText(P1, winn);
         assertTrue(selectableCardsAre(P1, List.of(dipContactInHand, dipContactInDeck)));
@@ -70,6 +71,16 @@ public class Blueprint_152_030_WinnAdami_Test extends AbstractAtTest {
         assertTrue(dipContactInDeck.isInPlay());
         assertEquals(theOne, dipContactInDeck.getAtopCard());
         assertFalse(dipContactInDeck.isInDrawDeck(_game));
+    }
+
+    @Test
+    public void oncePerGameTest() throws Exception {
+        initializeGame();
+        useGameText(P1, winn);
+        selectCard(P1, dipContactInDeck);
+        selectCard(P1, theOne);
+        assertTrue(dipContactInDeck.isInPlay());
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, winn));
     }
 
 }

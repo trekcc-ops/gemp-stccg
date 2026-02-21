@@ -370,7 +370,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
                 for (Skill skill : personnel.getSkills(game)) {
                     if (skill instanceof SpecialResponseActionSkill responseSkill &&
                             responseSkill.isOptional()) {
-                        ActionBlueprint blueprint = responseSkill.getActionBlueprint(this);
+                        ActionBlueprint blueprint = responseSkill.getActionBlueprint();
                         if (blueprint != null) {
                             TopLevelSelectableAction action = blueprint.createAction(game, playerName, this);
                             if (action != null) {

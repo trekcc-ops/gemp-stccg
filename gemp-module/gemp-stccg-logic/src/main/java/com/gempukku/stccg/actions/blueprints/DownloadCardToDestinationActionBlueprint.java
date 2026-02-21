@@ -34,7 +34,8 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
     private final DestinationBlueprint _destinationBlueprint;
 
     @JsonCreator
-    public DownloadCardToDestinationActionBlueprint(@JsonProperty(value = "destination")
+    @SuppressWarnings("unused") // Used in JSON deserialization
+    private DownloadCardToDestinationActionBlueprint(@JsonProperty(value = "destination")
                                        DestinationBlueprint destination,
                                                     @JsonProperty(value = "limit")
                                        UsageLimitBlueprint usageLimit,
@@ -64,16 +65,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
 
     public DownloadCardToDestinationActionBlueprint(UsageLimitBlueprint usageLimit, FilterBlueprint filterBlueprint,
                                                     boolean specialDownload) {
-        super(new YouPlayerSource());
-        if (usageLimit != null) {
-            usageLimit.applyLimitToActionBlueprint(this);
-        }
-        _filterBlueprint = new AndFilterBlueprint(
-                filterBlueprint,
-                new YouCanDownloadFilterBlueprint()
-        );
-        _specialDownload = specialDownload;
-        _destinationBlueprint = null;
+        this(null, usageLimit, filterBlueprint, specialDownload, false);
     }
 
 
@@ -170,6 +162,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                             new EnterPlayAtDestinationResolver(performingPlayerName, destinationTargetMap);
                     DownloadCardAction action =
                             new DownloadCardAction(cardGame, performingPlayerName, resolver, thisCard);
+                    appendActionToContext(cardGame, action, actionContext);
                     if (action.canBeInitiated(cardGame)) {
                         return action;
                     }

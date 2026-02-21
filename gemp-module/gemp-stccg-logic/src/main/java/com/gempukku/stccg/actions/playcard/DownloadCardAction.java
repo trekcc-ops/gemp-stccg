@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
@@ -14,7 +14,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.Collection;
 import java.util.List;
 
-public class DownloadCardAction extends ActionyAction implements DownloadAction {
+public class DownloadCardAction extends ActionWithSubActions implements DownloadAction {
 
     private final PhysicalCard _performingCard;
 

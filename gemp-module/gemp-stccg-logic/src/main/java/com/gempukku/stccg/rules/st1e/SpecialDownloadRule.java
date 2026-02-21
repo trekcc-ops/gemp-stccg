@@ -39,7 +39,7 @@ public class SpecialDownloadRule extends ST1ERule {
             if (card instanceof PersonnelCard personnel) {
                 for (Skill skill : personnel.getSkills(cardGame)) {
                     if (skill instanceof SpecialDownloadSkill downloadSkill) {
-                        ActionBlueprint blueprint = downloadSkill.getActionBlueprint(card);
+                        ActionBlueprint blueprint = downloadSkill.getActionBlueprint();
                         TopLevelSelectableAction action = blueprint.createAction(cardGame, playerName, card);
                         if (action != null) {
                             result.add(action);

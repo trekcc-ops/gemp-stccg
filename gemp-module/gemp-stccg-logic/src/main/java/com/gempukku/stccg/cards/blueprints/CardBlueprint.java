@@ -166,16 +166,10 @@ public class CardBlueprint {
 
     @JsonProperty("image-options")
     private final Map<Affiliation, String> _imageOptions = new HashMap<>();
-    private final Map<RequiredType, List<ActionBlueprint>> _beforeTriggers = new HashMap<>();
-    private final Map<RequiredType, List<ActionBlueprint>> _afterTriggers = new HashMap<>();
-    private final Map<RequiredType, ActionBlueprint> _discardedFromPlayTriggers = new HashMap<>();
-
-    private List<ActionBlueprint> inDiscardPhaseActions;
 
     @JsonProperty("modifiers")
     protected final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
 
-    private List<ExtraPlayCostSource> extraPlayCosts;
     private List<Requirement> playInOtherPhaseConditions;
 
     @JsonProperty("playOutOfSequenceCondition")
@@ -194,18 +188,10 @@ public class CardBlueprint {
     protected PlayThisCardActionBlueprint _playThisCardActionBlueprint;
 
     public CardBlueprint() {
-        for (RequiredType requiredType : RequiredType.values()) {
-            _beforeTriggers.put(requiredType, new LinkedList<>());
-            _afterTriggers.put(requiredType, new LinkedList<>());
-        }
     }
 
     public CardBlueprint(String blueprintId) {
         _blueprintId = blueprintId;
-        for (RequiredType requiredType : RequiredType.values()) {
-            _beforeTriggers.put(requiredType, new LinkedList<>());
-            _afterTriggers.put(requiredType, new LinkedList<>());
-        }
     }
 
     // Setter/getter methods for card features
@@ -412,22 +398,9 @@ public class CardBlueprint {
         targetFilters.add(targetFilter);
     }
 
-    public void appendInDiscardPhaseAction(ActionBlueprint actionBlueprint) {
-        if (inDiscardPhaseActions == null)
-            inDiscardPhaseActions = new LinkedList<>();
-        inDiscardPhaseActions.add(actionBlueprint);
-    }
-
-    public void setDiscardedFromPlayTrigger(RequiredType requiredType, ActionBlueprint actionBlueprint) {
-        _discardedFromPlayTriggers.put(requiredType, actionBlueprint);
-    }
     public ActionBlueprint getDiscardedFromPlayTrigger(RequiredType requiredType) {
-        return _discardedFromPlayTriggers.get(requiredType);
+        return null;
     }
-
-    public List<ExtraPlayCostSource> getExtraPlayCosts() { return extraPlayCosts; }
-
-    public List<ActionBlueprint> getInDiscardPhaseActions() { return inDiscardPhaseActions; }
 
     public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player,
                                                                      DefaultGame cardGame) {
@@ -656,7 +629,18 @@ public class CardBlueprint {
     }
 
     public int getIdForActionBlueprint(ActionBlueprint blueprint) {
-        return _actionBlueprints.indexOf(blueprint);
+        List<ActionBlueprint> allBlueprints = new ArrayList<>(_actionBlueprints);
+        if (_playThisCardActionBlueprint != null) {
+            allBlueprints.add(_playThisCardActionBlueprint);
+        }
+        if (_skillBox != null) {
+            for (Skill skill : _skillBox.getSkillList()) {
+                if (skill instanceof SpecialActionSkill actionSkill) {
+                    allBlueprints.add(actionSkill.getActionBlueprint());
+                }
+            }
+        }
+        return allBlueprints.indexOf(blueprint);
     }
 
     public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName,
