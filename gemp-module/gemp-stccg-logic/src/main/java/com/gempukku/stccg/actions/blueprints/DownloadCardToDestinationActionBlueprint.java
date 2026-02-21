@@ -151,7 +151,10 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                     Collection<PhysicalCard> destinationOptions = Filters.filter(
                             card.getDestinationOptionsFromGameText(actionContext, cardGame),
                             cardGame,
-                            Filters.atLocation(actionContext.card().getLocationId())
+                            Filters.or(
+                                Filters.atLocation(actionContext.card().getLocationId()),
+                                    Filters.isCoreProxy
+                            )
                     );
                     if (!destinationOptions.isEmpty()) {
                         destinationTargetMap.put(card, destinationOptions);

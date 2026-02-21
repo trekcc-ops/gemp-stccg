@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -56,6 +57,7 @@ public class Filters {
     public static final CardFilter controllerControlsMatchingPersonnelAboard =
             new ControllerControlsMatchingPersonnelAboardFilter();
     public static final CardFilter equipment = Filters.or(CardType.EQUIPMENT);
+    public static final CardFilter isCoreProxy = (game, physicalCard) -> physicalCard instanceof ProxyCoreCard;
     public static final CardFilter exposedShip = new ExposedShipFilter();
     public static final CardFilter facility = Filters.or(CardType.FACILITY);
     public static final CardFilter Ferengi = Filters.or(Affiliation.FERENGI, Species.FERENGI);
