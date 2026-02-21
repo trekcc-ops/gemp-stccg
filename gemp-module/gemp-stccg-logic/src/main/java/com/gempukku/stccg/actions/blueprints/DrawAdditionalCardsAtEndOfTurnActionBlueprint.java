@@ -18,7 +18,7 @@ public class DrawAdditionalCardsAtEndOfTurnActionBlueprint extends ActivateCardA
         super(
                 new UsageLimitBlueprint("eachOfYourTurns", 1),
                 List.of(new PhaseRequirement(Phase.END_OF_TURN)), new ArrayList<>(),
-                List.of(new DrawCardsActionBlueprint(count, "you"))
+                List.of(new DrawCardsActionBlueprint(count, "you", false))
         );
     }
 
