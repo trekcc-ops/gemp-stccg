@@ -35,7 +35,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         final String targetPlayerId;
-        targetPlayerId = context.getPerformingPlayerId();
+        targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
         final int count = _countSource.evaluateExpression(cardGame, context);
         return List.of(new DrawCardsAction(cardGame, context.card(), targetPlayerId, count));
     }
