@@ -26,7 +26,7 @@ public class TribblesStartOfRoundGameProcess extends TribblesGameProcess {
                 player.shuffleDrawDeck(cardGame);
             }
             for (int i = 0; i < _game.getFormat().getHandSize(); i++) {
-                DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, player);
+                DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, player.getPlayerId());
                 drawAction.processEffect(cardGame);
                 cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
                 cardGame.sendActionResultToClient();

@@ -29,7 +29,7 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             _game.getGameState().setPlayerDecked(currentPlayer, true);
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, currentPlayer);
+            DrawSingleCardAction drawAction = new DrawSingleCardAction(cardGame, currentPlayer.getPlayerId());
             drawAction.processEffect(cardGame);
             cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
             cardGame.sendActionResultToClient();
