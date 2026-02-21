@@ -259,6 +259,14 @@ public abstract class GameState {
         }
     }
 
+    public void playerDrawsCard(String playerName) {
+        Player player = getPlayerMap().get(playerName);
+        if (player != null) {
+            playerDrawsCard(player);
+        }
+    }
+
+
 
     public Player getPlayer(String playerId) throws PlayerNotFoundException {
         for (Player player : _players) {

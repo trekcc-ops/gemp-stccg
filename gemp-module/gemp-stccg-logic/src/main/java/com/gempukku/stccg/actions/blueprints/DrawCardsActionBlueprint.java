@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
-import com.gempukku.stccg.evaluator.SingleValueSource;
+import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
@@ -20,11 +20,11 @@ import java.util.Objects;
 
 public class DrawCardsActionBlueprint implements SubActionBlueprint {
 
-    private final SingleValueSource _countSource;
+    private final ValueSource _countSource;
     private final PlayerSource _drawingPlayerSource;
 
     public DrawCardsActionBlueprint(@JsonProperty(value = "count")
-                                    SingleValueSource count,
+                                    ValueSource count,
                                     @JsonProperty(value = "player")
                                     String playerText) throws InvalidCardDefinitionException {
         _drawingPlayerSource = PlayerResolver.resolvePlayer(Objects.requireNonNullElse(playerText, "you"));
@@ -36,17 +36,20 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         final String targetPlayerId;
         targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
-        final int count = _countSource.evaluateExpression(cardGame, context);
-        return List.of(new DrawCardsAction(cardGame, context.card(), targetPlayerId, count));
+        int min = Math.max(_countSource.getMinimum(cardGame, context), 0);
+        int max = Math.min(_countSource.getMaximum(cardGame, context),
+            cardGame.getPlayer(targetPlayerId).getCardsInDrawDeck().size());
+        return List.of(new DrawCardsAction(cardGame, context.card(), targetPlayerId, min, max));
     }
 
     @Override
     public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext context) {
         try {
-            final int count = _countSource.evaluateExpression(cardGame, context);
+            final int min = Math.max(_countSource.getMinimum(cardGame, context), 0);
             final String targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
             Player targetPlayer = cardGame.getPlayer(targetPlayerId);
-            return targetPlayer.getCardsInDrawDeck().size() >= count;
+            int max = _countSource.getMaximum(cardGame, context);
+            return targetPlayer.getCardsInDrawDeck().size() >= min && max >= min && max > 0;
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             return false;
