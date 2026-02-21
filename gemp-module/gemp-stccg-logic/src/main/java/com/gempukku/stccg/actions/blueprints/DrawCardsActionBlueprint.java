@@ -37,7 +37,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         final String targetPlayerId;
         targetPlayerId = context.getPerformingPlayerId();
         final int count = _countSource.evaluateExpression(cardGame, context);
-        return List.of(new DrawCardsAction(context.card(), targetPlayerId, count, cardGame));
+        return List.of(new DrawCardsAction(cardGame, context.card(), targetPlayerId, count));
     }
 
     @Override

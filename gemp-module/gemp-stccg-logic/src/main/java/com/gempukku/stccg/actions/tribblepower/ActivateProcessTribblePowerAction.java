@@ -12,7 +12,7 @@ import com.gempukku.stccg.game.TribblesGame;
 public class ActivateProcessTribblePowerAction extends ActivateTribblePowerAction {
     public ActivateProcessTribblePowerAction(TribblesGame game, PhysicalCard performingCard, ActionContext actionContext) {
         super(game, actionContext, performingCard);
-        appendEffect(new DrawCardsAction(_performingCard, _performingPlayerId, 3, game));
+        appendEffect(new DrawCardsAction(game, _performingCard, _performingPlayerId, 3));
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, _performingPlayerId,
                 "Choose a card to put beneath draw deck", Filters.yourHand(_performingPlayerId),
                 2, 2);

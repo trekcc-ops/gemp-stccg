@@ -20,14 +20,6 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         _totalCardsToDraw = count;
     }
 
-    public DrawCardsAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName) {
-        this(cardGame, performingCard, performingPlayerName, 1);
-    }
-
-    public DrawCardsAction(PhysicalCard performingCard, String performingPlayerName, int count, DefaultGame cardGame) {
-        this(cardGame, performingCard, performingPlayerName, count);
-    }
-
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;

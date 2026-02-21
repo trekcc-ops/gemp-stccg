@@ -24,8 +24,7 @@ public class ActivateMasakaTribblePowerAction extends ActivateTribblePowerAction
                     player, "Choose cards in order to put beneath draw deck", Filters.yourHand(player),
                     handSize, handSize);
             appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, player, selectAction));
-            appendEffect(
-                    new DrawCardsAction(_performingCard, _performingPlayerId, 3, cardGame));
+            appendEffect(new DrawCardsAction(cardGame, _performingCard, _performingPlayerId, 3));
         }
     }
 

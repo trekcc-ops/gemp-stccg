@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.draw.DrawCardsAction;
+import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -67,7 +67,7 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
         appendEffect(new ScorePointsAction(cardGame, _performingCard, chosenPlayerObj, BONUS_POINTS));
 
         // Draw a card.
-        appendEffect(new DrawCardsAction(cardGame, _performingCard, _performingPlayerId));
+        appendEffect(new DrawSingleCardAction(cardGame, _performingPlayerId));
     }
 
 
