@@ -166,6 +166,25 @@
             ]
         },
         {
+            "blueprintId": "152_030",
+            "title": "Winn Adami",
+            "type": "personnel",
+            "affiliation": "bajoran",
+            "icons": "command",
+            "persona": "Vedek Winn",
+            "lore": "Kai of Bajor formerly known as <b>Vedek Winn</b>. Won her post through ambitious political maneuvering. Fairly successful as a negotiator.",
+            "classification": "V.I.P.",
+            "property-logo": "ds9-logo",
+            "species": "bajoran",
+            "gender": "female",
+            "skill-box": "[*] Diplomacy [*] Leadership [*] Law [*] Treachery [DL] Diplomatic Contact",
+            "integrity": 3,
+            "cunning": 8,
+            "strength": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/30.jpg",
+            "rarity": "V"
+        },
+        {
             "blueprintId": "152_040",
             "title": "Andrea Brand",
             "type": "personnel",
