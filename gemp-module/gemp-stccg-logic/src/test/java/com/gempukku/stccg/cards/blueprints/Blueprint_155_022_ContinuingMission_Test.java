@@ -83,8 +83,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         useGameText(P1, continuing);
 
         // Verify that both copies of Attention All Hands are in selectable cards, but can't select both
-        assertTrue(getSelectableCards(P1).containsAll(List.of(attention, attention2)));
-        assertTrue(getSelectableCards(P1).size() == 2);
+        assertTrue(selectableCardsAre(P1, List.of(attention, attention2)));
         assertThrows(DecisionResultInvalidException.class, () -> selectCards(P1, List.of(attention, attention2)));
 
         // Select card to download

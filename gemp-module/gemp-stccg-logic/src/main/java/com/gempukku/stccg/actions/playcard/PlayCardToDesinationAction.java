@@ -8,7 +8,9 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayCardToDesinationAction extends PlayCardAction {
     private final EnterPlayAtDestinationResolver _targetResolver;
@@ -18,7 +20,9 @@ public class PlayCardToDesinationAction extends PlayCardAction {
                                       Collection<PhysicalCard> destinationOptions,
                                       ActionContext context) {
         super(cardGame, cardEnteringPlay, cardEnteringPlay, performingPlayerName, null, ActionType.PLAY_CARD, context);
-        _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, cardEnteringPlay, destinationOptions);
+        Map<PhysicalCard, Collection<PhysicalCard>> destinationMap = new HashMap<>();
+        destinationMap.put(cardEnteringPlay, destinationOptions);
+        _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, destinationMap);
         _cardTargets.add(_targetResolver);
     }
 

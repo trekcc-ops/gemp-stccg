@@ -10,7 +10,9 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SeedCardToDestinationAction extends SeedCardAction {
     private final EnterPlayAtDestinationResolver _targetResolver;
@@ -20,7 +22,11 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                                        Collection<PhysicalCard> destinationOptions,
                                        PhysicalCard performingCard) {
         super(cardGame, performingCard, null);
-        _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, seedableCards, destinationOptions);
+        Map<PhysicalCard, Collection<PhysicalCard>> destinationMap = new HashMap<>();
+        for (PhysicalCard card : seedableCards) {
+            destinationMap.put(card, destinationOptions);
+        }
+        _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, destinationMap);
         _cardTargets.add(_targetResolver);
     }
 

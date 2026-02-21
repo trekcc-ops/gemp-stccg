@@ -3,12 +3,13 @@ package com.gempukku.stccg.actions.targetresolver;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.google.common.collect.Iterables;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
 public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
 
@@ -24,24 +25,10 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
                                           Map<PhysicalCard, Collection<PhysicalCard>> destinationMap) {
         _performingPlayerName = performingPlayerName;
         _destinationMap = destinationMap;
-    }
-
-    public EnterPlayAtDestinationResolver(String performingPlayerName, Collection<PhysicalCard> seedableCards,
-                                          Collection<PhysicalCard> destinationOptions) {
-        _destinationMap = new HashMap<>();
-        if (!destinationOptions.isEmpty()) {
-            for (PhysicalCard card : seedableCards) {
-                _destinationMap.put(card, destinationOptions);
-            }
+        if (_destinationMap.keySet().size() == 1) {
+            _cardEnteringPlay = Iterables.getOnlyElement(_destinationMap.keySet());
         }
-        _performingPlayerName = performingPlayerName;
     }
-
-    public EnterPlayAtDestinationResolver(String performingPlayerName, PhysicalCard cardToSeed,
-                                          Collection<PhysicalCard> destinationOptions) {
-        this(performingPlayerName, List.of(cardToSeed), destinationOptions);
-    }
-
 
 
     @Override
@@ -60,8 +47,7 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
     private void selectCardToSeed(ST1EGame stGame) {
         if (_selectCardToSeedAction == null) {
             _selectCardToSeedAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                    "Choose a card to enter play",
-                    new InCardListFilter(_destinationMap.keySet()));
+                    "Choose a card to enter play", _destinationMap.keySet());
             stGame.addActionToStack(_selectCardToSeedAction);
         } else if (_selectCardToSeedAction.wasSuccessful()) {
             _cardEnteringPlay = _selectCardToSeedAction.getSelectedCard();
@@ -74,8 +60,7 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
     private void selectDestination(ST1EGame stGame) {
         if (_selectDestinationAction == null) {
             _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                    "Choose a destination",
-                    new InCardListFilter(_destinationMap.get(_cardEnteringPlay)));
+                    "Choose a destination", _destinationMap.get(_cardEnteringPlay));
             stGame.addActionToStack(_selectDestinationAction);
         } else if (_selectDestinationAction.wasSuccessful()) {
             _destinationCard = _selectDestinationAction.getSelectedCard();

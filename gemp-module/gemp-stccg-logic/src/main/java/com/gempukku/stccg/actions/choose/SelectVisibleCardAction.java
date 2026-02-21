@@ -11,6 +11,7 @@ import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.Iterables;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -19,17 +20,17 @@ import java.util.Collection;
 public class SelectVisibleCardAction extends ActionyAction implements SelectCardAction {
     private PhysicalCard _selectedCard;
     private final String _decisionText;
-    private final CardFilter _selectableCardFilter;
-
-    public SelectVisibleCardAction(DefaultGame cardGame, String playerName, String choiceText, CardFilter cardFilter) {
-        super(cardGame, playerName, ActionType.SELECT_CARDS);
-        _selectableCardFilter = cardFilter;
-        _decisionText = choiceText;
-    }
+    private final Collection<PhysicalCard> _selectableCards;
 
     public SelectVisibleCardAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
                                    Collection<? extends PhysicalCard> cards) {
-        this(cardGame, selectingPlayerName, choiceText, Filters.inCards(cards));
+        super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS);
+        _selectableCards = new ArrayList<>(cards);
+        _decisionText = choiceText;
+    }
+
+    public SelectVisibleCardAction(DefaultGame cardGame, String playerName, String choiceText, CardFilter cardFilter) {
+        this(cardGame, playerName, choiceText, Filters.filter(cardGame, cardFilter));
     }
 
 
@@ -63,6 +64,6 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
 
     @Override
     public Collection<? extends PhysicalCard> getSelectableCards(DefaultGame cardGame) {
-        return Filters.filter(cardGame, _selectableCardFilter);
+        return _selectableCards;
     }
 }
