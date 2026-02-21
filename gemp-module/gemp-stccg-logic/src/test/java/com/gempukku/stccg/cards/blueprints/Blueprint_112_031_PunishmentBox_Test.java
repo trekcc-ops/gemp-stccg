@@ -16,12 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class Blueprint_112_031_PunishmentBox_Test extends AbstractAtTest {
 
     private FacilityCard outpost;
-    private EquipmentCard phaser;
-    private PersonnelCard picard;
     private MissionCard mission;
     private PersonnelCard kallis;
-    private PersonnelCard opposingKallis;
-    private PersonnelCard sito;
     private PhysicalCard punishmentBox;
     private PhysicalCard armus;
     private PersonnelCard kallis2;
