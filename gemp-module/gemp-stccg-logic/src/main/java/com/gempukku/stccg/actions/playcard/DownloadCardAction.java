@@ -42,7 +42,7 @@ public class DownloadCardAction extends ActionyAction implements DownloadAction 
             setAsFailed();
         } else {
             cardGame.removeCardsFromZone(List.of(cardEnteringPlay));
-            if (!(destinationCard instanceof ProxyCoreCard)) {
+            if (destinationCard instanceof ProxyCoreCard) {
                 cardGame.getGameState()
                         .addCardToZone(cardGame, cardEnteringPlay, destinationCard.getZone(), _actionContext);
             } else {

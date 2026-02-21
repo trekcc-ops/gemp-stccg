@@ -427,6 +427,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _parentCardRelationship = relationshipType;
         parentCard.addChildCardRelationship(this, relationshipType);
         setLocationId(parentCard.getLocationId());
+        setZone(parentCard.getZone());
     }
 
     @Override
