@@ -470,4 +470,13 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         setParentCardRelationship(destination, ATOP);
     }
 
+    public boolean isInDrawDeck(DefaultGame cardGame) {
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardsInDrawDeck().contains(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -237,4 +237,6 @@ public interface PhysicalCard {
     default List<PhysicalCard> getDestinationOptionsFromGameText(ActionContext context, DefaultGame cardGame) {
         return new ArrayList<>(getBlueprint().getPlayCardDestinationOptionsFromGameText(context, cardGame));
     }
+
+    boolean isInDrawDeck(DefaultGame game);
 }

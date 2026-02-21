@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_152_030_WinnAdami_Test extends AbstractAtTest {
 
@@ -64,6 +64,12 @@ public class Blueprint_152_030_WinnAdami_Test extends AbstractAtTest {
         // Verify that you can download Diplomatic Contact to Winn or The One because they are at Winn's location
         // Should not be able to download to Gozar at the other mission
         assertTrue(selectableCardsAre(P1, List.of(winn, theOne)));
+
+        // Select The One and verify that Diplomatic Contact is now atop that card
+        selectCard(P1, theOne);
+        assertTrue(dipContactInDeck.isInPlay());
+        assertEquals(theOne, dipContactInDeck.getAtopCard());
+        assertFalse(dipContactInDeck.isInDrawDeck(_game));
     }
 
 }
