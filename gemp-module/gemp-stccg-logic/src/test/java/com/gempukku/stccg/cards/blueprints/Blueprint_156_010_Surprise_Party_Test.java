@@ -111,9 +111,9 @@ public class Blueprint_156_010_Surprise_Party_Test extends AbstractAtTest {
         skipPhase(Phase.EXECUTE_ORDERS);
 
         assertEquals(startingSize1, hand1.size()); // Verify that P1 took their normal card draw
-        assertNotNull(_game.getAwaitingDecision(P1)); // Verify that P1 has an optional action
-        chooseOnlyAction(P1);
+        useGameText(P1, party); // Use Surprise Party
         assertEquals(startingSize1 + 1, hand1.size()); // Verify that P1 took another card draw
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, party)); // Verify it is once per turn only
     }
 
 

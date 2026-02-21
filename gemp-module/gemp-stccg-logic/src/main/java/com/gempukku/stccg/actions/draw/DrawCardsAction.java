@@ -58,6 +58,8 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
             cardGame.getGameState().playerDrawsCard(_performingPlayerId);
             setAsSuccessful();
             saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId, this), cardGame);
+        } else if (_minCardsToDraw == _maxCardsToDraw && _cardCountLastSelected == null) {
+            _cardCountLastSelected = _maxCardsToDraw;
         } else if ((_cardCountLastSelected != null && _cardCountLastSelected == 0) ||
                 _cardsAlreadyDrawnCount == _maxCardsToDraw) {
             if (_cardsAlreadyDrawnCount == 0) {

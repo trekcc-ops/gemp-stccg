@@ -57,13 +57,12 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     }
 
     @Override
-    public boolean isValid(DefaultGame cardGame, GameTextContext actionContext) {
-        boolean isValidPlayer =
-                _performingPlayer.isPlayer(actionContext.getPerformingPlayerId(), cardGame, actionContext);
+    public boolean isValid(DefaultGame cardGame, GameTextContext context) {
+        boolean isValidPlayer = _performingPlayer.isPlayer(context.yourName(), cardGame, context);
         if (!isValidPlayer) {
             return false;
         } else {
-            return actionContext.acceptsAllRequirements(cardGame, _requirements);
+            return context.acceptsAllRequirements(cardGame, _requirements);
         }
     }
 
