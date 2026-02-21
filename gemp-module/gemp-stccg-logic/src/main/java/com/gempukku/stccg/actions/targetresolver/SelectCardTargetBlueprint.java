@@ -14,11 +14,13 @@ import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.player.PlayerSource;
-import com.gempukku.stccg.player.YouPlayerSource;
-import com.gempukku.stccg.player.YourOpponentPlayerSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
 
@@ -37,13 +39,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
                               Boolean randomSelection,
                              @JsonProperty("saveToMemoryId") String saveToMemoryId) throws InvalidCardDefinitionException {
         _filterBlueprints = new ArrayList<>(List.of(filterBlueprint));
-        if (Objects.equals(selectingPlayerText, "opponent")) {
-            _selectingPlayer = new YourOpponentPlayerSource();
-        } else if (selectingPlayerText == null) {
-            _selectingPlayer = new YouPlayerSource();
-        } else {
-            throw new InvalidCardDefinitionException("Could not process 'selectingPlayer' for SelectCardTargetBlueprint");
-        }
+        _selectingPlayer = PlayerResolver.resolvePlayer(Objects.requireNonNullElse(selectingPlayerText, "you"));
         _count = Objects.requireNonNullElse(count, new ConstantValueSource(1));
         _randomSelection = Objects.requireNonNullElse(randomSelection,false);
         _saveToMemoryId = Objects.requireNonNullElse(saveToMemoryId, "temp");

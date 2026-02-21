@@ -239,4 +239,5 @@ public interface PhysicalCard {
     }
 
     boolean isInDrawDeck(DefaultGame game);
+
 }

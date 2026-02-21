@@ -105,6 +105,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         // Broad card filters
         appendSimpleFilter("another", notThisCard);
         appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
+        appendSimpleFilter("here", (cardGame, actionContext) -> Filters.here(actionContext.card()));
         appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
         appendSimpleFilter("notThisCard", notThisCard);
         appendSimpleFilter("self", thisCard);

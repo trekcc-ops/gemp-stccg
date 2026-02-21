@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
@@ -23,7 +24,7 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction,
+public class AttemptMissionAction extends ActionWithSubActions implements TopLevelSelectableAction,
         ActionWithRespondableInitiation {
     private AttemptingUnitResolver _attemptingUnitTarget;
     @JsonProperty("targetCardId")
@@ -176,6 +177,11 @@ public class AttemptMissionAction extends ActionyAction implements TopLevelSelec
             }
         }
         return true;
+    }
+
+    @JsonIgnore
+    public MissionCard getMission() {
+        return _performingCard;
     }
 
 }

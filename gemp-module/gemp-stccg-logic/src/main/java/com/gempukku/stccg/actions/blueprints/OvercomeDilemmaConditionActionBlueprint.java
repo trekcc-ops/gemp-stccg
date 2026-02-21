@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
+import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -62,6 +63,18 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
                         _successEffects, _discardDilemma, context);
                 result.add(actionToReturn);
                 break;
+            } else if (pendingAction instanceof AttemptMissionAction attemptAction &&
+                    !context.card().isBeingEncountered(cardGame)
+            ) {
+                try {
+                    actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
+                            attemptAction, _conditions, attemptAction.getAttemptingUnit(), _failEffects,
+                            _successEffects, _discardDilemma, context);
+                    result.add(actionToReturn);
+                    break;
+                } catch(InvalidGameLogicException ignored) {
+
+                }
             }
         }
         if (actionToReturn != null && _costAction != null) {
