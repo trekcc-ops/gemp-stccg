@@ -2,12 +2,13 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
-import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
@@ -25,7 +26,7 @@ import java.util.List;
 public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     private final AttemptingUnit _attemptingUnit;
-    private final EncounterSeedCardAction _encounterAction;
+    private final ActionWithSubActions _parentAction; // typically an encounter, but sometimes an attempt
     private final MissionRequirement _conditions;
     private boolean _conditionsChecked;
     private boolean _conditionsMet;
@@ -47,10 +48,27 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         _attemptingUnit = attemptingUnit;
         _additionalFailActions.addAll(failDilemmaActions);
         _conditions = conditions;
-        _encounterAction = encounterAction;
+        _parentAction = encounterAction;
         _discardDilemma = discardDilemma;
         _additionalSuccessActions.addAll(successActions);
     }
+
+    public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
+                                          AttemptMissionAction attemptAction,
+                                          MissionRequirement conditions,
+                                          AttemptingUnit attemptingUnit, List<SubActionBlueprint> failDilemmaActions,
+                                          List<SubActionBlueprint> successActions, boolean discardDilemma,
+                                          GameTextContext context) {
+        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, context);
+        _dilemma = dilemma;
+        _parentAction = attemptAction;
+        _attemptingUnit = attemptingUnit;
+        _additionalFailActions.addAll(failDilemmaActions);
+        _conditions = conditions;
+        _discardDilemma = discardDilemma;
+        _additionalSuccessActions.addAll(successActions);
+    }
+
 
 
     @Override
@@ -73,7 +91,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                     SubActionBlueprint passAction = _additionalSuccessActions.getFirst();
                     _additionalSuccessActions.remove(passAction);
                     try {
-                        List<Action> passActions = passAction.createActions(cardGame, _encounterAction, _actionContext);
+                        List<Action> passActions = passAction.createActions(cardGame, _parentAction, _actionContext);
                         for (int i = passActions.size() - 1; i >= 0; i--) {
                             cardGame.addActionToStack(passActions.get(i));
                         }
@@ -81,7 +99,9 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
                     }
                 } else {
-                    cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
+                    if (_dilemma.getParentCard() == null) {
+                        cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
+                    }
                     setAsSuccessful();
                 }
             } else {
@@ -89,7 +109,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                     SubActionBlueprint failAction = _additionalFailActions.getFirst();
                     _additionalFailActions.remove(failAction);
                     try {
-                        List<Action> failActions = failAction.createActions(cardGame, _encounterAction, _actionContext);
+                        List<Action> failActions = failAction.createActions(cardGame, _parentAction, _actionContext);
                         for (int i = failActions.size() - 1; i >= 0; i--) {
                             cardGame.addActionToStack(failActions.get(i));
                         }
@@ -104,7 +124,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                     }
                     _cardsStopped = true;
                     cardGame.addActionToStack(new StopCardsAction(cardGame, _performingPlayerId, cardsToStop));
-                } else if (_discardDilemma && !_dilemmaDiscarded) {
+                } else if (_discardDilemma && !_dilemmaDiscarded && _dilemma.getParentCard() == null) {
                     _dilemmaDiscarded = true;
                     cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
                 } else {
@@ -123,7 +143,6 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
     private void completeActionWithFailure() {
         super.setAsFailed();
-        _encounterAction.setAsFailed();
-        _encounterAction.getAttemptAction().setAsFailed();
+        _parentAction.setAsFailed();
     }
 }

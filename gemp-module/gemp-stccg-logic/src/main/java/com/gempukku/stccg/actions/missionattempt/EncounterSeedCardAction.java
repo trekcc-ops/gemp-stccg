@@ -82,6 +82,9 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
                 _processedActions.add(subAction);
             } else if (subAction.wasFailed() && !(subAction instanceof OvercomeDilemmaConditionAction)) {
                 setAsSuccessful();
+            } else if (subAction.wasFailed() && (subAction instanceof OvercomeDilemmaConditionAction)) {
+                setAsFailed();
+                _parentAction.setAsFailed();
             } else {
                 cardGame.getActionsEnvironment().addActionToStack(subAction);
             }

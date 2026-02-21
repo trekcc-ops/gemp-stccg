@@ -30,10 +30,16 @@ public class PlaceOnThisMissionActionBlueprint implements SubActionBlueprint {
         List<Action> result = new ArrayList<>();
         PhysicalCard card = actionContext.card();
         int locationId = card.getLocationId();
-        Modifier modifier = _modifier.createModifier(cardGame, actionContext.card(), actionContext);
-        Action action = new PlaceCardOnMissionAction(cardGame, actionContext.yourName(),
-                actionContext.card(), locationId, modifier);
-        result.add(action);
+        if (_modifier != null) {
+            Modifier modifier = _modifier.createModifier(cardGame, actionContext.card(), actionContext);
+            Action action = new PlaceCardOnMissionAction(cardGame, actionContext.yourName(),
+                    actionContext.card(), locationId, modifier);
+            result.add(action);
+        } else {
+            Action action = new PlaceCardOnMissionAction(cardGame, actionContext.yourName(),
+                    actionContext.card(), locationId);
+            result.add(action);
+        }
         return result;
     }
 }

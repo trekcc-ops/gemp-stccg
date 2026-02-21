@@ -15,6 +15,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.modifiers.Modifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlaceCardOnMissionAction extends ActionyAction {
@@ -23,7 +24,7 @@ public class PlaceCardOnMissionAction extends ActionyAction {
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _cardBeingPlaced;
     private final int _locationId;
-    private final Modifier _modifier;
+    private final List<Modifier> _modifiersWhileInPlay;
 
 
     public PlaceCardOnMissionAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardBeingPlaced,
@@ -31,8 +32,17 @@ public class PlaceCardOnMissionAction extends ActionyAction {
         super(cardGame, performingPlayerName, ActionType.PLACE_CARD_ON_MISSION);
         _locationId = locationId;
         _cardBeingPlaced = cardBeingPlaced;
-        _modifier = modifier;
+        _modifiersWhileInPlay = List.of(modifier);
     }
+
+    public PlaceCardOnMissionAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardBeingPlaced,
+                                    int locationId) {
+        super(cardGame, performingPlayerName, ActionType.PLACE_CARD_ON_MISSION);
+        _locationId = locationId;
+        _cardBeingPlaced = cardBeingPlaced;
+        _modifiersWhileInPlay = new ArrayList<>();
+    }
+
 
 
     @Override
@@ -56,7 +66,7 @@ public class PlaceCardOnMissionAction extends ActionyAction {
                 gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
                 _cardBeingPlaced.setParentCardRelationship(mission.getTopMissionCard(), ChildCardRelationshipType.ATOP);
                 gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
-                gameState.getModifiersLogic().addWhileThisCardInPlayModifiers(List.of(_modifier), _cardBeingPlaced);
+                gameState.getModifiersLogic().addWhileThisCardInPlayModifiers(_modifiersWhileInPlay, _cardBeingPlaced);
 
                 for (GameLocation spacelineLocation : gameState.getOrderedSpacelineLocations()) {
                     if (spacelineLocation instanceof MissionLocation missionLoc &&

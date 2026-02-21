@@ -38,5 +38,23 @@
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/metamorphosis/52.jpg
         }
+        {
+            "blueprintId": "202_056",
+            "title": "Togaran",
+            "type": "personnel",
+            "affiliation": "non-aligned",
+            "uniqueness": "universal",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "command",
+            "lore": "Tamarian first officer. One of many sons of Tama. \"Kiteo, his eyes closed. Picard and Dathon at El-Adrel. Mirab, with sails unfurled. Temba, at rest.\"",
+            "species": "tamarian",
+            "gender": "male",
+            "skill-box": "[*] SECURITY [*] Honor [*] Leadership [*] Transporter Skill",
+            "integrity": 7,
+            "cunning": 6,
+            "strength": 7,
+            "image-url": "https://www.trekcc.org/1e/cardimages/metamorphosis/56.jpg"
+        }
     ]
 }

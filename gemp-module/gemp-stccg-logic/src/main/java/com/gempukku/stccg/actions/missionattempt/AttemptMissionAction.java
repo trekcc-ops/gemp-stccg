@@ -24,7 +24,7 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttemptMissionAction extends ActionyAction implements TopLevelSelectableAction,
+public class AttemptMissionAction extends ActionWithSubActions implements TopLevelSelectableAction,
         ActionWithRespondableInitiation {
     private AttemptingUnitResolver _attemptingUnitTarget;
     @JsonProperty("targetCardId")
