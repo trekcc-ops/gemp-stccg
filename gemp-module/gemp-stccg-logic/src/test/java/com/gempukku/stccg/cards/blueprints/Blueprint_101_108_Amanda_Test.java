@@ -44,7 +44,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        useGameText(deathYell, P1);
+        useGameText(P1, deathYell);
         assertTrue(deathYell.isInPlay());
     }
 
@@ -55,7 +55,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         playDeathYell();
 
         // P2 plays Amanda Rogers as response
-        useGameText(amandaPlayerTwo, P2);
+        useGameText(P2, amandaPlayerTwo);
         assertFalse(amandaPlayerTwo.isInPlay());
         assertFalse(deathYell.isInPlay());
     }
@@ -69,13 +69,13 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         Player player1 = _game.getPlayer(P1);
 
         // P2 plays Amanda Rogers as response, but it doesn't immediately resolve because P1 has an Amanda too
-        useGameText(amandaPlayerTwo, P2);
+        useGameText(P2, amandaPlayerTwo);
         assertTrue(amandaPlayerTwo.isInPlay());
         assertTrue(deathYell.isInPlay());
         assertEquals(0, player1.getScore());
 
         // P1 plays Amanda Rogers as response
-        useGameText(amandaPlayerOne, P1);
+        useGameText(P1, amandaPlayerOne);
         assertFalse(amandaPlayerOne.isInPlay());
         assertEquals(5, player1.getScore());
     }
@@ -87,7 +87,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
         playDeathYell();
 
         // Try to respond with player1's Amanda Rogers (it should be P2's turn)
-        assertThrows(DecisionResultInvalidException.class, () -> useGameText(amandaPlayerOne, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, amandaPlayerOne));
         assertFalse(amandaPlayerOne.isInPlay());
     }
 

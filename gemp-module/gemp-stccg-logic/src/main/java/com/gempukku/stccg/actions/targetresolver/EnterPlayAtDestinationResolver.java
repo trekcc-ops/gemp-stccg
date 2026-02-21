@@ -11,7 +11,7 @@ import com.gempukku.stccg.game.ST1EGame;
 import java.util.Collection;
 import java.util.List;
 
-public class SeedCardToDestinationResolver implements ActionTargetResolver {
+public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
 
     private PhysicalCard _cardEnteringPlay;
     private final Collection<PhysicalCard> _seedableCards;
@@ -22,15 +22,15 @@ public class SeedCardToDestinationResolver implements ActionTargetResolver {
     private PhysicalCard _destinationCard;
     private boolean _isFailed;
 
-    public SeedCardToDestinationResolver(String performingPlayerName, Collection<PhysicalCard> seedableCards,
-                                         Collection<PhysicalCard> destinationOptions) {
+    public EnterPlayAtDestinationResolver(String performingPlayerName, Collection<PhysicalCard> seedableCards,
+                                          Collection<PhysicalCard> destinationOptions) {
         _seedableCards = seedableCards;
         _destinationOptions = destinationOptions;
         _performingPlayerName = performingPlayerName;
     }
 
-    public SeedCardToDestinationResolver(String performingPlayerName, PhysicalCard cardToSeed,
-                                         Collection<PhysicalCard> destinationOptions) {
+    public EnterPlayAtDestinationResolver(String performingPlayerName, PhysicalCard cardToSeed,
+                                          Collection<PhysicalCard> destinationOptions) {
         _cardEnteringPlay = cardToSeed;
         _seedableCards = List.of(cardToSeed);
         _destinationOptions = destinationOptions;
@@ -55,7 +55,7 @@ public class SeedCardToDestinationResolver implements ActionTargetResolver {
     private void selectCardToSeed(ST1EGame stGame) {
         if (_selectCardToSeedAction == null) {
             _selectCardToSeedAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                    "Choose a card to seed",
+                    "Choose a card to enter play",
                     new InCardListFilter(_seedableCards));
             stGame.addActionToStack(_selectCardToSeedAction);
         } else if (_selectCardToSeedAction.wasSuccessful()) {
@@ -94,7 +94,7 @@ public class SeedCardToDestinationResolver implements ActionTargetResolver {
         return _destinationCard;
     }
 
-    public PhysicalCard getCardToSeed() {
+    public PhysicalCard getCardEnteringPlay() {
         return _cardEnteringPlay;
     }
 

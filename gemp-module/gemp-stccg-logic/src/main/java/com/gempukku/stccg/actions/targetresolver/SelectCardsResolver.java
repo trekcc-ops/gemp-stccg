@@ -16,6 +16,7 @@ public class SelectCardsResolver implements ActionCardResolver {
     private final ActionContext _context;
     private final String _saveToMemoryId;
     private Collection<PhysicalCard> _selectedCards;
+
     public SelectCardsResolver(SelectCardsAction selectAction) {
         _selectAction = selectAction;
         _resolved = false;

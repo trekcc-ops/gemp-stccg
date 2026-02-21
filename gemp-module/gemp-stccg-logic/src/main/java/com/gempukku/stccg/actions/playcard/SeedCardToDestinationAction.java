@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.targetresolver.SeedCardToDestinationResolver;
+import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -13,29 +13,21 @@ import java.util.Collection;
 import java.util.List;
 
 public class SeedCardToDestinationAction extends SeedCardAction {
-    private final SeedCardToDestinationResolver _targetResolver;
-
-    public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
-                                       PhysicalCard cardToSeed,
-                                       Collection<PhysicalCard> destinationOptions) {
-        super(cardGame, cardToSeed, Zone.AT_LOCATION);
-        _targetResolver = new SeedCardToDestinationResolver(performingPlayerName, cardToSeed, destinationOptions);
-        _cardTargets.add(_targetResolver);
-    }
+    private final EnterPlayAtDestinationResolver _targetResolver;
 
     public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
                                        Collection<PhysicalCard> seedableCards,
                                        Collection<PhysicalCard> destinationOptions,
                                        PhysicalCard performingCard) {
         super(cardGame, performingCard, null);
-        _targetResolver = new SeedCardToDestinationResolver(performingPlayerName, seedableCards, destinationOptions);
+        _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, seedableCards, destinationOptions);
         _cardTargets.add(_targetResolver);
     }
 
 
     public void processEffect(DefaultGame cardGame) {
         if (cardGame instanceof ST1EGame stGame &&
-                _targetResolver.getCardToSeed() instanceof ReportableCard reportable) {
+                _targetResolver.getCardEnteringPlay() instanceof ReportableCard reportable) {
             GameState gameState = stGame.getGameState();
             PhysicalCard destination = _targetResolver.getDestination();
             cardGame.removeCardsFromZone(List.of(reportable));

@@ -50,7 +50,7 @@ public class Blueprint_101_125_DeathYell_Test extends AbstractAtTest {
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());
-        useGameText(deathYell, P1);
+        useGameText(P1, deathYell);
 
         Player player1 = _game.getPlayer(P1);
 

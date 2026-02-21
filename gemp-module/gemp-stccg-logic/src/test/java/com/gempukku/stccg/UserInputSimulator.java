@@ -152,7 +152,7 @@ public interface UserInputSimulator {
         }
     }
 
-    default void useGameText(PhysicalCard card, String playerId) 
+    default void useGameText(String playerId, PhysicalCard card)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);

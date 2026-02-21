@@ -227,4 +227,8 @@ public interface PhysicalCard {
     void setParentCardRelationship(PhysicalCard parentCard, ChildCardRelationshipType relationshipType);
 
     PhysicalCard getAtopCard();
+
+    void setAsAtop(PhysicalCard destination);
+
+    boolean isInDiscard(DefaultGame game);
 }

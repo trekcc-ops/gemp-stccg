@@ -39,7 +39,7 @@ public class Blueprint_155_076_Quark_Test extends AbstractAtTest {
     @Test
     public void downloadTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame();
-        useGameText(quark, P1);
+        useGameText(P1, quark);
         assertTrue(selectableCardsAre(P1, List.of(padd1, padd2)));
         selectCard(P1, padd1);
         assertEquals(padd1.getLocationId(), quark.getLocationId(), _mission.getLocationId());

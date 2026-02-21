@@ -52,7 +52,7 @@ public class Blueprint_163_039_Lursa_Test extends AbstractAtTest {
         assertTrue(personnelAttributesAre(koral, List.of(4,5,11)));
 
         // Download B'Etor to outpost
-        useGameText(lursa, P1);
+        useGameText(P1, lursa);
         selectCard(P1, outpost);
         assertTrue(personnelAttributesAre(betor, List.of(3,8,8)));
     }

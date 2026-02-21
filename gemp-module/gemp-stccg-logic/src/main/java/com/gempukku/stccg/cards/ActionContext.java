@@ -76,9 +76,9 @@ public class ActionContext {
             memory = memory.toLowerCase();
             if (memory.equals("thispersonnel")) {
                 if (_thisCard.getCardType() == CardType.PERSONNEL) {
-                    return new ArrayList<>(_thisCard.getCardId());
+                    return List.of(_thisCard.getCardId());
                 } else if (_thisCard.getAtopCard() != null && _thisCard.getAtopCard().getCardType() == CardType.PERSONNEL) {
-                    return new ArrayList<>(_thisCard.getAtopCard().getCardId());
+                    return List.of(_thisCard.getAtopCard().getCardId());
                 }
             }
             return Objects.requireNonNullElse(_cardMemoryNew.get(memory), new ArrayList<>());

@@ -71,6 +71,16 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _zone;
     }
 
+    public boolean isInDiscard(DefaultGame cardGame) {
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardGroupCards(Zone.DISCARD).contains(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public boolean isInHand(DefaultGame cardGame) {
         for (Player player : cardGame.getPlayers()) {
             if (player.getCardsInHand().contains(this)) {
@@ -455,6 +465,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isAboard(PhysicalCard card) {
         return _parentCardRelationship == ChildCardRelationshipType.ABOARD && card == _parentCard;
+    }
+
+    public void setAsAtop(PhysicalCard destination) {
+        setParentCardRelationship(destination, ATOP);
     }
 
 }

@@ -51,7 +51,7 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
     @Test
     public void downloadTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame(Phase.EXECUTE_ORDERS, false, false);
-        useGameText(betor, P1);
+        useGameText(P1, betor);
         assertTrue(betor.isInPlay());
         selectCard(P1, _mission);
         assertTrue(lursa.isInPlay());
@@ -60,7 +60,7 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
     @Test
     public void twoLursasTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame(Phase.EXECUTE_ORDERS, false, true);
-        useGameText(betor, P1);
+        useGameText(P1, betor);
         assertTrue(betor.isInPlay());
         assertTrue(getSelectableCards(P1).containsAll(List.of(lursa, lursa2)));
         selectCard(P1, lursa2);
@@ -72,14 +72,14 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
     @Test
     public void cannotDownloadIfIncompatibleTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame(Phase.EXECUTE_ORDERS, false, false);
-        useGameText(betor, P1);
+        useGameText(P1, betor);
         assertThrows(DecisionResultInvalidException.class, () -> selectCard(P1, outpost));
     }
 
     @Test
     public void canDownloadToOpponentsOutpostTest() throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame(Phase.EXECUTE_ORDERS, false, false);
-        useGameText(betor, P1);
+        useGameText(P1, betor);
         selectCard(P1, outpost2);
     }
 
@@ -88,7 +88,7 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
     public void downloadDuringCardPlayTest()
             throws DecisionResultInvalidException, CardNotFoundException, InvalidGameOperationException {
         initializeGame(Phase.CARD_PLAY, false, false);
-        useGameText(betor, P1);
+        useGameText(P1, betor);
         assertTrue(betor.isInPlay());
         selectCard(P1, _mission);
         assertTrue(lursa.isInPlay());
@@ -99,7 +99,7 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
         initializeGame(Phase.CARD_PLAY, true, false);
 
         // Verify that you can't use B'Etor's special skill because Lursa is already in play
-        assertThrows(DecisionResultInvalidException.class, () -> useGameText(betor, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, betor));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class Blueprint_163_036_BEtor_Test extends AbstractAtTest {
         initializeGame(Phase.CARD_PLAY, false, false);
         skipToNextTurnAndPhase(P2, Phase.CARD_PLAY);
         playCard(P2, crosis);
-        useGameText(betor, P1);
+        useGameText(P1, betor);
         selectCard(P1, _mission);
         assertTrue(lursa.isInPlay());
     }

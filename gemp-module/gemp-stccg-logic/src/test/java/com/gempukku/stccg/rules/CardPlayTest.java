@@ -71,7 +71,7 @@ public class CardPlayTest extends AbstractAtTest {
     public void downloadSucceedTest() throws Exception {
         _game = initializeGame(true, true);
         seedCard(P1, continuing);
-        useGameText(continuing, P1);
+        useGameText(P1, continuing);
 
         // Verify that both copies of Attention All Hands are in selectable cards, but can't select both
         assertTrue(getSelectableCards(P1).containsAll(List.of(attention, attention2, altUnivEvent)));
@@ -85,7 +85,7 @@ public class CardPlayTest extends AbstractAtTest {
     public void downloadFailTest() throws Exception {
         _game = initializeGame(true, false);
         seedCard(P1, continuing);
-        useGameText(continuing, P1);
+        useGameText(P1, continuing);
 
         assertTrue(getSelectableCards(P1).containsAll(List.of(attention, attention2)));
         assertFalse(getSelectableCards(P1).contains(altUnivEvent)); // can't download because of AU
@@ -96,7 +96,7 @@ public class CardPlayTest extends AbstractAtTest {
     public void downloadMissionSpecialistsTest() throws Exception {
         _game = initializeGame(false, false);
         seedCard(P1, ams);
-        useGameText(ams, P1);
+        useGameText(P1, ams);
 
         assertTrue(getSelectableCards(P1).contains(tarses));
         assertTrue(getSelectableCards(P1).contains(wallace));

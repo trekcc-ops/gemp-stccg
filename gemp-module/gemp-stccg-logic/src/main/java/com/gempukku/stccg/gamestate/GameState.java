@@ -237,6 +237,12 @@ public abstract class GameState {
         _currentTurnNumber++;
     }
 
+    public void startPlayerTurn(String playerName) {
+        _playerOrder.setCurrentPlayer(playerName);
+        _currentTurnNumber++;
+    }
+
+
 
     public Phase getCurrentPhase() {
         return _currentPhase;
