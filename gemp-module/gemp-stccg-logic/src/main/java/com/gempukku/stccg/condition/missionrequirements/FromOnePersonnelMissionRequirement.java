@@ -1,8 +1,10 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +39,20 @@ public class FromOnePersonnelMissionRequirement implements MissionRequirement {
         if (_numberOfPersonnelRequired > 1)
             sb.append(" x").append(_numberOfPersonnelRequired);
         return sb.toString();
+    }
+
+    @Override
+    public boolean requiresSkill(SkillName skillName) {
+        return _requirement.requiresSkill(skillName);
+    }
+
+    @Override
+    public List<MissionRequirement> getRequirementOptionsWithoutOr() {
+        List<MissionRequirement> result = new ArrayList<>();
+        for (MissionRequirement req : _requirement.getRequirementOptionsWithoutOr()) {
+            result.add(new FromOnePersonnelMissionRequirement(req));
+        }
+        return result;
     }
 
 }

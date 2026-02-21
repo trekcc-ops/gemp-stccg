@@ -2,6 +2,7 @@ package com.gempukku.stccg.condition.missionrequirements;
 
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.PersonnelName;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
@@ -24,6 +25,11 @@ public class PersonnelNameMissionRequirement implements MissionRequirement {
 
     public String toString() {
         return _name;
+    }
+
+    @Override
+    public boolean requiresSkill(SkillName skillName) {
+        return false;
     }
 
 }

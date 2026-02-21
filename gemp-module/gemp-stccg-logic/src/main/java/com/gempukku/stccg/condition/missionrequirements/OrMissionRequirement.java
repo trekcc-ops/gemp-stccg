@@ -37,4 +37,23 @@ public class OrMissionRequirement implements MissionRequirement {
         }
         return sj.toString();
     }
+
+    @Override
+    public boolean requiresSkill(SkillName skillName) {
+        for (MissionRequirement req : _requirements) {
+            if (!req.requiresSkill(skillName)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public List<MissionRequirement> getRequirementOptionsWithoutOr() {
+        List<MissionRequirement> result = new ArrayList<>();
+        for (MissionRequirement requirement : _requirements) {
+            result.add(requirement);
+        }
+        return result;
+    }
 }

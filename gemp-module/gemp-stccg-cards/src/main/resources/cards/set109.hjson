@@ -63,16 +63,16 @@
             ]
         }
         {
-            blueprintId: 109_063
-            title: Assign Mission Specialists
-            type: objective
-            uniqueness: unique
-            property-logo: first-contact-logo
-            image-url: https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg
-            actions: [
+            "blueprintId": "109_063",
+            "title": "Assign Mission Specialists",
+            "type": "objective",
+            "uniqueness": "unique",
+            "property-logo": "first-contact-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg",
+            "actions": [
                 {
-                    type: seedThis
-                    toCore: true
+                    "type": "seedThis",
+                    "toCore": "true"
                 }
                 {
                     type: optionalTrigger
@@ -91,6 +91,20 @@
                             destination: your + outpost
                             specialReporting: true
                         }
+                    }
+                }
+                {
+                    "type": "optionalTrigger"
+                    "player": "you",
+                    "trigger": {
+                        "type": "missionSolved",
+                        "player": "you",
+                        "missionSpecialistUsedSkillToHelp": true
+                    },
+                    "triggerDuringSeed": false,
+                    "effect": {
+                        "type": "scorePoints",
+                        "points": 5
                     }
                 }
                 {

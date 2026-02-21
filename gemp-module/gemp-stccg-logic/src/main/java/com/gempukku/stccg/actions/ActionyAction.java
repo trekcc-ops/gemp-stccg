@@ -183,6 +183,7 @@ public abstract class ActionyAction implements Action {
         if (!isInProgress()) {
             actionsEnvironment.logCompletedAction(this);
         }
+        cardGame.getGameState().checkVictoryConditions(cardGame);
         cardGame.sendActionResultToClient();
     }
 

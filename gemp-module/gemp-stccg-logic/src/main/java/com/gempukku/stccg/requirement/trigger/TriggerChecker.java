@@ -10,6 +10,7 @@ import com.gempukku.stccg.requirement.Requirement;
         @JsonSubTypes.Type(value = ConditionTriggerChecker.class, name = "condition"),
         @JsonSubTypes.Type(value = EndOfTurnTriggerChecker.class, name = "endOfTurn"),
         @JsonSubTypes.Type(value = KilledTriggerChecker.class, name = "killed"),
+        @JsonSubTypes.Type(value = MissionSolvedTriggerChecker.class, name = "missionSolved"),
         @JsonSubTypes.Type(value = PlayedTriggerChecker.class, name = "played"),
         @JsonSubTypes.Type(value = PlayerGoesOutTriggerChecker.class, name = "playerGoesOut"),
         @JsonSubTypes.Type(value = RandomSelectionInitiationTriggerChecker.class, name = "randomSelectionInitiated"),

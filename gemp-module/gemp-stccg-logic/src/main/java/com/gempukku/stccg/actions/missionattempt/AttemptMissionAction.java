@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
+import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.actions.targetresolver.AttemptingUnitResolver;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
@@ -22,6 +24,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class AttemptMissionAction extends ActionWithSubActions implements TopLevelSelectableAction,
@@ -131,8 +134,12 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                 } else if (!wasFailed()) {
                     if (cardGame.canPlayerSolveMission(_performingPlayerId, missionLocation)) {
                         MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
-                        if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
-                            solveMission(missionLocation, cardGame);
+                        Collection<PersonnelCard> personnelAttempting = attemptingUnit.getAttemptingPersonnel(cardGame);
+
+                        if (requirement.canBeMetBy(personnelAttempting, cardGame)) {
+                            boolean missionSpecHelped =
+                                    requirement.canBeMetWithMissionSpecialistHelping(personnelAttempting, cardGame);
+                            solveMission(missionLocation, cardGame, missionSpecHelped);
                         } else {
                             setAsFailed();
                         }
@@ -150,10 +157,13 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
         }
     }
 
-    private void solveMission(MissionLocation mission, DefaultGame cardGame)
+    private void solveMission(MissionLocation mission, DefaultGame cardGame, boolean missionSpecHelped)
             throws InvalidGameLogicException, PlayerNotFoundException {
         setAsSuccessful();
-        mission.complete(_performingPlayerId, cardGame);
+        mission.setAsCompleted();
+        cardGame.addActionToStack(
+                new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints()));
+        saveResult(new MissionSolvedActionResult(_performingPlayerId, this, missionSpecHelped), cardGame);
     }
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
