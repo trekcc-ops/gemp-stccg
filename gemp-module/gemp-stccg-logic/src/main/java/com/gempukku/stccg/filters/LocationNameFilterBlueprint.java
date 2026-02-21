@@ -2,7 +2,7 @@ package com.gempukku.stccg.filters;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class LocationNameFilterBlueprint implements FilterBlueprint {
@@ -16,7 +16,7 @@ public class LocationNameFilterBlueprint implements FilterBlueprint {
 
     @JsonIgnore
     @Override
-    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+    public CardFilter getFilterable(DefaultGame cardGame, GameTextContext actionContext) {
         CardFilter filter = new LocationNameFilter(_locationName);
         return filter;
     }

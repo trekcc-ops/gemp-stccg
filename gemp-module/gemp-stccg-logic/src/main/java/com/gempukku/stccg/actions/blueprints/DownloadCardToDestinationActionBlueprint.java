@@ -9,7 +9,7 @@ import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.playcard.DownloadReportableCardToDestinationAction;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -73,7 +73,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
     public DownloadAction createAction(DefaultGame cardGame, String performingPlayerName,
                                        PhysicalCard thisCard) {
 
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
+        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         if (!isValid(cardGame, actionContext)) {
             return null;
         }

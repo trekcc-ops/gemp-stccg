@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.CardWithAffiliations;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -23,7 +23,7 @@ public class CardsAreSameAffiliationRequirement implements Requirement {
         _card2 = card2;
     }
 
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
         Collection<Integer> card1 = actionContext.getCardIdsFromMemory(_card1);
         Collection<Integer> card2 = actionContext.getCardIdsFromMemory(_card2);
 
@@ -63,7 +63,7 @@ public class CardsAreSameAffiliationRequirement implements Requirement {
                     if (checkCard instanceof CardWithAffiliations affil1 &&
                             checkCard2 instanceof CardWithAffiliations affil2 &&
                     cardGame instanceof ST1EGame stGame) {
-                        if (!(affil1.matchesAffiliationOfCard(stGame, affil2, actionContext.getPerformingPlayerId()))) {
+                        if (!(affil1.matchesAffiliationOfCard(stGame, affil2, actionContext.yourName()))) {
                             return false;
                         }
                     } else {

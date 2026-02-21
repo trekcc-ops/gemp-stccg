@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.SubAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 
@@ -28,7 +28,7 @@ public class SubActionWithCostBlueprint implements SubActionBlueprint {
         _subActionBlueprints = (effects == null) ? new LinkedList<>() : effects;
     }
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
 
         List<Action> result = new LinkedList<>();
         if(requirementsNotMet(cardGame, context)) {
@@ -39,13 +39,13 @@ public class SubActionWithCostBlueprint implements SubActionBlueprint {
     }
 
 
-    private boolean requirementsNotMet(DefaultGame cardGame, ActionContext actionContext) {
+    private boolean requirementsNotMet(DefaultGame cardGame, GameTextContext actionContext) {
         return (!actionContext.acceptsAllRequirements(cardGame, _requirements));
     }
 
 
     @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) {
 
         if(requirementsNotMet(cardGame, actionContext))
             return false;

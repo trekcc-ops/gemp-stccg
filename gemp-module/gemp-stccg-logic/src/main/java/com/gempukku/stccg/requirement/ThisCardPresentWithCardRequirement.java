@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -19,7 +19,7 @@ public class ThisCardPresentWithCardRequirement implements Requirement {
         _otherCardFilter = otherCardFilter;
     }
 
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
         PhysicalCard thisCard = actionContext.card();
         CardFilter cardFilter = Filters.and(
                 Filters.presentWithThisCard(thisCard.getCardId()),
@@ -29,7 +29,7 @@ public class ThisCardPresentWithCardRequirement implements Requirement {
         return !filteredCards.isEmpty();
     }
 
-    public Condition getCondition(ActionContext actionContext, PhysicalCard thisCard, DefaultGame cardGame) {
+    public Condition getCondition(GameTextContext actionContext, PhysicalCard thisCard, DefaultGame cardGame) {
         CardFilter cardFilter = Filters.and(
                 Filters.presentWithThisCard(thisCard.getCardId()),
                 _otherCardFilter.getFilterable(cardGame, actionContext)

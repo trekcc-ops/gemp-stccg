@@ -1,6 +1,6 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
@@ -15,7 +15,7 @@ public class OrFilterBlueprint implements FilterBlueprint {
         _filterBlueprints = filterBlueprints;
     }
 
-    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+    public CardFilter getFilterable(DefaultGame cardGame, GameTextContext actionContext) {
         List<CardFilter> filterables = new LinkedList<>();
         for (FilterBlueprint filterBlueprint : _filterBlueprints)
             filterables.add(filterBlueprint.getFilterable(cardGame, actionContext));

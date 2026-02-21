@@ -3,7 +3,7 @@ package com.gempukku.stccg.evaluator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -21,7 +21,7 @@ public class SkillDotCountValueSource implements SingleValueSource {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
         ActionCardResolver resolver = _personnelBlueprint.getTargetResolver(cardGame, actionContext);
         Collection<PhysicalCard> cards = resolver.getCards(cardGame);
         int result = 0;

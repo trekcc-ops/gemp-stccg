@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -49,7 +49,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         _saveToMemoryId = Objects.requireNonNullElse(saveToMemoryId, "temp");
     }
 
-    public SelectCardsResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
+    public SelectCardsResolver getTargetResolver(DefaultGame cardGame, GameTextContext context) {
         List<Filterable> selectableCardFilter = new ArrayList<>();
         String selectingPlayerName = _selectingPlayer.getPlayerName(cardGame, context);
         for (FilterBlueprint filterBlueprint : _filterBlueprints) {
@@ -66,7 +66,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
         return new SelectCardsResolver(selectAction, context, _saveToMemoryId);
     }
 
-    public boolean canBeResolved(DefaultGame cardGame, ActionContext context) {
+    public boolean canBeResolved(DefaultGame cardGame, GameTextContext context) {
         Collection<Filterable> filters = new ArrayList<>();
         for (FilterBlueprint filterBlueprint : _filterBlueprints) {
             CardFilter filter = filterBlueprint.getFilterable(cardGame, context);

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class ForEachInMemoryValueSource implements SingleValueSource {
@@ -19,7 +19,7 @@ public class ForEachInMemoryValueSource implements SingleValueSource {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
         final int count = actionContext.getCardIdsFromMemory(_memory).size();
         return Math.min(_limit, count);
     }

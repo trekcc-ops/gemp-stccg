@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.targetresolver;
 
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -13,7 +13,7 @@ import java.util.Objects;
 public class SelectCardsResolver implements ActionCardResolver {
     private final SelectCardsAction _selectAction;
     private boolean _resolved;
-    private final ActionContext _context;
+    private final GameTextContext _context;
     private final String _saveToMemoryId;
     private Collection<PhysicalCard> _selectedCards;
 
@@ -24,7 +24,7 @@ public class SelectCardsResolver implements ActionCardResolver {
         _saveToMemoryId = null;
     }
 
-    public SelectCardsResolver(SelectCardsAction selectAction, ActionContext context, String saveToMemoryId) {
+    public SelectCardsResolver(SelectCardsAction selectAction, GameTextContext context, String saveToMemoryId) {
         _selectAction = selectAction;
         _resolved = false;
         _context = context;

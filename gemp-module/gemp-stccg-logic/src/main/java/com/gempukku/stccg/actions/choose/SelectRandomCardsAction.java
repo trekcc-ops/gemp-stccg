@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithRespondableInitiation;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.targetresolver.AllCardsMatchingFilterResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.game.DefaultGame;
@@ -24,7 +24,7 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
     private final int _count;
 
     public SelectRandomCardsAction(DefaultGame cardGame, String selectingPlayerName, CardFilter cardFilter,
-                                   ActionContext context, String saveToMemoryId, int count) {
+                                   GameTextContext context, String saveToMemoryId, int count) {
         super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS, context);
         _targetResolver = new AllCardsMatchingFilterResolver(cardFilter);
         _cardTargets.add(_targetResolver);

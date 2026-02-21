@@ -451,7 +451,7 @@ public class CardBlueprint {
 
 
     public List<Modifier> getGameTextWhileActiveInPlayModifiers(DefaultGame cardGame, PhysicalCard thisCard,
-                                                                ActionContext actionContext) {
+                                                                GameTextContext actionContext) {
         List<Modifier> result = new LinkedList<>();
 
         // Add in-play modifiers created through JSON definitions
@@ -660,7 +660,7 @@ public class CardBlueprint {
     public List<Modifier> getAlwaysOnModifiers(DefaultGame cardGame, PhysicalCard thisCard) {
         List<Modifier> result = new ArrayList<>();
         if (_restrictionBox != null) {
-            ActionContext context = new ActionContext(thisCard, thisCard.getOwnerName());
+            GameTextContext context = new GameTextContext(thisCard, thisCard.getOwnerName());
             Modifier modifier =_restrictionBox.getModifier(cardGame, thisCard, context);
             if (modifier != null) {
                 result.add(modifier);
@@ -674,7 +674,7 @@ public class CardBlueprint {
     }
 
     public Collection<? extends PhysicalCard> getPlayCardDestinationOptionsFromGameText(
-            ActionContext context, DefaultGame cardGame) {
+            GameTextContext context, DefaultGame cardGame) {
         if (_playThisCardActionBlueprint != null) {
             return new ArrayList<PhysicalCard>(_playThisCardActionBlueprint.getDestinationOptions(context, cardGame));
         } else {

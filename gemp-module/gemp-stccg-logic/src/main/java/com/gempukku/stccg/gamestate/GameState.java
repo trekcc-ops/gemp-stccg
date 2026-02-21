@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
@@ -184,7 +184,7 @@ public abstract class GameState {
         card.setZone(Zone.REMOVED);
     }
 
-    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone, ActionContext context) {
+    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone, GameTextContext context) {
         if (zone == Zone.DISCARD) {
             cardGame.addCardToTopOfDiscardPile(card);
         } else if (zone == Zone.REMOVED) {
@@ -356,7 +356,7 @@ public abstract class GameState {
         return _playerClocks.values();
     }
 
-    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card, ActionContext context) {
+    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card, GameTextContext context) {
         if (!_inPlay.contains(card)) {
             _inPlay.add(card);
 
@@ -364,7 +364,7 @@ public abstract class GameState {
             CardBlueprint blueprint = card.getBlueprint();
             List<Modifier> gameTextModifiers =
                     new LinkedList<>(blueprint.getGameTextWhileActiveInPlayModifiers(cardGame, card,
-                            new ActionContext(card, card.getControllerName())));
+                            new GameTextContext(card, card.getControllerName())));
             RuleSet<? extends DefaultGame> ruleSet = cardGame.getRules();
             List<Modifier> modifiersPerRules = ruleSet.getModifiersWhileCardIsInPlay(card);
 

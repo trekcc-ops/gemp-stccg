@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -20,7 +20,7 @@ public class AddAffiliationIconToMissionModifier extends AbstractModifier {
     @JsonProperty("addToBothSides")
     private final boolean _addToBothSides;
 
-    public AddAffiliationIconToMissionModifier(ActionContext actionContext, CardFilter affectedCardsFilter,
+    public AddAffiliationIconToMissionModifier(GameTextContext actionContext, CardFilter affectedCardsFilter,
                                                List<Affiliation> affiliationsToAdd, boolean addToBothSides) {
         super(actionContext.card(), affectedCardsFilter, new TrueCondition(), ModifierEffect.ADD_ICON_TO_MISSION, false);
         _affiliationsToAdd = affiliationsToAdd;

@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.usage.UseOncePerGamePerCopyAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
@@ -24,17 +24,17 @@ public class UsePerGamePerCopyLimitActionBlueprint implements SubActionBlueprint
     }
     @Override
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                      ActionContext actionContext) {
+                                      GameTextContext actionContext) {
         Action usageLimitAction = new UseOncePerGamePerCopyAction(cardGame,
-                actionContext.card(), actionContext.getPerformingPlayerId(), _parentActionBlueprint);
+                actionContext.card(), actionContext.yourName(), _parentActionBlueprint);
         return Collections.singletonList(usageLimitAction);
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) {
         GameState gameState = cardGame.getGameState();
         PhysicalCard thisCard = actionContext.card();
-        LimitCounter counter = gameState.getPerGamePerCopyLimitCounter(actionContext.getPerformingPlayerId(),
+        LimitCounter counter = gameState.getPerGamePerCopyLimitCounter(actionContext.yourName(),
                 thisCard, _parentActionBlueprint);
         return counter.getUsedLimit() < _limitPerGame;
     }

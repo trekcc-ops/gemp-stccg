@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardOnBottomOfPlayPileAction;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
@@ -19,7 +19,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerAction {
 
     public ActivateKindnessTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
-                                              ActionContext actionContext) throws PlayerNotFoundException {
+                                              GameTextContext actionContext) throws PlayerNotFoundException {
         super(cardGame, actionContext, performingCard);
         appendEffect(new DrawSingleCardAction(cardGame, _performingPlayerId));
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?

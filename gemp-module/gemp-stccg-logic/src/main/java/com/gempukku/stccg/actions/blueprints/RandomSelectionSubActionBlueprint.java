@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.PlayerSource;
+import com.gempukku.stccg.player.YourOpponentPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
     private final FilterBlueprint _filterBlueprint;
     private final Requirement _requirement;
     private final String _saveToMemoryId;
+    private final PlayerSource _selectingPlayer = new YourOpponentPlayerSource();
 
     public RandomSelectionSubActionBlueprint(
             @JsonProperty("filter") FilterBlueprint filterBlueprint,
@@ -31,12 +34,13 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
         List<Action> result = new ArrayList<>();
         if (_requirement.accepts(context, cardGame)) {
             CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
-            String performingPlayer = cardGame.getOpponent(context.getPerformingPlayerId());
-            Action selectAction = new SelectRandomCardsAction(cardGame, performingPlayer, filter, context, _saveToMemoryId, 1);
+            String performingPlayer = _selectingPlayer.getPlayerName(cardGame, context);
+            Action selectAction =
+                    new SelectRandomCardsAction(cardGame, performingPlayer, filter, context, _saveToMemoryId, 1);
             result.add(selectAction);
         }
         return result;

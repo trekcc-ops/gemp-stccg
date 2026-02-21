@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.FixedCardsResolver;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -21,7 +21,7 @@ public class StopCardsAction extends ActionyAction {
     private Collection<PhysicalCard> _stoppedCards;
 
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
-                           ActionCardResolver cardTarget, ActionContext context, String saveToMemoryId) {
+                           ActionCardResolver cardTarget, GameTextContext context, String saveToMemoryId) {
         super(cardGame, performingPlayerName, ActionType.STOP_CARDS, context);
         _cardTarget = cardTarget;
         _cardTargets.add(cardTarget);

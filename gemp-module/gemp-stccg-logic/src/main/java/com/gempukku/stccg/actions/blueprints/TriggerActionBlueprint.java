@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
@@ -31,7 +31,7 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
 
     @Override
     public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
+        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext)) {
             UseGameTextAction action = new UseGameTextAction(cardGame, thisCard, actionContext);
             appendActionToContext(cardGame, action, actionContext);

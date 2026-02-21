@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
@@ -18,7 +18,7 @@ public class PlayCardToDesinationAction extends PlayCardAction {
     public PlayCardToDesinationAction(DefaultGame cardGame, String performingPlayerName,
                                       PhysicalCard cardEnteringPlay,
                                       Collection<PhysicalCard> destinationOptions,
-                                      ActionContext context) {
+                                      GameTextContext context) {
         super(cardGame, cardEnteringPlay, cardEnteringPlay, performingPlayerName, null, ActionType.PLAY_CARD, context);
         Map<PhysicalCard, Collection<PhysicalCard>> destinationMap = new HashMap<>();
         destinationMap.put(cardEnteringPlay, destinationOptions);

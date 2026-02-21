@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -41,7 +41,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                                           EncounterSeedCardAction encounterAction, MissionRequirement conditions,
                                           AttemptingUnit attemptingUnit, List<SubActionBlueprint> failDilemmaActions,
                                           List<SubActionBlueprint> successActions, boolean discardDilemma,
-                                          ActionContext context) {
+                                          GameTextContext context) {
         super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, context);
         _dilemma = dilemma;
         _attemptingUnit = attemptingUnit;

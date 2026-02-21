@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.placecard.PlaceCardOnTopOfDrawDeckAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -33,7 +33,7 @@ public class PlaceCardsOnTopOfDrawDeckSubactionBlueprint implements SubActionBlu
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         final String performingPlayerId = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
@@ -41,7 +41,7 @@ public class PlaceCardsOnTopOfDrawDeckSubactionBlueprint implements SubActionBlu
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext context) {
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext context) {
         return _cardTarget.canBeResolved(cardGame, context);
     }
 }

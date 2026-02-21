@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.SingleValueSource;
@@ -32,7 +32,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         final String targetPlayerId;
         targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
@@ -41,7 +41,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext context) {
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext context) {
         try {
             final int count = _countSource.evaluateExpression(cardGame, context);
             final String targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);

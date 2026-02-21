@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
@@ -22,7 +22,7 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
     private final static int BONUS_POINTS = 25000;
 
     public ActivateGenerosityTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
-                                                ActionContext actionContext) throws PlayerNotFoundException {
+                                                GameTextContext actionContext) throws PlayerNotFoundException {
         super(cardGame, actionContext, performingCard);
     }
 

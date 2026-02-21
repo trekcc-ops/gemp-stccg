@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.playcard.DownloadMultipleReportablesActionNew;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.ReportCardsResolverBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ReportMultipleCardsResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.YouCanDownloadFilterBlueprint;
@@ -29,14 +29,14 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         List<Action> result = new ArrayList<>();
         ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, actionContext);
         if (cardResolver instanceof ReportMultipleCardsResolver multipleResolver) {
             Action downloadAction =
                     new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK,
-                            actionContext.getPerformingPlayerId(), actionContext.card(), multipleResolver);
+                            actionContext.yourName(), actionContext.card(), multipleResolver);
             result.add(downloadAction);
         }
         return result;
@@ -48,7 +48,7 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) {
         return _cardTarget.canBeResolved(cardGame, actionContext);
     }
 }

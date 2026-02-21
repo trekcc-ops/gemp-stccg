@@ -1,12 +1,12 @@
 package com.gempukku.stccg.player;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class YourOpponentPlayerSource implements PlayerSource {
     @Override
-    public boolean isPlayer(String playerName, DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isPlayer(String playerName, DefaultGame cardGame, GameTextContext actionContext) {
         PhysicalCard thisCard = actionContext.card();
         String opponentName = cardGame.getOpponent(playerName);
         if (thisCard.isBeingEncountered(cardGame)) {
@@ -19,7 +19,7 @@ public class YourOpponentPlayerSource implements PlayerSource {
     }
 
     @Override
-    public String getPlayerName(DefaultGame cardGame, ActionContext actionContext) {
+    public String getPlayerName(DefaultGame cardGame, GameTextContext actionContext) {
         String yourName = actionContext.yourName();
         return cardGame.getOpponent(yourName);
     }

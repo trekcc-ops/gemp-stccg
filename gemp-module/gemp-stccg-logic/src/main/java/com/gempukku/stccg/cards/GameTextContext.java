@@ -9,24 +9,18 @@ import com.google.common.collect.Multimap;
 
 import java.util.*;
 
-public class ActionContext {
+public class GameTextContext {
     private final String _performingPlayerName;
-    private final int _sourceCardId;
     private final Multimap<String, Integer> _cardMemoryNew = HashMultimap.create();
     private final Map<String, String> _valueMemory = new HashMap<>();
     private final PhysicalCard _thisCard;
 
-    public ActionContext(PhysicalCard thisCard, String performingPlayerId) {
-        this._performingPlayerName = performingPlayerId;
-        _sourceCardId = thisCard.getCardId();
+    public GameTextContext(PhysicalCard thisCard, String yourName) {
+        _performingPlayerName = yourName;
         _thisCard = thisCard;
     }
 
     public String getPerformingPlayerId() { return _performingPlayerName; }
-
-    public int getPerformingCardId() {
-        return _sourceCardId;
-    }
 
 
     public void setValueToMemory(String memory, String value) {

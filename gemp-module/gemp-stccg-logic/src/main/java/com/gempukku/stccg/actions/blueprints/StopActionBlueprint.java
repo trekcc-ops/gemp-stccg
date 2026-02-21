@@ -6,7 +6,8 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -35,13 +36,14 @@ public class StopActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+        String performingPlayerId = (context instanceof DilemmaEncounterGameTextContext) ?
+                context.card().getOwnerName() : context.yourName();
         List<Action> result = new ArrayList<>();
         if (_requirement == null || _requirement.accepts(context, cardGame)) {
             ActionCardResolver cardTarget = _targetResolver.getTargetResolver(cardGame, context);
-            result.add(new StopCardsAction(
-                    cardGame, context.getPerformingPlayerId(), cardTarget, context, _saveToMemoryId));
+            result.add(new StopCardsAction(cardGame, performingPlayerId, cardTarget, context, _saveToMemoryId));
         }
         return result;
     }

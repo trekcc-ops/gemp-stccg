@@ -17,7 +17,7 @@ public class RestrictionBox {
         _text = text;
     }
 
-    public Modifier getModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext context) {
+    public Modifier getModifier(DefaultGame cardGame, PhysicalCard thisCard, GameTextContext context) {
         if (_modifierBlueprint != null) {
             return _modifierBlueprint.createModifier(cardGame, thisCard, context);
         } else {

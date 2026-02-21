@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.DecisionContext;
@@ -24,7 +24,7 @@ public class ActivatePoisonTribblePowerAction extends ActivateTribblePowerAction
     private enum Progress { playerSelected }
 
     public ActivatePoisonTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
-                                            ActionContext actionContext) {
+                                            GameTextContext actionContext) {
         super(cardGame, actionContext, performingCard, Progress.values());
     }
 

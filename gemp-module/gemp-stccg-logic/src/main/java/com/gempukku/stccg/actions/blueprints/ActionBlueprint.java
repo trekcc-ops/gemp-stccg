@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
@@ -25,11 +25,11 @@ import com.gempukku.stccg.requirement.Requirement;
         @JsonSubTypes.Type(value = VolunteerForSelectionActionBlueprint.class, name = "volunteerForRandomSelection")
 })
 public interface ActionBlueprint {
-    boolean isValid(DefaultGame cardGame, ActionContext actionContext);
+    boolean isValid(DefaultGame cardGame, GameTextContext actionContext);
 
     void addRequirement(Requirement requirement);
 
-    void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext);
+    void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext);
     TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard);
 
     void addCost(SubActionBlueprint subActionBlueprint);

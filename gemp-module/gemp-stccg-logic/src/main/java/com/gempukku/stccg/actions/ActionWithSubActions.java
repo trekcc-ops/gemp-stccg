@@ -1,6 +1,6 @@
 package com.gempukku.stccg.actions;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -18,7 +18,7 @@ public abstract class ActionWithSubActions extends ActionyAction {
     }
 
     public ActionWithSubActions(DefaultGame cardGame, String performingPlayerId, ActionType actionType,
-                                ActionContext context) {
+                                GameTextContext context) {
         super(cardGame, performingPlayerId, actionType, context);
     }
 

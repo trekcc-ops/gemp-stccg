@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.AddUntilModifierAction;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -35,7 +35,7 @@ public class AddModifierEffectBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context) {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
         List<Action> result = new ArrayList<>();
         PhysicalCard performingCard = context.card();
         for (String playerName : cardGame.getAllPlayerIds()) {

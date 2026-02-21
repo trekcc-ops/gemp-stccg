@@ -58,12 +58,12 @@
                 {
                     type: encounter
                     effect: {
-                        type: kill
-                        target: {
-                            type: select
-                            random: true
-                            filter: personnel + encounteringThisCard
-                            count: 1
+                        "type": "kill",
+                        "target": {
+                            "type": "select",
+                            "random": true,
+                            "filter": "personnel" + "encounteringThisCard",
+                            "count": 1
                         }
                     }
                 }

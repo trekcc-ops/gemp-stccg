@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.IncreaseAttributesUntilEndOfTurnAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
@@ -45,7 +45,7 @@ public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint 
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context) {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
         List<Action> result = new ArrayList<>();
         PhysicalCard performingCard = context.card();
         for (String playerName : cardGame.getAllPlayerIds()) {
@@ -53,7 +53,7 @@ public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint 
                 ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
                 if (_untilEndOfTurn) {
                     Action action = new IncreaseAttributesUntilEndOfTurnAction(_attributes, cardGame, performingCard,
-                            context.getPerformingPlayerId(), cardTarget, _amount);
+                            context.yourName(), cardTarget, _amount);
                     result.add(action);
                 }
             }

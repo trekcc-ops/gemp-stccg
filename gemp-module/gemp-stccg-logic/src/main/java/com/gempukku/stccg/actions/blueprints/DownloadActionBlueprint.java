@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.AndFilterBlueprint;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -24,9 +24,9 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext actionContext) {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext) {
         List<Action> result = new ArrayList<>();
-        String performingPlayerName = actionContext.getPerformingPlayerId();
+        String performingPlayerName = actionContext.yourName();
         Collection<PhysicalCard> downloadableCards =
                 Filters.filter(cardGame, _cardToDownloadFilter.getFilterable(cardGame, actionContext));
         Map<PhysicalCard, Collection<PhysicalCard>> destinationMap = new HashMap<>();
@@ -52,7 +52,7 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) {
         return !Filters.filter(cardGame, _cardToDownloadFilter.getFilterable(cardGame, actionContext)).isEmpty();
     }
 }

@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
@@ -57,7 +57,7 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     }
 
     @Override
-    public boolean isValid(DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isValid(DefaultGame cardGame, GameTextContext actionContext) {
         boolean isValidPlayer =
                 _performingPlayer.isPlayer(actionContext.getPerformingPlayerId(), cardGame, actionContext);
         if (!isValidPlayer) {
@@ -67,13 +67,13 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         }
     }
 
-    protected boolean isActionForPlayer(String requestingPlayerName, DefaultGame cardGame, ActionContext context) {
+    protected boolean isActionForPlayer(String requestingPlayerName, DefaultGame cardGame, GameTextContext context) {
         return _performingPlayer.isPlayer(requestingPlayerName, cardGame, context);
     }
 
     @Override
     public void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action,
-                                      ActionContext actionContext) {
+                                      GameTextContext actionContext) {
         costs.forEach(cost -> cost.addEffectToAction(cardGame, true, action, actionContext));
         _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
     }

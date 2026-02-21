@@ -1,7 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -23,7 +23,7 @@ public class AtLocationDestinationBlueprint implements DestinationBlueprint {
     }
 
     public Collection<PhysicalCard> getDestinationOptions(ST1EGame stGame, String performingPlayerName,
-                                                          PhysicalCard cardArriving, ActionContext context) {
+                                                          PhysicalCard cardArriving, GameTextContext context) {
         Collection<PhysicalCard> result = new ArrayList<>();
         for (MissionLocation location : stGame.getGameState().getUnorderedMissionLocations()) {
                 if (location.hasMatchingAffiliationIcon(stGame, performingPlayerName, List.of(_affiliation))) {

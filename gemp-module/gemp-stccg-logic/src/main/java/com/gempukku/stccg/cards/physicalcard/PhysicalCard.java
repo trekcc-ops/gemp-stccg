@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -234,7 +234,7 @@ public interface PhysicalCard {
 
     boolean isInDiscard(DefaultGame game);
 
-    default List<PhysicalCard> getDestinationOptionsFromGameText(ActionContext context, DefaultGame cardGame) {
+    default List<PhysicalCard> getDestinationOptionsFromGameText(GameTextContext context, DefaultGame cardGame) {
         return new ArrayList<>(getBlueprint().getPlayCardDestinationOptionsFromGameText(context, cardGame));
     }
 

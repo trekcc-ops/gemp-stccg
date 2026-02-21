@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -15,15 +15,15 @@ import java.util.List;
 public class UseNormalCardPlayBlueprint implements SubActionBlueprint {
     @Override
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                      ActionContext actionContext)
+                                      GameTextContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        return List.of(new UseNormalCardPlayAction(cardGame, actionContext.getPerformingPlayerId()));
+        return List.of(new UseNormalCardPlayAction(cardGame, actionContext.yourName()));
     }
 
     @Override
-    public boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) {
         GameState gameState = cardGame.getGameState();
-        return gameState.getNormalCardPlaysAvailable(actionContext.getPerformingPlayerId()) >= 1;
+        return gameState.getNormalCardPlaysAvailable(actionContext.yourName()) >= 1;
     }
 
     @Override

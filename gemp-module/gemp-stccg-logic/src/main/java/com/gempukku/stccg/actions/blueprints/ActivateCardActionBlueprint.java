@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
@@ -34,7 +34,7 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
     }
 
     public UseGameTextAction createAction(DefaultGame cardGame, String requestingPlayerName, PhysicalCard card) {
-        ActionContext context = new ActionContext(card, requestingPlayerName);
+        GameTextContext context = new GameTextContext(card, requestingPlayerName);
         if (!isActionForPlayer(requestingPlayerName, cardGame, context)) {
             return null;
         } else if (context.acceptsAllRequirements(cardGame, _requirements)) {

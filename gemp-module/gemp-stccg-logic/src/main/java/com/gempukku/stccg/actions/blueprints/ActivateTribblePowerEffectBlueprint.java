@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.tribblepower.*;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.TribblePower;
@@ -17,7 +17,7 @@ import java.util.List;
 public class ActivateTribblePowerEffectBlueprint implements SubActionBlueprint {
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
             throws InvalidCardDefinitionException, PlayerNotFoundException {
 
         List<Action> result = new LinkedList<>();

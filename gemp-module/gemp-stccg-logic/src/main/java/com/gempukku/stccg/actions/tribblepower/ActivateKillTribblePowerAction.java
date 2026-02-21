@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.tribblepower;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.SelectPlayerAction;
 import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.TopOfPlayPileFilter;
 import com.gempukku.stccg.game.DefaultGame;
@@ -22,7 +22,7 @@ public class ActivateKillTribblePowerAction extends ActivateTribblePowerAction {
     private SelectPlayerAction _selectPlayerAction;
 
     public ActivateKillTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
-                                          ActionContext actionContext) {
+                                          GameTextContext actionContext) {
         super(cardGame, actionContext, performingCard, Progress.values());
     }
 

@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -32,7 +32,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                                                 AttemptingUnit attemptingUnit, MissionLocation missionLocation,
                                                 AttemptMissionAction missionAttemptAction)
             throws InvalidGameLogicException {
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
+        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation.getLocationId(), actionContext);
@@ -44,7 +44,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
     public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard card) {
         try {
-            ActionContext context = new ActionContext(card, performingPlayerName);
+            GameTextContext context = new GameTextContext(card, performingPlayerName);
             Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
             for (Action action : actionStack) {
                 if (action instanceof AttemptMissionAction attemptAction &&

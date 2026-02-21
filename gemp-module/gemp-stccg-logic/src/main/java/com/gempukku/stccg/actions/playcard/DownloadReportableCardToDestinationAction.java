@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -25,7 +25,7 @@ public class DownloadReportableCardToDestinationAction extends ActionWithSubActi
     public DownloadReportableCardToDestinationAction(DefaultGame cardGame, String playerName,
                                                      SelectCardsResolver cardTarget, PhysicalCard performingCard,
                                                      Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap) {
-        super(cardGame, playerName, ActionType.DOWNLOAD_CARD, new ActionContext(performingCard, playerName));
+        super(cardGame, playerName, ActionType.DOWNLOAD_CARD, new GameTextContext(performingCard, playerName));
         _cardToDownloadTarget = cardTarget;
         _performingCard = performingCard;
         _targetMap = targetMap;

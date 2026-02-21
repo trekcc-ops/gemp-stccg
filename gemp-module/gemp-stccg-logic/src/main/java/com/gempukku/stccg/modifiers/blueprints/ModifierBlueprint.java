@@ -3,7 +3,7 @@ package com.gempukku.stccg.modifiers.blueprints;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.Modifier;
@@ -31,9 +31,9 @@ import java.util.List;
         @JsonSubTypes.Type(value = YouCanSeedAUCardsModifierBlueprint.class, name = "youCanSeedAUCards")
 })
 public interface ModifierBlueprint {
-    Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext);
+    Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, GameTextContext actionContext);
 
-    default Condition convertRequirementListToCondition(List<Requirement> requirements, ActionContext actionContext,
+    default Condition convertRequirementListToCondition(List<Requirement> requirements, GameTextContext actionContext,
                                                         PhysicalCard thisCard, DefaultGame cardGame) {
         if (requirements == null || requirements.isEmpty()) {
             return new TrueCondition();

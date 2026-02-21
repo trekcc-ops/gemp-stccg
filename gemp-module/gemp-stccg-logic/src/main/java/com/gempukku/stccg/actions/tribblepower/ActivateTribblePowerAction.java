@@ -4,7 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -18,15 +18,15 @@ public abstract class ActivateTribblePowerAction extends ActionWithSubActions {
     protected final PhysicalCard _performingCard;
     protected Map<String, Boolean> _progressIndicators = new HashMap<>();
 
-    public ActivateTribblePowerAction(TribblesGame cardGame, ActionContext actionContext, PhysicalCard performingCard) {
-        super(cardGame, actionContext.getPerformingPlayerId(), ActionType.ACTIVATE_TRIBBLE_POWER);
+    public ActivateTribblePowerAction(TribblesGame cardGame, GameTextContext actionContext, PhysicalCard performingCard) {
+        super(cardGame, actionContext.yourName(), ActionType.ACTIVATE_TRIBBLE_POWER);
         _performingCard = performingCard;
     }
 
-    public ActivateTribblePowerAction(TribblesGame cardGame, ActionContext actionContext,
+    public ActivateTribblePowerAction(TribblesGame cardGame, GameTextContext actionContext,
                                       PhysicalCard performingCard,
                                       Enum<?>[] progressNames) {
-        super(cardGame, actionContext.getPerformingPlayerId(), ActionType.ACTIVATE_TRIBBLE_POWER, actionContext);
+        super(cardGame, actionContext.yourName(), ActionType.ACTIVATE_TRIBBLE_POWER, actionContext);
         _performingCard = performingCard;
         for (Enum<?> progressType : progressNames) {
             _progressIndicators.put(progressType.name(), false);

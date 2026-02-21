@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -15,7 +15,7 @@ public abstract class MakeDecisionAction extends ActionyAction {
     }
 
     public MakeDecisionAction(DefaultGame cardGame, String performingPlayerName, String choiceText,
-                              ActionContext context) {
+                              GameTextContext context) {
         super(cardGame, performingPlayerName, ActionType.MAKE_DECISION, context);
         _choiceText = choiceText;
     }

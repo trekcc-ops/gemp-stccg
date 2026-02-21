@@ -351,6 +351,11 @@ public class Filters {
         return new PresentWithCardFilter(thisCardId);
     }
 
+    public static CardFilter presentWithThisCard(PhysicalCard card) {
+        return new PresentWithCardFilter(card);
+    }
+
+
     public static CardFilter integrityGreaterThan(int integrityAmount) {
         return new AttributeFilter(CardAttribute.INTEGRITY, ComparatorType.GREATER_THAN, integrityAmount);
     }

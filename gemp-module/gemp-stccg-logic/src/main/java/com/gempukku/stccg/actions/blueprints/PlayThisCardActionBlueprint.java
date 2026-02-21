@@ -9,7 +9,7 @@ import com.gempukku.stccg.actions.playcard.PlayCardToDesinationAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -66,7 +66,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
     @Override
     public PlayCardAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard) {
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
+        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         if (!isValid(cardGame, actionContext) ||
                 !cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.PLAY)) {
             return null;
@@ -96,7 +96,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
         return action;
     }
 
-    public Collection<? extends PhysicalCard> getDestinationOptions(ActionContext context, DefaultGame cardGame) {
+    public Collection<? extends PhysicalCard> getDestinationOptions(GameTextContext context, DefaultGame cardGame) {
         if (_destinationBlueprint != null) {
             CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, context);
             return Filters.filterCardsInPlay(cardGame, destinationFilter);

@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.modifiers;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.blueprints.resolver.TimeResolver;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
@@ -14,7 +14,7 @@ public class AddUntilModifierAction extends ActionyAction {
     private final TimeResolver.Time until;
 
     public AddUntilModifierAction(DefaultGame cardGame, String playerName, ModifierBlueprint modifier,
-                                  TimeResolver.Time until, ActionContext context) {
+                                  TimeResolver.Time until, GameTextContext context) {
         super(cardGame, playerName, ActionType.ADD_MODIFIER, context);
         _modifier = modifier;
         this.until = until;
