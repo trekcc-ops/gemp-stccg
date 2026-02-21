@@ -191,14 +191,10 @@
                         type: played
                         filter: self
                     }
-                    triggerDuringSeed: true
-                    effect: {
-                        type: download
-                        target: {
-                            type: select
-                            filter: warp-core
-                            count: 1
-                        }
+                    triggerDuringSeed: true,
+                    "effect": {
+                        "type": "download",
+                        "filter": "warp-core"
                     }
                 }
                 {

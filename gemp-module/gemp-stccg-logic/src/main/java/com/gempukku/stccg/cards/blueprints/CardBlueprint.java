@@ -688,4 +688,14 @@ public class CardBlueprint {
     public boolean hasMissionType(MissionType missionType) {
         return _missionType == missionType;
     }
+
+    public Collection<? extends PhysicalCard> getPlayCardDestinationOptionsFromGameText(
+            ActionContext context, DefaultGame cardGame) {
+        if (_playThisCardActionBlueprint != null) {
+            return new ArrayList<PhysicalCard>(_playThisCardActionBlueprint.getDestinationOptions(context, cardGame));
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
 }

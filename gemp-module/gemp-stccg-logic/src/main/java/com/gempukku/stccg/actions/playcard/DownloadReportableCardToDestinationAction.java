@@ -65,7 +65,7 @@ public class DownloadReportableCardToDestinationAction extends ActionWithSubActi
     }
 
     @Override
-    public void setCardToDownload(PhysicalCard cardToDownload) {
+    public void selectCardToDownload(PhysicalCard cardToDownload) {
         _cardToDownloadTarget.setSelectedCards(List.of(cardToDownload));
     }
 }

@@ -371,7 +371,7 @@ public interface UserInputSimulator {
         List<DownloadAction> actions = getSelectableActionsOfClass(playerId, DownloadAction.class);
         for (DownloadAction action : actions) {
             if (action.getDownloadableTargets(getGame()).contains(cardToPlay)) {
-                action.setCardToDownload(cardToPlay);
+                action.selectCardToDownload(cardToPlay);
                 selectAction(playerId, action);
                 return action;
             }

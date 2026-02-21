@@ -13,6 +13,7 @@ import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -23,6 +24,7 @@ import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.Collection;
+import java.util.List;
 
 public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
 
@@ -94,4 +96,12 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
         return action;
     }
 
+    public Collection<? extends PhysicalCard> getDestinationOptions(ActionContext context, DefaultGame cardGame) {
+        if (_destinationBlueprint != null) {
+            CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, context);
+            return Filters.filterCardsInPlay(cardGame, destinationFilter);
+        } else {
+            return List.of(new ProxyCoreCard(context.yourName()));
+        }
+    }
 }

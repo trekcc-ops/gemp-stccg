@@ -80,7 +80,6 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return false;
     }
 
-
     public boolean isInHand(DefaultGame cardGame) {
         for (Player player : cardGame.getPlayers()) {
             if (player.getCardsInHand().contains(this)) {

@@ -8,33 +8,38 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
 
     private PhysicalCard _cardEnteringPlay;
-    private final Collection<PhysicalCard> _seedableCards;
-    private final Collection<PhysicalCard> _destinationOptions;
     private SelectCardAction _selectCardToSeedAction;
     private final String _performingPlayerName;
     private SelectCardAction _selectDestinationAction;
     private PhysicalCard _destinationCard;
     private boolean _isFailed;
+    private final Map<PhysicalCard, Collection<PhysicalCard>> _destinationMap;
+
+    public EnterPlayAtDestinationResolver(String performingPlayerName,
+                                          Map<PhysicalCard, Collection<PhysicalCard>> destinationMap) {
+        _performingPlayerName = performingPlayerName;
+        _destinationMap = destinationMap;
+    }
 
     public EnterPlayAtDestinationResolver(String performingPlayerName, Collection<PhysicalCard> seedableCards,
                                           Collection<PhysicalCard> destinationOptions) {
-        _seedableCards = seedableCards;
-        _destinationOptions = destinationOptions;
+        _destinationMap = new HashMap<>();
+        if (!destinationOptions.isEmpty()) {
+            for (PhysicalCard card : seedableCards) {
+                _destinationMap.put(card, destinationOptions);
+            }
+        }
         _performingPlayerName = performingPlayerName;
     }
 
     public EnterPlayAtDestinationResolver(String performingPlayerName, PhysicalCard cardToSeed,
                                           Collection<PhysicalCard> destinationOptions) {
-        _cardEnteringPlay = cardToSeed;
-        _seedableCards = List.of(cardToSeed);
-        _destinationOptions = destinationOptions;
-        _performingPlayerName = performingPlayerName;
+        this(performingPlayerName, List.of(cardToSeed), destinationOptions);
     }
 
 
@@ -56,7 +61,7 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
         if (_selectCardToSeedAction == null) {
             _selectCardToSeedAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
                     "Choose a card to enter play",
-                    new InCardListFilter(_seedableCards));
+                    new InCardListFilter(_destinationMap.keySet()));
             stGame.addActionToStack(_selectCardToSeedAction);
         } else if (_selectCardToSeedAction.wasSuccessful()) {
             _cardEnteringPlay = _selectCardToSeedAction.getSelectedCard();
@@ -70,7 +75,7 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
         if (_selectDestinationAction == null) {
             _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
                     "Choose a destination",
-                    new InCardListFilter(_destinationOptions));
+                    new InCardListFilter(_destinationMap.get(_cardEnteringPlay)));
             stGame.addActionToStack(_selectDestinationAction);
         } else if (_selectDestinationAction.wasSuccessful()) {
             _destinationCard = _selectDestinationAction.getSelectedCard();
@@ -87,7 +92,7 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
 
     @Override
     public boolean cannotBeResolved(DefaultGame cardGame) {
-        return _isFailed || _seedableCards.isEmpty() || _destinationOptions.isEmpty();
+        return _isFailed || _destinationMap.isEmpty();
     }
 
     public PhysicalCard getDestination() {
@@ -98,9 +103,10 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
         return _cardEnteringPlay;
     }
 
-    public Collection<PhysicalCard> getSelectableOptions() { return _seedableCards; }
-    public void setCardToSeed(PhysicalCard cardToSeed) {
-        _cardEnteringPlay = cardToSeed;
+    public Collection<PhysicalCard> getSelectableOptions() { return _destinationMap.keySet(); }
+
+    public void setCardEnteringPlay(PhysicalCard cardEnteringPlay) {
+        _cardEnteringPlay = cardEnteringPlay;
     }
 
 }

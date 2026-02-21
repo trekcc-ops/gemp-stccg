@@ -63,7 +63,8 @@ public class Filters {
     public static final CardFilter inPlay = new InPlayFilter();
     public static final CardFilter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
     public static final CardFilter personnel = Filters.or(CardType.PERSONNEL);
-    public static final CardFilter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
+    public static final CardFilter planetLocation =
+            Filters.and(Filters.or(CardType.MISSION, CardType.TIME_LOCATION), MissionType.PLANET);
     public static final CardFilter Romulan = Filters.or(Affiliation.ROMULAN, Species.ROMULAN);
     public static final CardFilter ship = Filters.or(CardType.SHIP);
     public static final CardFilter undocked = new UndockedFilter();

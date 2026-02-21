@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
+import com.gempukku.stccg.cards.ActionContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -22,6 +23,7 @@ import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -231,4 +233,8 @@ public interface PhysicalCard {
     void setAsAtop(PhysicalCard destination);
 
     boolean isInDiscard(DefaultGame game);
+
+    default List<PhysicalCard> getDestinationOptionsFromGameText(ActionContext context, DefaultGame cardGame) {
+        return new ArrayList<>(getBlueprint().getPlayCardDestinationOptionsFromGameText(context, cardGame));
+    }
 }
