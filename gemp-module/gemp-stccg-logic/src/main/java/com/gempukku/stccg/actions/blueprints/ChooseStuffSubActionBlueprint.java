@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectNumberAction;
 import com.gempukku.stccg.actions.choose.SelectPlayerAction;
 import com.gempukku.stccg.actions.choose.SelectTribblePowerAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
@@ -61,13 +61,13 @@ public class ChooseStuffSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context)
             throws PlayerNotFoundException, InvalidGameLogicException {
         Action action = switch (_effectType) {
             case CHOOSEANUMBER -> new SelectNumberAction(cardGame, context, _choiceText, _valueSource, _saveToMemoryId);
             case CHOOSEOPPONENT -> {
                 List<String> playerIds = Arrays.asList(cardGame.getAllPlayerIds());
-                playerIds.remove(context.getPerformingPlayerId());
+                playerIds.remove(context.yourName());
                 yield new SelectPlayerAction(cardGame, context, _saveToMemoryId, playerIds);
             }
             case CHOOSEPLAYER ->

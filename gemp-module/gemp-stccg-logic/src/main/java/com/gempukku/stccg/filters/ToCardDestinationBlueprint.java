@@ -1,7 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.game.ST1EGame;
@@ -22,7 +22,7 @@ public class ToCardDestinationBlueprint implements DestinationBlueprint {
     }
 
     public Collection<PhysicalCard> getDestinationOptions(ST1EGame stGame, String performingPlayerName,
-                                                          PhysicalCard cardArriving, ActionContext context) {
+                                                          PhysicalCard cardArriving, GameTextContext context) {
         CardFilter destination = Filters.and(_destinationFilter.getFilterable(stGame, context));
         if (_mustBeMatching) {
             destination = Filters.and(destination, new MatchingAffiliationFilter(List.of(cardArriving), performingPlayerName));

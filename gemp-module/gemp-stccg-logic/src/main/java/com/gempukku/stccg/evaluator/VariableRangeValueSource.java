@@ -1,7 +1,7 @@
 package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class VariableRangeValueSource implements ValueSource {
@@ -19,12 +19,12 @@ public class VariableRangeValueSource implements ValueSource {
     }
 
     @Override
-    public int getMinimum(DefaultGame cardGame, ActionContext actionContext) {
+    public int getMinimum(DefaultGame cardGame, GameTextContext actionContext) {
         return _fromValue.evaluateExpression(cardGame, actionContext);
     }
 
     @Override
-    public int getMaximum(DefaultGame cardGame, ActionContext actionContext) {
+    public int getMaximum(DefaultGame cardGame, GameTextContext actionContext) {
         return _toValue.evaluateExpression(cardGame, actionContext);
     }
 

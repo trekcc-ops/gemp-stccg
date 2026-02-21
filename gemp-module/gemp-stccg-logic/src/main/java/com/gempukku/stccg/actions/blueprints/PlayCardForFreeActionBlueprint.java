@@ -8,7 +8,7 @@ import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -56,7 +56,7 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
     @Override
     public PlayCardAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard thisCard) {
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
+        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         if (!isValid(cardGame, actionContext)) {
             return null;
         }

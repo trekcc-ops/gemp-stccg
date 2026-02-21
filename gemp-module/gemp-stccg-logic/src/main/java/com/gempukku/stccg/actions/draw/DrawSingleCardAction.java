@@ -14,11 +14,6 @@ public class DrawSingleCardAction extends ActionyAction {
     }
 
 
-    public DrawSingleCardAction(DefaultGame cardGame, Player performingPlayer) {
-        this(cardGame, performingPlayer.getPlayerId());
-    }
-
-
     public final boolean requirementsAreMet(DefaultGame cardGame) {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);

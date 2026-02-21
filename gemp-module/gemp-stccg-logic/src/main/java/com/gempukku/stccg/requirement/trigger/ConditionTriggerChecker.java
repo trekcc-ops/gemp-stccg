@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.AndCondition;
@@ -22,12 +22,12 @@ public class ConditionTriggerChecker implements TriggerChecker {
     ) {
         _requirements = requirements;
     }
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
         return actionContext.acceptsAllRequirements(cardGame, _requirements);
     }
 
     @Override
-    public Condition getCondition(ActionContext context, PhysicalCard thisCard, DefaultGame cardGame) {
+    public Condition getCondition(GameTextContext context, PhysicalCard thisCard, DefaultGame cardGame) {
         Collection<Condition> conditions = new ArrayList<>();
         for (Requirement requirement : _requirements) {
             conditions.add(requirement.getCondition(context, thisCard, cardGame));

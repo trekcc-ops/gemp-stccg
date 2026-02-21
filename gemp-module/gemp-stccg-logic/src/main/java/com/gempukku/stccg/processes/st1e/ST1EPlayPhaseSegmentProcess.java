@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -35,20 +36,9 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
         final List<TopLevelSelectableAction> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, selectingPlayer);
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase, _currentlySelectingPlayerName)) {
-            cardGame.sendAwaitingDecision(
-                    new ActionSelectionDecision(_currentlySelectingPlayerName, DecisionContext.SELECT_PHASE_ACTION,
-                            playableActions, cardGame, false) {
-                        @Override
-                        public void decisionMade(String result) throws DecisionResultInvalidException {
-                            Action action = getSelectedAction(result);
-                            if (action != null) {
-                                cardGame.getActionsEnvironment().addActionToStack(action);
-                                _consecutivePasses = 0;
-                            } else {
-                                _consecutivePasses++;
-                            }
-                        }
-                    });
+            AwaitingDecision decision =
+                    new SelectTopLevelPhaseActionsDecision(_currentlySelectingPlayerName, playableActions, cardGame);
+            cardGame.sendAwaitingDecision(decision);
         } else {
             _consecutivePasses++;
         }
@@ -76,6 +66,31 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
             result = new ST1EPlayPhaseSegmentProcess(nextPlayerName);
         }
         return result;
+    }
+
+    private class SelectTopLevelPhaseActionsDecision extends ActionSelectionDecision {
+
+        private final Phase _phase;
+        private final DefaultGame _game;
+
+        protected SelectTopLevelPhaseActionsDecision(String selectingPlayerName,
+                                                     List<TopLevelSelectableAction> playableActions,
+                                                     DefaultGame cardGame) {
+            super(selectingPlayerName, DecisionContext.SELECT_PHASE_ACTION, playableActions, cardGame, false);
+            _game = cardGame;
+            _phase = cardGame.getCurrentPhase();
+        }
+
+        @Override
+        public void decisionMade(String result) throws DecisionResultInvalidException {
+            Action action = getSelectedAction(result);
+            if (action != null) {
+                _game.getActionsEnvironment().addActionToStack(action);
+                _consecutivePasses = 0;
+            } else {
+                _consecutivePasses++;
+            }
+        }
     }
 
 }

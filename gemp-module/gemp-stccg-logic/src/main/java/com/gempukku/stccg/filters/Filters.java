@@ -4,6 +4,7 @@ import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -56,6 +57,7 @@ public class Filters {
     public static final CardFilter controllerControlsMatchingPersonnelAboard =
             new ControllerControlsMatchingPersonnelAboardFilter();
     public static final CardFilter equipment = Filters.or(CardType.EQUIPMENT);
+    public static final CardFilter isCoreProxy = (game, physicalCard) -> physicalCard instanceof ProxyCoreCard;
     public static final CardFilter exposedShip = new ExposedShipFilter();
     public static final CardFilter facility = Filters.or(CardType.FACILITY);
     public static final CardFilter Ferengi = Filters.or(Affiliation.FERENGI, Species.FERENGI);
@@ -63,7 +65,8 @@ public class Filters {
     public static final CardFilter inPlay = new InPlayFilter();
     public static final CardFilter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
     public static final CardFilter personnel = Filters.or(CardType.PERSONNEL);
-    public static final CardFilter planetLocation = Filters.and(CardType.MISSION, MissionType.PLANET);
+    public static final CardFilter planetLocation =
+            Filters.and(Filters.or(CardType.MISSION, CardType.TIME_LOCATION), MissionType.PLANET);
     public static final CardFilter Romulan = Filters.or(Affiliation.ROMULAN, Species.ROMULAN);
     public static final CardFilter ship = Filters.or(CardType.SHIP);
     public static final CardFilter undocked = new UndockedFilter();
@@ -347,6 +350,11 @@ public class Filters {
     public static CardFilter presentWithThisCard(int thisCardId) {
         return new PresentWithCardFilter(thisCardId);
     }
+
+    public static CardFilter presentWithThisCard(PhysicalCard card) {
+        return new PresentWithCardFilter(card);
+    }
+
 
     public static CardFilter integrityGreaterThan(int integrityAmount) {
         return new AttributeFilter(CardAttribute.INTEGRITY, ComparatorType.GREATER_THAN, integrityAmount);

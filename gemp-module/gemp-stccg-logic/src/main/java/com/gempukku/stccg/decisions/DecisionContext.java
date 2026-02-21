@@ -21,7 +21,8 @@ public enum DecisionContext {
 
     // Integer
     SELECT_NUMBER("Choose a number"),
-    GENERAL_MULTIPLE_CHOICE("");
+    GENERAL_MULTIPLE_CHOICE(""),
+    SELECT_NUMBER_OF_CARDS_TO_DRAW("Select number of cards to draw");
 
     private final String _clientText;
 

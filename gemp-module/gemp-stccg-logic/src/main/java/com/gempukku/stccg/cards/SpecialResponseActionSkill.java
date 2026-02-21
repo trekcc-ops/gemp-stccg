@@ -3,9 +3,8 @@ package com.gempukku.stccg.cards;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
-public class SpecialResponseActionSkill extends Skill {
+public class SpecialResponseActionSkill extends SpecialActionSkill {
 
     private final ActionBlueprint _actionBlueprint;
     private final String _skillText;
@@ -20,7 +19,7 @@ public class SpecialResponseActionSkill extends Skill {
         _optional = optional;
     }
 
-    public ActionBlueprint getActionBlueprint(PhysicalCard thisCard) {
+    public ActionBlueprint getActionBlueprint() {
         return _actionBlueprint;
     }
 

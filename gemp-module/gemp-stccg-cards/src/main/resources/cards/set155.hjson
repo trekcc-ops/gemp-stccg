@@ -175,10 +175,10 @@
             }
         }
         {
-            blueprintId: 155_022
-            title: Continuing Mission
-            type: incident
-            property-logo: tng-logo
+            "blueprintId": "155_022",
+            "title": "Continuing Mission",
+            "type": "incident",
+            "property-logo": "tng-logo",
             actions: [
                 {
                     type: seedThis
@@ -191,14 +191,10 @@
                         type: played
                         filter: self
                     }
-                    triggerDuringSeed: true
-                    effect: {
-                        type: download
-                        target: {
-                            type: select
-                            filter: warp-core
-                            count: 1
-                        }
+                    triggerDuringSeed: true,
+                    "effect": {
+                        "type": "download",
+                        "filter": "warp-core"
                     }
                 }
                 {

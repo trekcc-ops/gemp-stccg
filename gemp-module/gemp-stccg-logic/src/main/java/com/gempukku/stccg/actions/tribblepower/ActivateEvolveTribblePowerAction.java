@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
@@ -10,7 +10,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 
 public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateEvolveTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, ActionContext actionContext)
+    public ActivateEvolveTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, GameTextContext actionContext)
             throws PlayerNotFoundException {
         super(cardGame, actionContext, performingCard);
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
@@ -23,7 +23,7 @@ public class ActivateEvolveTribblePowerAction extends ActivateTribblePowerAction
                 cardGame, _performingCard, _performingPlayerId, performingPlayer.getCardsInHand()));
 
         // Draw that many cards
-        appendEffect(new DrawCardsAction(_performingCard, _performingPlayerId, cardsInHand, cardGame));
+        appendEffect(new DrawCardsAction(cardGame, _performingCard, _performingPlayerId, cardsInHand));
     }
 
 }

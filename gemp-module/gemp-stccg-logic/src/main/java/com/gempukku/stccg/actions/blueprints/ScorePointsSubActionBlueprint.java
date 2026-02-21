@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.discard.DiscardCardToPointAreaAction;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.SingleValueSource;
@@ -32,19 +32,20 @@ public class ScorePointsSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         int pointValue = _points.evaluateExpression(cardGame, context);
-        Action pointsAction =
-                new ScorePointsAction(cardGame, context.card(), context.getPerformingPlayerId(), pointValue);
+        Action pointsAction = new ScorePointsAction(cardGame, context.card(), context.yourName(), pointValue);
         if (_discardThisCard) {
             Zone discardToZone = cardGame.getRules().getDiscardZone(true);
             if (discardToZone == Zone.DISCARD) {
-                pointsAction.appendCost(new DiscardSingleCardAction(cardGame, context.card(),
-                        context.getPerformingPlayerId(), context.card()));
+                Action costAction =
+                        new DiscardSingleCardAction(cardGame, context.card(), context.yourName(), context.card());
+                pointsAction.appendCost(costAction);
             } else if (discardToZone == Zone.POINT_AREA) {
-                pointsAction.appendCost(new DiscardCardToPointAreaAction(cardGame, context.card(),
-                        context.getPerformingPlayerId(), context.card()));
+                Action costAction = 
+                        new DiscardCardToPointAreaAction(cardGame, context.card(), context.yourName(), context.card());
+                pointsAction.appendCost(costAction);
             }
         }
         return List.of(pointsAction);

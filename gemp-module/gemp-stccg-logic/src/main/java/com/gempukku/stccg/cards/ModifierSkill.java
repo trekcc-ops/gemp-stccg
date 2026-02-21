@@ -27,7 +27,7 @@ public class ModifierSkill extends Skill {
         _modifier = modifier;
     }
 
-    public Modifier createModifierNew(DefaultGame cardGame, ActionContext context) {
+    public Modifier createModifierNew(DefaultGame cardGame, GameTextContext context) {
         return _modifier.createModifier(cardGame, context.card(), context);
     }
 

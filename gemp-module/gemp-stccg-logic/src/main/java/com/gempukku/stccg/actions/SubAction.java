@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions;
 
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -11,7 +11,7 @@ public class SubAction extends ActionWithSubActions implements CardPerformedActi
 
     private final ActionWithSubActions _parentAction;
 
-    public SubAction(DefaultGame cardGame, ActionWithSubActions action, ActionContext context,
+    public SubAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context,
                      List<SubActionBlueprint> costAppenders, List<SubActionBlueprint> subActionBlueprints) {
         super(cardGame, action.getPerformingPlayerId(), action.getActionType());
         _parentAction = action;

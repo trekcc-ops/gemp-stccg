@@ -38,7 +38,7 @@ public class Blueprint_155_086_Korris_Test extends AbstractAtTest {
         builder.startGame();
         assertEquals(31, _game.getGameState().getAwayTeamForCard(korris).size());
         attemptMission(P1, mission);
-        useGameText(korris, P1);
+        useGameText(P1, korris);
         assertEquals(Zone.DISCARD, korris.getZone());
         assertEquals(Zone.REMOVED, armus.getZone());
     }

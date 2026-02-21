@@ -1,7 +1,7 @@
 package com.gempukku.stccg.actions.targetresolver;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -18,7 +18,7 @@ public class ReadCardMemoryBlueprint implements TargetResolverBlueprint {
         _memoryId = memoryId;
     }
 
-    public ActionCardResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
+    public ActionCardResolver getTargetResolver(DefaultGame cardGame, GameTextContext context) {
         Collection<Integer> cardIds = context.getCardIdsFromMemory(_memoryId);
         Collection<PhysicalCard> memoryCards = new ArrayList<>();
         for (Integer cardId : cardIds) {
@@ -34,7 +34,7 @@ public class ReadCardMemoryBlueprint implements TargetResolverBlueprint {
     public void addFilter(FilterBlueprint... filterBlueprints) {
     }
 
-    public boolean canBeResolved(DefaultGame cardGame, ActionContext context) {
+    public boolean canBeResolved(DefaultGame cardGame, GameTextContext context) {
         Collection<Integer> cards = context.getCardIdsFromMemory(_memoryId);
         return cards != null && !cards.isEmpty();
     }

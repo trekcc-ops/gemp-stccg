@@ -3,7 +3,7 @@ package com.gempukku.stccg.requirement.trigger;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -37,7 +37,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
         _onFilter = onFilter;
         _saveToMemoryId = Objects.requireNonNullElse(memorize, "_temp");
     }
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
         final Filterable filterable = _filter.getFilterable(cardGame, actionContext);
         final ActionResult actionResult = cardGame.getCurrentActionResult();
         if (actionResult != null) {
@@ -72,7 +72,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
         return false;
     }
 
-    private boolean played(DefaultGame game, ActionResult actionResult, ActionContext context, Filterable... filters) {
+    private boolean played(DefaultGame game, ActionResult actionResult, GameTextContext context, Filterable... filters) {
         if (actionResult.hasType(ActionResult.Type.JUST_PLAYED)) {
             if (_playingPlayer == null ||
                     actionResult.getPerformingPlayerId().equals(_playingPlayer.getPlayerName(game, context))) {

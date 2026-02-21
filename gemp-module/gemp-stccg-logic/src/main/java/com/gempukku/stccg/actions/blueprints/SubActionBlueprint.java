@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.turn.AddSubactionEffectsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -50,7 +50,7 @@ import java.util.List;
 public interface SubActionBlueprint {
 
     default void addEffectToAction(DefaultGame cardGame, boolean cost, ActionWithSubActions action,
-                                   ActionContext actionContext) {
+                                   GameTextContext actionContext) {
         final AddSubactionEffectsAction sysAction =
                 new AddSubactionEffectsAction(cardGame, actionContext, cost, action, this);
         if (cost) {
@@ -60,9 +60,9 @@ public interface SubActionBlueprint {
         }
     }
 
-    List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, ActionContext actionContext)
+    List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException;
-    default boolean isPlayableInFull(DefaultGame cardGame, ActionContext actionContext) { return true; }
+    default boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) { return true; }
 
     default boolean isPlayabilityCheckedForEffect() {
         return false;

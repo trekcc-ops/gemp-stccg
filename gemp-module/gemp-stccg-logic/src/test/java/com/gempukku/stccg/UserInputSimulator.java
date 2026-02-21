@@ -152,7 +152,7 @@ public interface UserInputSimulator {
         }
     }
 
-    default void useGameText(PhysicalCard card, String playerId) 
+    default void useGameText(String playerId, PhysicalCard card)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
@@ -371,7 +371,7 @@ public interface UserInputSimulator {
         List<DownloadAction> actions = getSelectableActionsOfClass(playerId, DownloadAction.class);
         for (DownloadAction action : actions) {
             if (action.getDownloadableTargets(getGame()).contains(cardToPlay)) {
-                action.setCardToDownload(cardToPlay);
+                action.selectCardToDownload(cardToPlay);
                 selectAction(playerId, action);
                 return action;
             }

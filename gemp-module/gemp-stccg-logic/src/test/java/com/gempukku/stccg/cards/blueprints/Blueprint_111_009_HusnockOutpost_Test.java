@@ -31,12 +31,12 @@ public class Blueprint_111_009_HusnockOutpost_Test extends AbstractAtTest {
         seedCard(P1, outpost);
         assertTrue(outpost.isInPlay());
 
-        useGameText(outpost, P1);
+        useGameText(P1, outpost);
         assertTrue(getSelectableCards(P1).containsAll(List.of(husnockShip1, husnockShip2)));
         selectCard(P1, husnockShip1);
 
         // Verify that Husnock Ship can't be seeded twice
-        assertThrows(DecisionResultInvalidException.class, () -> useGameText(outpost, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, outpost));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class Blueprint_111_009_HusnockOutpost_Test extends AbstractAtTest {
         assertTrue(outpost2.isInPlay());
         assertFalse(seedDeck.contains(outpost2));
 
-        useGameText(outpost1, P1);
+        useGameText(P1, outpost1);
         assertTrue(getSelectableCards(P1).containsAll(List.of(husnockShip1, husnockShip2)));
         selectCard(P1, husnockShip1);
         assertTrue(husnockShip1.isInPlay());
@@ -70,7 +70,7 @@ public class Blueprint_111_009_HusnockOutpost_Test extends AbstractAtTest {
         assertTrue(seedDeck.contains(husnockShip2));
 
         // Verify that
-        useGameText(outpost2, P1);
+        useGameText(P1, outpost2);
         assertTrue(husnockShip2.isInPlay());
     }
 

@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
 import com.gempukku.stccg.actions.discard.TribblesMultiDiscardActionBroken;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.MultipleChoiceAwaitingDecision;
@@ -29,7 +29,7 @@ public class ActivateLaughterTribblePowerAction extends ActivateTribblePowerActi
     private String _discardingPlayerId;
 
     public ActivateLaughterTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
-                                              ActionContext actionContext) throws PlayerNotFoundException {
+                                              GameTextContext actionContext) throws PlayerNotFoundException {
         super(cardGame, actionContext, performingCard);
     }
 

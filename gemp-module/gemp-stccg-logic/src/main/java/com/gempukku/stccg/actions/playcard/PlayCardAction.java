@@ -8,7 +8,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -28,7 +28,7 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
     private boolean _played;
 
     public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
-                          String performingPlayerName, Zone toZone, ActionType actionType, ActionContext context) {
+                          String performingPlayerName, Zone toZone, ActionType actionType, GameTextContext context) {
         super(cardGame, performingPlayerName, actionType, context);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;

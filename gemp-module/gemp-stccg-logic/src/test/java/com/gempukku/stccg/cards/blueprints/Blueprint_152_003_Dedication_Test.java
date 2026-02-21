@@ -71,13 +71,37 @@ public class Blueprint_152_003_Dedication_Test extends AbstractAtTest {
         assertTrue(troi.isStopped());
         int handSizeBefore = _game.getPlayer(P2).getCardsInHand().size();
 
-        // Player 2 draws two cards (one for each of Troi's skill dots)
+        // Player 1 chooses to allow P2 to draw cards
         playerDecided(P1, "1");
+
+        // P2 chooses to draw cards
+        playerDecided(P2, "0");
         int handSizeAfter = _game.getPlayer(P2).getCardsInHand().size();
 
         assertTrue(troi.isAboard(runabout));
         assertEquals(handSizeBefore, handSizeAfter - 2);
         assertFalse(runabout.isStopped());
     }
+
+    @Test
+    public void secondOptionButPlayerSaysNoTest() throws Exception {
+        initializeGame(true);
+
+        attemptMission(P1, _mission);
+        assertTrue(troi.isStopped());
+        int handSizeBefore = _game.getPlayer(P2).getCardsInHand().size();
+
+        // Player 1 chooses to allow P2 to draw cards
+        playerDecided(P1, "1");
+
+        // P2 chooses not to draw cards
+        playerDecided(P2, "1");
+        int handSizeAfter = _game.getPlayer(P2).getCardsInHand().size();
+
+        assertTrue(troi.isAboard(runabout));
+        assertEquals(handSizeBefore, handSizeAfter);
+        assertFalse(runabout.isStopped());
+    }
+
 
 }

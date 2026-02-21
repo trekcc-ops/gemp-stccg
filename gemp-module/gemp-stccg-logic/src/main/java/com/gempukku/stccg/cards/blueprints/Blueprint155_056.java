@@ -5,7 +5,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectSkillAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.ActionSkill;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
@@ -49,7 +49,7 @@ public class Blueprint155_056 extends CardBlueprint {
             @Override
             public TopLevelSelectableAction getAction(DefaultGame cardGame, PhysicalCard thisCard) {
                 final TopLevelSelectableAction action = new UseGameTextAction(cardGame, thisCard,
-                        new ActionContext(thisCard, thisCard.getOwnerName()));
+                        new GameTextContext(thisCard, thisCard.getOwnerName()));
                 List<SkillName> skillOptions = new LinkedList<>();
                 skillOptions.add(SkillName.ANTHROPOLOGY);
                 skillOptions.add(SkillName.PHYSICS);

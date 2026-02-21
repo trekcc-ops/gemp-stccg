@@ -2,7 +2,7 @@ package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type",
@@ -17,14 +17,14 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface SingleValueSource extends ValueSource {
 
-    default int getMinimum(DefaultGame cardGame, ActionContext actionContext) {
+    default int getMinimum(DefaultGame cardGame, GameTextContext actionContext) {
         return evaluateExpression(cardGame, actionContext);
     }
 
-    default int getMaximum(DefaultGame cardGame, ActionContext actionContext) {
+    default int getMaximum(DefaultGame cardGame, GameTextContext actionContext) {
         return evaluateExpression(cardGame, actionContext);
     }
 
-    int evaluateExpression(DefaultGame cardGame, ActionContext actionContext);
+    int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext);
 
 }

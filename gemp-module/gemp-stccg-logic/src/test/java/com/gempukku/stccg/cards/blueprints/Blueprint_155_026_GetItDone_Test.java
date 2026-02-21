@@ -69,7 +69,7 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
     }
 
     private void initiateGetItDoneAction() throws InvalidGameOperationException, DecisionResultInvalidException {
-        useGameText(getItDone, P1);
+        useGameText(P1, getItDone);
         Player player1 = _game.getPlayer(P1);
 
         List<PhysicalCard> cardsToPlace = new LinkedList<>();

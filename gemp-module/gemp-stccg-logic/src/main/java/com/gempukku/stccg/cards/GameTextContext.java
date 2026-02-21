@@ -1,34 +1,26 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class ActionContext {
+public class GameTextContext {
     private final String _performingPlayerName;
-    private final int _sourceCardId;
     private final Multimap<String, Integer> _cardMemoryNew = HashMultimap.create();
     private final Map<String, String> _valueMemory = new HashMap<>();
     private final PhysicalCard _thisCard;
 
-    public ActionContext(PhysicalCard thisCard, String performingPlayerId) {
-        this._performingPlayerName = performingPlayerId;
-        _sourceCardId = thisCard.getCardId();
+    public GameTextContext(PhysicalCard thisCard, String yourName) {
+        _performingPlayerName = yourName;
         _thisCard = thisCard;
     }
 
     public String getPerformingPlayerId() { return _performingPlayerName; }
-
-    public int getPerformingCardId() {
-        return _sourceCardId;
-    }
 
 
     public void setValueToMemory(String memory, String value) {
@@ -72,12 +64,20 @@ public class ActionContext {
     }
 
     public Collection<Integer> getCardIdsFromMemory(String memory) {
-        if(memory != null) {
+        if (memory == null) {
+            return new ArrayList<>();
+        } else {
             memory = memory.toLowerCase();
+            if (memory.equals("thispersonnel")) {
+                if (_thisCard.getCardType() == CardType.PERSONNEL) {
+                    return List.of(_thisCard.getCardId());
+                } else if (_thisCard.getAtopCard() != null && _thisCard.getAtopCard().getCardType() == CardType.PERSONNEL) {
+                    return List.of(_thisCard.getAtopCard().getCardId());
+                }
+            }
+            return Objects.requireNonNullElse(_cardMemoryNew.get(memory), new ArrayList<>());
         }
-        return _cardMemoryNew.get(memory);
     }
-
 
     public boolean acceptsAllRequirements(DefaultGame cardGame, Iterable<Requirement> requirements) {
         if (requirements == null)

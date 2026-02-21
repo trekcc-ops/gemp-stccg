@@ -31,7 +31,7 @@
                         type: overcomeCondition
                         requires: CUNNING+STRENGTH>68 OR Greed
                         failEffect: {
-                            type: kill
+                            "type": "kill",
                             target: {
                                 type: select
                                 choice: opponent

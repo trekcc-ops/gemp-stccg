@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
@@ -12,7 +12,7 @@ public class PlayerGoesOutTriggerChecker implements TriggerChecker {
 
     private final PlayerSource _playerSource = new YouPlayerSource();
 
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
         ActionResult currentActionResult = cardGame.getCurrentActionResult();
         if (currentActionResult == null) {
             return false;

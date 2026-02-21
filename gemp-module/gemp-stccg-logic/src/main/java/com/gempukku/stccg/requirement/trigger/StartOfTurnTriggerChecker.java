@@ -3,7 +3,7 @@ package com.gempukku.stccg.requirement.trigger;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerResolver;
@@ -18,7 +18,7 @@ public class StartOfTurnTriggerChecker implements TriggerChecker {
     StartOfTurnTriggerChecker(@JsonProperty("turnPlayer") String playerText) throws InvalidCardDefinitionException {
         _player = (playerText == null) ? null : PlayerResolver.resolvePlayer(playerText);
     }
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
         if (!cardGame.isCurrentActionResultType(ActionResult.Type.START_OF_TURN)) {
             return false;
         } else if (_player == null) {

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
@@ -46,7 +46,7 @@ public class MiscRequirement implements Requirement {
         _filterBlueprint = Objects.requireNonNullElse(filterBlueprint, new AnyCardFilterBlueprint());
     }
 
-    public boolean accepts(ActionContext actionContext, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
 
         try {
             final String playerId = _playerSource.getPlayerName(cardGame, actionContext);

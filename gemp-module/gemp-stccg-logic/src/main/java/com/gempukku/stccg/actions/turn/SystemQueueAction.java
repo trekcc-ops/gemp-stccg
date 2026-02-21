@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 public abstract class SystemQueueAction extends ActionyAction {
@@ -11,7 +11,7 @@ public abstract class SystemQueueAction extends ActionyAction {
         super(game, performingPlayerName, ActionType.SYSTEM_QUEUE);
     }
 
-    protected SystemQueueAction(DefaultGame game, ActionContext actionContext, String performingPlayerName) {
+    protected SystemQueueAction(DefaultGame game, GameTextContext actionContext, String performingPlayerName) {
         super(game, performingPlayerName, ActionType.SYSTEM_QUEUE, actionContext);
     }
 

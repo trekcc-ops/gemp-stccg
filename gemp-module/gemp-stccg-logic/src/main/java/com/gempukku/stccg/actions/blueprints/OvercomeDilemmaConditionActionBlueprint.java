@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
@@ -50,7 +50,7 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
         List<Action> result = new ArrayList<>();
         Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
         OvercomeDilemmaConditionAction actionToReturn = null;

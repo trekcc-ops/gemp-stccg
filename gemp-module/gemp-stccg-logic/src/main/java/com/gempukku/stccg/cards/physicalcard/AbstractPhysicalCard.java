@@ -71,6 +71,15 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return _zone;
     }
 
+    public boolean isInDiscard(DefaultGame cardGame) {
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardGroupCards(Zone.DISCARD).contains(this)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isInHand(DefaultGame cardGame) {
         for (Player player : cardGame.getPlayers()) {
             if (player.getCardsInHand().contains(this)) {
@@ -361,7 +370,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
                 for (Skill skill : personnel.getSkills(game)) {
                     if (skill instanceof SpecialResponseActionSkill responseSkill &&
                             responseSkill.isOptional()) {
-                        ActionBlueprint blueprint = responseSkill.getActionBlueprint(this);
+                        ActionBlueprint blueprint = responseSkill.getActionBlueprint();
                         if (blueprint != null) {
                             TopLevelSelectableAction action = blueprint.createAction(game, playerName, this);
                             if (action != null) {
@@ -418,6 +427,16 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _parentCardRelationship = relationshipType;
         parentCard.addChildCardRelationship(this, relationshipType);
         setLocationId(parentCard.getLocationId());
+        setZone(parentCard.getZone());
+    }
+
+    @Override
+    public PhysicalCard getAtopCard() {
+        if (_parentCardRelationship == ChildCardRelationshipType.ATOP) {
+            return _parentCard;
+        } else {
+            return null;
+        }
     }
 
     public void clearParentCardRelationship() {
@@ -446,6 +465,19 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isAboard(PhysicalCard card) {
         return _parentCardRelationship == ChildCardRelationshipType.ABOARD && card == _parentCard;
+    }
+
+    public void setAsAtop(PhysicalCard destination) {
+        setParentCardRelationship(destination, ATOP);
+    }
+
+    public boolean isInDrawDeck(DefaultGame cardGame) {
+        for (Player player : cardGame.getPlayers()) {
+            if (player.getCardsInDrawDeck().contains(this)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

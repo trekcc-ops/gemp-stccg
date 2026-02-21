@@ -7,7 +7,6 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -52,8 +51,7 @@ public class SeedOutpostResolver implements ActionTargetResolver {
         if (_selectDestinationAction == null) {
             Set<PhysicalCard> availableMissions = _destinationMap.keySet();
             _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                    "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
-                    new InCardListFilter(availableMissions));
+                    "Choose a destination for " + _cardEnteringPlay.getTitle(), availableMissions);
             stGame.addActionToStack(_selectDestinationAction);
         } else if (_selectDestinationAction.wasSuccessful()) {
             if (_selectDestinationAction.getSelectedCard() instanceof MissionCard mission) {

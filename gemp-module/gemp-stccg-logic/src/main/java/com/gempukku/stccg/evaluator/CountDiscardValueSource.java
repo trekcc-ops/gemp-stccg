@@ -1,7 +1,7 @@
 package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.player.*;
 import com.gempukku.stccg.common.filterable.Filterable;
@@ -36,7 +36,7 @@ public class CountDiscardValueSource implements SingleValueSource {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
         try {
             String playerId = _playerSource.getPlayerName(cardGame, actionContext);
             Player player = cardGame.getPlayer(playerId);

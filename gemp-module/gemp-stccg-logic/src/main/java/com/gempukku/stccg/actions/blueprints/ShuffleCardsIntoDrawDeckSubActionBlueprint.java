@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerResolver;
@@ -32,7 +32,7 @@ public class ShuffleCardsIntoDrawDeckSubActionBlueprint implements SubActionBlue
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context) {
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
         String performingPlayerName = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
         return List.of(new ShuffleCardsIntoDrawDeckAction(cardGame, context.card(),

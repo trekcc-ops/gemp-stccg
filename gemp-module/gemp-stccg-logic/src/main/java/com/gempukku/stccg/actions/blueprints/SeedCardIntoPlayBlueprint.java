@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardToDestinationAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CanEnterPlayFilter;
@@ -36,7 +36,7 @@ public class SeedCardIntoPlayBlueprint extends DefaultActionBlueprint {
 
     @Override
     public SeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
-        ActionContext actionContext = new ActionContext(thisCard, performingPlayerName);
+        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         CardFilter seedableCardFilter = _cardToSeedBlueprint.getFilterable(cardGame, actionContext);
         CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
         Collection<PhysicalCard> seedableCards = Filters.filter(cardGame, Zone.SEED_DECK, seedableCardFilter,

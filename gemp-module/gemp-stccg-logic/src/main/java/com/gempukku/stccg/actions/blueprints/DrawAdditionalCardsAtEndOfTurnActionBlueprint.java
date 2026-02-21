@@ -13,13 +13,13 @@ import java.util.List;
 public class DrawAdditionalCardsAtEndOfTurnActionBlueprint extends ActivateCardActionBlueprint {
 
     @JsonCreator
-    private DrawAdditionalCardsAtEndOfTurnActionBlueprint(@JsonProperty("count") SingleValueSource count,
-                                                          @JsonProperty("player") String playerText)
+    private DrawAdditionalCardsAtEndOfTurnActionBlueprint(@JsonProperty("count") SingleValueSource count)
             throws InvalidCardDefinitionException {
         super(
                 new UsageLimitBlueprint("eachOfYourTurns", 1),
                 List.of(new PhaseRequirement(Phase.END_OF_TURN)), new ArrayList<>(),
-                List.of(new DrawCardsActionBlueprint(count, playerText)));
+                List.of(new DrawCardsActionBlueprint(count, "you", false))
+        );
     }
 
 }

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.ConstantEvaluator;
 import com.gempukku.stccg.filters.CardFilter;
@@ -41,7 +41,7 @@ public class AddToAllAttributesModifierBlueprint implements ModifierBlueprint {
         _isCumulative = isCumulative;
     }
 
-    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
+    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, GameTextContext actionContext) {
         CardFilter affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         Condition ifCondition = convertRequirementListToCondition(_requirements, actionContext, thisCard, cardGame);
         return new AttributeModifier(thisCard, affectFilter, ifCondition,

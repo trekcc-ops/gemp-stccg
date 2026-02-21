@@ -1,7 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -21,9 +21,9 @@ public class MatchingFilterBlueprint implements FilterBlueprint {
     }
 
     @Override
-    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+    public CardFilter getFilterable(DefaultGame cardGame, GameTextContext actionContext) {
         CardFilter matchingFilter =
-                new MatchingAffiliationFilter(_cardTarget.getCards(cardGame), actionContext.getPerformingPlayerId());
+                new MatchingAffiliationFilter(_cardTarget.getCards(cardGame), actionContext.yourName());
         List<Filterable> finalFilterables = new ArrayList<>();
         finalFilterables.add(matchingFilter);
         finalFilterables.addAll(_additionalFilters);

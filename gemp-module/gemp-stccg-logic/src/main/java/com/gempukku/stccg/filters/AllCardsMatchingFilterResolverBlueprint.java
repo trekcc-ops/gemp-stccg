@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.AllCardsMatchingFilterResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class AllCardsMatchingFilterResolverBlueprint implements TargetResolverBl
     }
 
     @Override
-    public ActionCardResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
+    public ActionCardResolver getTargetResolver(DefaultGame cardGame, GameTextContext context) {
         CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
         return new AllCardsMatchingFilterResolver(filter);
     }
@@ -34,7 +34,7 @@ public class AllCardsMatchingFilterResolverBlueprint implements TargetResolverBl
     }
 
     @Override
-    public boolean canBeResolved(DefaultGame cardGame, ActionContext context) {
+    public boolean canBeResolved(DefaultGame cardGame, GameTextContext context) {
         return !getTargetResolver(cardGame, context).cannotBeResolved(cardGame);
     }
 }

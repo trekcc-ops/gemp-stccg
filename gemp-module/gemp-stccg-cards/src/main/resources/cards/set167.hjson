@@ -22,12 +22,8 @@
                     }
                     triggerDuringSeed: true
                     effect: {
-                        type: download
-                        target: {
-                            type: select
-                            filter: reactor-core
-                            count: 1
-                        }
+                        "type": "download",
+                        "filter": "reactor-core"
                     }
                 }
                 {

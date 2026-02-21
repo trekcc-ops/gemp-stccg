@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.filters.CardFilter;
@@ -29,7 +29,7 @@ public class AddAffiliationIconToMissionModifierBlueprint implements ModifierBlu
         _bothSides = bothSides;
     }
 
-    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
+    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, GameTextContext actionContext) {
         CardFilter affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         return new AddAffiliationIconToMissionModifier(actionContext, affectFilter,
             _affiliations, _bothSides);

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class OrRequirement implements Requirement {
         _requirements = requirements;
     }
     @Override
-    public boolean accepts(ActionContext context, DefaultGame cardGame) {
+    public boolean accepts(GameTextContext context, DefaultGame cardGame) {
         for (Requirement requirement : _requirements) {
             if (requirement.accepts(context, cardGame)) {
                 return true;

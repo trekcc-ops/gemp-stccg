@@ -1,6 +1,6 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -20,7 +20,7 @@ public class AndFilterBlueprint implements FilterBlueprint {
         _filterBlueprints = filterBlueprints.toArray(new FilterBlueprint[0]);
     }
 
-    public CardFilter getFilterable(DefaultGame cardGame, ActionContext actionContext) {
+    public CardFilter getFilterable(DefaultGame cardGame, GameTextContext actionContext) {
         List<Filterable> filterables = new ArrayList<>();
         for (FilterBlueprint blueprint : _filterBlueprints) {
             filterables.add(blueprint.getFilterable(cardGame, actionContext));

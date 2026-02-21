@@ -1,7 +1,7 @@
 package com.gempukku.stccg.modifiers.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.filters.FilterBlueprint;
@@ -37,7 +37,7 @@ public class AddCunningModifierBlueprint implements ModifierBlueprint {
         _isCumulative = isCumulative;
     }
 
-    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, ActionContext actionContext) {
+    public Modifier createModifier(DefaultGame cardGame, PhysicalCard thisCard, GameTextContext actionContext) {
         Filterable affectFilter = _modifiedCardFilterBlueprint.getFilterable(cardGame, actionContext);
         Condition ifCondition = convertRequirementListToCondition(_requirements, actionContext, thisCard, cardGame);
         return new CunningModifier(thisCard, affectFilter, ifCondition, _amount, _isCumulative);

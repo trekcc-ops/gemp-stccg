@@ -3,13 +3,14 @@ package com.gempukku.stccg.requirement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = OrRequirement.class, name = "or"),
+        @JsonSubTypes.Type(value = CardsAreSameAffiliationRequirement.class, name = "cardsAreSameAffiliation"),
         @JsonSubTypes.Type(value = ThisCardIsFacingDilemmaRequirement.class, name = "thisCardIsFacingDilemma"),
         @JsonSubTypes.Type(value = ThisCardIsOnPlanetRequirement.class, name = "thisCardIsOnPlanet"),
         @JsonSubTypes.Type(value = CardInPlayRequirement.class, name = "cardInPlay"),
@@ -23,10 +24,10 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface Requirement {
 
-    boolean accepts(ActionContext context, DefaultGame cardGame);
+    boolean accepts(GameTextContext context, DefaultGame cardGame);
 
     @JsonIgnore
-    default Condition getCondition(ActionContext context, PhysicalCard thisCard, DefaultGame cardGame) {
+    default Condition getCondition(GameTextContext context, PhysicalCard thisCard, DefaultGame cardGame) {
         return null;
     }
 

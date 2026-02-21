@@ -37,6 +37,7 @@ public class GameTestBuilder {
     private final Map<String, CardDeck> _decks = new HashMap<>();
     private Phase _startingPhase;
     private final List<String> _players;
+    private boolean _skipStartingHands;
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
                            List<String> playerNames) throws InvalidGameOperationException {
@@ -60,8 +61,12 @@ public class GameTestBuilder {
 
         if (!_startingPhase.isSeedPhase()) {
             // draw starting hand
-            GameProcess facilityProcess = new ST1EFacilitySeedPhaseProcess(_players.size());
-            facilityProcess.getNextProcess(_game);
+            if (!_skipStartingHands) {
+                GameProcess facilityProcess = new ST1EFacilitySeedPhaseProcess(_players.size());
+                facilityProcess.getNextProcess(_game);
+            } else {
+                _game.getGameState().startPlayerTurn(_players.getFirst());
+            }
             // start turn
             _game.getGameState().signalStartOfTurn(_game, _players.getFirst());
         }
@@ -263,6 +268,16 @@ public class GameTestBuilder {
         return cardToAdd;
     }
 
+    public PhysicalCard addCardInDiscard(String blueprintId, String cardTitle, String ownerName)
+            throws CardNotFoundException {
+        PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DISCARD, null);
+        assertTrue(cardToAdd.isInDiscard(_game));
+        assertFalse(cardToAdd.isInPlay());
+        return cardToAdd;
+    }
+
+
 
     public <T extends PhysicalCard> T addCardInHand(String blueprintId, String cardTitle, String ownerName,
                                                     Class<T> clazz) throws CardNotFoundException {
@@ -386,5 +401,9 @@ public class GameTestBuilder {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
         _game.addCardToTopOfDiscardPile(cardToAdd);
         return cardToAdd;
+    }
+
+    public void skipStartingHands() {
+        _skipStartingHands = true;
     }
 }

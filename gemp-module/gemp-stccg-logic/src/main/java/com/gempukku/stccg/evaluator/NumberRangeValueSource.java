@@ -1,6 +1,6 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class NumberRangeValueSource implements BasicValueSource {
@@ -14,12 +14,12 @@ public class NumberRangeValueSource implements BasicValueSource {
     }
 
     @Override
-    public int getMinimum(DefaultGame cardGame, ActionContext actionContext) {
+    public int getMinimum(DefaultGame cardGame, GameTextContext actionContext) {
         return _min;
     }
 
     @Override
-    public int getMaximum(DefaultGame cardGame, ActionContext actionContext) {
+    public int getMaximum(DefaultGame cardGame, GameTextContext actionContext) {
         return _max;
     }
 

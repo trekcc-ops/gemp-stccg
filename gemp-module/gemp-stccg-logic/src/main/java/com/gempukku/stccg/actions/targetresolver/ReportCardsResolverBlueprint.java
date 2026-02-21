@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.targetresolver;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.filters.AndFilterBlueprint;
@@ -42,7 +42,7 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
         }
     }
     @Override
-    public ActionCardResolver getTargetResolver(DefaultGame cardGame, ActionContext context) {
+    public ActionCardResolver getTargetResolver(DefaultGame cardGame, GameTextContext context) {
         CardFilter reportableFilter = _reportableFilterBlueprint.getFilterable(cardGame, context);
         CardFilter destinationFilter = _destinationFilterBlueprint.getFilterable(cardGame, context);
         int minCount;
@@ -50,7 +50,7 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
         minCount = _count.getMinimum(cardGame, context);
         maxCount = _count.getMaximum(cardGame, context);
         return new ReportMultipleCardsResolver(reportableFilter, destinationFilter, minCount, maxCount,
-                _differentCardsOnly, _specialReporting, cardGame, context.getPerformingPlayerId());
+                _differentCardsOnly, _specialReporting, cardGame, context.yourName());
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
     }
 
     @Override
-    public boolean canBeResolved(DefaultGame cardGame, ActionContext context) {
+    public boolean canBeResolved(DefaultGame cardGame, GameTextContext context) {
         return !getTargetResolver(cardGame, context).cannotBeResolved(cardGame);
     }
 }

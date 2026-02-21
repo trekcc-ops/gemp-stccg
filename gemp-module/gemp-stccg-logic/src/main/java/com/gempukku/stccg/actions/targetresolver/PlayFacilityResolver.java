@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.filters.CardFilter;
-import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
@@ -65,8 +64,8 @@ public class PlayFacilityResolver implements ActionTargetResolver {
     private void selectDestination(ST1EGame stGame) {
         if (_selectDestinationAction == null) {
             _selectDestinationAction = new SelectVisibleCardAction(stGame, _performingPlayerName,
-                    "Choose a mission to seed " + _cardEnteringPlay.getCardLink() + " at",
-                    new InCardListFilter(_destinationMap.keySet()));
+                    "Choose a destination for " + _cardEnteringPlay.getTitle(),
+                    _destinationMap.keySet());
             stGame.addActionToStack(_selectDestinationAction);
         } else if (_selectDestinationAction.wasSuccessful()) {
             if (_selectDestinationAction.getSelectedCard() instanceof MissionCard mission) {

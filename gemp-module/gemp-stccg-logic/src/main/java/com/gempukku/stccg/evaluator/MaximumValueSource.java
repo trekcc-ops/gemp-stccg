@@ -1,7 +1,7 @@
 package com.gempukku.stccg.evaluator;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class MaximumValueSource implements SingleValueSource {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, ActionContext actionContext) {
+    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
         int maxValue = MIN_VALUE;
         for (SingleValueSource value : _values) {
             maxValue = Math.max(maxValue, value.evaluateExpression(cardGame, actionContext));

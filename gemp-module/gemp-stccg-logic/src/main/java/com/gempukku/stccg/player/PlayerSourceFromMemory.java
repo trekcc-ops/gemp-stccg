@@ -1,6 +1,6 @@
 package com.gempukku.stccg.player;
 
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Objects;
@@ -14,12 +14,12 @@ public class PlayerSourceFromMemory implements PlayerSource {
     }
 
     @Override
-    public boolean isPlayer(String playerName, DefaultGame cardGame, ActionContext actionContext) {
+    public boolean isPlayer(String playerName, DefaultGame cardGame, GameTextContext actionContext) {
         return Objects.equals(actionContext.getValueFromMemory(_memoryId), playerName);
     }
 
     @Override
-    public String getPlayerName(DefaultGame cardGame, ActionContext actionContext) {
+    public String getPlayerName(DefaultGame cardGame, GameTextContext actionContext) {
         return actionContext.getValueFromMemory(_memoryId);
     }
 }

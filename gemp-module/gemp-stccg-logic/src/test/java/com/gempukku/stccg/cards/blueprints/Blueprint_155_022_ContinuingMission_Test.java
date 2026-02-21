@@ -80,11 +80,10 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
     public void downloadCardTest() throws Exception {
         _game = initializeGame(true, false, false);
         seedCard(P1, continuing);
-        useGameText(continuing, P1);
+        useGameText(P1, continuing);
 
         // Verify that both copies of Attention All Hands are in selectable cards, but can't select both
-        assertTrue(getSelectableCards(P1).containsAll(List.of(attention, attention2)));
-        assertTrue(getSelectableCards(P1).size() == 2);
+        assertTrue(selectableCardsAre(P1, List.of(attention, attention2)));
         assertThrows(DecisionResultInvalidException.class, () -> selectCards(P1, List.of(attention, attention2)));
 
         // Select card to download
@@ -118,7 +117,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         playCard(P1, worf);
         assertEquals(initialHandSize - 1, hand.size());
         assertTrue(worf.isInPlay());
-        useGameText(continuing, P1);
+        useGameText(P1, continuing);
         assertEquals(initialHandSize, hand.size());
     }
 
@@ -127,7 +126,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         _game = initializeGame(true, false, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
-        useGameText(continuing, P1);
+        useGameText(P1, continuing);
         selectCard(P1, attention);
         int initialHandSize = hand.size();
 
@@ -135,14 +134,14 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         playCard(P1, picard);
         assertEquals(initialHandSize - 1, hand.size());
         assertTrue(picard.isInPlay());
-        assertThrows(DecisionResultInvalidException.class, () -> useGameText(continuing, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, continuing));
         assertEquals(initialHandSize - 1, hand.size());
 
         // Play Lopez; has a DL icon, so can't draw a card
         playCard(P1, lopez);
         assertEquals(initialHandSize - 2, hand.size());
         assertTrue(lopez.isInPlay());
-        assertThrows(DecisionResultInvalidException.class, () -> useGameText(continuing, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, continuing));
         assertEquals(initialHandSize - 2, hand.size());
     }
 
@@ -153,7 +152,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         int initialHandSize = hand.size();
         seedCard(P1, continuing);
         seedCard(P1, ams);
-        useGameText(ams, P1);
+        useGameText(P1, ams);
         selectCards(P1, List.of(tarses, wallace));
         assertEquals(Phase.START_OF_TURN, _game.getCurrentPhase());
 
@@ -166,7 +165,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         _game = initializeGame(true, false, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
-        useGameText(continuing, P1);
+        useGameText(P1, continuing);
         selectCard(P1, attention);
         int initialHandSize = hand.size();
 
@@ -174,14 +173,14 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         playCard(P1, worf);
         assertEquals(initialHandSize - 1, hand.size());
         assertTrue(worf.isInPlay());
-        useGameText(continuing, P1);
+        useGameText(P1, continuing);
         assertEquals(initialHandSize, hand.size());
 
         // Play Linda Larson; can't draw a card twice in one turn
         playCard(P1, larson);
         assertTrue(larson.isInPlay());
         assertEquals(initialHandSize - 1, hand.size());
-        assertThrows(DecisionResultInvalidException.class, () -> useGameText(continuing, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, continuing));
         assertEquals(initialHandSize - 1, hand.size());
     }
 
@@ -198,7 +197,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         assertEquals(P2, _game.getCurrentPlayerId());
         playCard(P2, worfPlayerTwo);
         assertTrue(worfPlayerTwo.hasIcon(_game, CardIcon.TNG_ICON));
-        assertThrows(DecisionResultInvalidException.class, () -> useGameText(continuing, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, continuing));
         assertEquals(initialHandSize, hand.size());
     }
 

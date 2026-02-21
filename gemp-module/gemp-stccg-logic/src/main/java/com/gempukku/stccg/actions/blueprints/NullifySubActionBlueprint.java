@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -26,11 +26,10 @@ public class NullifySubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, ActionContext context)
+    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
         ActionCardResolver cardResolver = _cardTargetBlueprint.getTargetResolver(cardGame, context);
-        Action nullifyAction = new NullifyCardAction(cardGame, context.card(),
-                context.getPerformingPlayerId(), cardResolver);
+        Action nullifyAction = new NullifyCardAction(cardGame, context.card(), context.yourName(), cardResolver);
         return List.of(nullifyAction);
     }
 

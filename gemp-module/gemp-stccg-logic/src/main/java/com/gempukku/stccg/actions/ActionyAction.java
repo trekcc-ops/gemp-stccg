@@ -8,7 +8,7 @@ import com.gempukku.stccg.actions.blueprints.UsePerGameLimitActionBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
 import com.gempukku.stccg.actions.turn.AddSubactionEffectsAction;
 import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -31,13 +31,13 @@ public abstract class ActionyAction implements Action {
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
     private ActionResult _currentResult;
-    protected final ActionContext _actionContext;
+    protected final GameTextContext _actionContext;
 
     @JsonProperty("status")
     private ActionStatus _actionStatus;
 
     private ActionyAction(int actionId, ActionType actionType, String performingPlayerId,
-                          ActionContext actionContext, ActionStatus status) {
+                          GameTextContext actionContext, ActionStatus status) {
         _actionContext = actionContext;
         _actionId = actionId;
         _actionType = actionType;
@@ -47,7 +47,7 @@ public abstract class ActionyAction implements Action {
 
 
     protected ActionyAction(DefaultGame cardGame, ActionType actionType, String performingPlayerId,
-                            ActionContext actionContext) {
+                            GameTextContext actionContext) {
         this(cardGame.getActionsEnvironment().getNextActionId(), actionType, performingPlayerId, actionContext,
                 ActionStatus.virtual);
         ActionsEnvironment environment = cardGame.getActionsEnvironment();
@@ -60,7 +60,7 @@ public abstract class ActionyAction implements Action {
     }
 
 
-    protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType, ActionContext actionContext) {
+    protected ActionyAction(DefaultGame cardGame, String playerName, ActionType actionType, GameTextContext actionContext) {
         this(cardGame, actionType, playerName, actionContext);
     }
 

@@ -64,7 +64,7 @@ public class DownloadMultipleReportablesActionNew extends ActionyAction implemen
     }
 
     @Override
-    public void setCardToDownload(PhysicalCard cardToDownload) {
+    public void selectCardToDownload(PhysicalCard cardToDownload) {
         _resolver.setCardsToPlay(List.of(cardToDownload));
     }
 }
