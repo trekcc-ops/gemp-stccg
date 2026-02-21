@@ -62,7 +62,7 @@
                         "target": {
                             "type": "select",
                             "random": true,
-                            "filter": "personnel" + "encounteringThisCard",
+                            "filter": "personnel + encounteringThisCard",
                             "count": 1
                         }
                     }
