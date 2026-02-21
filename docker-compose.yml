@@ -24,17 +24,11 @@ services:
         published: 8052
     volumes:
        - type: bind
-         source: gemp-module
-         target: /etc/gemp-module
-       - type: bind
          source: logs
          target: /logs
        - type: bind
          source: replay
          target: /replay
-       - type: bind
-         source: .
-         target: /gemp-src
     networks:
       gemp_net_1:
         ipv4_address: ${APP_IP}
