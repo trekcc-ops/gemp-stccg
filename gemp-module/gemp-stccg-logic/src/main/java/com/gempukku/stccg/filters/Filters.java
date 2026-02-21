@@ -359,4 +359,8 @@ public class Filters {
     public static CardFilter integrityGreaterThan(int integrityAmount) {
         return new AttributeFilter(CardAttribute.INTEGRITY, ComparatorType.GREATER_THAN, integrityAmount);
     }
+
+    public static CardFilter here(PhysicalCard card) {
+        return new AtLocationFilter(card.getLocationId());
+    }
 }

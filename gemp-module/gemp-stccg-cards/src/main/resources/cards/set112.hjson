@@ -1,10 +1,63 @@
-// Set 112: Deep Space Nine
-
 {
     setId: "112"
     setName: Deep Space Nine
     gameType: First Edition
     cards: [
+        {
+            "blueprintId": "112_031",
+            "title": "Punishment Box",
+            "type": "dilemma",
+            "property-logo": "ds9-logo",
+            "mission-type": "planet",
+            "lore": "Correctional technique used on Orellius. Colonists who commit crimes are imprisoned in the box to suffer from heat and dehydration.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/ds9/punishmentbox.gif",
+            "rarity": "U",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "placeOnThisMission"
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "you",
+                                    "filter": "personnel + OFFICER + encounteringThisCard",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "requiredTrigger",
+                    "trigger": {
+                        "type": "startOfMissionAttempt",
+                        "player": "any",
+                        "mission": "here"
+                    },
+                    "triggerDuringSeed": false,
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "you",
+                                    "filter": "personnel + OFFICER + presentWithThisCard",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
         {
             blueprintId: 112_046
             title: Bajoran Phaser
