@@ -31,7 +31,7 @@ public class ActionResult {
         START_OF_MISSION_ATTEMPT,
         START_OF_PHASE,
         START_OF_TURN,
-        DRAW_CARD, RANDOM_SELECTION_INITIATED, KILL_CARD
+        DRAW_CARD, RANDOM_SELECTION_INITIATED, SOLVE_MISSION, KILL_CARD
     }
 
     private final List<Type> _types;

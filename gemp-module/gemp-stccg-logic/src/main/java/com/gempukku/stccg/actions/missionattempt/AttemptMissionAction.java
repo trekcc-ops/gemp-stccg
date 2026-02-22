@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
+import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.actions.targetresolver.AttemptingUnitResolver;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
@@ -22,6 +24,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class AttemptMissionAction extends ActionWithSubActions implements TopLevelSelectableAction,
@@ -33,6 +36,8 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
     private PhysicalCard _lastCardRevealed;
     private PhysicalCard _lastCardEncountered;
     private final int _locationId;
+    private boolean _successDetermined;
+    private boolean _missionSpecHelped;
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
                                 MissionLocation mission) throws InvalidGameLogicException {
@@ -128,17 +133,27 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                         throw new InvalidGameLogicException(firstSeedCard.getTitle() +
                                 " was already encountered, but not removed from under the mission");
                     }
-                } else if (!wasFailed()) {
+                } else if (!wasFailed() && !_successDetermined) {
+                    _successDetermined = true;
                     if (cardGame.canPlayerSolveMission(_performingPlayerId, missionLocation)) {
                         MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
-                        if (requirement.canBeMetBy(attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
-                            solveMission(missionLocation, cardGame);
+                        Collection<PersonnelCard> personnelAttempting = attemptingUnit.getAttemptingPersonnel(cardGame);
+
+                        if (requirement.canBeMetBy(personnelAttempting, cardGame)) {
+                            _missionSpecHelped =
+                                    requirement.canBeMetWithMissionSpecialistHelping(personnelAttempting, cardGame);
+                            mission.setAsCompleted();
+                            cardGame.addActionToStack(
+                                    new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints()));
                         } else {
                             setAsFailed();
                         }
                     } else {
                         setAsFailed();
                     }
+                } else if (!wasFailed()) {
+                    saveResult(new MissionSolvedActionResult(_performingPlayerId, this, _missionSpecHelped), cardGame);
+                    setAsSuccessful();
                 }
             } else {
                 cardGame.sendErrorMessage("Cannot attempt a mission in a non-1E game");
@@ -148,12 +163,6 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
             cardGame.sendErrorMessage(exp);
             setAsFailed();
         }
-    }
-
-    private void solveMission(MissionLocation mission, DefaultGame cardGame)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        setAsSuccessful();
-        mission.complete(_performingPlayerId, cardGame);
     }
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {

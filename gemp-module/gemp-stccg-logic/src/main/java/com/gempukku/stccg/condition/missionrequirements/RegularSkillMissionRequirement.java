@@ -36,4 +36,9 @@ public class RegularSkillMissionRequirement implements MissionRequirement {
         return result;
     }
 
+    @Override
+    public boolean requiresSkill(SkillName skillName) {
+        return _skill == skillName;
+    }
+
 }

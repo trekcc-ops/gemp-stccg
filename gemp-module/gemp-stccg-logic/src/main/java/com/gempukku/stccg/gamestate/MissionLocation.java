@@ -16,7 +16,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.google.common.collect.Iterables;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -228,14 +227,6 @@ public class MissionLocation implements GameLocation {
         return card.getBlueprint().getMissionRequirements();
     }
 
-    public void complete(String completingPlayerId, DefaultGame cardGame)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        MissionCard missionCard = getMissionForPlayer(completingPlayerId);
-        _isCompleted = true;
-        cardGame.getGameState().getPlayer(completingPlayerId).scorePoints(missionCard.getPoints());
-        cardGame.getGameState().checkVictoryConditions(cardGame);
-    }
-
     public void removeSeedCard(PhysicalCard cardToRemove) {
         removeSeedCardFromMission(cardToRemove);
     }
@@ -423,5 +414,9 @@ public class MissionLocation implements GameLocation {
             }
         }
         return false;
+    }
+
+    public void setAsCompleted() {
+        _isCompleted = true;
     }
 }

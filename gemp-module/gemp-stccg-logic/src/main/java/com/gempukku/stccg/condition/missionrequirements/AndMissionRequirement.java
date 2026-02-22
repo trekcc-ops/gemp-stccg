@@ -3,6 +3,7 @@ package com.gempukku.stccg.condition.missionrequirements;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
+import com.google.common.collect.Lists;
 
 import java.util.*;
 
@@ -38,5 +39,29 @@ public class AndMissionRequirement implements MissionRequirement {
             }
         }
         return sj.toString();
+    }
+
+    @Override
+    public boolean requiresSkill(SkillName skillName) {
+        for (MissionRequirement requirement : _requirements) {
+            if (requirement.requiresSkill(skillName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<MissionRequirement> getRequirementOptionsWithoutOr() {
+        List<List<MissionRequirement>> allRequirements = new ArrayList<>();
+        for (MissionRequirement requirement : _requirements) {
+            allRequirements.add(requirement.getRequirementOptionsWithoutOr());
+        }
+        List<List<MissionRequirement>> cartesian = Lists.cartesianProduct(allRequirements);
+        List<MissionRequirement> result = new ArrayList<>();
+        for (List<MissionRequirement> reqList : cartesian) {
+            result.add(new AndMissionRequirement(reqList));
+        }
+        return result;
     }
 }
