@@ -1019,14 +1019,14 @@
         }
         {
             blueprintId: 155_079
-            title: Captain Worf
+            "title": "Captain Worf",
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
             classification: SECURITY
             icons: command
             persona: Worf
-            lore: "To persuade K'Temoc not to attack, <b>Worf</b> served as acting captain of the <i>U.S.S. Enterprise</i>. Mate of K'Ehleyr. Finds the command chair \"comfortable\"."
+            lore: "To persuade K'Temoc not to attack, <b>Worf</b> served as acting captain of the <i>U.S.S. Enterprise</i>. Mate of K'Ehleyr. Finds the command chair \"comfortable.\""
             species: klingon
             gender: male
             skill-box: {
@@ -1223,7 +1223,7 @@
             "property-logo": "tng-logo",
             "classification": "OFFICER",
             "icons": "command",
-            "lore": "Renegade captain that sought an honorable death. To him, peace was a living death. Deserted with Konmel and Kuvinas to restore Imperial glory.",
+            "lore": "Renegade captain that sought an honorable death. To him, peace was a living death. Deserted with Konmel and Kunivas to restore Imperial glory.",
             "species": "klingon",
             "gender": "male",
             "skill-box": {
