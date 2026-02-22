@@ -7,10 +7,7 @@ import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.AndFilterBlueprint;
-import com.gempukku.stccg.filters.FilterBlueprint;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.filters.YouCanDownloadFilterBlueprint;
+import com.gempukku.stccg.filters.*;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.*;
@@ -18,9 +15,12 @@ import java.util.*;
 public class DownloadActionBlueprint implements SubActionBlueprint {
 
     private final FilterBlueprint _cardToDownloadFilter;
+    private final FilterBlueprint _destinationFilter;
 
-    DownloadActionBlueprint(@JsonProperty(value = "filter") FilterBlueprint cardToDownloadFilter) {
+    DownloadActionBlueprint(@JsonProperty(value = "filter", required = true) FilterBlueprint cardToDownloadFilter,
+                            @JsonProperty(value = "destinationFilter") FilterBlueprint destinationFilter) {
         _cardToDownloadFilter = new AndFilterBlueprint(cardToDownloadFilter, new YouCanDownloadFilterBlueprint());
+        _destinationFilter = Objects.requireNonNullElse(destinationFilter, new AnyCardFilterBlueprint());
     }
 
     @Override
@@ -32,7 +32,9 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
         Map<PhysicalCard, Collection<PhysicalCard>> destinationMap = new HashMap<>();
         for (PhysicalCard downloadableCard : downloadableCards) {
             Collection<PhysicalCard> destinationOptions =
-                    downloadableCard.getDestinationOptionsFromGameText(actionContext, cardGame);
+                    Filters.filter(downloadableCard.getDestinationOptionsFromGameText(actionContext, cardGame),
+            cardGame, _destinationFilter.getFilterable(cardGame, actionContext));
+
             if (!destinationOptions.isEmpty()) {
                 destinationMap.put(downloadableCard, destinationOptions);
             }

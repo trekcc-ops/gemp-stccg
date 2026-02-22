@@ -420,7 +420,23 @@
             "mission-requirements" : "Diplomacy + ENGINEER + Navigation + SCIENCE",
             "point-box" : 40,
             "span" : 4,
-            "image-url" : "https://www.trekcc.org/1e/cardimages/tng/39V.jpg"
+            "image-url" : "https://www.trekcc.org/1e/cardimages/tng/39V.jpg",
+            "actions": [
+                {
+                    "type" : "optionalTrigger",
+                    "player" : "you",
+                    "trigger" : {
+                        "type" : "missionSolved",
+                        "player" : "you"
+                    },
+                    "triggerDuringSeed" : false,
+                    "effect" : {
+                        "type": "download",
+                        "filter": "name(Metaphasic Shields)",
+                        "destinationFilter": "here"
+                    }
+                }
+            ]
         },
         {
             "blueprintId" : "155_041",
