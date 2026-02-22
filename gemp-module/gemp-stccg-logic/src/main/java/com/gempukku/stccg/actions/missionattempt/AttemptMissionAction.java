@@ -36,6 +36,8 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
     private PhysicalCard _lastCardRevealed;
     private PhysicalCard _lastCardEncountered;
     private final int _locationId;
+    private boolean _successDetermined;
+    private boolean _missionSpecHelped;
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
                                 MissionLocation mission) throws InvalidGameLogicException {
@@ -131,21 +133,27 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                         throw new InvalidGameLogicException(firstSeedCard.getTitle() +
                                 " was already encountered, but not removed from under the mission");
                     }
-                } else if (!wasFailed()) {
+                } else if (!wasFailed() && !_successDetermined) {
+                    _successDetermined = true;
                     if (cardGame.canPlayerSolveMission(_performingPlayerId, missionLocation)) {
                         MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
                         Collection<PersonnelCard> personnelAttempting = attemptingUnit.getAttemptingPersonnel(cardGame);
 
                         if (requirement.canBeMetBy(personnelAttempting, cardGame)) {
-                            boolean missionSpecHelped =
+                            _missionSpecHelped =
                                     requirement.canBeMetWithMissionSpecialistHelping(personnelAttempting, cardGame);
-                            solveMission(missionLocation, cardGame, missionSpecHelped);
+                            mission.setAsCompleted();
+                            cardGame.addActionToStack(
+                                    new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints()));
                         } else {
                             setAsFailed();
                         }
                     } else {
                         setAsFailed();
                     }
+                } else if (!wasFailed()) {
+                    saveResult(new MissionSolvedActionResult(_performingPlayerId, this, _missionSpecHelped), cardGame);
+                    setAsSuccessful();
                 }
             } else {
                 cardGame.sendErrorMessage("Cannot attempt a mission in a non-1E game");
@@ -155,15 +163,6 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
             cardGame.sendErrorMessage(exp);
             setAsFailed();
         }
-    }
-
-    private void solveMission(MissionLocation mission, DefaultGame cardGame, boolean missionSpecHelped)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        setAsSuccessful();
-        mission.setAsCompleted();
-        cardGame.addActionToStack(
-                new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints()));
-        saveResult(new MissionSolvedActionResult(_performingPlayerId, this, missionSpecHelped), cardGame);
     }
 
     public void setAttemptingUnit(AttemptingUnit attemptingUnit) {
