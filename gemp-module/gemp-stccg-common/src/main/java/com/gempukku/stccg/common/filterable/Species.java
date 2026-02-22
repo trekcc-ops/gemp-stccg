@@ -9,14 +9,14 @@ import java.util.Locale;
 public enum Species implements Filterable {
     ANDROID("android"),
     BAJORAN, BENZITE, BETAZOID, BOLIAN, BORG, BOSLIC,
-    CAIRN, CARDASSIAN, DOPTERIAN,
+    CAIRN, CARDASSIAN, DOPTERIAN, DOSI,
     EL_AURIAN ("El-Aurian"),
     FERENGI, FLAXIAN, HEKARAN,
     HOLOGRAM("hologram"),
     HUMAN("human"),
     HUMANOID("humanoid"),
     KELLERUN, KLINGON, LETHEAN, MARKALIAN, NAPEAN, ROMULAN, RUTIAN,
-    TAKARAN, TAMARIAN, TILONIAN, TRILL, VULCAN, YRIDIAN, ZALKONIAN;
+    TAKARAN, TAMARIAN, TILONIAN, TRILL, VORTA, VULCAN, YRIDIAN, ZALKONIAN;
     private final String _humanReadable;
 
     Species() { _humanReadable = StringUtils.capitalize(name().toLowerCase(Locale.ROOT)); }
@@ -25,7 +25,7 @@ public enum Species implements Filterable {
     }
 
     @JsonValue
-    private String getHumanReadable() {
+    public String getHumanReadable() {
         return _humanReadable;
     }
 

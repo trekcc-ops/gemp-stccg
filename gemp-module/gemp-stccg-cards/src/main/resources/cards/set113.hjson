@@ -33,6 +33,21 @@
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/tngsup/17V.jpg
             rarity: P
+        },
+        {
+            "blueprintId": "113_008",
+            "title": "Study Pulsar",
+            "type": "mission",
+            "uniqueness": "universal",
+            "mission-type": "space",
+            "location": "Uncharted space",
+            "lore": "Characterize radio and optical emissions from rapidly rotating neutron star.",
+            "mission-requirements": "Navigation + Astrophysics + Computer Skill",
+            "affiliation-icons": ["federation","romulan","klingon"],
+            "point-box": 25,
+            "span": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/promos/sd2/studypulsar.gif",
+            "rarity": "P"
         }
     ]
 }

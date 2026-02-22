@@ -15,7 +15,21 @@
             shields: 30
             image-url: https://www.trekcc.org/1e/cardimages/errata/Ferengi-Outpost.jpg
             rarity: C
-        }
+        },
+        {
+            "blueprintId": "117_045",
+            "title": "Collect Sample",
+            "type": "mission",
+            "mission-type": "space",
+            "uniqueness": "universal",
+            "location": "Gaseous cloud",
+            "lore": "Beam volatile sample aboard ship for possible use as a weapon component.",
+            "affiliation-icons": ["romulan","cardassian","dominion","ferengi"],
+            "mission-requirements": "SCIENCE + Astrophysics + Transporter Skill + (Smuggling OR Treachery x2)",
+            "point-box": 30,
+            "span": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/roa/collectsample.gif"
+        },
         {
             blueprintId: 117_046
             title: Deliver Message
