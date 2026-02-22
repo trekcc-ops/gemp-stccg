@@ -450,6 +450,9 @@ public class CardBlueprintLibrary implements DeserializingLibrary<CardBlueprint>
     public List<String> getAllBlueprintIds() {
         return new ArrayList<>(_blueprints.keySet());
     }
+    public List<CardBlueprint> getAllBlueprints() {
+        return new ArrayList<>(_blueprints.values());
+    }
 
     public boolean checkLoadSuccess() {
         return !_blueprintLoadErrorEncountered;
