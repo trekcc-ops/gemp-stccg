@@ -24,9 +24,6 @@ import java.util.*;
         allowGetters = true)
 public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliations {
 
-    private MissionCard _parentCard;
-    private MissionCard _childMissionCard;
-
     @JsonCreator
     public MissionCard(
             @JsonProperty("cardId")
@@ -97,10 +94,10 @@ public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliation
     }
 
     private MissionCard getMissionCardForPlayer(String playerId) {
-        if (_childMissionCard != null && _childMissionCard.isOwnedBy(playerId)) {
-            return _childMissionCard;
-        } else if (_parentCard != null && _parentCard.isOwnedBy(playerId)) {
-            return _parentCard;
+        if (_parentCard == null) {
+            return this;
+        } else if (_parentCard.isOwnedBy(playerId) && _parentCard instanceof MissionCard mission) {
+            return mission;
         } else {
             return this;
         }
@@ -124,6 +121,18 @@ public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliation
     }
 
     public MissionCard getBottomMission() {
-        return Objects.requireNonNullElse(_parentCard, this);
+        if (_parentCard != null && _parentCard instanceof MissionCard missionParent) {
+            return missionParent;
+        } else {
+            return this;
+        }
+    }
+
+    public boolean isCompleted(ST1EGame stGame) {
+        if (getGameLocation(stGame) instanceof MissionLocation mission) {
+            return mission.isCompleted();
+        } else {
+            return false;
+        }
     }
 }

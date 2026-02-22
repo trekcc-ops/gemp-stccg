@@ -184,6 +184,9 @@ public class CardBlueprint {
     @JsonProperty("actions")
     protected List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
 
+    @JsonProperty("isSymmetric")
+    private boolean _isSymmetric = true;
+
     @JsonProperty("playThisCardAction")
     protected PlayThisCardActionBlueprint _playThisCardActionBlueprint;
 
