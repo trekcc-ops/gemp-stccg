@@ -240,4 +240,8 @@ public interface PhysicalCard {
 
     boolean isInDrawDeck(DefaultGame game);
 
+    default boolean hasGender(Gender gender) {
+        return getBlueprint().hasGender(gender);
+    }
+
 }

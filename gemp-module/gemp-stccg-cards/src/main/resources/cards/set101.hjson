@@ -3,17 +3,35 @@
     setName: Premiere
     gameType: First Edition
     cards: [
-    /*    {
+        {
             blueprintId: 101_012
             title: Anaphasic Organism
             type: dilemma
             mission-type: planet
             lore: "A male non-corporeal life-form that lives inside a female host which he enchants, as in the case of Dr. Beverly Crusher's late grandmother."
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR12.jpg
             rarity: C
-        } */
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "MEDICAL + SECURITY",
+                        "discardDilemma": true,
+                        "failEffect": {
+                            "type": "discard",
+                            "cards": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestTotalAttributes(personnel + female + encounteringThisCard)",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        }
         {
             "blueprintId": "101_014",
             "title": "Archer",
@@ -28,7 +46,7 @@
                     "type": "encounter",
                     "effect": {
                         "type": "overcomeCondition",
-                        "requires": "SECURITY + MEDICAL",
+                        "requires": "MEDICAL + SECURITY",
                         "discardDilemma": true,
                         "failEffect": {
                             "type": "kill",
@@ -74,7 +92,6 @@
             mission-type: planet
             lore: A genetically-engineered leader. Once romantically involved with Deanna Troi.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR24.jpg
             rarity: C
         } */
@@ -104,7 +121,6 @@
             mission-type: planet
             lore: One of the many beautiful women who reside on the paradise planet of Risa.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR32.jpg
             rarity: C
         } */
@@ -115,7 +131,6 @@
             mission-type: planet
             lore: Genetic weapon designed to attack humanoids who have specific DNA sequences.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR36.jpg
             rarity: C
         } */

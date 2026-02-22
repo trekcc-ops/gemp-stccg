@@ -38,7 +38,6 @@
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: Using his visor, Geordi La Forge discovered a doorway to an underground android laboratory hidden in a rock wall on Omicron Theta in 2364.
             image-url: https://www.trekcc.org/1e/cardimages/au/hiddenentrance.gif
             rarity: C
@@ -49,7 +48,6 @@
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: On some planets, civilization has devolved into a bitter struggle for survival. Violent gangs search for prey, such as those which chased Natasha Yar on Turkana IV.
             image-url: https://www.trekcc.org/1e/cardimages/au/huntergangs.gif
             rarity: C
@@ -60,7 +58,6 @@
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: At times, Away Teams must open obstructed doors in confined passageways by hand, as did Data on stardate 41503.7.
             image-url: https://www.trekcc.org/1e/cardimages/errata/MalfunctioningDoor.jpg
             rarity: C
@@ -71,7 +68,6 @@
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: 'Nomadic marauders and thieves from Acamar III. "We Gatherers value our freedom. We do what we want and we answer to no creature."'
             image-url: https://www.trekcc.org/1e/cardimages/au/thegatherers.gif
             rarity: C
