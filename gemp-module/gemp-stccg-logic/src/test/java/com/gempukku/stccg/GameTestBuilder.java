@@ -132,22 +132,9 @@ public class GameTestBuilder {
                     case BORG, DOMINION, HIROGEN, KAZON, NEUTRAL, NON_ALIGNED, STARFLEET, VIDIIAN, VULCAN, XINDI -> null;
                 } :
                 switch(affiliation) {
-                    case BAJORAN -> null;
-                    case BORG -> null;
-                    case CARDASSIAN -> null;
-                    case DOMINION -> null;
-                    case FEDERATION -> null;
-                    case FERENGI -> null;
-                    case HIROGEN -> null;
-                    case KAZON -> null;
-                    case KLINGON -> null;
-                    case NEUTRAL -> null;
-                    case NON_ALIGNED -> null;
-                    case ROMULAN -> null;
-                    case STARFLEET -> null;
-                    case VIDIIAN -> null;
-                    case VULCAN -> null;
-                    case XINDI -> null;
+                    case CARDASSIAN, FERENGI, ROMULAN -> List.of("117_045", "Collect Sample");
+                    case FEDERATION, KLINGON -> List.of("113_008", "Study Pulsar");
+                    case BAJORAN, BORG, DOMINION, HIROGEN, KAZON, NEUTRAL, NON_ALIGNED, STARFLEET, VIDIIAN, VULCAN, XINDI -> null;
                 };
         if (cardSpecs == null) {
             throw new CardNotFoundException("addMission does not have a default card for " + missionType + " and " + affiliation);

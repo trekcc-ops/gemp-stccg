@@ -1,0 +1,52 @@
+{
+    "setId" : "167",
+    "setName" : "Emissary",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "167_030",
+            "title" : "Reshape the Quadrant",
+            "type" : "incident",
+            "property-logo" : "ds9-logo",
+            "actions" : [
+                {
+                    "type" : "seedThis",
+                    "limit" : 1,
+                    "toCore" : true
+                },
+                {
+                    "type" : "optionalTrigger",
+                    "trigger" : {
+                        "type" : "played",
+                        "filter" : "self"
+                    },
+                    "triggerDuringSeed" : true,
+                    "effect" : {
+                        "type" : "download",
+                        "filter" : "reactor-core"
+                    }
+                },
+                {
+                    "type" : "requiredTrigger",
+                    "triggerDuringSeed" : true,
+                    "trigger" : {
+                        "type" : "played",
+                        "player" : "you",
+                        "filter" : "(personnel OR ship) + not(ds9-icon)"
+                    },
+                    "effect" : {
+                        "type" : "discardThisCard"
+                    }
+                }
+            ],
+            "modifiers" : [
+                {
+                    "type" : "gainIcon",
+                    "filter" : "yoursEvenIfNotInPlay + (personnel OR ship OR Nor) + ds9-logo",
+                    "icon" : "ds9-icon"
+                }
+            ],
+            "image-url" : "https://www.trekcc.org/1e/cardimages/emissary/30.jpg"
+        }
+    ]
+}

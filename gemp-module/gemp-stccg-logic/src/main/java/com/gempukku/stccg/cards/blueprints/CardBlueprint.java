@@ -329,6 +329,10 @@ public class CardBlueprint {
         return _gender != null;
     }
 
+    public boolean hasGender(Gender gender) {
+        return _gender == gender;
+    }
+
 
     // Tribbles
     public void setTribbleValue(int tribbleValue) { this.tribbleValue = tribbleValue; }

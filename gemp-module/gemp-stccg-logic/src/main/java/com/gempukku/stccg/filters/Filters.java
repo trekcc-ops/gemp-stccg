@@ -60,6 +60,7 @@ public class Filters {
     public static final CardFilter isCoreProxy = (game, physicalCard) -> physicalCard instanceof ProxyCoreCard;
     public static final CardFilter exposedShip = new ExposedShipFilter();
     public static final CardFilter facility = Filters.or(CardType.FACILITY);
+    public static CardFilter female = (game, physicalCard) -> physicalCard.hasGender(Gender.FEMALE);
     public static final CardFilter Ferengi = Filters.or(Affiliation.FERENGI, Species.FERENGI);
     public static final CardFilter hologram = Filters.changeToFilter(Species.HOLOGRAM);
     public static final CardFilter inPlay = new InPlayFilter();

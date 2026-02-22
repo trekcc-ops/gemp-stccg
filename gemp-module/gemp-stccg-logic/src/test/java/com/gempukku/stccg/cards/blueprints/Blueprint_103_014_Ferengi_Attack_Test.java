@@ -63,7 +63,7 @@ public class Blueprint_103_014_Ferengi_Attack_Test extends AbstractAtTest {
 
         selectCard(P2, hobson);
         assertEquals(Zone.DISCARD, hobson.getZone());
-        assertTrue(_mission.getGameLocation(_game) instanceof MissionLocation missionLocation
+        assertFalse(_mission.getGameLocation(_game) instanceof MissionLocation missionLocation
                 && missionLocation.isCompleted());
         assertEquals(Zone.REMOVED, _ferengiAttack.getZone());
     }

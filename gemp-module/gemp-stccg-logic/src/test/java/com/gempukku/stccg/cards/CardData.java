@@ -1,16 +1,13 @@
 package com.gempukku.stccg.cards;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.common.filterable.CardType;
-import com.gempukku.stccg.common.filterable.Uniqueness;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @JsonIgnoreProperties({ "ImageFile", "Set id", "Info", "Mission/ Dilemma Type", "Points", "Span", "Characteristics/ Keywords",
-"Requires", "Persona", "Command", "Lore", "Reports", "Names" })
+"Requires", "Persona", "Command", "Reports", "Names" })
 public class CardData {
 
     @JsonProperty("Staff")
@@ -29,7 +26,7 @@ public class CardData {
     CardType _type;
 
     @JsonProperty("Release")
-    String _set;
+    String _release;
 
     @JsonProperty("Set")
     String _formats;
@@ -60,9 +57,15 @@ public class CardData {
     @JsonProperty("Quadrant")
     String _quadrant;
 
+    @JsonProperty("Lore")
+    String _lore;
 
     @JsonProperty("Region")
     String _region;
+
+    List<String> getAttributes() {
+        return List.of(_attribute1, _attribute2, _attribute3);
+    }
 
 
 }

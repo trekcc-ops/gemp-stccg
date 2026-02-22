@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.Characteristic;
-import com.gempukku.stccg.common.filterable.PersonnelName;
-import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.*;
 
 import java.io.IOException;
@@ -20,6 +17,7 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
     final String multiplierSplit2e = "(?<=\\d).*(?=\\s\\w)";
     final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
+    final Map<String, Species> _speciesMap = new HashMap<>();
 
 
     public MissionRequirementDeserializer() {
@@ -32,6 +30,8 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
                 .forEach(regularSkill -> _skillMap.put(regularSkill.get_humanReadable().toUpperCase(), regularSkill));
         new ArrayList<>(Arrays.asList(PersonnelName.values()))
                 .forEach(name -> _personnelNameMap.put(name.getHumanReadable(), name));
+        new ArrayList<>(Arrays.asList(Species.values()))
+                .forEach(species -> _speciesMap.put(species.getHumanReadable(), species));
     }
 
     @Override
@@ -119,11 +119,23 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
             }
             else throw new InvalidCardDefinitionException("Unable to process attribute mission requirement");
         }
+        if (upperText.startsWith("(CUNNING+STRENGTH)") && text.split(attributeSplit).length == 2) {
+            String[] stringSplit = text.split(attributeSplit);
+            if (stringSplit[1].charAt(0) == '>') {
+                return new MultipleAttributeMissionRequirement(List.of(CardAttribute.CUNNING, CardAttribute.STRENGTH),
+                        Integer.parseInt(stringSplit[1].substring(1))
+                );
+            }
+            else throw new InvalidCardDefinitionException("Unable to process attribute mission requirement");
+        }
         if (_skillMap.get(text.toUpperCase()) != null) {
             return new RegularSkillMissionRequirement(_skillMap.get(text.toUpperCase()));
         }
         if (_personnelNameMap.get(text) != null) {
             return new PersonnelNameMissionRequirement(_personnelNameMap.get(text));
+        }
+        if (_speciesMap.get(text) != null) {
+            return new SpeciesMissionRequirement(_speciesMap.get(text));
         }
         if (text.startsWith("name(") && text.endsWith(")")) {
             String name = text.substring("name(".length(), text.length() - 1);
