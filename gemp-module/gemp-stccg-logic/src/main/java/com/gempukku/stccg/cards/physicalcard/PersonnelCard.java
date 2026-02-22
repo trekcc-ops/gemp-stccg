@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.common.filterable.Species;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.List;
@@ -106,4 +107,7 @@ public class PersonnelCard extends AffiliatedCard implements CardWithCompatibili
     }
 
 
+    public boolean isSpecies(Species species) {
+        return _blueprint.isSpecies(species);
+    }
 }

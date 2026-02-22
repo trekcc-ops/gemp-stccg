@@ -1,21 +1,37 @@
-// Set 101: Premiere [1E]
-
 {
     setId: "101"
     setName: Premiere
     gameType: First Edition
     cards: [
-    /*    {
+        {
             blueprintId: 101_012
             title: Anaphasic Organism
             type: dilemma
             mission-type: planet
             lore: "A male non-corporeal life-form that lives inside a female host which he enchants, as in the case of Dr. Beverly Crusher's late grandmother."
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR12.jpg
             rarity: C
-        } */
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "MEDICAL + SECURITY",
+                        "discardDilemma": true,
+                        "failEffect": {
+                            "type": "discard",
+                            "cards": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestTotalAttributes(personnel + female + encounteringThisCard)",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        }
         {
             "blueprintId": "101_014",
             "title": "Archer",
@@ -30,7 +46,7 @@
                     "type": "encounter",
                     "effect": {
                         "type": "overcomeCondition",
-                        "requires": "SECURITY + MEDICAL",
+                        "requires": "MEDICAL + SECURITY",
                         "discardDilemma": true,
                         "failEffect": {
                             "type": "kill",
@@ -76,7 +92,6 @@
             mission-type: planet
             lore: A genetically-engineered leader. Once romantically involved with Deanna Troi.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR24.jpg
             rarity: C
         } */
@@ -106,7 +121,6 @@
             mission-type: planet
             lore: One of the many beautiful women who reside on the paradise planet of Risa.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR32.jpg
             rarity: C
         } */
@@ -117,7 +131,6 @@
             mission-type: planet
             lore: Genetic weapon designed to attack humanoids who have specific DNA sequences.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR36.jpg
             rarity: C
         } */
@@ -574,7 +587,21 @@
             point-box: 30
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR151.jpg
-        }
+        },
+        {
+            "blueprintId": "101_152",
+            "title": "Evacuation",
+            "type": "mission",
+            "mission-type": "planet",
+            "region": "Demilitarized Zone",
+            "location": "Dorvan V",
+            "lore": "Evacuate American Indian colony.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "Diplomacy x3 + STRENGTH>35",
+            "point-box": 30,
+            "span": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR152.jpg"
+        },
         {
             blueprintId: 101_153
             title: Evaluate Terraforming
@@ -613,7 +640,20 @@
             point-box: 35
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR155.jpg
-        }
+        },
+        {
+            "blueprintId": "101_156",
+            "title": "Explore Dyson Sphere",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Norpin V",
+            "lore": "Study gigantic structure completely enclosing a star.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "ENGINEER x3 + Navigation + Computer Skill + Physics",
+            "point-box": 35,
+            "span": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR156.jpg"
+        },
         {
             blueprintId: 101_157
             title: Explore Typhon Expanse
@@ -639,7 +679,20 @@
             point-box: 30
             span: 4
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR158.jpg
-        }
+        },
+        {
+            "blueprintId": "101_159",
+            "title": "Extraction",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Cerberus II",
+            "lore": "Secretly acquire age-reversal drug reportedly under development.",
+            "affiliation-icons": "romulan",
+            "mission-requirements": "Treachery + Biology + MEDICAL",
+            "point-box": 35,
+            "span": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR159.jpg"
+        },
         {
             blueprintId: 101_160
             title: Fever Emergency
@@ -652,7 +705,33 @@
             point-box: 35
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR160.jpg
-        }
+        },
+        {
+            "blueprintId": "101_161",
+            "title": "First Contact",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Malcor III",
+            "lore": "Make initial contact with advancing civilization.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "Diplomacy + Empathy",
+            "point-box": 30,
+            "span": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR161.jpg"
+        },
+        {
+            "blueprintId": "101_162",
+            "title": "Hunt for DNA Program",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Vilmor II",
+            "lore": "Seek and secure last strand of DNA program on this desert planet.",
+            "affiliation-icons": "federation,romulan,klingon",
+            "mission-requirements": "Archaeology x3 + Computer Skill + Biology + Leadership + STRENGTH>40",
+            "point-box": 55,
+            "span": 5,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR162.jpg"
+        },
         {
             blueprintId: 101_163
             title: Iconia Investigation
@@ -693,7 +772,33 @@
             point-box: 40
             span: 2
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR165.jpg
-        }
+        },
+        {
+            "blueprintId": "101_166",
+            "title": "Investigate Anomaly",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Gamma Arigulon II",
+            "lore": "Trace radiation anomalies reported at this location.",
+            "affiliation-icons": ["federation","romulan","klingon"],
+            "mission-requirements": "Exobiology + STRENGTH>35",
+            "point-box": 30,
+            "span": 4,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR166.jpg"
+        },
+        {
+            "blueprintId": "101_167",
+            "title": "Investigate Disappearance",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Hekaras Corridor",
+            "lore": "Trace disappearance of a medical transport ship.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "Physics + Navigation + CUNNING>40 OR Astrophysics x3",
+            "point-box": 35,
+            "span": 5,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR167.jpg"
+        },
         {
             blueprintId: 101_168
             title: Investigate Disturbance
@@ -745,7 +850,20 @@
             point-box: 30
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR171.jpg
-        }
+        },
+        {
+            "blueprintId": "101_172",
+            "title": "Investigate Sighting",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Beta Stromgren",
+            "lore": "Investigate sighting of Gomtuu, an interstellar creature code-named <i>Tin Man</i>.",
+            "affiliation-icons": "federation,romulan",
+            "mission-requirements": "Empathy x3 OR Treachery + Exobiology + CUNNING>40",
+            "point-box": 35,
+            "span": 4,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR172.jpg"
+        },
         {
             blueprintId: 101_174
             title: Khitomer Research
@@ -812,7 +930,20 @@
             span: 2
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR179.jpg
             rarity: U
-        }
+        },
+        {
+            "blueprintId": "101_180",
+            "title": "Relief Mission",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Penthara IV",
+            "lore": "Alleviate planet of ice age conditions following type-C asteroid impact.",
+            "affiliation-icons": ["romulan","klingon"],
+            "mission-requirements": "Geology OR Physics",
+            "point-box": 20,
+            "span": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR180.jpg"
+        },
         {
             blueprintId: 101_193
             title: Test Mission

@@ -1,0 +1,35 @@
+{
+    "setId": "176",
+    "setName": "The Gamma Quadrant",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "176_022",
+            "title": "Further Tulaberry Talks",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Dosi planet",
+            "lore": "Attend Karemma conference hosted by the Dosi to coordinate distribution.",
+            "mission-requirements": "Diplomacy + CUNNING>36 + (Acquisition x2 OR Treachery + Greed)",
+            "affiliation-icons": ["non-aligned","dominion","ferengi"],
+            "point-box": 35,
+            "span": 5,
+            "quadrant": "gamma",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tgq/22V.jpg"
+        },
+        {
+            "blueprintId": "176_025",
+            "title": "Probe Alpha Quadrant System",
+            "type": "mission",
+            "mission-type": "space",
+            "uniqueness": "universal",
+            "location": "Uncharted sector",
+            "lore": "Gather information about distant areas of the galaxy.",
+            "mission-requirements": "Navigation + Stellar Cartography + (Vorta OR Dosi OR Diplomacy x2)",
+            "affiliation-icons": ["non-aligned","dominion","kazon","vidiian","hirogen"],
+            "point-box": 30,
+            "span": 4,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tgq/25V.jpg"
+        }
+    ]
+}
