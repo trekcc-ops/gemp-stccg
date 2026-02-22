@@ -3,38 +3,26 @@
     setName: Alternate Universe
     gameType: First Edition
     cards: [
-    /*    {
-            blueprintId: 103_008
-            title: Alien Labyrinth
-            type: dilemma
-            mission-type: planet
-            property-logo: tng-logo
-            java-blueprint: true
-            lore: Many planets, such as Mordan IV, have convoluted underground installations which require Away Teams to have specific technology or skills.
-            image-url: https://www.trekcc.org/1e/cardimages/au/alienlabyrinth.gif
-            rarity: C
-        } */
         {
             blueprintId: 103_014
             title: Ferengi Attack
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: 'Ferengi attacked a Federation Away Team on a planet in the Delphi Ardu system using "whips" which fire discharges of high-energy plasma.'
             image-url: https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif
             rarity: C
-/*            actions: [
+            actions: [
                 {
                     type: encounter
                     effect: {
                         type: overcomeCondition
-                        requires: CUNNING+STRENGTH>68 OR Greed
+                        requires: (CUNNING+STRENGTH)>68 OR Greed
                         failEffect: {
                             "type": "kill",
                             target: {
                                 type: select
-                                choice: opponent
+                                selectingPlayer: opponent
                                 filter: personnel + encounteringThisCard
                                 count: 1
                             }
@@ -42,9 +30,9 @@
                         discardDilemma: true
                     }
                 }
-            ] */
+            ]
         }
-    /*    {
+/*        {
             blueprint: 103_016
             title: Hidden Entrance
             type: dilemma

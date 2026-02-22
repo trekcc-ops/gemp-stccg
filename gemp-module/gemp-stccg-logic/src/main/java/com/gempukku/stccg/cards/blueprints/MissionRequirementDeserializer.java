@@ -119,6 +119,15 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
             }
             else throw new InvalidCardDefinitionException("Unable to process attribute mission requirement");
         }
+        if (upperText.startsWith("(CUNNING+STRENGTH)") && text.split(attributeSplit).length == 2) {
+            String[] stringSplit = text.split(attributeSplit);
+            if (stringSplit[1].charAt(0) == '>') {
+                return new MultipleAttributeMissionRequirement(List.of(CardAttribute.CUNNING, CardAttribute.STRENGTH),
+                        Integer.parseInt(stringSplit[1].substring(1))
+                );
+            }
+            else throw new InvalidCardDefinitionException("Unable to process attribute mission requirement");
+        }
         if (_skillMap.get(text.toUpperCase()) != null) {
             return new RegularSkillMissionRequirement(_skillMap.get(text.toUpperCase()));
         }
