@@ -350,7 +350,31 @@
                     modifiedCards: yours + presentWithThisCard + personnel + classification=engineer
                 }
             ]
-        }
+        },
+        {
+            "blueprintId": "101_083",
+            "title": "Metaphasic Shields",
+            "type": "event",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR83.jpg",
+            "lore": "Revolutionary shields using overlapping subspace fields. Invented by Ferengi Dr. Reyga.",
+            "rarity": "U",
+            "playThisCardAction": {
+                "type": "playThis",
+                "destination": "your + ship"
+            },
+            "modifiers": [
+                {
+                    "type": "addShields",
+                    "modifiedCards": "thisShip",
+                    "amount": {
+                        "type": "countCardsMatchingFilter",
+                        "forEach": 2,
+                        "filter": "your + classification=SCIENCE + personnel + presentWithThisCard"
+                    }
+                }
+            ]
+        },
         {
             blueprintId: 101_104
             title: Federation Outpost
@@ -2324,7 +2348,7 @@
         }
         {
             blueprintId: 101_331
-            title: Runabout
+            title: "Runabout",
             type: ship
             affiliation: federation
             uniqueness: universal

@@ -95,6 +95,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 Filters.presentWithThisCard(actionContext.card()));
         appendSimpleFilter("thisCardIsAboard", (cardGame, actionContext) ->
                 new ThisCardIsAboardFilter(actionContext.card()));
+        appendSimpleFilter("thisShip", (cardGame, actionContext) -> new ThisShipFilter(actionContext.card()));
         appendSimpleFilter("youControlAMatchingOutpost", (cardGame, actionContext) ->
                 new YouControlAMatchingOutpostFilter(actionContext.yourName()));
         appendSimpleFilter("youOwnNoCopiesInPlay", (cardGame, actionContext) ->

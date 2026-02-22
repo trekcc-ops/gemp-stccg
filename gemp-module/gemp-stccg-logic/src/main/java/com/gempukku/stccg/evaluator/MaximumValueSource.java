@@ -25,4 +25,19 @@ public class MaximumValueSource implements SingleValueSource {
         }
         return maxValue;
     }
+
+    @Override
+    public Evaluator getEvaluator(DefaultGame cardGame, GameTextContext context) {
+        return new Evaluator() {
+
+            @Override
+            public float evaluateExpression(DefaultGame cardGame) {
+                int maxValue = MIN_VALUE;
+                for (SingleValueSource value : _values) {
+                    maxValue = Math.max(maxValue, value.evaluateExpression(cardGame, context));
+                }
+                return maxValue;
+            }
+        };
+    }
 }

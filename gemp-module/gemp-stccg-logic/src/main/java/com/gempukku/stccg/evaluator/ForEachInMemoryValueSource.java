@@ -19,8 +19,13 @@ public class ForEachInMemoryValueSource implements SingleValueSource {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
-        final int count = actionContext.getCardIdsFromMemory(_memory).size();
-        return Math.min(_limit, count);
+    public Evaluator getEvaluator(DefaultGame cardGame, GameTextContext context) {
+        return new Evaluator() {
+            @Override
+            public float evaluateExpression(DefaultGame cardGame) {
+                final int count = context.getCardIdsFromMemory(_memory).size();
+                return Math.min(_limit, count);
+            }
+        };
     }
 }

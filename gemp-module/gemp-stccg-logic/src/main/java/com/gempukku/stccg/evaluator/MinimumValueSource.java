@@ -19,10 +19,16 @@ public class MinimumValueSource implements SingleValueSource {
     }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
-        return Math.min(
-                _first.evaluateExpression(cardGame, actionContext),
-                _second.evaluateExpression(cardGame, actionContext)
-        );
+    public Evaluator getEvaluator(DefaultGame cardGame, GameTextContext context) {
+        return new Evaluator() {
+
+            @Override
+            public float evaluateExpression(DefaultGame cardGame) {
+                return Math.min(
+                        _first.evaluateExpression(cardGame, context),
+                        _second.evaluateExpression(cardGame, context)
+                );
+            }
+        };
     }
 }

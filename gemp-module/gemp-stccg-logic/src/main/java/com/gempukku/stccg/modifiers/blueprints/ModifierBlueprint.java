@@ -21,6 +21,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = AddAffiliationIconToMissionModifierBlueprint.class, name = "addAffiliationIconToMission"),
         @JsonSubTypes.Type(value = AddCunningModifierBlueprint.class, name = "addCunning"),
         @JsonSubTypes.Type(value = AddRangeModifierBlueprint.class, name = "addRange"),
+        @JsonSubTypes.Type(value = AddShieldsModifierBlueprint.class, name = "addShields"),
         @JsonSubTypes.Type(value = AddStrengthModifierBlueprint.class, name = "addStrength"),
         @JsonSubTypes.Type(value = AddToAllAttributesModifierBlueprint.class, name = "addToAllAttributes"),
         @JsonSubTypes.Type(value = GainIconModifierBlueprint.class, name = "gainIcon"),
