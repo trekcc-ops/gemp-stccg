@@ -58,6 +58,8 @@ public class Filters {
             new ControllerControlsMatchingPersonnelAboardFilter();
     public static final CardFilter equipment = Filters.or(CardType.EQUIPMENT);
     public static final CardFilter isCoreProxy = (game, physicalCard) -> physicalCard instanceof ProxyCoreCard;
+    public static final CardFilter isLocation = (game, physicalCard) ->
+            List.of(CardType.MISSION, CardType.TIME_LOCATION).contains(physicalCard.getCardType());
     public static final CardFilter exposedShip = new ExposedShipFilter();
     public static final CardFilter facility = Filters.or(CardType.FACILITY);
     public static CardFilter female = (game, physicalCard) -> physicalCard.hasGender(Gender.FEMALE);

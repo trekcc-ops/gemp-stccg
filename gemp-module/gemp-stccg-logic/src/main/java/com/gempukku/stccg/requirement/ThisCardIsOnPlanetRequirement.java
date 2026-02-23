@@ -3,23 +3,24 @@ package com.gempukku.stccg.requirement;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.filters.CardFilter;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
+
+import java.util.Objects;
 
 public class ThisCardIsOnPlanetRequirement implements Requirement {
 
-    @JsonProperty("planetFilter")
-    FilterBlueprint _planetFilter;
+    @JsonProperty("planetName")
+    String _planetName;
 
     @JsonCreator
-    public ThisCardIsOnPlanetRequirement(@JsonProperty("planetFilter") FilterBlueprint planetFilter) {
-        _planetFilter = planetFilter;
+    public ThisCardIsOnPlanetRequirement(@JsonProperty("planetName") String planetName) {
+        _planetName = planetName;
     }
     @Override
     public boolean accepts(GameTextContext context, DefaultGame cardGame) {
-        CardFilter planetFilter = _planetFilter.getFilterable(cardGame, context);
-        return context.card().isOnPlanet(cardGame) && planetFilter.accepts(cardGame, context.card());
+        return cardGame instanceof ST1EGame stGame &&
+                Objects.equals(context.card().getGameLocation(stGame).getLocationName(), _planetName);
     }
 
 }

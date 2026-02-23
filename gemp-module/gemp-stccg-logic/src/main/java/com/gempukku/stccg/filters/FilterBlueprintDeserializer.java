@@ -8,11 +8,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.google.common.collect.Iterables;
 
 import java.io.IOException;
 import java.util.*;
@@ -23,7 +25,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     private final static String AND_WITH_NO_PARENTHESES = "\\s+\\+\\s+(?![^\\(]*\\))";
 
     private final Map<String, FilterBlueprint> simpleFilters = new HashMap<>();
-    private final Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
+    private final Map<String, FilterableSourceProducer> _parameterFilters;
     private final ObjectMapper _mapper = new ObjectMapper();
 
     public FilterBlueprintDeserializer() throws InvalidCardDefinitionException {
@@ -33,11 +35,134 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     public FilterBlueprintDeserializer(Class<?> vc) throws InvalidCardDefinitionException {
         super(vc);
         loadSimpleFilters();
-        loadParameterFilters();
+        _parameterFilters = loadParameterFilters();
     }
 
     public Map<String, FilterBlueprint> getSimpleFilters() {
         return simpleFilters;
+    }
+
+    private FilterBlueprint createFilterBlueprint(String initialText) throws InvalidCardDefinitionException {
+        System.out.println("Calling createFilterBlueprint for '" + initialText + "'");
+        if (initialText.startsWith("bottomCardsOfYourDiscardPile(") && initialText.endsWith(")")) {
+            String remainingText = initialText.substring("bottomCardsOfYourDiscardPile(".length(), initialText.length() - 1);
+            final String[] filters = splitIntoFilters(remainingText);
+            int cardCount = Integer.parseInt(filters[0]);
+            FilterBlueprint additionalFilter = parseSTCCGFilter(filters[1]);
+            return (cardGame, actionContext) -> new BottomCardsOfDiscardFilter(actionContext.yourName(),
+                    cardCount, additionalFilter.getFilterable(cardGame, actionContext));
+        }
+        Map<String, List<String>> result = breakOutParentheticals(initialText);
+        String newString = Iterables.getOnlyElement(result.keySet());
+        List<String> subStrings = Iterables.getOnlyElement(result.values());
+        if (newString.split(OR_WITH_NO_PARENTHESES).length > 1) {
+            Collection<FilterBlueprint> filters = new ArrayList<>();
+            for (String filter : newString.split(OR_WITH_NO_PARENTHESES)) {
+                String textToUse = filter;
+                if (filter.startsWith("{") && filter.endsWith("}")) {
+                    int indexNum = Integer.parseInt(filter.replace("{", "").replace("}",""));
+                    textToUse = subStrings.get(indexNum);
+                    System.out.println("Replacing " + filter + " with '" + textToUse + "'");
+                }
+                filters.add(createFilterBlueprint(textToUse));
+            }
+            return new OrFilterBlueprint(filters);
+        } else if (newString.split(AND_WITH_NO_PARENTHESES).length > 1) {
+            Collection<FilterBlueprint> filters = new ArrayList<>();
+            for (String filter : newString.split(AND_WITH_NO_PARENTHESES)) {
+                String textToUse = filter;
+                if (filter.startsWith("{") && filter.endsWith("}")) {
+                    int indexNum = Integer.parseInt(filter.replace("{", "").replace("}",""));
+                    textToUse = subStrings.get(indexNum);
+                }
+                filters.add(createFilterBlueprint(textToUse));
+            }
+            return new AndFilterBlueprint(filters);
+        } else if (isParameterizedFilter(newString)) {
+            System.out.println("Sending '" + newString + "' to deserializer");
+            return createParameterizedFilter(newString);
+        } else {
+            System.out.println("Sending '" + newString + "' to deserializer");
+            return parseSTCCGFilter(newString);
+        }
+    }
+
+    private boolean isParameterizedFilter(String text) {
+        return (text.indexOf("(") > text.indexOf(" ") && text.endsWith(")")) ||
+                (!text.contains(" ") && text.contains("="));
+    }
+
+    private FilterBlueprint createParameterizedFilter(String text) throws InvalidCardDefinitionException {
+        String type = "";
+        String parameter = "";
+        if (!text.contains(" ") && text.contains("=")) {
+            String[] stringSplit = text.split("=");
+            type = stringSplit[0];
+            parameter = stringSplit[1];
+        } else if (text.indexOf("(") > text.indexOf(" ") && text.endsWith(")")) {
+            type = text.substring(0, text.indexOf("("));
+            parameter = text.substring(text.indexOf("(") + 1, text.length() - 1);
+        }
+        return new FilterBlueprintDeserializer().parseSTCCGFilter(text);
+    }
+
+    private Map<String, List<String>> breakOutParentheticals(String fullString) {
+        System.out.println("Calling breakOutParentheticals for '" + fullString + "'");
+        Integer openParenIndex = null;
+        Integer closingParenIndex = null;
+        int openParensFound = 0;
+        int closingParensFound = 0;
+        List<String> parentheticals = new ArrayList<>();
+
+        String newString = fullString;
+        String initialString;
+        int loopsCompleted = 0;
+
+        do {
+            initialString = newString;
+
+            for (int i = 0; i < initialString.length(); i++) {
+                if (initialString.charAt(i) == '(') {
+                    openParensFound++;
+                    if (openParenIndex == null &&
+                            (i == 0 || initialString.charAt(i - 1) == ' ')
+                    ) {
+                        openParenIndex = i;
+                    } else if (openParenIndex == null) {
+//                        String truncString = initialString.substring(0, i);
+//                        openParenIndex = Math.max(truncString.lastIndexOf(' ')+1, 0);
+                    }
+                } else if (initialString.charAt(i) == ')') {
+                    closingParensFound++;
+                    if (openParensFound == closingParensFound) {
+                        closingParenIndex = i;
+                        break;
+                    }
+                }
+            }
+            if (openParenIndex != null && closingParenIndex != null) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(initialString.substring(0, openParenIndex));
+                sb.append("{").append(parentheticals.size()).append("}");
+                String parentheticalToAdd = initialString.substring(openParenIndex, closingParenIndex+1);
+                if (parentheticalToAdd.startsWith("(") && parentheticalToAdd.endsWith(")")) {
+                    parentheticalToAdd = parentheticalToAdd.substring(1, parentheticalToAdd.length() - 1);
+                }
+                parentheticals.add(parentheticalToAdd);
+                sb.append(initialString.substring(closingParenIndex + 1));
+                newString = sb.toString();
+            }
+            openParenIndex = null;
+            closingParenIndex = null;
+            openParensFound = 0;
+            closingParensFound = 0;
+            loopsCompleted++;
+        } while (!newString.equals(initialString));
+
+        Map<String, List<String>> result = new HashMap<>();
+        result.put(newString, parentheticals);
+        System.out.println("Ending breakOutParentheticals with return value '" + result + "'");
+        return result;
     }
 
     private void loadSimpleFilters() throws InvalidCardDefinitionException {
@@ -96,6 +221,9 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 Filters.presentWithThisCard(actionContext.card()));
         appendSimpleFilter("thisCardIsAboard", (cardGame, actionContext) ->
                 new ThisCardIsAboardFilter(actionContext.card()));
+        appendSimpleFilter("thisMission", (cardGame, actionContext) -> (game, physicalCard) ->
+                physicalCard.getCardType() == CardType.MISSION &&
+                physicalCard.isAtSameLocationAsCard(actionContext.card()));
         appendSimpleFilter("thisShip", (cardGame, actionContext) -> new ThisShipFilter(actionContext.card()));
         appendSimpleFilter("youControlAMatchingOutpost", (cardGame, actionContext) ->
                 new YouControlAMatchingOutpostFilter(actionContext.yourName()));
@@ -125,7 +253,8 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         simpleFilters.put(labelToUse, blueprint);
     }
 
-    private void loadParameterFilters() {
+    public Map<String, FilterableSourceProducer> loadParameterFilters() {
+        Map<String, FilterableSourceProducer> parameterFilters = new HashMap<>();
         parameterFilters.put("and",
                 (parameter) -> {
                     final String[] filters = splitIntoFilters(parameter);
@@ -189,24 +318,21 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                     final Zone zone = _mapper.readValue(parameter, Zone.class);
                     return (cardGame, actionContext) -> Filters.changeToFilter(zone);
                 });
-
+        return parameterFilters;
     }
 
     @Override
     public FilterBlueprint deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode object = jp.getCodec().readTree(jp);
         if (object != null && object.isTextual() && object.textValue() != null) {
-            try {
-                return parseSTCCGFilter(object.textValue());
-            } catch(InvalidCardDefinitionException exp) {
-                return generateFilter(object.textValue());
-            }
+            return createFilterBlueprint(object.textValue());
         }
         else throw new InvalidCardDefinitionException("Unable to deserialize filter blueprint");
     }
 
-    private FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
-//        System.out.println(value); // Very useful for debugging
+
+    public FilterBlueprint parseSTCCGFilter(String value) throws InvalidCardDefinitionException {
+        System.out.println(value); // Very useful for debugging
         if (simpleFilters.get(Sanitize(value)) != null) {
             return simpleFilters.get(Sanitize(value));
         }
@@ -237,9 +363,22 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             String cardTitle = value.substring(5, value.length() - 1);
             return new CardTitleFilterBlueprint(cardTitle);
         }
+        if (value.startsWith("name='") && value.endsWith("'")) {
+            String cardTitle = value.substring("name='".length(), value.length() - 1);
+            return new CardTitleFilterBlueprint(cardTitle);
+        }
         if (value.startsWith("name=") && !value.contains(" ")) {
             String cardTitle = value.substring("name=".length());
             return new CardTitleFilterBlueprint(cardTitle);
+        }
+        if (value.startsWith("textInLore(") && value.endsWith(")")) {
+            String loreText = value.substring("textInLore(".length(), value.length() - 1);
+            return (cardGame, actionContext) -> new CardFilter() {
+                @Override
+                public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
+                    return physicalCard.getLore().contains(loreText);
+                }
+            };
         }
         if (value.startsWith("memoryId=")) {
             String memoryId = value.substring("memoryId=".length());
@@ -279,6 +418,11 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             Characteristic characteristic = Characteristic.findCharacteristic(characteristicName);
             return (cardGame, actionContext) -> Filters.and(characteristic);
         }
+        if (value.startsWith("characteristic(") && value.endsWith(")")) {
+            String characteristicName = value.substring("characteristic(".length(), value.length() - 1);
+            Characteristic characteristic = Characteristic.findCharacteristic(characteristicName);
+            return (cardGame, actionContext) -> Filters.and(characteristic);
+        }
         if (value.startsWith("classification=")) {
             String skillName = value.substring("classification=".length());
             SkillName skill = SkillName.valueOf(skillName.toUpperCase(Locale.ROOT));
@@ -312,14 +456,10 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     private FilterBlueprint createAndFilter(String value) throws InvalidCardDefinitionException {
         String[] stringSplit = value.split(AND_WITH_NO_PARENTHESES);
         List<FilterBlueprint> filterBlueprints = new LinkedList<>();
-        for (String string : stringSplit)
+        for (String string : stringSplit) {
             filterBlueprints.add(parseSTCCGFilter(string));
-        return (cardGame, actionContext) -> {
-            List<Filterable> filterables = new LinkedList<>();
-            for (FilterBlueprint filterBlueprint : filterBlueprints)
-                filterables.add(filterBlueprint.getFilterable(cardGame, actionContext));
-            return Filters.and(filterables.toArray(new Filterable[0]));
-        };
+        }
+        return new AndFilterBlueprint(filterBlueprints);
     }
 
     private static String Sanitize(String input)
@@ -422,7 +562,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 return result;
         }
 
-        final FilterableSourceProducer filterableSourceProducer = parameterFilters.get(Sanitize(name));
+        final FilterableSourceProducer filterableSourceProducer = _parameterFilters.get(Sanitize(name));
         if (filterableSourceProducer == null)
             throw new InvalidCardDefinitionException("Unable to find filter: " + name);
 

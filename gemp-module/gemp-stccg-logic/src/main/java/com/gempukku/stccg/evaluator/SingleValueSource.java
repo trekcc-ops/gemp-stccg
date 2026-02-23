@@ -10,6 +10,7 @@ import com.gempukku.stccg.game.DefaultGame;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CountCardsMatchingFilterValueSource.class, name = "countCardsMatchingFilter"),
         @JsonSubTypes.Type(value = ForEachInMemoryValueSource.class, name = "forEachInMemory"),
+        @JsonSubTypes.Type(value = IntegrityValueSource.class, name = "integrity"),
         @JsonSubTypes.Type(value = MaximumValueSource.class, name = "max"),
         @JsonSubTypes.Type(value = MinimumValueSource.class, name = "min"),
         @JsonSubTypes.Type(value = SkillDotCountValueSource.class, name = "skillDotCount"),

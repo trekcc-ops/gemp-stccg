@@ -30,6 +30,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
 
     FilterBlueprint _destinationBlueprint;
     boolean _forFree;
+    boolean _onPlanet;
 
     @JsonCreator
     public PlayThisCardActionBlueprint(@JsonProperty(value = "destination")
@@ -38,6 +39,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
                                        Integer perGameLimit,
                                        @JsonProperty(value = "forFree")
                                        boolean forFree,
+                                       @JsonProperty(value = "onPlanet") boolean onPlanet,
                                        @JsonProperty(value = "requirement")
                                        Requirement requirement,
                                        @JsonProperty(value = "immediateEffect")
@@ -61,6 +63,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
         if (discardAfter) {
             _effects.add(new DiscardThisCardSubActionBlueprint());
         }
+        _onPlanet = onPlanet;
     }
 
     @Override
@@ -82,7 +85,8 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
             CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
             Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destinationFilter);
             if (!destinationOptions.isEmpty()) {
-                action = new PlayCardToDesinationAction(cardGame, performingPlayerName, thisCard, destinationOptions, actionContext);
+                action = new PlayCardToDesinationAction(cardGame, performingPlayerName, thisCard, destinationOptions,
+                        actionContext, _onPlanet);
             }
         } else if (cardGame instanceof ST1EGame) {
             action = new PlayCardAction(cardGame, thisCard, thisCard, performingPlayerName, Zone.CORE,

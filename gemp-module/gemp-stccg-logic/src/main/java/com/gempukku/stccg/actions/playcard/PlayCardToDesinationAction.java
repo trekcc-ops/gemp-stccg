@@ -14,24 +14,31 @@ import java.util.Map;
 
 public class PlayCardToDesinationAction extends PlayCardAction {
     private final EnterPlayAtDestinationResolver _targetResolver;
+    private final boolean _onPlanet;
 
     public PlayCardToDesinationAction(DefaultGame cardGame, String performingPlayerName,
                                       PhysicalCard cardEnteringPlay,
                                       Collection<PhysicalCard> destinationOptions,
-                                      GameTextContext context) {
+                                      GameTextContext context, boolean onPlanet) {
         super(cardGame, cardEnteringPlay, cardEnteringPlay, performingPlayerName, null, ActionType.PLAY_CARD, context);
         Map<PhysicalCard, Collection<PhysicalCard>> destinationMap = new HashMap<>();
         destinationMap.put(cardEnteringPlay, destinationOptions);
         _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, destinationMap);
         _cardTargets.add(_targetResolver);
+        _onPlanet = onPlanet;
     }
+
 
     public void processEffect(DefaultGame cardGame) {
         GameState gameState = cardGame.getGameState();
         PhysicalCard destination = _targetResolver.getDestination();
         cardGame.removeCardsFromZone(List.of(_cardEnteringPlay));
         gameState.addCardToZone(cardGame, _cardEnteringPlay, destination.getZone(), _actionContext);
-        _cardEnteringPlay.setAsAtop(destination);
+        if (_onPlanet) {
+            _cardEnteringPlay.setAsOnPlanet(destination);
+        } else {
+            _cardEnteringPlay.setAsAtop(destination);
+        }
         setAsSuccessful();
     }
 
