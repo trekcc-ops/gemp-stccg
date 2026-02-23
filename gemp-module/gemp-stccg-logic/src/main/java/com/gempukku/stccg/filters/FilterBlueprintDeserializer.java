@@ -41,16 +41,15 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
     }
 
     private FilterBlueprint createFilterBlueprint(String initialText) throws InvalidCardDefinitionException {
+        if (initialText.startsWith("(") && initialText.endsWith(")") &&
+                initialText.indexOf("(") == initialText.lastIndexOf("(") &&
+                initialText.indexOf(")") == initialText.lastIndexOf(")")) {
+            return createFilterBlueprint(initialText.substring(1, initialText.length() - 1));
+        }
         if (simpleFilters.get(Sanitize(initialText)) != null) {
             return simpleFilters.get(Sanitize(initialText));
-        } else if (initialText.startsWith("bottomCardsOfYourDiscardPile(") && initialText.endsWith(")")) {
-            String remainingText =
-                    initialText.substring("bottomCardsOfYourDiscardPile(".length(), initialText.length() - 1);
-            final String[] filters = splitIntoFilters(remainingText);
-            int cardCount = Integer.parseInt(filters[0]);
-            FilterBlueprint additionalFilter = createFilterBlueprint(filters[1]);
-            return (cardGame, actionContext) -> new BottomCardsOfDiscardFilter(actionContext.yourName(),
-                    cardCount, additionalFilter.getFilterable(cardGame, actionContext));
+        } else if (isParameterizedFilter(initialText)) {
+            return createParameterizedFilter(initialText);
         } else {
             Map<String, List<String>> result = breakOutParentheticals(initialText);
             String newString = Iterables.getOnlyElement(result.keySet());
@@ -60,20 +59,38 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 return createOrFilter(newString, subStrings);
             } else if (newString.split(AND_WITH_NO_PARENTHESES).length > 1) {
                 return createAndFilter(newString, subStrings);
-            } else if (isParameterizedFilter(newString)) {
-                return createParameterizedFilter(newString);
-            } else {
-                throw new InvalidCardDefinitionException("Unable to create filter blueprint from text '" + newString + "'");
             }
         }
+        throw new InvalidCardDefinitionException("Unable to create filter blueprint from text '" + initialText + "'");
     }
 
     private boolean isParameterizedFilter(String text) {
         if (!text.contains(" ") && (text.contains("=") || text.contains(">") || text.contains("<"))) {
             // No spaces expected in filter blueprint if it is using comparator symbols
             return true;
-        } else if (text.contains("(") && text.endsWith(")")) {
-            return (text.indexOf("(") < text.indexOf(" ")) || !text.contains(" ");
+        } else if (text.endsWith(")")) {
+            // Otherwise, verify that the entirety of the filter blueprint is enclosed in a function-like text pattern
+            // Example: yourFunction(something + somethingElse)
+            // If it has multiple pieces, it will return false, for example if it is something like:
+            //      yourFunction(something) + yourOtherFunction(somethingElse)
+            int openParensFound = 0;
+            int closingParensFound = 0;
+
+            for (int i = 0; i < text.length(); i++) {
+                if (text.charAt(i) == '(') {
+                    openParensFound++;
+                } else if (text.charAt(i) == ')') {
+                    closingParensFound++;
+                    if (openParensFound == closingParensFound && i != text.length() - 1) {
+                        return false;
+                    }
+                } else if (text.charAt(i) == ' ') {
+                    if (openParensFound == 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
         return false;
     }
@@ -99,7 +116,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 parameter = stringSplit[1];
                 comparatorType = ComparatorType.GREATER_THAN;
             }
-        } else if ((text.indexOf("(") < text.indexOf(" ") || !text.contains(" ")) && text.endsWith(")")) {
+        } else {
             type = text.substring(0, text.indexOf("("));
             parameter = text.substring(text.indexOf("(") + 1, text.length() - 1);
             comparatorType = ComparatorType.EQUAL_TO;
@@ -113,6 +130,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             case "affiliation" -> {
                 Affiliation affiliation = Affiliation.findAffiliation(parameter);
                 yield (cardGame, actionContext) -> Filters.changeToFilter(affiliation);
+            }
+            case "bottomCardsOfYourDiscardPile" -> {
+                final String[] filters = splitIntoFilters(parameter);
+                int cardCount = Integer.parseInt(filters[0]);
+                FilterBlueprint additionalFilter = createFilterBlueprint(filters[1]);
+                yield (cardGame, actionContext) -> new BottomCardsOfDiscardFilter(actionContext.yourName(),
+                        cardCount, additionalFilter.getFilterable(cardGame, actionContext));
             }
             case "characteristic" -> {
                 Characteristic characteristic = Characteristic.findCharacteristic(parameter);
