@@ -78,20 +78,28 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
                     Map<PhysicalCard, List<Affiliation>> destinationMap = stGame.getRules()
                             .getDestinationAndAffiliationMapForReportingCard(reportable, stGame, destinations, true,
                                     playableCardFilter);
-                    targetMap.put(card, destinationMap);
+                    if (!destinationMap.isEmpty()) {
+                        targetMap.put(card, destinationMap);
+                    }
                 }
             }
 
-            SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
-                    "Select a card to play", targetMap.keySet());
-            SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
+            if (!targetMap.isEmpty()) {
 
-            SelectAndReportForFreeCardAction reportAction =
-                    new SelectAndReportForFreeCardAction(cardGame, actionContext.card().getOwnerName(), cardTarget, actionContext.card(),
-                            targetMap);
-            appendActionToContext(cardGame, reportAction, actionContext);
-            if (reportAction.canBeInitiated(cardGame)) {
-                return reportAction;
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
+                        "Select a card to play", targetMap.keySet());
+                SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
+
+                if (!cardTarget.cannotBeResolved(cardGame)) {
+
+                    SelectAndReportForFreeCardAction reportAction =
+                            new SelectAndReportForFreeCardAction(cardGame, actionContext.card().getOwnerName(), cardTarget, actionContext.card(),
+                                    targetMap);
+                    appendActionToContext(cardGame, reportAction, actionContext);
+                    if (reportAction.canBeInitiated(cardGame)) {
+                        return reportAction;
+                    }
+                }
             }
         }
         return null;

@@ -190,7 +190,9 @@ public interface UserInputSimulator {
             if (action instanceof SeedCardToDestinationAction destinationAction) {
                 if (destinationAction.getSeedableOptions().contains(cardToSeed)) {
                     selectAction(playerId, action);
-                    selectCard(playerId, cardToSeed);
+                    if (destinationAction.getSeedableOptions().size() > 1) {
+                        selectCard(playerId, cardToSeed);
+                    }
                     return action;
                 }
             } else if (action.getCardEnteringPlay() == cardToSeed) {

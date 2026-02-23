@@ -10,12 +10,12 @@ import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class IntegrityValueSource implements SingleValueSource {
+public class PrintedIntegrityValueSource implements SingleValueSource {
 
     private final FilterBlueprint _filterBlueprint;
 
     @JsonCreator
-    private IntegrityValueSource(@JsonProperty("card")FilterBlueprint filterBlueprint) {
+    private PrintedIntegrityValueSource(@JsonProperty("card")FilterBlueprint filterBlueprint) {
         _filterBlueprint = filterBlueprint;
     }
     @Override
@@ -27,7 +27,7 @@ public class IntegrityValueSource implements SingleValueSource {
                 int result = 0;
                 for (PhysicalCard card : Filters.filter(cardGame, filter)) {
                     if (card instanceof CardWithStrength cardWithStrength) {
-                        result = result + cardWithStrength.getIntegrity(cardGame);
+                        result = result + cardWithStrength.getPrintedIntegrity();
                     }
                 }
                 return result;

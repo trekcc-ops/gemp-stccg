@@ -109,7 +109,7 @@
             modifiers: [
                 {
                     type: addToAllAttributes
-                    modifiedCards: yours + universal + personnel + not(hologram)
+                    modifiedCards: yours + universal + personnel + not(hologram) + inPlay
                     amount: 2
                 }
             ]

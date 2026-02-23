@@ -214,7 +214,7 @@ public class Filters {
     }
 
     public static CardFilter your(final String playerId) {
-        return and(inPlay, new ControlledByPlayerFilter(playerId));
+        return yoursEvenIfNotInPlay(playerId);
     }
 
     public static CardFilter your(final Player player) {

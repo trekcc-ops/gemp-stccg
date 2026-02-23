@@ -16,4 +16,7 @@ public interface CardWithStrength extends CardWithAttributes {
                 Objects.requireNonNullElse(getCunning(cardGame), 0);
     }
 
+    default int getPrintedIntegrity() {
+        return getBlueprint().getIntegrity();
+    }
 }

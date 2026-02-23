@@ -366,13 +366,11 @@
             "image-url": "https://www.trekcc.org/1e/cardimages/errata/ScientificDiplomacy.jpg",
             "playThisCardAction": {
                 "type": "playThis",
-                "onPlanet": true,
                 "destination": "locationName(Veytan)"
             },
             "actions": [
                 {
                     "type": "seedThis",
-                    "onPlanet": true,
                     "destinationFilter": "locationName(Veytan)"
                 },
                 {
@@ -404,7 +402,7 @@
                             "saveToMemoryId": "personnelScoringPoints"
                         },
                         "points": {
-                            "type": "integrity",
+                            "type": "printedIntegrity",
                             "card": "memoryId=personnelScoringPoints"
                         }
                     }
