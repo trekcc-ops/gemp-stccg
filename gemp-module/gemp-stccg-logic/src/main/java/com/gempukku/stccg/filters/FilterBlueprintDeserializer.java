@@ -561,12 +561,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             if (result != null)
                 return result;
         }
+        throw new InvalidCardDefinitionException("Unable to find filter: " + name);
 
-        final FilterableSourceProducer filterableSourceProducer = _parameterFilters.get(Sanitize(name));
+/*        final FilterableSourceProducer filterableSourceProducer = _parameterFilters.get(Sanitize(name));
         if (filterableSourceProducer == null)
             throw new InvalidCardDefinitionException("Unable to find filter: " + name);
 
-        return filterableSourceProducer.createFilterableSource(parameter);
+        return filterableSourceProducer.createFilterableSource(parameter); */
     }
 
 
