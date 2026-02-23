@@ -272,7 +272,11 @@ public class Filters {
 
     public static CardFilter and(final Filterable... filters) {
         CardFilter[] filtersInt = convertToFilters(filters);
-        return new AndFilter(filtersInt);
+        if (filtersInt.length == 1) {
+            return filtersInt[0];
+        } else {
+            return new AndFilter(filtersInt);
+        }
     }
 
     public static CardFilter and(Iterable<Filterable> filterables) {
