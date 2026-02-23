@@ -1587,6 +1587,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR239.jpg
         }
         {
+            blueprintId: 101_241
+            title: "T'Pan",
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: SCIENCE
+            icons: staff
+            lore: Vulcan director of the prestigious Vulcan Science Academy. She is a doctor of astrophysical sciences and a preeminent expert in subspace morphology.
+            species: vulcan
+            gender: female
+            skill-box: "[*] SCIENCE [*] Mindmeld"
+            integrity: 8
+            cunning: 9
+            strength: 4
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR241.jpg
+        }
+        {
             blueprintId: 101_242
             title: Taitt
             type: personnel
