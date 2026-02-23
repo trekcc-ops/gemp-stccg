@@ -218,7 +218,7 @@
                     "trigger": {
                         "type": "played",
                         "player": "you",
-                        "filter": "personnel + tng-icon + skill-dots<=4 + sd-icons=0"
+                        "filter": "personnel + tng-icon + skill-dots<5 + sd-icons=0"
                     },
                     "triggerDuringSeed": false,
                     "effect": {
