@@ -112,9 +112,23 @@
             "mission-type": "dual",
             "lore": "In 2370, Data suggested Worf would be able to use an inverse warp field to restore the barriers between quantum realities. Thankfully, Mr. Data was correct, in every reality.",
             "property-logo": "tng-logo",
-            "java-blueprint": true,
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/7.jpg",
-            "rarity": "V"
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "randomSelection",
+                    "filter": "personnel + encounteringThisCard",
+                    "count": 9,
+                    "saveToMemoryId": "continuingPersonnel"
+                },
+                {
+                    "type": "removeCardsFromGame",
+                    "target": {
+                        "type": "selectAll",
+                        "filter": "personnel + inCrewOrAwayTeamEncountering + not(memoryId=continuingPersonnel)"
+                    }
+                }
+            ]
         },
         {
             "blueprintId": "152_022",
