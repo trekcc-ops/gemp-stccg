@@ -99,9 +99,6 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
                     }
                 } else {
-                    if (_dilemma.getParentCard() == null) {
-                        cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
-                    }
                     setAsSuccessful();
                 }
             } else {

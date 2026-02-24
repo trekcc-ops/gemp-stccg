@@ -9,11 +9,13 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
-import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Objects;
 
@@ -92,10 +94,13 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
             setAsSuccessful();
         }
         if (wasSuccessful() && !_nullified) {
-            PhysicalCard card = _cardTarget.getCard();
-            if (card.getLocationId() == _locationId && !card.isPlacedOnMission()) {
-                cardGame.addActionToStack(
-                        new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardTarget.getCard()));
+            PhysicalCard encounteredCard = _cardTarget.getCard();
+            if (encounteredCard.getParentCard() == null &&
+                    cardGame instanceof ST1EGame stGame &&
+                    encounteredCard.getGameLocation(stGame) instanceof MissionLocation missionLocation &&
+                    missionLocation.hasCardSeededUnderneath(encounteredCard)
+            ) {
+                cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, encounteredCard));
             }
         }
     }

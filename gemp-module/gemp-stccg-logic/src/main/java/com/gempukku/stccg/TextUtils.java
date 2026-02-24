@@ -4,7 +4,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Stream;
 
 public class TextUtils {
 
@@ -60,10 +59,6 @@ public class TextUtils {
     }
 
     public static <T> String be(Collection<T> collection) { return collection.size() > 1 ? "are" : "is"; }
-
-    public static String concatenateStrings(Stream<String> strings) {
-        return concatenateStrings(strings.toList());
-    }
 
     public static String concatenateStrings(Collection<String> strings) {
         if (strings.isEmpty())
