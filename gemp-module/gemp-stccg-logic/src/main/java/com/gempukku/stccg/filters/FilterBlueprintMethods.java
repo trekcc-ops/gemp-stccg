@@ -77,6 +77,8 @@ public interface FilterBlueprintMethods {
                 Filters.cardsYouCanDownload(actionContext.yourName()));
         appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.card()));
+        appendSimpleFilter("inCrewOrAwayTeamEncountering", (cardGame, actionContext) ->
+                new EncounteringCardFilter(actionContext.card()));
         appendSimpleFilter("inplay", (cardGame, actionContext) -> Filters.inPlay);
         appendSimpleFilter("inYourDiscard", (cardGame, actionContext) ->
                 new InYourDiscardFilter(actionContext.yourName()));
