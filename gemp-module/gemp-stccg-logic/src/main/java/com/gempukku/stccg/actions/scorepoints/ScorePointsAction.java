@@ -21,14 +21,9 @@ public class ScorePointsAction extends ActionyAction {
     @JsonProperty("pointsScored")
     private final int _points;
 
-    public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, String scoringPlayerName, int points)
-            throws InvalidGameLogicException {
+    public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, String scoringPlayerName, int points) {
         super(cardGame, scoringPlayerName, ActionType.SCORE_POINTS);
-        try {
-            _performingCard = Objects.requireNonNull(source);
-        } catch(NullPointerException npe) {
-            throw new InvalidGameLogicException(npe.getMessage());
-        }
+        _performingCard = Objects.requireNonNull(source);
         _points = points;
     }
 

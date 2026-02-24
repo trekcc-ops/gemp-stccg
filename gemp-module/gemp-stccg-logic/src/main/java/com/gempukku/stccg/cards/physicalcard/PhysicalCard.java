@@ -244,4 +244,12 @@ public interface PhysicalCard {
         return getBlueprint().hasGender(gender);
     }
 
+    default void setAsOnPlanet(PhysicalCard destination) {
+        setParentCardRelationship(destination, ChildCardRelationshipType.ON_PLANET);
+    }
+
+    default String getLore() {
+        return Objects.requireNonNullElse(getBlueprint().getLore(), "");
+    }
+
 }

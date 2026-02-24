@@ -256,6 +256,17 @@ public interface ModifiersQuerying {
         return false;
     }
 
+    default boolean cardsAreCompatiblePerModifiers(CardWithCompatibility card1, CardWithCompatibility card2) {
+        List<Modifier> modifiers = getModifiersInEffect(ModifierEffect.COMPATIBILITY_MODIFIER);
+        for (Modifier modifier : modifiers) {
+            if (modifier instanceof CardCompatibleWithAllYourCardsModifier compatibilityModifier &&
+                    compatibilityModifier.cardsAreCompatible(getGame(), card1, card2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     default boolean cardsAreIncompatiblePerModifiers(CardWithCompatibility card1, CardWithCompatibility card2) {
         List<Modifier> modifiers = getModifiersInEffect(ModifierEffect.COMPATIBILITY_MODIFIER);
         for (Modifier modifier : modifiers) {

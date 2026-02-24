@@ -58,6 +58,8 @@ public class Filters {
             new ControllerControlsMatchingPersonnelAboardFilter();
     public static final CardFilter equipment = Filters.or(CardType.EQUIPMENT);
     public static final CardFilter isCoreProxy = (game, physicalCard) -> physicalCard instanceof ProxyCoreCard;
+    public static final CardFilter isLocation = (game, physicalCard) ->
+            List.of(CardType.MISSION, CardType.TIME_LOCATION).contains(physicalCard.getCardType());
     public static final CardFilter exposedShip = new ExposedShipFilter();
     public static final CardFilter facility = Filters.or(CardType.FACILITY);
     public static CardFilter female = (game, physicalCard) -> physicalCard.hasGender(Gender.FEMALE);
@@ -212,7 +214,7 @@ public class Filters {
     }
 
     public static CardFilter your(final String playerId) {
-        return and(inPlay, new ControlledByPlayerFilter(playerId));
+        return yoursEvenIfNotInPlay(playerId);
     }
 
     public static CardFilter your(final Player player) {
@@ -270,7 +272,11 @@ public class Filters {
 
     public static CardFilter and(final Filterable... filters) {
         CardFilter[] filtersInt = convertToFilters(filters);
-        return new AndFilter(filtersInt);
+        if (filtersInt.length == 1) {
+            return filtersInt[0];
+        } else {
+            return new AndFilter(filtersInt);
+        }
     }
 
     public static CardFilter and(Iterable<Filterable> filterables) {

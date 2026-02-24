@@ -8,8 +8,9 @@ import com.gempukku.stccg.game.DefaultGame;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type",
         defaultImpl = BasicSingleValueSource.class)
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = CountCardsMatchingFilterValueSource.class, name = "countCardsMatchingFilter"),
         @JsonSubTypes.Type(value = ForEachInMemoryValueSource.class, name = "forEachInMemory"),
-        @JsonSubTypes.Type(value = CountDiscardValueSource.class, name = "forEachInDiscard"),
+        @JsonSubTypes.Type(value = PrintedIntegrityValueSource.class, name = "printedIntegrity"),
         @JsonSubTypes.Type(value = MaximumValueSource.class, name = "max"),
         @JsonSubTypes.Type(value = MinimumValueSource.class, name = "min"),
         @JsonSubTypes.Type(value = SkillDotCountValueSource.class, name = "skillDotCount"),
@@ -25,6 +26,10 @@ public interface SingleValueSource extends ValueSource {
         return evaluateExpression(cardGame, actionContext);
     }
 
-    int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext);
+    default int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
+        return (int) getEvaluator(cardGame, actionContext).evaluateExpression(cardGame);
+    }
+
+    Evaluator getEvaluator(DefaultGame cardGame, GameTextContext context);
 
 }

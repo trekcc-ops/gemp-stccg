@@ -152,7 +152,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                         setAsFailed();
                     }
                 } else if (!wasFailed()) {
-                    saveResult(new MissionSolvedActionResult(_performingPlayerId, this, _missionSpecHelped), cardGame);
+                    saveResult(new MissionSolvedActionResult(_performingPlayerId, this, _performingCard, _missionSpecHelped), cardGame);
                     setAsSuccessful();
                 }
             } else {

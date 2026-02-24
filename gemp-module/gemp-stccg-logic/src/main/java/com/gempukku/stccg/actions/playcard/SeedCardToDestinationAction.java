@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class SeedCardToDestinationAction extends SeedCardAction {
     private final EnterPlayAtDestinationResolver _targetResolver;
+    private final boolean _onPlanet;
 
     public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
                                        Collection<PhysicalCard> seedableCards,
@@ -28,17 +29,32 @@ public class SeedCardToDestinationAction extends SeedCardAction {
         }
         _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, destinationMap);
         _cardTargets.add(_targetResolver);
+        _onPlanet = false;
+    }
+
+    public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
+                                       Collection<PhysicalCard> seedableCards,
+                                       Collection<PhysicalCard> destinationOptions,
+                                       PhysicalCard performingCard, boolean onPlanet) {
+        super(cardGame, performingCard, null);
+        Map<PhysicalCard, Collection<PhysicalCard>> destinationMap = new HashMap<>();
+        for (PhysicalCard card : seedableCards) {
+            destinationMap.put(card, destinationOptions);
+        }
+        _targetResolver = new EnterPlayAtDestinationResolver(performingPlayerName, destinationMap);
+        _cardTargets.add(_targetResolver);
+        _onPlanet = onPlanet;
     }
 
 
     public void processEffect(DefaultGame cardGame) {
-        if (cardGame instanceof ST1EGame stGame &&
-                _targetResolver.getCardEnteringPlay() instanceof ReportableCard reportable) {
+        if (cardGame instanceof ST1EGame stGame) {
+            PhysicalCard cardEnteringPlay = _targetResolver.getCardEnteringPlay();
             GameState gameState = stGame.getGameState();
             PhysicalCard destination = _targetResolver.getDestination();
-            cardGame.removeCardsFromZone(List.of(reportable));
-            gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
-            if (destination instanceof CardWithCrew cardWithCrew) {
+            cardGame.removeCardsFromZone(List.of(cardEnteringPlay));
+            gameState.addCardToZone(cardGame, cardEnteringPlay, Zone.AT_LOCATION, _actionContext);
+            if (destination instanceof CardWithCrew cardWithCrew && cardEnteringPlay instanceof ReportableCard reportable) {
                 // if reporting to a ship or facility
                 if (reportable.getCardType() != CardType.SHIP) {
                     reportable.setAsAboard(destination);
@@ -46,15 +62,21 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                 if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
                     ship.setAsDockedAt(facility);
                 }
-            } else if (reportable.getCardType() == CardType.SHIP) {
+            } else if (cardEnteringPlay instanceof ShipCard shipCard) {
                 // if reporting a ship in space at a location
-                reportable.setAsInSpaceAtLocation(destination);
-            } else {
+                shipCard.setAsInSpaceAtLocation(destination);
+            } else if (cardEnteringPlay instanceof ReportableCard reportable) {
                 // if reporting another reportable to a location
                 reportable.setAsOnPlanet(destination);
                 if (destination instanceof MissionCard missionDestination &&
                         missionDestination.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
                     stGame.getGameState().addCardToEligibleAwayTeam(stGame, reportable, missionLocation);
+                }
+            } else {
+                if (_onPlanet) {
+                    cardEnteringPlay.setAsOnPlanet(destination);
+                } else {
+                    cardEnteringPlay.setAsAtop(destination);
                 }
             }
             setAsSuccessful();

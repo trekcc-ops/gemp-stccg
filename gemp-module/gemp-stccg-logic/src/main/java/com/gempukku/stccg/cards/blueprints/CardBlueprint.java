@@ -168,6 +168,7 @@ public class CardBlueprint {
     private final Map<Affiliation, String> _imageOptions = new HashMap<>();
 
     @JsonProperty("modifiers")
+    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     protected final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
 
     private List<Requirement> playInOtherPhaseConditions;
@@ -183,6 +184,9 @@ public class CardBlueprint {
 
     @JsonProperty("actions")
     protected List<ActionBlueprint> _actionBlueprints = new LinkedList<>();
+
+    @JsonProperty("isSymmetric")
+    private boolean _isSymmetric = true;
 
     @JsonProperty("playThisCardAction")
     protected PlayThisCardActionBlueprint _playThisCardActionBlueprint;

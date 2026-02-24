@@ -11,7 +11,7 @@ public class ConstantValueSource implements BasicValueSource, BasicSingleValueSo
     public ConstantValueSource(int value) { _value = value; }
 
     @Override
-    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
-        return _value;
+    public Evaluator getEvaluator(DefaultGame cardGame, GameTextContext context) {
+        return new ConstantEvaluator(_value);
     }
 }

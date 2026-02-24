@@ -32,6 +32,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
     FilterBlueprint _filterBlueprint;
     private final boolean _specialDownload;
     private final DestinationBlueprint _destinationBlueprint;
+    private final FilterBlueprint _destinationFilter;
 
     @JsonCreator
     @SuppressWarnings("unused") // Used in JSON deserialization
@@ -41,6 +42,8 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                                        UsageLimitBlueprint usageLimit,
                                                     @JsonProperty(value = "filter")
                                        FilterBlueprint filterBlueprint,
+                                                    @JsonProperty(value = "destinationFilter")
+                                                    FilterBlueprint destinationFilter,
                                                     @JsonProperty(value = "specialDownload")
                                        boolean specialDownload,
                                                     @JsonProperty(value = "inPlaceOfNormalCardPlay")
@@ -48,6 +51,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
     ) {
         super(new YouPlayerSource());
         _destinationBlueprint = destination;
+        _destinationFilter = destinationFilter;
         if (usageLimit != null) {
             usageLimit.applyLimitToActionBlueprint(this);
         }
@@ -65,7 +69,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
 
     public DownloadCardToDestinationActionBlueprint(UsageLimitBlueprint usageLimit, FilterBlueprint filterBlueprint,
                                                     boolean specialDownload) {
-        this(null, usageLimit, filterBlueprint, specialDownload, false);
+        this(null, usageLimit, filterBlueprint, null, specialDownload, false);
     }
 
 
@@ -81,7 +85,57 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
         CardFilter downloadableCardFilter = _filterBlueprint.getFilterable(cardGame, actionContext);
         Collection<PhysicalCard> downloadableCards = Filters.filter(cardGame, downloadableCardFilter);
 
-        if (_destinationBlueprint != null && cardGame instanceof ST1EGame stGame) {
+        if (downloadableCards.isEmpty()) {
+            return null;
+        }
+
+        boolean allReportableCards = true;
+        boolean allNotReportableCards = true;
+        for (PhysicalCard card : downloadableCards) {
+            if (!(card instanceof ReportableCard)) {
+                allReportableCards = false;
+            } else {
+                allNotReportableCards = false;
+            }
+        }
+
+        if (allNotReportableCards) {
+            Map<PhysicalCard, Collection<PhysicalCard>> destinationTargetMap = new HashMap<>();
+            for (PhysicalCard card : downloadableCards) {
+                if (_specialDownload) {
+                    Collection<PhysicalCard> destinationOptions = Filters.filter(
+                            card.getDestinationOptionsFromGameText(actionContext, cardGame),
+                            cardGame,
+                            Filters.or(
+                                    Filters.atLocation(actionContext.card().getLocationId()),
+                                    Filters.isCoreProxy
+                            )
+                    );
+                    if (!destinationOptions.isEmpty()) {
+                        destinationTargetMap.put(card, destinationOptions);
+                    }
+                } else if (_destinationFilter != null) {
+                    CardFilter destinationFilter = _destinationFilter.getFilterable(cardGame, actionContext);
+                    Collection<PhysicalCard> destinationOptions = Filters.filter(
+                            card.getDestinationOptionsFromGameText(actionContext, cardGame),
+                            cardGame, destinationFilter
+                    );
+                    if (!destinationOptions.isEmpty()) {
+                        destinationTargetMap.put(card, destinationOptions);
+                    }
+                }
+            }
+            if (!destinationTargetMap.isEmpty()) {
+                EnterPlayAtDestinationResolver resolver =
+                        new EnterPlayAtDestinationResolver(performingPlayerName, destinationTargetMap);
+                DownloadCardAction action =
+                        new DownloadCardAction(cardGame, performingPlayerName, resolver, thisCard);
+                appendActionToContext(cardGame, action, actionContext);
+                if (action.canBeInitiated(cardGame)) {
+                    return action;
+                }
+            }
+        } else if (_destinationBlueprint != null && cardGame instanceof ST1EGame stGame) {
 
             Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap = new HashMap<>();
             for (PhysicalCard card : downloadableCards) {
@@ -108,68 +162,30 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                     return downloadAction;
                 }
             }
-        } else if (!downloadableCards.isEmpty() && _specialDownload && cardGame instanceof ST1EGame stGame) {
+        } else if (_specialDownload && cardGame instanceof ST1EGame stGame && allReportableCards) {
+
+            Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame,
+                    Filters.atLocation(thisCard.getLocationId()),
+                    Filters.or(CardType.SHIP, CardType.FACILITY, Filters.planetLocation)
+            );
             SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
                     "Select a card to download", downloadableCards);
             SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
 
-            boolean allReportableCards = true;
-            boolean allNotReportableCards = true;
+            Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap = new HashMap<>();
             for (PhysicalCard card : downloadableCards) {
-                if (!(card instanceof ReportableCard)) {
-                    allReportableCards = false;
-                } else {
-                    allNotReportableCards = false;
+                if (card instanceof ReportableCard reportable) {
+                    Map<PhysicalCard, List<Affiliation>> destinationMap = stGame.getRules()
+                            .getDestinationAndAffiliationMapForReportingCard(reportable, stGame,
+                                    destinationOptions, true);
+                    targetMap.put(card, destinationMap);
                 }
             }
-
-            if (allReportableCards) {
-                Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame,
-                        Filters.atLocation(thisCard.getLocationId()),
-                        Filters.or(CardType.SHIP, CardType.FACILITY, Filters.planetLocation)
-                );
-
-
-                Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap = new HashMap<>();
-                for (PhysicalCard card : downloadableCards) {
-                    if (card instanceof ReportableCard reportable) {
-                        Map<PhysicalCard, List<Affiliation>> destinationMap = stGame.getRules()
-                                .getDestinationAndAffiliationMapForReportingCard(reportable, stGame,
-                                        destinationOptions, true);
-                        targetMap.put(card, destinationMap);
-                    }
-                }
-                DownloadReportableCardToDestinationAction action2 = new DownloadReportableCardToDestinationAction(
-                        cardGame, performingPlayerName, cardTarget, thisCard, targetMap);
-                appendActionToContext(cardGame, action2, actionContext);
-                if (action2.canBeInitiated(cardGame)) {
-                    return action2;
-                }
-            } else if (allNotReportableCards) {
-                Map<PhysicalCard, Collection<PhysicalCard>> destinationTargetMap = new HashMap<>();
-                for (PhysicalCard card : downloadableCards) {
-                    Collection<PhysicalCard> destinationOptions = Filters.filter(
-                            card.getDestinationOptionsFromGameText(actionContext, cardGame),
-                            cardGame,
-                            Filters.or(
-                                Filters.atLocation(actionContext.card().getLocationId()),
-                                    Filters.isCoreProxy
-                            )
-                    );
-                    if (!destinationOptions.isEmpty()) {
-                        destinationTargetMap.put(card, destinationOptions);
-                    }
-                }
-                if (!destinationTargetMap.isEmpty()) {
-                    EnterPlayAtDestinationResolver resolver =
-                            new EnterPlayAtDestinationResolver(performingPlayerName, destinationTargetMap);
-                    DownloadCardAction action =
-                            new DownloadCardAction(cardGame, performingPlayerName, resolver, thisCard);
-                    appendActionToContext(cardGame, action, actionContext);
-                    if (action.canBeInitiated(cardGame)) {
-                        return action;
-                    }
-                }
+            DownloadReportableCardToDestinationAction action2 = new DownloadReportableCardToDestinationAction(
+                    cardGame, performingPlayerName, cardTarget, thisCard, targetMap);
+            appendActionToContext(cardGame, action2, actionContext);
+            if (action2.canBeInitiated(cardGame)) {
+                return action2;
             }
         }
 

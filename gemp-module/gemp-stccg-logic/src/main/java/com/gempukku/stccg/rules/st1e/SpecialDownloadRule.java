@@ -24,7 +24,8 @@ public class SpecialDownloadRule extends ST1ERule {
                                                                   ActionResult actionResult) {
         if (actionResult.hasAnyType(List.of(
                 ActionResult.Type.JUST_PLAYED,
-                ActionResult.Type.START_OF_MISSION_ATTEMPT
+                ActionResult.Type.START_OF_MISSION_ATTEMPT,
+                ActionResult.Type.SOLVE_MISSION
         ))) {
             return getSpecialDownloadsThatPlayerCanInitiate(cardGame, playerId);
         } else {

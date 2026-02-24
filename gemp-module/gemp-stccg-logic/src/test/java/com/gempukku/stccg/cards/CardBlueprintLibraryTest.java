@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.common.SetDefinition;
+import com.gempukku.stccg.common.filterable.GameType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,6 +34,10 @@ public class CardBlueprintLibraryTest {
         }
 
         assertEquals(totalCardCount, _cardLibrary.getAllBlueprintIds().size());
+        int firstEdCardCount = _cardLibrary.getAllBlueprints().stream()
+                .filter(blueprint -> blueprint.getGameType() == GameType.FIRST_EDITION)
+                .toList().size();
+        assertTrue(firstEdCardCount > 0);
     }
 
     @Test

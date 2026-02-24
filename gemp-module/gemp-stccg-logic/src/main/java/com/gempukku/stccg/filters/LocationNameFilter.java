@@ -21,10 +21,11 @@ public class LocationNameFilter implements CardFilter {
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         if (game instanceof ST1EGame stGame) {
-            GameLocation location = physicalCard.getGameLocation(stGame);
-            return Objects.equals(location.getLocationName(), _locationName);
-        } else {
-            return false;
+            if (Filters.isLocation.accepts(game, physicalCard)) {
+                GameLocation location = physicalCard.getGameLocation(stGame);
+                return Objects.equals(location.getLocationName(), _locationName);
+            }
         }
+        return false;
     }
 }

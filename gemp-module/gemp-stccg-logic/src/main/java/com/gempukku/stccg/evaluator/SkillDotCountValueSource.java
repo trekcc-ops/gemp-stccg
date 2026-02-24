@@ -20,16 +20,21 @@ public class SkillDotCountValueSource implements SingleValueSource {
         _personnelBlueprint = personnelBlueprint;
     }
 
-    @Override
-    public int evaluateExpression(DefaultGame cardGame, GameTextContext actionContext) {
-        ActionCardResolver resolver = _personnelBlueprint.getTargetResolver(cardGame, actionContext);
-        Collection<PhysicalCard> cards = resolver.getCards(cardGame);
-        int result = 0;
-        for (PhysicalCard card : cards) {
-            if (card instanceof PersonnelCard personnel) {
-                result = result + personnel.getSkillDotCount();
+    public Evaluator getEvaluator(DefaultGame cardGame, GameTextContext context) {
+        return new Evaluator() {
+
+            @Override
+            public float evaluateExpression(DefaultGame cardGame) {
+                ActionCardResolver resolver = _personnelBlueprint.getTargetResolver(cardGame, context);
+                Collection<PhysicalCard> cards = resolver.getCards(cardGame);
+                int result = 0;
+                for (PhysicalCard card : cards) {
+                    if (card instanceof PersonnelCard personnel) {
+                        result = result + personnel.getSkillDotCount();
+                    }
+                }
+                return result;
             }
-        }
-        return result;
+        };
     }
 }
