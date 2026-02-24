@@ -8,7 +8,7 @@ import com.gempukku.stccg.game.DefaultGame;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type",
     defaultImpl = BasicValueSource.class)
 @JsonSubTypes({@JsonSubTypes.Type(value = VariableRangeValueSource.class, name = "range"),
-        @JsonSubTypes.Type(value = ConditionalValueSource.class, name = "requires"),
+        @JsonSubTypes.Type(value = ConditionalValueSource.class, names = {"conditional", "if"}),
         @JsonSubTypes.Type(value = ForEachInMemoryValueSource.class, name = "forEachInMemory"),
         @JsonSubTypes.Type(value = PrintedIntegrityValueSource.class, name = "printedIntegrity"),
         @JsonSubTypes.Type(value = MaximumValueSource.class, name = "max"),

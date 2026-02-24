@@ -9,7 +9,6 @@ import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = OrRequirement.class, name = "or"),
         @JsonSubTypes.Type(value = CardsAreSameAffiliationRequirement.class, name = "cardsAreSameAffiliation"),
         @JsonSubTypes.Type(value = ThisCardIsFacingDilemmaRequirement.class, name = "thisCardIsFacingDilemma"),
         @JsonSubTypes.Type(value = ThisCardIsOnPlanetRequirement.class, name = "thisCardIsOnPlanet"),
@@ -17,6 +16,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = MiscRequirement.class, names = {"cardsindeckcount", "cardsinhandmorethan",
     "hascardindiscard", "hascardinhand", "hascardinplaypile", "lasttribbleplayed", "nextTribbleInSequence",
     "tribblesequencebroken"}),
+        @JsonSubTypes.Type(value = OrRequirement.class, name = "or"),
         @JsonSubTypes.Type(value = PhaseRequirement.class, name = "phase"),
         @JsonSubTypes.Type(value = PlayOutOfSequenceRequirement.class, name = "playOutOfSequenceCondition"),
         @JsonSubTypes.Type(value = ThisCardPresentWithCardRequirement.class, names = "thisCardPresentWithCard"),
