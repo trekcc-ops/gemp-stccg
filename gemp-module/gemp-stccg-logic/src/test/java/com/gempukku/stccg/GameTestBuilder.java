@@ -1,6 +1,7 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
@@ -20,10 +21,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.st1e.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,6 +36,7 @@ public class GameTestBuilder {
     private Phase _startingPhase;
     private final List<String> _players;
     private boolean _skipStartingHands;
+    private Collection<StoppableCard> _cardsToStop = new ArrayList<>();
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
                            List<String> playerNames) throws InvalidGameOperationException {
@@ -81,6 +80,12 @@ public class GameTestBuilder {
             case BETWEEN_TURNS, TRIBBLES_TURN, START_OF_TURN -> throw new InvalidGameOperationException(
                     "Unequipped to create test game starting in phase '" + _startingPhase + "'");
         };
+
+        StopCardsAction stopAction = new StopCardsAction(_game, _players.get(0), _cardsToStop);
+        executeAction(stopAction);
+        for (StoppableCard stoppable : _cardsToStop) {
+            assertTrue(stoppable.isStopped());
+        }
 
         _game.getGameState().setCurrentProcess(currentProcess);
         _game.setCurrentPhase(_startingPhase);
@@ -392,5 +397,9 @@ public class GameTestBuilder {
 
     public void skipStartingHands() {
         _skipStartingHands = true;
+    }
+
+    public void stopCard(StoppableCard cardToStop) {
+        _cardsToStop.add(cardToStop);
     }
 }

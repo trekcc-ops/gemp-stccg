@@ -252,4 +252,8 @@ public interface PhysicalCard {
         return Objects.requireNonNullElse(getBlueprint().getLore(), "");
     }
 
+    default boolean isSeededUnderMission(ST1EGame stGame) {
+        GameLocation location = getGameLocation(stGame);
+        return location instanceof MissionLocation mission && mission.hasCardSeededUnderneath(this);
+    }
 }

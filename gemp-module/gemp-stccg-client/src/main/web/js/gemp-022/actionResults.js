@@ -211,9 +211,13 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         }
         case "KILL":
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
             message = performingPlayerId + " killed ";
-            message = message + showLinkableCardTitle(targetCard) + " using ";
+            if (jsonAction.killedCardIds.length > 1) {
+                message = message + jsonAction.killedCardIds.length.toString() + " cards";
+            } else {
+                message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.killedCardIds[0]]);
+            }
+            message = message + " using ";
             message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;

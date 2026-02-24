@@ -19,6 +19,6 @@ public class CountCardsMatchingFilterEvaluator extends Evaluator {
     public float evaluateExpression(DefaultGame cardGame) {
         int cardsMatchingFilter = Filters.filter(cardGame, _filter).size();
         float unroundedResult = cardsMatchingFilter * _forEach;
-        return (_roundUp) ? (int) Math.floor(unroundedResult) : (int) unroundedResult;
+        return (_roundUp) ? (int) Math.ceil(unroundedResult) : (int) unroundedResult;
     }
 }

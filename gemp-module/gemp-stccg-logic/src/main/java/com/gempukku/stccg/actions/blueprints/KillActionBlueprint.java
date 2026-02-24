@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.discard.KillSinglePersonnelAction;
+import com.gempukku.stccg.actions.discard.KillAction;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -25,7 +25,7 @@ public class KillActionBlueprint implements SubActionBlueprint {
         String performingPlayerId = (context instanceof DilemmaEncounterGameTextContext) ?
             context.card().getOwnerName() : context.yourName();
         return List.of(
-                new KillSinglePersonnelAction(cardGame, performingPlayerId,
+                new KillAction(cardGame, performingPlayerId,
                         context.card(), _targetResolver.getTargetResolver(cardGame, context)));
     }
 
