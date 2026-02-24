@@ -7,8 +7,9 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -32,7 +33,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                                                 AttemptingUnit attemptingUnit, MissionLocation missionLocation,
                                                 AttemptMissionAction missionAttemptAction)
             throws InvalidGameLogicException {
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
+        GameTextContext actionContext = new DilemmaEncounterGameTextContext(thisCard, performingPlayerName);
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation.getLocationId(), actionContext);
@@ -44,7 +45,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
     public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
                                                  PhysicalCard card) {
         try {
-            GameTextContext context = new GameTextContext(card, performingPlayerName);
+            GameTextContext context = new DilemmaEncounterGameTextContext(card, performingPlayerName);
             Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
             for (Action action : actionStack) {
                 if (action instanceof AttemptMissionAction attemptAction &&

@@ -6,17 +6,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
+import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
 import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.player.YourOpponentPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,9 +49,13 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
         List<Action> result = new ArrayList<>();
         if (_requirement == null || _requirement.accepts(context, cardGame)) {
             CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
+            Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, filter);
             String performingPlayer = _selectingPlayer.getPlayerName(cardGame, context);
-            int min = _count.getMinimum(cardGame, context);
-            int max = _count.getMaximum(cardGame, context);
+
+            int min = (context instanceof DilemmaEncounterGameTextContext) ?
+                    Math.min(_count.getMinimum(cardGame, context), filteredCards.size()) :
+                    _count.getMinimum(cardGame, context);
+            int max = Math.min(_count.getMaximum(cardGame, context), filteredCards.size());
             Action selectAction =
                     new SelectRandomCardsAction(cardGame, performingPlayer, filter, context, _saveToMemoryId, min, max);
             result.add(selectAction);
