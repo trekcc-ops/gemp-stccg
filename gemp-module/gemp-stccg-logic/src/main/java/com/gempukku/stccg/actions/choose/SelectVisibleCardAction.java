@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -21,12 +22,21 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
     private PhysicalCard _selectedCard;
     private final String _decisionText;
     private final Collection<PhysicalCard> _selectableCards;
+    private String _saveToMemoryId;
 
     public SelectVisibleCardAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
                                    Collection<? extends PhysicalCard> cards) {
         super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS);
         _selectableCards = new ArrayList<>(cards);
         _decisionText = choiceText;
+    }
+
+    public SelectVisibleCardAction(DefaultGame cardGame, String selectingPlayerName, String choiceText,
+                                   Collection<? extends PhysicalCard> cards, GameTextContext context, String saveToMemoryId) {
+        super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS, context);
+        _selectableCards = new ArrayList<>(cards);
+        _decisionText = choiceText;
+        _saveToMemoryId = saveToMemoryId;
     }
 
     public SelectVisibleCardAction(DefaultGame cardGame, String playerName, String choiceText, CardFilter cardFilter) {
@@ -50,6 +60,9 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
                             @Override
                             public void decisionMade(String result) throws DecisionResultInvalidException {
                                 _selectedCard = getSelectedCardByResponse(result);
+                                if (_actionContext != null && _saveToMemoryId != null) {
+                                    _actionContext.setCardMemory(_saveToMemoryId, _selectedCard);
+                                }
                                 setAsSuccessful();
                             }
                         };

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.google.common.collect.Iterables;
@@ -145,6 +146,12 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 SkillName classification = SkillName.valueOf(parameter.toUpperCase());
                 yield (cardGame, actionContext) -> new ClassificationFilter(classification);
             }
+            case "CUNNING" -> {
+                int cunningAmount = Integer.parseInt(parameter);
+                ComparatorType comparator = comparatorType;
+                yield (cardGame, actionContext) ->
+                        new AttributeFilter(CardAttribute.INTEGRITY, comparator, cunningAmount);
+            }
             case "facilityEngineerRequirement" -> {
                 FilterBlueprint engineerBlueprint = createFilterBlueprint(parameter);
                 yield new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);
@@ -154,6 +161,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 yield (cardGame, actionContext) -> {
                     CardFilter otherFilter = otherFilterBlueprint.getFilterable(cardGame, actionContext);
                     return new HighestTotalAttributeCardFilter(otherFilter);
+                };
+            }
+            case "highestStrength" -> {
+                FilterBlueprint otherFilterBlueprint = createFilterBlueprint(parameter);
+                yield (cardGame, actionContext) -> {
+                    CardFilter otherFilter = otherFilterBlueprint.getFilterable(cardGame, actionContext);
+                    return new HighestStrengthCardFilter(otherFilter);
                 };
             }
             case "integrity" -> {

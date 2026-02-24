@@ -26,6 +26,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = DownloadActionBlueprint.class, name = "download"),
         @JsonSubTypes.Type(value = DownloadReportableActionBlueprint.class, name = "downloadReportable"),
         @JsonSubTypes.Type(value = IncreaseAttributesSubActionBlueprint.class, name = "increaseAttributes"),
+        @JsonSubTypes.Type(value = ConditionalSubActionBlueprint.class, name = "if"),
         @JsonSubTypes.Type(value = KillActionBlueprint.class, name = "kill"),
         @JsonSubTypes.Type(value = NullifySubActionBlueprint.class, name = "nullify"),
         @JsonSubTypes.Type(value = OvercomeDilemmaConditionActionBlueprint.class, name = "overcomeCondition"),
@@ -37,6 +38,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = PlaceOnThisMissionActionBlueprint.class, name = "placeOnThisMission"),
         @JsonSubTypes.Type(value = RandomSelectionSubActionBlueprint.class, name = "randomSelection"),
         @JsonSubTypes.Type(value = ScorePointsSubActionBlueprint.class, name = "scorePoints"),
+        @JsonSubTypes.Type(value = SelectCardSubActionBlueprint.class, name = "selectCard"),
         @JsonSubTypes.Type(value = SelectAndPerformSubActionBlueprint.class, name = "selectAndPerformSubAction"),
         @JsonSubTypes.Type(value = ShuffleCardsIntoDrawDeckSubActionBlueprint.class, name = "shuffleCardsIntoDrawDeck"),
         @JsonSubTypes.Type(value = StopSubActionBlueprint.class, name = "stop")
