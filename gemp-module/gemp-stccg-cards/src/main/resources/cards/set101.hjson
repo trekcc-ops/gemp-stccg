@@ -1572,7 +1572,7 @@
         }
         {
             blueprintId: 101_236
-            title: Simon Tarses
+            "title": "Simon Tarses",
             type: personnel
             affiliation: federation
             uniqueness: universal

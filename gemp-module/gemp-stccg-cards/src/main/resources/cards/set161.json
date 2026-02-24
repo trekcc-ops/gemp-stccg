@@ -24,6 +24,26 @@
             ]
         },
         {
+            "blueprintId": "161_006",
+            "title": "Invidium Leak",
+            "type": "dilemma",
+            "mission-type": "space",
+            "property-logo": "tng-logo",
+            "lore": "A broken container of invidium disrupted the <i>U.S.S. Enterprise</i>'s systems in 2366 before it was rendered inert by Geordi La Forge and Reginald Barclay.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/6.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "ENGINEER x3 OR personnelWith(CUNNING>7 + MEDICAL) OR personnelWith(CUNNING>7 + Physics)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "161_021",
             "title": "Advanced Combat Training",
             "type": "mission",
