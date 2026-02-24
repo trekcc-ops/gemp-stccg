@@ -2352,6 +2352,24 @@
             rarity: C
         }
         {
+            blueprintId: 101_301
+            title: Ocett
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Cardassian female officer. Commander of the <i>Bralek</i>. Gul who pursued the DNA program."
+            species: cardassian
+            gender: female
+            skill-box: "[*] Archaeology [*] Navigation [*] Honor"
+            integrity: 6
+            cunning: 8
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR301.jpg
+            rarity: U
+        }
+        {
             blueprintId: 101_303
             title: Vekor
             type: personnel
