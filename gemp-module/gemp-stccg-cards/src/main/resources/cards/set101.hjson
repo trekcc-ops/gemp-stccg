@@ -1569,6 +1569,23 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR236.jpg
         }
         {
+            blueprintId: 101_238
+            title: Sirna Kolrami
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: V.I.P.
+            icons: command
+            lore: Famed Zakdorn strategist. He is a grandmaster of the game Strategema.
+            species: zakdorn
+            gender: male
+            skill-box: "[*] Leadership"
+            integrity: 7
+            cunning: 9
+            strength: 2
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR238.jpg
+        }
+        {
             blueprintId: 101_239
             title: Sito Jaxa
             type: personnel
@@ -1639,6 +1656,23 @@
             "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR243.jpg"
         },
         {
+            "blueprintId": "101_244",
+            "title": "Tasha Yar",
+            "type": "personnel",
+            "affiliation": "federation",
+            "property-logo": "tng-logo",
+            "classification": "SECURITY",
+            "icons": "staff",
+            "lore": "Lieutenant who served as chief of security on the <i>U.S.S. Enterprise</i>. Courageous human orphan from Turkana IV. She proved Data fully functional.",
+            "species": "human",
+            "gender": "female",
+            "skill-box": "[*] Honor [*] Leadership",
+            "integrity": 8,
+            "cunning": 7,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR244.jpg"
+        },
+        {
             blueprintId: 101_245
             title: Taurik
             type: personnel
@@ -1692,6 +1726,22 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR247.jpg
         }
         {
+            blueprintId: 101_248
+            title: Vash
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: CIVILIAN
+            lore: "Extraordinary archaeology treasure hunter. Traveled with Q. Human romantically involved with Jean-Luc Picard. Lovable character, but she's not to be trusted.",
+            species: human
+            gender: female
+            skill-box: "[*] Archaeology x2 [*] Treachery [*] Anthropology"
+            integrity: 3
+            cunning: 8
+            strength: 4
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR248.jpg
+        }
+        {
             blueprintId: 101_249
             title: Wesley Crusher
             type: personnel
@@ -1707,6 +1757,23 @@
             cunning: 8
             strength: 5
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR249.jpg
+        }
+        {
+            blueprintId: 101_250
+            title: William T. Riker
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Commander, gourmet cook, and jazz musician. Human executive officer of the <i>U.S.S. Enterprise</i>. He is <i>imzadi</i> to Deanna Troi, his beloved.
+            species: human
+            gender: male
+            skill-box: "[*] Diplomacy [*] Leadership [*] Navigation [*] Honor [*] Music"
+            integrity: 8
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR250.jpg
         }
         {
             blueprintId: 101_251

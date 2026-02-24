@@ -16,7 +16,7 @@ public enum Species implements Filterable {
     HUMAN("human"),
     HUMANOID("humanoid"),
     KELLERUN, KLINGON, LETHEAN, MARKALIAN, NAPEAN, ROMULAN, RUTIAN,
-    TAKARAN, TAMARIAN, TILONIAN, TRILL, VORTA, VULCAN, YRIDIAN, ZALKONIAN;
+    TAKARAN, TAMARIAN, TILONIAN, TRILL, VORTA, VULCAN, YRIDIAN, ZALKONIAN, ZAKDORN;
     private final String _humanReadable;
 
     Species() { _humanReadable = StringUtils.capitalize(name().toLowerCase(Locale.ROOT)); }
