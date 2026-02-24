@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.CardWithStrength;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.ComparatorType;
@@ -13,7 +12,6 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.common.filterable.Characteristic;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.game.DefaultGame;
 import com.google.common.collect.Iterables;
 
 import java.io.IOException;
@@ -196,37 +194,18 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 FilterBlueprint filterBlueprint = createFilterBlueprint(parameter);
                 yield (cardGame, actionContext) -> Filters.not(filterBlueprint.getFilterable(cardGame, actionContext));
             }
-            case "personnelWithMatchingAttribute" -> {
+            case "matchesAttributeOfPersonnel" -> {
                 FilterBlueprint filterBlueprint = createFilterBlueprint(parameter);
-                yield (cardGame, actionContext) -> new CardFilter() {
-                    @Override
-                    public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-                        if (physicalCard instanceof PersonnelCard personnel) {
-                            CardFilter comparisonFilter = filterBlueprint.getFilterable(cardGame, actionContext);
-                            Collection<PhysicalCard> comparisonCards = Filters.filter(game, comparisonFilter);
-                            boolean sameIntegrity = true;
-                            boolean sameCunning = true;
-                            boolean sameStrength = true;
-                            for (PhysicalCard card : comparisonCards) {
-                                if (card instanceof CardWithStrength cardToCompare) {
-                                    if (!Objects.equals(personnel.getIntegrity(cardGame), cardToCompare.getIntegrity(cardGame))) {
-                                        sameIntegrity = false;
-                                    }
-                                    if (!Objects.equals(personnel.getCunning(cardGame), cardToCompare.getCunning(cardGame))) {
-                                        sameCunning = false;
-                                    }
-                                    if (!Objects.equals(personnel.getStrength(cardGame), cardToCompare.getStrength(cardGame))) {
-                                        sameStrength = false;
-                                    }
-                                } else {
-                                    return false;
-                                }
-                            }
-                            return sameIntegrity || sameCunning || sameStrength;
-                        } else {
-                            return false;
+                yield (cardGame, actionContext) -> {
+                    Collection<PhysicalCard> cardsToMatch =
+                            Filters.filter(cardGame, filterBlueprint.getFilterable(cardGame, actionContext));
+                    Collection<CardFilter> result = new ArrayList<>();
+                    for (PhysicalCard cardToMatch : cardsToMatch) {
+                        if (cardToMatch instanceof PersonnelCard personnel) {
+                            result.add(new MatchingAttributeFilter(personnel));
                         }
                     }
+                    return Filters.and(result);
                 };
             }
             case "sd-icons" -> {

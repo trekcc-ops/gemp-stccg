@@ -24,7 +24,7 @@
                             "type": "stop",
                             "target": {
                                 "type": "selectAll",
-                                "filter": "inCrewOrAwayTeamEncountering + not(memoryId=selectedPersonnel) + not(personnelWithMatchingAttribute(memoryId=selectedPersonnel))"
+                                "filter": "inCrewOrAwayTeamEncountering + not(memoryId=selectedPersonnel) + not(matchesAttributeOfPersonnel(memoryId=selectedPersonnel))"
                             }
                         }
                     ]
