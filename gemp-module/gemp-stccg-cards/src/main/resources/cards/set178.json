@@ -4,6 +4,41 @@
     "gameType": "First Edition",
     "cards": [
         {
+            "blueprintId": "178_002",
+            "title": "A Bad End",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "property-logo": "tng-logo",
+            "lore": "Shot in the chest by the Lenarians, Jean-Luc Picard's life was left hanging in the balance due to the damage his artificial heart received.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront6/2.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "you",
+                                "filter": "yours + stopped + personnel",
+                                "count": {
+                                    "type": "countCardsMatchingFilter",
+                                    "forEach": 0.5,
+                                    "filter": "yours + stopped + personnel + atThisLocation",
+                                    "roundUp": true
+                                }
+                            }
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Biology x2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "178_033",
             "title": "Dominion Outpost",
             "type": "facility",

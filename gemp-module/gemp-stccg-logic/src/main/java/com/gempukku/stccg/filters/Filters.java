@@ -1,10 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.ComparatorType;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
@@ -73,6 +70,8 @@ public class Filters {
             Filters.and(Filters.or(CardType.MISSION, CardType.TIME_LOCATION), MissionType.PLANET);
     public static final CardFilter Romulan = Filters.or(Affiliation.ROMULAN, Species.ROMULAN);
     public static final CardFilter ship = Filters.or(CardType.SHIP);
+    public static final CardFilter stopped =
+            (game, physicalCard) -> physicalCard instanceof ST1EPhysicalCard stCard && stCard.isStopped();
     public static final CardFilter undocked = new UndockedFilter();
     public static final CardFilter unique = Filters.or(Uniqueness.UNIQUE);
     public static final CardFilter universal = Filters.or(Uniqueness.UNIVERSAL);
