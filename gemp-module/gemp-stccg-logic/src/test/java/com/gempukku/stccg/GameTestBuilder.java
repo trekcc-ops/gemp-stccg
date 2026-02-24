@@ -81,10 +81,12 @@ public class GameTestBuilder {
                     "Unequipped to create test game starting in phase '" + _startingPhase + "'");
         };
 
-        StopCardsAction stopAction = new StopCardsAction(_game, _players.get(0), _cardsToStop);
-        executeAction(stopAction);
-        for (StoppableCard stoppable : _cardsToStop) {
-            assertTrue(stoppable.isStopped());
+        if (!_cardsToStop.isEmpty()) {
+            StopCardsAction stopAction = new StopCardsAction(_game, _players.getFirst(), _cardsToStop);
+            executeAction(stopAction);
+            for (StoppableCard stoppable : _cardsToStop) {
+                assertTrue(stoppable.isStopped());
+            }
         }
 
         _game.getGameState().setCurrentProcess(currentProcess);

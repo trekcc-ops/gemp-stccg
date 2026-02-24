@@ -33,6 +33,25 @@
             ]
         }
         {
+            "blueprintId": "101_013",
+            "title": "Ancient Computer",
+            "type": "dilemma",
+            "mission-type": "space",
+            "lore": "Vital information can be retrieved from old or damaged computer systems like this one aboard a derelict Promellian battlecruiser.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR13.jpg",
+            "rarity": "R",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "Computer Skill x2 OR SCIENCE x3 OR ENGINEER x3"
+                    }
+                }
+            ]
+        }
+        {
             "blueprintId": "101_014",
             "title": "Archer",
             "type": "dilemma",
