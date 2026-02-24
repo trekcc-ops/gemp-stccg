@@ -53,6 +53,10 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
         Collection<? extends PhysicalCard> selectableCards = getSelectableCards(cardGame);
         if (selectableCards.size() == 1) {
             _selectedCard = Iterables.getOnlyElement(selectableCards);
+            if (_actionContext != null && _saveToMemoryId != null) {
+                _actionContext.setCardMemory(_saveToMemoryId, _selectedCard);
+            }
+            setAsSuccessful();
         } else {
             AwaitingDecision decision = new CardsSelectionDecision(
                     _performingPlayerId, _decisionText, selectableCards,
@@ -68,7 +72,6 @@ public class SelectVisibleCardAction extends ActionyAction implements SelectCard
                         };
             cardGame.sendAwaitingDecision(decision);
         }
-        setAsSuccessful();
     }
 
     public PhysicalCard getSelectedCard() {
