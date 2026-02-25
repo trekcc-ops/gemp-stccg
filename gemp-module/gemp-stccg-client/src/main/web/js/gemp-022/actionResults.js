@@ -73,7 +73,9 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             break;
         case "REMOVE_CARD_FROM_GAME":
-            cardList.push(jsonAction.targetCardId);
+            for (const cardId of jsonAction.targetCardIds) {
+                cardList.push(cardId);
+            }
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.addCardToHiddenZone(targetCard, "REMOVED", targetCard.owner);
@@ -234,9 +236,11 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             gameChat.appendMessage(message, "gameMessage");
             break;
         case "REMOVE_CARD_FROM_GAME": {
-            let removedCard = jsonGameState.visibleCardsInGame[jsonAction.targetCardId];
-            message = performingPlayerId + " removed " + showLinkableCardTitle(removedCard) + " from the game";
-            gameChat.appendMessage(message, "gameMessage");
+            for (const cardId of jsonAction.targetCardIds) {
+                targetCard = jsonGameState.visibleCardsInGame[cardId];
+                message = performingPlayerId + " removed " + showLinkableCardTitle(targetCard) + " from the game";
+                gameChat.appendMessage(message, "gameMessage");
+            }
             break;
         }
         case "SCORE_POINTS": {

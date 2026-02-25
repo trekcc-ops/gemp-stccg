@@ -116,17 +116,22 @@
             "rarity": "V",
             "actions": [
                 {
-                    "type": "randomSelection",
-                    "filter": "personnel + encounteringThisCard",
-                    "count": 9,
-                    "saveToMemoryId": "continuingPersonnel"
-                },
-                {
-                    "type": "removeCardsFromGame",
-                    "target": {
-                        "type": "selectAll",
-                        "filter": "personnel + inCrewOrAwayTeamEncountering + not(memoryId=continuingPersonnel)"
-                    }
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "randomSelection",
+                            "filter": "personnel + encounteringThisCard",
+                            "count": 9,
+                            "saveToMemoryId": "continuingPersonnel"
+                        },
+                        {
+                            "type": "removeCardsFromGame",
+                            "target": {
+                                "type": "selectAll",
+                                "filter": "personnel + inCrewOrAwayTeamEncountering + not(memoryId=continuingPersonnel)"
+                            }
+                        }
+                    ]
                 }
             ]
         },
