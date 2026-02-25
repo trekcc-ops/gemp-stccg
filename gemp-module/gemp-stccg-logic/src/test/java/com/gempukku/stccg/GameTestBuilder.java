@@ -14,6 +14,7 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.game.GameRandomizer;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
@@ -36,10 +37,15 @@ public class GameTestBuilder {
     private Phase _startingPhase;
     private final List<String> _players;
     private boolean _skipStartingHands;
-    private Collection<StoppableCard> _cardsToStop = new ArrayList<>();
+    private final Collection<StoppableCard> _cardsToStop = new ArrayList<>();
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
                            List<String> playerNames) throws InvalidGameOperationException {
+        this(cardBlueprintLibrary, formatLibrary, playerNames, new GameRandomizer());
+    }
+
+    public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
+                           List<String> playerNames, GameRandomizer randomizer) throws InvalidGameOperationException {
         GameFormat format = formatLibrary.get("debug1e");
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
@@ -49,12 +55,12 @@ public class GameTestBuilder {
         for (String player : playerNames) {
             _decks.put(player, testDeck);
         }
-        _game = new ST1EGame(format, _decks, cardBlueprintLibrary, GameTimer.GLACIAL_TIMER);
+        _game = new ST1EGame(format, _decks, cardBlueprintLibrary, GameTimer.GLACIAL_TIMER, randomizer);
         _startingPhase = Phase.SEED_DOORWAY;
         _players = playerNames;
     }
 
-    public void startGame() throws InvalidGameOperationException {
+    public ST1EGame startGame() throws InvalidGameOperationException {
         // Initialize player order
         _game.getGameState().getCurrentProcess().process(_game);
 
@@ -92,6 +98,7 @@ public class GameTestBuilder {
         _game.getGameState().setCurrentProcess(currentProcess);
         _game.setCurrentPhase(_startingPhase);
         _game.startGame();
+        return _game;
     }
 
     public void setPhase(Phase phase) {

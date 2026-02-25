@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.choose;
 
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithRespondableInitiation;
 import com.gempukku.stccg.actions.ActionyAction;
@@ -70,7 +69,8 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
                         setAsFailed();
                         throw new InvalidGameLogicException("Not enough cards to select");
                     } else {
-                        List<PhysicalCard> additionalCards = TextUtils.getRandomItemsFromList(selectableCards, cardsToSelect);
+                        Collection<PhysicalCard> additionalCards =
+                                cardGame.getRandomSelectionOfCards(selectableCards, cardsToSelect);
                         _selectedCards.addAll(additionalCards);
                         if (_selectedCards.size() != _min) {
                             setAsFailed();
@@ -89,8 +89,8 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
                                 setAsFailed();
                                 throw new DecisionResultInvalidException("Not enough cards to select");
                             } else {
-                                List<PhysicalCard> additionalCards =
-                                        TextUtils.getRandomItemsFromList(selectableCards, numberResult);
+                                Collection<PhysicalCard> additionalCards =
+                                        cardGame.getRandomSelectionOfCards(selectableCards, numberResult);
                                 _selectedCards.addAll(additionalCards);
                                 if (_selectedCards.size() < _min || _selectedCards.size() > _max) {
                                     setAsFailed();
