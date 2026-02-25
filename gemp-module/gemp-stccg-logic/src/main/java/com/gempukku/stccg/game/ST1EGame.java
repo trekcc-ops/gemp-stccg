@@ -58,7 +58,20 @@ public class ST1EGame extends DefaultGame {
         _rules.applyRuleSet(this);
     }
 
-
+    public ST1EGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                    GameTimer gameTimer, GameRandomizer randomizer) throws InvalidGameOperationException {
+        super(format, decks, library, GameType.FIRST_EDITION, null, randomizer);
+        _rules = new ST1ERuleSet();
+        try {
+            _gameState = new ST1EGameState(decks.keySet(), gameTimer);
+            _gameState.createPhysicalCards(decks, this);
+            _gameState.setCurrentProcess(new ST1EPlayerOrderProcess());
+        } catch(InvalidGameOperationException exp) {
+            sendErrorMessage(exp);
+            _cancelled = true;
+        }
+        _rules.applyRuleSet(this);
+    }
 
     @Override
     public ST1EGameState getGameState() {

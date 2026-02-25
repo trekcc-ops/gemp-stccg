@@ -10,6 +10,7 @@ import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.player.Player;
+import com.google.common.collect.Iterables;
 
 import java.util.*;
 
@@ -68,11 +69,13 @@ public class Filters {
     public static final CardFilter inPlay = new InPlayFilter();
     public static final CardFilter Klingon = Filters.or(Affiliation.KLINGON, Species.KLINGON);
     public static final CardFilter missionSpecialist = new MissionSpecialistFilter();
+    private static final CardFilter none = (game, physicalCard) -> false;
     public static final CardFilter personnel = Filters.or(CardType.PERSONNEL);
     public static final CardFilter planetLocation =
             Filters.and(Filters.or(CardType.MISSION, CardType.TIME_LOCATION), MissionType.PLANET);
     public static final CardFilter Romulan = Filters.or(Affiliation.ROMULAN, Species.ROMULAN);
     public static final CardFilter ship = Filters.or(CardType.SHIP);
+    public static final CardFilter stopped = new IsStoppedFilter();
     public static final CardFilter undocked = new UndockedFilter();
     public static final CardFilter unique = Filters.or(Uniqueness.UNIQUE);
     public static final CardFilter universal = Filters.or(Uniqueness.UNIVERSAL);
@@ -279,12 +282,18 @@ public class Filters {
         }
     }
 
-    public static CardFilter and(Iterable<Filterable> filterables) {
-        List<CardFilter> result = new LinkedList<>();
-        for (Filterable filter : filterables) {
-            result.add(changeToFilter(filter));
+    public static CardFilter and(Collection<? extends Filterable> filterables) {
+        if (filterables == null || filterables.isEmpty()) {
+            return Filters.none;
+        } else if (filterables.size() == 1) {
+            return changeToFilter(Iterables.getOnlyElement(filterables));
+        } else {
+            List<CardFilter> result = new LinkedList<>();
+            for (Filterable filter : filterables) {
+                result.add(changeToFilter(filter));
+            }
+            return new AndFilter(result);
         }
-        return new AndFilter(result);
     }
 
 

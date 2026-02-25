@@ -4,6 +4,49 @@
     "gameType": "First Edition",
     "cards": [
         {
+            "blueprintId": "155_008",
+            "title": "Magnetic Field Disruptions",
+            "type": "dilemma",
+            "mission-type": "space",
+            "lore": "Proximity to severe stellar phenomena can disrupt shipboard systems. In 2364, intense magnetic fields from the Delos star overloaded many consoles on the <i>U.S.S. Enterprise</i>.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/8V.jpg",
+            "rarity": "V",
+            "nullifyWith": "personnelWith(Exobiology x3 OR Geology x3)",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "you",
+                                    "filter": "personnel + (Astrophysics OR Navigation) + encounteringThisCard",
+                                    "count": 1
+                                }
+                            },
+                            "failEffect": {
+                                "type": "kill",
+                                "target": {
+                                    "type": "select",
+                                    "random": true,
+                                    "filter": "personnel + encounteringThisCard",
+                                    "count": 1
+                                }
+                            }
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "CUNNING>24"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "155_009",
             "title": "Microbrain",
             "type": "dilemma",

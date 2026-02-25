@@ -1,21 +1,23 @@
 package com.gempukku.stccg.filters;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.ComparatorType;
-import com.gempukku.stccg.common.filterable.*;
-import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.Characteristic;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.google.common.collect.Iterables;
 
 import java.io.IOException;
 import java.util.*;
 
-public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint> {
+public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint> implements FilterBlueprintMethods {
 
     private final static String OR_WITH_NO_PARENTHESES = "\\s+OR\\s+(?![^\\(]*\\))";
     private final static String AND_WITH_NO_PARENTHESES = "\\s+\\+\\s+(?![^\\(]*\\))";
@@ -146,6 +148,12 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 SkillName classification = SkillName.valueOf(parameter.toUpperCase());
                 yield (cardGame, actionContext) -> new ClassificationFilter(classification);
             }
+            case "CUNNING" -> {
+                int cunningAmount = Integer.parseInt(parameter);
+                ComparatorType comparator = comparatorType;
+                yield (cardGame, actionContext) ->
+                        new AttributeFilter(CardAttribute.CUNNING, comparator, cunningAmount);
+            }
             case "facilityEngineerRequirement" -> {
                 FilterBlueprint engineerBlueprint = createFilterBlueprint(parameter);
                 yield new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);
@@ -155,6 +163,13 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 yield (cardGame, actionContext) -> {
                     CardFilter otherFilter = otherFilterBlueprint.getFilterable(cardGame, actionContext);
                     return new HighestTotalAttributeCardFilter(otherFilter);
+                };
+            }
+            case "highestStrength" -> {
+                FilterBlueprint otherFilterBlueprint = createFilterBlueprint(parameter);
+                yield (cardGame, actionContext) -> {
+                    CardFilter otherFilter = otherFilterBlueprint.getFilterable(cardGame, actionContext);
+                    return new HighestStrengthCardFilter(otherFilter);
                 };
             }
             case "integrity" -> {
@@ -178,6 +193,20 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             case "not" -> {
                 FilterBlueprint filterBlueprint = createFilterBlueprint(parameter);
                 yield (cardGame, actionContext) -> Filters.not(filterBlueprint.getFilterable(cardGame, actionContext));
+            }
+            case "matchesAttributeOfPersonnel" -> {
+                FilterBlueprint filterBlueprint = createFilterBlueprint(parameter);
+                yield (cardGame, actionContext) -> {
+                    Collection<PhysicalCard> cardsToMatch =
+                            Filters.filter(cardGame, filterBlueprint.getFilterable(cardGame, actionContext));
+                    Collection<CardFilter> result = new ArrayList<>();
+                    for (PhysicalCard cardToMatch : cardsToMatch) {
+                        if (cardToMatch instanceof PersonnelCard personnel) {
+                            result.add(new MatchingAttributeFilter(personnel));
+                        }
+                    }
+                    return Filters.and(result);
+                };
             }
             case "sd-icons" -> {
                 int iconCount = Integer.parseInt(parameter);
@@ -251,94 +280,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         result.put(newString, parentheticals);
         return result;
     }
-
-    private void loadSimpleFilters() throws InvalidCardDefinitionException {
-        FilterBlueprint thisCard = (cardGame, actionContext) -> Filters.card(actionContext.card());
-        FilterBlueprint notThisCard = (cardGame, actionContext) -> Filters.not(Filters.card(actionContext.card()));
-        FilterBlueprint yours = (cardGame, actionContext) -> Filters.your(actionContext.yourName());
-
-        for (CardIcon value : CardIcon.values())
-            appendSimpleFilter(value);
-        for (CardType value : CardType.values())
-            appendSimpleFilter(value);
-        for (Characteristic value : Characteristic.values())
-            appendSimpleFilter(value);
-        for (Uniqueness value : Uniqueness.values())
-            appendSimpleFilter(value);
-        for (FacilityType value : FacilityType.values())
-            appendSimpleFilter(value);
-        for (PropertyLogo value : PropertyLogo.values())
-            appendSimpleFilter(value);
-        for (SkillName value : SkillName.values())
-            appendSimpleFilter(value);
-
-        // Characteristics
-        appendSimpleFilter("android", (cardGame, actionContext) -> Filters.changeToFilter(Species.ANDROID));
-        appendSimpleFilter("bajoran", (cardGame, actionContext) -> Filters.Bajoran);
-        appendSimpleFilter("borg", (cardGame, actionContext) -> Filters.Borg);
-        appendSimpleFilter("cardassian", (cardGame, actionContext) -> Filters.Cardassian);
-        appendSimpleFilter("dominion", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.DOMINION));
-        appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
-        appendSimpleFilter("female", (cardGame, actionContext) -> Filters.female);
-        appendSimpleFilter("hologram", (cardGame, actionContext) -> Filters.hologram);
-        appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
-        appendSimpleFilter("romulan", (cardGame, actionContext) -> Filters.Romulan);
-
-        // More complicated game state checks
-        appendSimpleFilter("atNonHomeworldMission", (cardGame, actionContext) -> (game, physicalCard) ->
-                game instanceof ST1EGame stGame &&
-                        physicalCard.getGameLocation(stGame) instanceof MissionLocation missionLocation &&
-                        !missionLocation.isHomeworld());
-        appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
-                Filters.cardsYouCanDownload(actionContext.yourName()));
-        appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
-                new EncounteringCardFilter(actionContext.card()));
-        appendSimpleFilter("inplay", (cardGame, actionContext) -> Filters.inPlay);
-        appendSimpleFilter("inYourDiscard", (cardGame, actionContext) ->
-                new InYourDiscardFilter(actionContext.yourName()));
-        appendSimpleFilter("inYourHand", (cardGame, actionContext) ->
-                new InYourHandFilter(actionContext.yourName()));
-        appendSimpleFilter("inYourDrawDeck", (cardGame, actionContext) ->
-                new InYourDrawDeckFilter(actionContext.yourName()));
-        appendSimpleFilter("onPlanetMissionSeededByYourOpponent", (cardGame, actionContext) -> {
-            String opponentName = cardGame.getOpponent(actionContext.yourName());
-            return new OnPlanetMissionFilter(opponentName);
-        });
-        appendSimpleFilter("presentWithThisCard", (cardGame, actionContext) ->
-                Filters.presentWithThisCard(actionContext.card()));
-        appendSimpleFilter("thisCardIsAboard", (cardGame, actionContext) ->
-                new ThisCardIsAboardFilter(actionContext.card()));
-        appendSimpleFilter("thisMission", (cardGame, actionContext) -> (game, physicalCard) ->
-                physicalCard.getCardType() == CardType.MISSION &&
-                physicalCard.isAtSameLocationAsCard(actionContext.card()));
-        appendSimpleFilter("thisShip", (cardGame, actionContext) -> new ThisShipFilter(actionContext.card()));
-        appendSimpleFilter("youControlAMatchingOutpost", (cardGame, actionContext) ->
-                new YouControlAMatchingOutpostFilter(actionContext.yourName()));
-        appendSimpleFilter("youOwnNoCopiesInPlay", (cardGame, actionContext) ->
-                Filters.youHaveNoCopiesInPlay(actionContext.yourName()));
-        appendSimpleFilter("yoursEvenIfNotInPlay", (cardGame, actionContext) ->
-                Filters.yoursEvenIfNotInPlay(actionContext.yourName()));
-
-        // Broad card filters
-        appendSimpleFilter("another", notThisCard);
-        appendSimpleFilter("any", (cardGame, actionContext) -> Filters.any);
-        appendSimpleFilter("here", (cardGame, actionContext) -> Filters.here(actionContext.card()));
-        appendSimpleFilter("missionSpecialist", (cardGame, actionContext) -> new MissionSpecialistFilter());
-        appendSimpleFilter("notThisCard", notThisCard);
-        appendSimpleFilter("self", thisCard);
-        appendSimpleFilter("thisCard", thisCard);
-        appendSimpleFilter("your", yours);
-        appendSimpleFilter("yours", yours);
-    }
     
-    private void appendSimpleFilter(String label, FilterBlueprint blueprint) throws InvalidCardDefinitionException {
-        String labelToUse = label.toLowerCase();
-        if (simpleFilters.get(label) != null) {
-            throw new InvalidCardDefinitionException("Duplicate filter blueprint label: " + labelToUse);
-        }
-        simpleFilters.put(labelToUse, blueprint);
-    }
-
     private FilterBlueprint createOrFilter(String text, List<String> substitutions)
             throws InvalidCardDefinitionException {
         Collection<FilterBlueprint> filters = new ArrayList<>();
@@ -364,24 +306,6 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             filters.add(createFilterBlueprint(textToUse));
         }
         return new AndFilterBlueprint(filters);
-    }
-
-    private static String Sanitize(String input)
-    {
-        return input
-                .toLowerCase()
-                .replace(" ", "")
-                .replace("_", "");
-    }
-
-    private void appendSimpleFilter(Filterable value) {
-        final String filterName = Sanitize(value.toString());
-        final String optionalFilterName = value.toString().toLowerCase().replace("_", "-");
-        if (simpleFilters.containsKey(filterName))
-            throw new RuntimeException("Duplicate filter name: " + filterName);
-        simpleFilters.put(filterName, (cardGame, actionContext) -> Filters.changeToFilter(value));
-        if (!optionalFilterName.equals(filterName))
-            simpleFilters.put(optionalFilterName, (cardGame, actionContext) -> Filters.changeToFilter(value));
     }
 
     private String[] splitIntoFilters(String value) throws InvalidCardDefinitionException {
@@ -419,33 +343,9 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         return parts.toArray(new String[0]);
     }
 
-    private FilterBlueprint createFilter(String filterString) throws InvalidCardDefinitionException, JsonProcessingException {
-        if (filterString.contains("(") && filterString.endsWith(")")) {
-            String filterName = filterString.substring(0, filterString.indexOf("("));
-            String filterParameter =
-                    filterString.substring(filterString.indexOf("(") + 1, filterString.lastIndexOf(")"));
-            return lookupFilter(Sanitize(filterName), Sanitize(filterParameter));
-        }
-        return lookupFilter(Sanitize(filterString), null);
+
+    @Override
+    public Map<String, FilterBlueprint> getSimpleFilters() {
+        return simpleFilters;
     }
-
-
-
-    private FilterBlueprint lookupFilter(String name, String parameter)
-            throws InvalidCardDefinitionException, JsonProcessingException {
-        if (parameter == null) {
-            FilterBlueprint result = simpleFilters.get(Sanitize(name));
-            if (result != null)
-                return result;
-        }
-        throw new InvalidCardDefinitionException("Unable to find filter: " + name);
-
-/*        final FilterableSourceProducer filterableSourceProducer = _parameterFilters.get(Sanitize(name));
-        if (filterableSourceProducer == null)
-            throw new InvalidCardDefinitionException("Unable to find filter: " + name);
-
-        return filterableSourceProducer.createFilterableSource(parameter); */
-    }
-
-
 }

@@ -33,6 +33,25 @@
             ]
         }
         {
+            "blueprintId": "101_013",
+            "title": "Ancient Computer",
+            "type": "dilemma",
+            "mission-type": "space",
+            "lore": "Vital information can be retrieved from old or damaged computer systems like this one aboard a derelict Promellian battlecruiser.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR13.jpg",
+            "rarity": "R",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "Computer Skill x2 OR SCIENCE x3 OR ENGINEER x3"
+                    }
+                }
+            ]
+        }
+        {
             "blueprintId": "101_014",
             "title": "Archer",
             "type": "dilemma",
@@ -1553,7 +1572,7 @@
         }
         {
             blueprintId: 101_236
-            title: Simon Tarses
+            "title": "Simon Tarses",
             type: personnel
             affiliation: federation
             uniqueness: universal
@@ -2331,6 +2350,24 @@
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg
             rarity: C
+        }
+        {
+            blueprintId: 101_301
+            title: Ocett
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Cardassian female officer. Commander of the <i>Bralek</i>. Gul who pursued the DNA program."
+            species: cardassian
+            gender: female
+            skill-box: "[*] Archaeology [*] Navigation [*] Honor"
+            integrity: 6
+            cunning: 8
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR301.jpg
+            rarity: U
         }
         {
             blueprintId: 101_303

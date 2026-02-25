@@ -137,6 +137,9 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
         if (_speciesMap.get(text) != null) {
             return new SpeciesMissionRequirement(_speciesMap.get(text));
         }
+        if (text.equals("anyPersonnel")) {
+            return new AnyPersonnelMissionRequirement();
+        }
         if (text.startsWith("name(") && text.endsWith(")")) {
             String name = text.substring("name(".length(), text.length() - 1);
             return new PersonnelNameMissionRequirement(name);

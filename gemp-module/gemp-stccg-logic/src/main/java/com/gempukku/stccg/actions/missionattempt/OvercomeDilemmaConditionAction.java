@@ -11,8 +11,8 @@ import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.cards.physicalcard.StoppableCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -99,9 +99,6 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
                     }
                 } else {
-                    if (_dilemma.getParentCard() == null) {
-                        cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
-                    }
                     setAsSuccessful();
                 }
             } else {
@@ -117,7 +114,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
 
                     }
                 } else if (!_cardsStopped) {
-                    Collection<ST1EPhysicalCard> cardsToStop =
+                    Collection<StoppableCard> cardsToStop =
                             new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
                     if (_attemptingUnit instanceof ShipCard ship) {
                         cardsToStop.add(ship);

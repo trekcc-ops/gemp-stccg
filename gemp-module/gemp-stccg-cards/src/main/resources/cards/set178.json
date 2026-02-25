@@ -4,6 +4,84 @@
     "gameType": "First Edition",
     "cards": [
         {
+            "blueprintId": "178_002",
+            "title": "A Bad End",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "property-logo": "tng-logo",
+            "lore": "Shot in the chest by the Lenarians, Jean-Luc Picard's life was left hanging in the balance due to the damage his artificial heart received.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront6/2.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "you",
+                                "filter": "yours + stopped + personnel",
+                                "count": {
+                                    "type": "countCardsMatchingFilter",
+                                    "forEach": 0.5,
+                                    "filter": "yours + stopped + personnel + atThisLocation",
+                                    "roundUp": true
+                                }
+                            }
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Biology x2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "178_010",
+            "title": "It's Green",
+            "type": "dilemma",
+            "mission-type": "space",
+            "property-logo": "tos-logo",
+            "lore": "The crew of the <i>Starship Enterprise</i> used distraction to regain control of their ship from the Kelvans. Mr. Scott, in fine naval tradition, put his stash of alcoholic beverages to good use.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront6/10.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "randomSelection",
+                            "filter": "personnel + encounteringThisCard",
+                            "count": {
+                                "type": "if",
+                                "ifCondition": {
+                                    "type": "cardInPlay",
+                                    "filter": "personnel + presentWithThisCard",
+                                    "countAtLeast": 10
+                                },
+                                "valueIfTrue": 6,
+                                "valueIfFalse": 3
+                            },
+                            "saveToMemoryId": "selectedPersonnel"
+                        },
+                        {
+                            "type": "stop",
+                            "requires": {
+                                "type": "cardInPlay",
+                                "filter": "memoryId=selectedPersonnel + ENGINEER"
+                            },
+                            "target": {
+                                "type": "selectAll",
+                                "filter": "memoryId=selectedPersonnel"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "178_033",
             "title": "Dominion Outpost",
             "type": "facility",

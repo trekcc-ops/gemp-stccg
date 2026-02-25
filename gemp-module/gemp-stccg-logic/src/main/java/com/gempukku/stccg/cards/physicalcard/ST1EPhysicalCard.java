@@ -26,7 +26,7 @@ import java.util.Objects;
 
 @JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
         allowGetters = true)
-public class ST1EPhysicalCard extends AbstractPhysicalCard {
+public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableCard {
 
     @JsonProperty("isStopped")
     protected boolean _isStopped;
@@ -47,7 +47,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     public ST1EPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
     }
-
 
 
     public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {

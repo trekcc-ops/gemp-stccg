@@ -4,6 +4,49 @@
     "gameType": "First Edition",
     "cards": [
         {
+            "blueprintId": "139_010",
+            "title": "Murder Investigation",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "voy-logo",
+            "lore": "Tuvok was forced to question many of <i>U.S.S. Voyager</i>'s crew to solve a mystery. The efforts took focus away from his other duties.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront/HMF_10V.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "randomSelection",
+                            "filter": "personnel + encounteringThisCard",
+                            "count": {
+                                "type": "if",
+                                "ifCondition": {
+                                    "type": "cardInPlay",
+                                    "filter": "personnel + presentWithThisCard",
+                                    "countAtLeast": 10
+                                },
+                                "valueIfTrue": 6,
+                                "valueIfFalse": 3
+                            },
+                            "saveToMemoryId": "selectedPersonnel"
+                        },
+                        {
+                            "type": "stop",
+                            "requires": {
+                                "type": "cardInPlay",
+                                "filter": "memoryId=selectedPersonnel + SECURITY"
+                            },
+                            "target": {
+                                "type": "selectAll",
+                                "filter": "memoryId=selectedPersonnel"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "139_013",
             "title": "Picking Up the Pieces",
             "type": "dilemma",

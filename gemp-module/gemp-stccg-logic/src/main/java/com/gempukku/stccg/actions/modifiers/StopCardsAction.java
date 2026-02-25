@@ -2,7 +2,8 @@ package com.gempukku.stccg.actions.modifiers;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.FixedCardsResolver;
@@ -10,6 +11,7 @@ import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.StoppableCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
@@ -33,7 +35,7 @@ public class StopCardsAction extends ActionyAction {
     }
 
     public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
-                           Collection<? extends ST1EPhysicalCard> cardsToStop) {
+                           Collection<? extends StoppableCard> cardsToStop) {
         this(cardGame, performingPlayerName, new FixedCardsResolver(cardsToStop));
     }
 

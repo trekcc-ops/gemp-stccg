@@ -395,8 +395,7 @@ public interface UserInputSimulator {
                 return action;
             }
         }
-        throw new DecisionResultInvalidException(
-                "No valid action to beam " + TextUtils.getConcatenatedCardLinks(cardsToBeam));
+        throw new DecisionResultInvalidException("No valid action to beam specified cards");
     }
 
     default Action beamCard(String playerId, PhysicalCard cardWithTransporters, ReportableCard cardToBeam,

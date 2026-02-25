@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
@@ -16,22 +17,24 @@ import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class StopActionBlueprint implements SubActionBlueprint {
+public class StopSubActionBlueprint implements SubActionBlueprint {
 
     private final TargetResolverBlueprint _targetResolver;
     private final String _saveToMemoryId;
     private final Requirement _requirement;
 
-    public StopActionBlueprint(@JsonProperty(value = "target")
+    @JsonCreator
+    private StopSubActionBlueprint(@JsonProperty(value = "target")
                                TargetResolverBlueprint target,
-                               @JsonProperty(value = "saveToMemoryId")
+                                  @JsonProperty(value = "saveToMemoryId")
                                String saveToMemoryId,
-                               @JsonProperty(value = "requires")
+                                  @JsonProperty(value = "requires")
                                Requirement requirement)
             {
         _targetResolver = target;
-        _saveToMemoryId = saveToMemoryId;
+        _saveToMemoryId = Objects.requireNonNullElse(saveToMemoryId, "temp");
         _requirement = requirement;
     }
 

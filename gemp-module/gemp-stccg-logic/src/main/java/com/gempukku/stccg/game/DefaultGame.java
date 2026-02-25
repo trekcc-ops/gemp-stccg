@@ -51,9 +51,10 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     private final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final GameType _gameType;
+    private final GameRandomizer _randomizer;
 
     protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
-                       GameType gameType, GameResultListener listener) {
+                          GameType gameType, GameResultListener listener, GameRandomizer randomizer) {
         _format = format;
         _library = library;
         _allPlayerIds = decks.keySet();
@@ -61,6 +62,12 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         if (listener != null) {
             _gameResultListeners.add(listener);
         }
+        _randomizer = randomizer;
+    }
+
+    protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                          GameType gameType, GameResultListener listener) {
+        this(format, decks, library, gameType, listener, new GameRandomizer());
     }
 
 
@@ -384,13 +391,6 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         return _cancelled;
     }
 
-    public ST1EGame get1EGame() throws InappropriateGameTypeException {
-        if (this instanceof ST1EGame stGame) {
-            return stGame;
-        }
-        throw new InappropriateGameTypeException("Attempted to convert a non-1E game into a ST1EGame object");
-    }
-
     public boolean isPlayersTurn(String playerName) {
         return getGameState().getCurrentTurnNumber() > 0 &&
                 Objects.equals(getCurrentPlayerId(), playerName);
@@ -398,5 +398,10 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public boolean cardsArePresentWithEachOther(PhysicalCard card1, PhysicalCard card2) {
         return getRules().cardsArePresentWithEachOther(this, card1, card2);
+    }
+
+    public Collection<PhysicalCard> getRandomSelectionOfCards(Collection<? extends PhysicalCard> selectableCards,
+                                                              int numberToSelect) {
+        return _randomizer.getRandomItemsFromList(selectableCards, numberToSelect);
     }
 }

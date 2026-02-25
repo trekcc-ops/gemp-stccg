@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.discard.KillSinglePersonnelAction;
+import com.gempukku.stccg.actions.discard.KillAction;
 import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -95,8 +95,8 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         }
         boolean actionFound = false;
         for (Action action : _game.getActionsEnvironment().getPerformedActions()) {
-            if (action instanceof KillSinglePersonnelAction killAction &&
-                    killAction.getVictimCard() == personnel) {
+            if (action instanceof KillAction killAction &&
+                    killAction.getKilledCards().contains(personnel)) {
                 actionFound = true;
                 break;
             }
