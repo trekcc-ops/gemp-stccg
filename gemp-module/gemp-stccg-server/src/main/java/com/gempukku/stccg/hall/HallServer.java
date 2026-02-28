@@ -1,6 +1,7 @@
 package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.AbstractServer;
+import com.gempukku.stccg.DeckValidation;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.HttpProcessingException;
@@ -298,7 +299,8 @@ public class HallServer extends AbstractServer {
             throw new HallException("You don't have a deck registered yet");
 
         CardDeck deck = format.applyErrata(cardBlueprintLibrary, cardDeck);
-        List<String> validations = format.validateDeck(cardBlueprintLibrary, deck);
+        DeckValidation validation = new DeckValidation(deck, cardBlueprintLibrary, format);
+        List<String> validations = validation.getAllErrors();
         if(!validations.isEmpty()) {
             String firstValidation = validations.stream().findFirst().orElse(null);
             long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();
