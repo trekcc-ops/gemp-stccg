@@ -5,6 +5,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -403,5 +404,9 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     public Collection<PhysicalCard> getRandomSelectionOfCards(Collection<? extends PhysicalCard> selectableCards,
                                                               int numberToSelect) {
         return _randomizer.getRandomItemsFromList(selectableCards, numberToSelect);
+    }
+
+    public void shuffleCardPile(CardPile<? extends PhysicalCard> cardPile) {
+        _randomizer.shuffleCardPile(cardPile);
     }
 }

@@ -1,5 +1,8 @@
 package com.gempukku.stccg.game;
 
+import com.gempukku.stccg.cards.cardgroup.CardPile;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,4 +31,7 @@ public class GameRandomizer {
         return randomizedList;
     }
 
+    public void shuffleCardPile(CardPile<? extends PhysicalCard> cardPile) {
+        cardPile.shuffle();
+    }
 }
