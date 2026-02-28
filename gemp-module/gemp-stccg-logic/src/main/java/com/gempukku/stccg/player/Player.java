@@ -16,7 +16,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "playerId", "score", "decked", "cardGroups" })
@@ -172,8 +171,7 @@ public class Player {
     }
 
     public void shuffleDrawDeck(DefaultGame cardGame) {
-        if (!cardGame.getFormat().isNoShuffle())
-            Collections.shuffle(_cardGroups.get(Zone.DRAW_DECK).getCards(), ThreadLocalRandom.current());
+        cardGame.shuffleCardPile(_drawDeck);
     }
 
     public void setCardGroup(Zone zone, List<PhysicalCard> subDeck) throws InvalidGameLogicException {

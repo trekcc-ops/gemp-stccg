@@ -6,7 +6,6 @@
         "minimumDrawDeckSize": 0,
         "maximumSeedDeckSize": 999,
         "missions": -1,
-        "noShuffle": true,
         "firstPlayerFixed": true,
         "hall": true
     },
@@ -16,6 +15,8 @@
         "code": "st1emoderncomplete",
         "minimumDrawDeckSize": 30,
         "maximumSeedDeckSize": 30,
+        "excludedSets": "991",
+        "bannedCards": ["101_125","155_046","212_019"],
         "missions": 6
     },
     {
