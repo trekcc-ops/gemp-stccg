@@ -1,5 +1,7 @@
 package com.gempukku.stccg;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -13,10 +15,19 @@ import java.util.*;
 
 public class DeckValidation {
 
+    @JsonProperty("errors")
     private final List<String> _errors = new ArrayList<>();
+
+    @JsonProperty("warnings")
     private final List<String> _warnings = new ArrayList<>();
+
+    @JsonProperty("info")
     private final List<String> _info = new ArrayList<>();
+
+    @JsonProperty("invalidBlueprintIds")
     private final Set<String> _invalidBlueprintIds = new HashSet<>();
+
+    @JsonProperty("notAllowedCards")
     private final Set<String> _notAllowedCards = new HashSet<>();
     private final CardDeck _deck;
     private final CardBlueprintLibrary _library;
@@ -29,6 +40,7 @@ public class DeckValidation {
         validate();
     }
 
+    @JsonIgnore
     public List<String> getAllErrors() {
         List<String> result = new ArrayList<>();
         if (!_invalidBlueprintIds.isEmpty()) {
@@ -58,7 +70,7 @@ public class DeckValidation {
         for (String blueprintId : _deck.getAllCards()) {
             try {
                 CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
-                if (_format.isCardAllowedInFormat(blueprint, _library)) {
+                if (!_format.isCardAllowedInFormat(blueprint, _library)) {
                     _notAllowedCards.add(blueprint.getTitle());
                 }
             } catch(CardNotFoundException exp) {
@@ -154,6 +166,5 @@ public class DeckValidation {
             _errors.add(result.toString());
         }
     }
-
 
 }

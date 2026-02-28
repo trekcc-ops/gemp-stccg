@@ -705,10 +705,26 @@ export default class GempLotrDeckBuildingUI {
         {
             this.comm.getDeckStats(deckContents, 
                    that.formatSelect.val(),
-                    function (html) 
+                    function (json)
                     {
                         let deckStatsDiv = document.getElementById("deckStats");
-                        deckStatsDiv.innerHTML = html;
+                        let htmlText = "";
+                        for (const error of json.errors) {
+                            htmlText = htmlText + "<font color='red'>" + error + "</font></br>";
+                        }
+                        for (const blueprintId of json.invalidBlueprintIds) {
+                            htmlText = htmlText + "<font color='red'>Cannot find blueprint id '" + blueprintId + "'</font></br>";
+                        }
+                        for (const cardTitle of json.notAllowedCards) {
+                             htmlText = htmlText + "<font color='red'>Card '" + cardTitle + "' not allowed in this format</font></br>";
+                         }
+                         for (const warning of json.warnings) {
+                            htmlText = htmlText + "<font color='yellow'>" + warning + "</font></br>";
+                        }
+                        for (const infoText of json.info) {
+                            htmlText = htmlText + "<font color='green'>" + infoText + "</font></br>";
+                        }
+                        deckStatsDiv.innerHTML = htmlText;
                     }, 
                     {
                         "400":function () 
