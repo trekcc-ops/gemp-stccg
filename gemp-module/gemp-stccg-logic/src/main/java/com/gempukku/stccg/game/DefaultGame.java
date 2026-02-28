@@ -53,6 +53,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final GameType _gameType;
     private final GameRandomizer _randomizer;
+    private final Map<String, CardDeck> _decks;
 
     protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
                           GameType gameType, GameResultListener listener, GameRandomizer randomizer) {
@@ -64,6 +65,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
             _gameResultListeners.add(listener);
         }
         _randomizer = randomizer;
+        _decks = decks;
     }
 
     protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
@@ -408,5 +410,13 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public void shuffleCardPile(CardPile<? extends PhysicalCard> cardPile) {
         _randomizer.shuffleCardPile(cardPile);
+    }
+
+    public Map<String, CardDeck> getPlayerDecks() {
+        return _decks;
+    }
+
+    public void addGameResultListener(GameResultListener listener) {
+        _gameResultListeners.add(listener);
     }
 }
