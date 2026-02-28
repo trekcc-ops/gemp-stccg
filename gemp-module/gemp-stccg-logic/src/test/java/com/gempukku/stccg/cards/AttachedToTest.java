@@ -23,12 +23,14 @@ public class AttachedToTest extends AbstractAtTest {
     PersonnelCard beverly;
     PhysicalCard phaser;
     MissionCard mission;
+    ShipCard runaboutInSpace;
 
     private void initializeGame() throws Exception {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         mission = builder.addMission(MissionType.PLANET, Affiliation.FEDERATION, P1);
         builder.addSeedCardUnderMission("101_015", "Armus: Skin of Evil", P2, mission);
+        runaboutInSpace = builder.addShipInSpace("101_331", "Runabout", P1, mission);
         outpost = builder.addOutpost(Affiliation.FEDERATION, P1, mission);
         runabout = builder.addDockedShip("101_331", "Runabout", P1, outpost);
         picard = builder.addCardAboardShipOrFacility(
@@ -46,7 +48,7 @@ public class AttachedToTest extends AbstractAtTest {
 
         performAction(P1, UndockAction.class, runabout);
         assertFalse(runabout.isDocked());
-        assertEquals(mission, runabout.getAttachedTo(_game));
+        assertNotEquals(mission, runabout.getAttachedTo(_game));
 
         performAction(P1, DockAction.class, runabout);
         assertEquals(outpost, runabout.getAttachedTo(_game));
@@ -94,6 +96,16 @@ public class AttachedToTest extends AbstractAtTest {
         attemptMission(P1, mission);
         assertNull(beverly.getAttachedTo(_game));
         assertEquals(mission, phaser.getAttachedTo(_game));
+    }
+
+    @Test
+    public void cardInSpaceNotAttachedTest() throws Exception {
+        // At some point we may want this to show as TRUE in the client, but not for now
+        initializeGame();
+
+        assertNotEquals(mission, runaboutInSpace.getAttachedTo(_game));
+        assertNotEquals(outpost, runaboutInSpace.getAttachedTo(_game));
+
     }
 
 }

@@ -24,7 +24,7 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.*;
 
-import static com.gempukku.stccg.gamestate.ChildCardRelationshipType.ATOP;
+import static com.gempukku.stccg.gamestate.ChildCardRelationshipType.*;
 
 public abstract class AbstractPhysicalCard implements PhysicalCard {
 
@@ -119,15 +119,28 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     public Integer getAttachedToCardId() {
-        if (_parentCard == null) {
+        if (_parentCard == null || _parentCardRelationship == null) {
             return null;
         } else {
-            return _parentCard.getCardId();
+            List<ChildCardRelationshipType> attachedRelationships = List.of(ABOARD, ATOP, ON_PLANET);
+            if (attachedRelationships.contains(_parentCardRelationship)) {
+                return _parentCard.getCardId();
+            } else {
+                return null;
+            }
         }
     }
 
+    // This should be solely for the client to use
     public PhysicalCard getAttachedTo(DefaultGame cardGame) {
-        return _parentCard;
+        List<ChildCardRelationshipType> attachedRelationships = List.of(ABOARD, ATOP, DOCKED, ON_PLANET);
+        if (_parentCardRelationship == null) {
+            return null;
+        } else if (attachedRelationships.contains(_parentCardRelationship)) {
+            return _parentCard;
+        } else {
+            return null;
+        }
     }
 
 

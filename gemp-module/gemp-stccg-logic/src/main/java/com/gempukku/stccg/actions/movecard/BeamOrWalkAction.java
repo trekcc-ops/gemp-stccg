@@ -28,7 +28,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    final ST1EPhysicalCard _cardSource;
+    final CardWithCrew _cardSource;
 
     @JsonProperty("originCardId")
     private PhysicalCard _origin;
@@ -47,7 +47,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
      * @param player              the player
      * @param cardSource        either the card whose transporters are being used, or the card walking from
      */
-    BeamOrWalkAction(DefaultGame cardGame, Player player, ST1EPhysicalCard cardSource, ActionType actionType) {
+    BeamOrWalkAction(DefaultGame cardGame, Player player, CardWithCrew cardSource, ActionType actionType) {
         super(cardGame, player, actionType);
         _cardSource = cardSource;
         _destinationOptions = getDestinationOptions((ST1EGame) cardGame);

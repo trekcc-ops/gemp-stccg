@@ -30,8 +30,8 @@ public class ToCardDestinationBlueprint implements DestinationBlueprint {
         Collection<PhysicalCard> result = new ArrayList<>();
         for (PhysicalCard card : Filters.filterCardsInPlay(stGame, destination)) {
             if (card.getCardType() == CardType.PERSONNEL) {
-                if (card.getAttachedTo(stGame) != null && !result.contains(card.getAttachedTo(stGame))) {
-                    result.add(card.getAttachedTo(stGame));
+                if (card.getParentCard() != null && !result.contains(card.getParentCard())) {
+                    result.add(card.getParentCard());
                 }
             } else if (!result.contains(card)) {
                 result.add(card);
