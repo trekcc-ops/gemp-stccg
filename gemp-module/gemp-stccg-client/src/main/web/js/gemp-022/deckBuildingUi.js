@@ -718,11 +718,24 @@ export default class GempLotrDeckBuildingUI {
                         for (const cardTitle of json.notAllowedCards) {
                              htmlText = htmlText + "<font color='red'>Card '" + cardTitle + "' not allowed in this format</font></br>";
                          }
+                        for (const infoText of json.info) {
+                            // Information that doesn't indicate a problem, like number of cards in a subdeck
+                            htmlText = htmlText + "<font color='green'>" + infoText + "</font></br>";
+                        }
                          for (const warning of json.warnings) {
                             htmlText = htmlText + "<font color='yellow'>" + warning + "</font></br>";
                         }
-                        for (const infoText of json.info) {
-                            htmlText = htmlText + "<font color='green'>" + infoText + "</font></br>";
+                         for (const cardTitle of json.unplayableDrawDeckCards) {
+                            // These cards may be playable by interacting with other cards in the deck
+                            htmlText = htmlText + "<font color='yellow'>Card '" + cardTitle + "' in draw deck typically cannot be played during the game.</font></br>";
+                        }
+                         for (const cardTitle of json.unseedableSeedDeckCards) {
+                            // These cards may be seedable by interacting with other cards in the deck
+                            htmlText = htmlText + "<font color='yellow'>Card '" + cardTitle + "' in seed deck typically cannot be seeded.</font></br>";
+                        }
+                        if (json.includesFacilityInSeedDeck === false) {
+                            // There are deck designs that don't use facilities
+                            htmlText = htmlText + "<font color='yellow'>Your seed deck does not include a facility.</font></br>";
                         }
                         deckStatsDiv.innerHTML = htmlText;
                     }, 

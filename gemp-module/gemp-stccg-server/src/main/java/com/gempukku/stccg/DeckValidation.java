@@ -29,6 +29,16 @@ public class DeckValidation {
 
     @JsonProperty("notAllowedCards")
     private final Set<String> _notAllowedCards = new HashSet<>();
+
+    @JsonProperty("unplayableDrawDeckCards")
+    private final Set<String> _unplayableCards = new HashSet<>();
+
+    @JsonProperty("unseedableSeedDeckCards")
+    private final Set<String> _unseedableCards = new HashSet<>();
+
+    @JsonProperty("includesFacilityInSeedDeck")
+    private boolean _includesFacilityInSeedDeck;
+
     private final CardDeck _deck;
     private final CardBlueprintLibrary _library;
     private final GameFormat _format;
@@ -78,6 +88,25 @@ public class DeckValidation {
             }
         }
 
+        validateDrawDeck(); // validate that draw deck contains cards that can be played
+        validateSeedDeck(); // validate that seed deck contains cards that can be seeded, plus at least one facility
+    }
+
+    private void validateSeedDeck() {
+        List<String> drawDeck = _deck.getSubDeck(SubDeck.SEED_DECK);
+        for (String blueprintId : drawDeck) {
+            try {
+                CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
+                if (!blueprint.canBeSeeded()) {
+                    _unseedableCards.add(blueprint.getTitle());
+                }
+                if (blueprint.getCardType() == CardType.FACILITY) {
+                    _includesFacilityInSeedDeck = true;
+                }
+            } catch(CardNotFoundException ignored) {
+
+            }
+        }
     }
 
     private void validateCardCopyLimits() {
@@ -147,7 +176,7 @@ public class DeckValidation {
                 StringBuilder result = new StringBuilder();
                 CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
                 if (blueprint.getCardType() != CardType.MISSION) {
-                    result.append("Missions pile contains non-mission card: ").append(blueprint.getTitle()).append(".\n");
+                    result.append("Missions pile contains non-mission card: ").append(blueprint.getTitle());
                 } else if (!blueprint.isUniversal()) {
                     uniqueLocations.add(blueprint.getLocation());
                 }
@@ -164,6 +193,20 @@ public class DeckValidation {
                 result.append("Deck has ").append(locationCount).append(" unique missions at location: ").append(location);
             }
             _errors.add(result.toString());
+        }
+    }
+
+    private void validateDrawDeck() {
+        List<String> drawDeck = _deck.getSubDeck(SubDeck.DRAW_DECK);
+        for (String blueprintId : drawDeck) {
+            try {
+                CardBlueprint blueprint = _library.getCardBlueprint(blueprintId);
+                if (!blueprint.canBePlayed()) {
+                    _unplayableCards.add(blueprint.getTitle());
+                }
+            } catch(CardNotFoundException ignored) {
+
+            }
         }
     }
 
