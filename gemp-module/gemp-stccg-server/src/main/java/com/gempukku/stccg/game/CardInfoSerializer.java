@@ -66,7 +66,7 @@ public class CardInfoSerializer {
 
         List<Map<Object, Object>> dockedCards = new ArrayList<>();
         if (card instanceof FacilityCard facility) {
-            for (PhysicalCard ship : facility.getDockedShips(cardGame)) {
+            for (PhysicalCard ship : facility.getDockedShips()) {
                 dockedCards.add(getCardProperties(ship));
             }
         }

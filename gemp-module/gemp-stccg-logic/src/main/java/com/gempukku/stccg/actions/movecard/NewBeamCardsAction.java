@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.cards.physicalcard.CardWithCrew;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.filters.Filters;
@@ -12,7 +13,7 @@ import java.util.*;
 
 public class NewBeamCardsAction extends BeamOrWalkAction {
 
-    public NewBeamCardsAction(DefaultGame cardGame, Player player, ST1EPhysicalCard cardUsingTransporters) {
+    public NewBeamCardsAction(DefaultGame cardGame, Player player, CardWithCrew cardUsingTransporters) {
         super(cardGame, player, cardUsingTransporters, ActionType.BEAM_CARDS);
     }
 

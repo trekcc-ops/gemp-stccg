@@ -1,9 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
@@ -15,8 +12,10 @@ import com.gempukku.stccg.common.filterable.FacilityType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.player.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -83,8 +82,14 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
         return actions;
     }
 
-    public Collection<PhysicalCard> getDockedShips(DefaultGame cardGame) {
-        return Filters.filter(getAttachedCards(cardGame), cardGame, Filters.ship);
+    @JsonIgnore
+    public Collection<PhysicalCard> getDockedShips() {
+        Collection<PhysicalCard> result = new ArrayList<>();
+        if (_childrenCards.get(ChildCardRelationshipType.DOCKED) != null
+                && !_childrenCards.get(ChildCardRelationshipType.DOCKED).isEmpty()) {
+            result.addAll(_childrenCards.get(ChildCardRelationshipType.DOCKED));
+        }
+        return result;
     }
 
     public Collection<PhysicalCard> getCrew(DefaultGame cardGame) {
