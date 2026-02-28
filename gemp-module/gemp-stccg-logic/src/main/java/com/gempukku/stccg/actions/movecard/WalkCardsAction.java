@@ -43,7 +43,8 @@ public class WalkCardsAction extends BeamOrWalkAction {
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
             // TODO - No compatibility check
-        return !_destinationOptions.isEmpty() &&
+        return cardGame instanceof ST1EGame stGame &&
+                !getDestinationOptions(stGame).isEmpty() &&
                 !Filters.filter(_cardSource.getAttachedCards(cardGame), cardGame, Filters.personnel).isEmpty();
     }
 
