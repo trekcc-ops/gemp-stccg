@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards.cardgroup;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CardPile<T extends PhysicalCard> extends PhysicalCardGroup<T> {
 
@@ -12,7 +13,7 @@ public class CardPile<T extends PhysicalCard> extends PhysicalCardGroup<T> {
     public T getBottomCard() { return _cards.getFirst(); }
 
     public void shuffle() {
-        Collections.shuffle(_cards);
+        Collections.shuffle(_cards, ThreadLocalRandom.current());
     }
 
     public boolean isEmpty() {

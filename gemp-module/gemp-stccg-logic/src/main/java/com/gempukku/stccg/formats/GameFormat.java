@@ -47,7 +47,6 @@ public interface GameFormat extends AbstractGameFormat {
 
     boolean hasFixedPlayerOrder();
 
-    boolean isNoShuffle();
     GameType getGameType();
 
     boolean hallVisible();

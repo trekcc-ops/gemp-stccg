@@ -1,14 +1,11 @@
 package com.gempukku.stccg.formats;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.JSONData;
+import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.SubDeck;
@@ -40,7 +37,6 @@ public class DefaultGameFormat implements GameFormat {
     private final boolean _discardPileIsPublic;
     @JsonProperty("minimumDrawDeckSize")
     private final int _minimumDrawDeckSize;
-
     @JsonProperty("maximumSeedDeckSize")
     private final int _maximumSeedDeckSize;
     private final int _missions; // If missions is -1, there is no restriction on the number of missions
@@ -51,7 +47,6 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _restrictedCardNames = new ArrayList<>();
 
     private final boolean _isPlaytest;
-    private final boolean _noShuffle;
     private final List<String> _limit2Cards = new ArrayList<>();
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
@@ -61,51 +56,41 @@ public class DefaultGameFormat implements GameFormat {
 
     private final GameType _gameType;
 
-    DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def)
-            throws InvalidPropertiesFormatException {
-        _name = def.name;
-        _code = def.code;
-        _order = def.order;
-        _minimumDrawDeckSize = def.minimumDrawDeckSize;
-        _maximumSameName = def.maximumSameName;
-        _discardPileIsPublic = def.discardPileIsPublic;
-        _isPlaytest = def.playtest;
-        _hallVisible = def.hall;
-        _missions = def.missions;
-        _maximumSeedDeckSize = def.maximumSeedDeckSize;
-        _noShuffle = def.noShuffle;
-        _firstPlayerFixed = def.firstPlayerFixed;
+    @JsonCreator
+    private DefaultGameFormat(@JacksonInject CardBlueprintLibrary blueprintLibrary,
+                              @JsonProperty("gameType") String gameType,
+                              @JsonProperty("excludedSets") @JsonSetter(nulls = Nulls.AS_EMPTY)
+                                  @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                  List<String> excludedSets,
+                              @JsonProperty("name") String name,
+                              @JsonProperty("code") String code,
+                              @JsonProperty("minimumDrawDeckSize") Integer minDrawDeck,
+                              @JsonProperty("maximumSeedDeckSize") Integer maxSeedDeck,
+                              @JsonProperty("bannedCards") @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> bannedCards,
+                              @JsonProperty("missions") Integer missions,
+                              @JsonProperty("hall") Boolean hallVisible,
+                              @JsonProperty("firstPlayerFixed") Boolean firstPlayerFixed) {
+        _name = name;
+        _code = code;
+        _order = 1000;
+        _minimumDrawDeckSize = Objects.requireNonNullElse(minDrawDeck, 60);
+        _maximumSameName = 9999;
+        _discardPileIsPublic = false;
+        _isPlaytest = false;
+        _hallVisible = Objects.requireNonNullElse(hallVisible, true);
+        _missions = Objects.requireNonNullElse(missions, 6);
+        _maximumSeedDeckSize = Objects.requireNonNullElse(maxSeedDeck, 30);
+        _firstPlayerFixed = Objects.requireNonNullElse(firstPlayerFixed, false);
         _gameType =
-                Enum.valueOf(GameType.class, def.gameType.toUpperCase().replaceAll("[ '\\-.]", "_"));
-        if (def.set == null) {
-            for (SetDefinition set : library.getSetDefinitions().values()) {
-                if (set.getGameType() == _gameType) {
-                    addValidSet(Integer.parseInt(set.getSetId()));
-                }
-            }
-        } else {
-            def.set.forEach(this::addValidSet);
-        }
-
-        if(def.banned != null)
-            def.banned.forEach(this::addBannedCard);
-        if(def.restricted != null)
-            def.restricted.forEach(this::addRestrictedCard);
-        if(def.valid != null)
-            def.valid.forEach(this::addValidCard);
-        if(def.limit2 != null)
-            def.limit2.forEach(this::addLimit2Card);
-        if(def.limit3 != null)
-            def.limit3.forEach(this::addLimit3Card);
-        if(def.restrictedName != null)
-            def.restrictedName.forEach(this::addRestrictedCardName);
-        if(def.errataSets != null) {
-            for (Integer errataSet : def.errataSets) {
-                addErrataSet(library, errataSet);
+                Enum.valueOf(GameType.class, gameType.toUpperCase().replaceAll("[ '\\-.]", "_"));
+        for (SetDefinition set : blueprintLibrary.getSetDefinitions().values()) {
+            if (set.getGameType() == _gameType && !excludedSets.contains(set.getSetId())) {
+                addValidSet(Integer.parseInt(set.getSetId()));
             }
         }
-        if(def.errata != null)
-            def.errata.forEach(this::addCardErrata);
+        if (!bannedCards.isEmpty()) {
+            bannedCards.forEach(this::addBannedCard);
+        }
     }
 
     @Override
@@ -488,11 +473,6 @@ public class DefaultGameFormat implements GameFormat {
     @Override
     public boolean hasFixedPlayerOrder() {
         return _firstPlayerFixed;
-    }
-
-    @Override
-    public boolean isNoShuffle() {
-        return _noShuffle;
     }
 
     public String toString() {

@@ -3,13 +3,14 @@ package com.gempukku.stccg.formats;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.DeserializingLibrary;
-import com.gempukku.stccg.common.JSONData;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -19,9 +20,11 @@ public class FormatLibrary implements DeserializingLibrary<GameFormat> {
     private final Map<String, DefaultGameFormat> _allFormats = new HashMap<>();
     private final Map<String, SealedEventDefinition> _sealedTemplates = new LinkedHashMap<>();
     private final Semaphore collectionReady = new Semaphore(1);
+    private final CardBlueprintLibrary _blueprintLibrary;
 
     public FormatLibrary(CardBlueprintLibrary bpLibrary) {
-        reloadFormats(bpLibrary);
+        _blueprintLibrary = bpLibrary;
+        reloadFormats();
         reloadSealedTemplates();
     }
 
@@ -67,14 +70,17 @@ public class FormatLibrary implements DeserializingLibrary<GameFormat> {
         }
     }
 
-    public void reloadFormats(CardBlueprintLibrary blueprintLibrary) {
+    public void reloadFormats() {
         try {
             collectionReady.acquire();
             _allFormats.clear();
-            JSONData.Format[] formatList =
-                    new ObjectMapper().readValue(AppConfig.getFormatDefinitionsPath(), JSONData.Format[].class);
-            for (JSONData.Format def : formatList) {
-                DefaultGameFormat format = new DefaultGameFormat(blueprintLibrary, def);
+            ObjectMapper formatMapper = new ObjectMapper();
+            InjectableValues.Std injectables = new InjectableValues.Std();
+            injectables.addValue(CardBlueprintLibrary.class, _blueprintLibrary);
+            formatMapper.setInjectableValues(injectables);
+            DefaultGameFormat[] formatList =
+                    formatMapper.readValue(AppConfig.getFormatDefinitionsPath(), DefaultGameFormat[].class);
+            for (DefaultGameFormat format : formatList) {
                 _allFormats.put(format.getCode(), format);
             }
             collectionReady.release();

@@ -37,7 +37,7 @@ public class ReloadCardLibraryRequestHandler implements UriRequestHandler, Admin
         Thread.sleep(CARD_LOAD_SLEEP_TIME);
         _cardBlueprintLibrary.reloadAllDefinitions();
         _productLibrary.ReloadPacks();
-        _formatLibrary.reloadFormats(_cardBlueprintLibrary);
+        _formatLibrary.reloadFormats();
         _formatLibrary.reloadSealedTemplates();
         _chatServer.sendSystemMessageToAllUsers(
                 "Card definition reload complete.  If you are mid-game and you notice any oddities, reload the page " +
