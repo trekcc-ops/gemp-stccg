@@ -11,12 +11,11 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.CloseableReadLock;
 import com.gempukku.stccg.common.CloseableWriteLock;
+import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.database.DeckDAO;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.GameParticipant;
-import com.gempukku.stccg.game.GameResultListener;
-import com.gempukku.stccg.game.GameServer;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.tournament.Tournament;
 import com.gempukku.stccg.tournament.TournamentQueue;
@@ -140,6 +139,27 @@ public class HallServer extends AbstractServer {
                 List<GameResultListener> listenerList = List.of(listener,
                         new NotifyHallListenersGameResultListener(this));
                 gameTable.createTournamentGameInternal(gameServer, listenerList, tournamentName);
+            }
+        }
+    }
+
+    public void createTableForTestingExistingGame(DefaultGame cardGame, String gameName) {
+        try (CloseableWriteLock ignored = _writeLock.open()) {
+            if (!_shutdown) {
+                List<GameParticipant> participants = new ArrayList<>();
+                for (String playerName : cardGame.getPlayerDecks().keySet()) {
+                    participants.add(new GameParticipant(playerName, cardGame.getPlayerDecks().get(playerName)));
+                }
+
+                GameSettings settings = new GameSettings(cardGame.getFormat(), null, null,
+                        false, false, false, false, GameTimer.GLACIAL_TIMER,
+                        "Game settings user description");
+                CardGameMediator mediator = new CardGameMediator(cardGame, gameName, settings.allowsSpectators(),
+                        settings.getTimeSettings(), settings.isCompetitive());
+
+                _tableHolder.createTableForExistingGame(settings, participants, mediator);
+                List<GameResultListener> listenerList = List.of(new NotifyHallListenersGameResultListener(this));
+                _gameServer.addAndStartExistingGame(mediator, listenerList);
             }
         }
     }

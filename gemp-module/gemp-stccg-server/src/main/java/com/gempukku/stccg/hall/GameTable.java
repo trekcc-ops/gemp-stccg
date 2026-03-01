@@ -2,7 +2,10 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.CardGameMediator;
+import com.gempukku.stccg.game.GameParticipant;
+import com.gempukku.stccg.game.GameResultListener;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
 
@@ -23,6 +26,16 @@ public class GameTable {
 
     enum TableStatus {
         WAITING, PLAYING, FINISHED
+    }
+
+    public GameTable(GameSettings gameSettings, Collection<GameParticipant> participants, CardGameMediator mediator) {
+        this.gameSettings = gameSettings;
+        this.capacity = 2; // manually change Tribbles player limit
+        _tableStatus = TableStatus.WAITING;
+        for (GameParticipant participant : participants) {
+            addPlayer(participant);
+        }
+        _cardGameMediator = mediator;
     }
 
     public GameTable(GameSettings gameSettings, GameParticipant... participants) {
@@ -48,6 +61,7 @@ public class GameTable {
         _cardGameMediator.startGame();
         return _cardGameMediator;
     }
+
 
     public final CardGameMediator getMediator() {
         return _cardGameMediator;

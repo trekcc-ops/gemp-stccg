@@ -69,6 +69,13 @@ public class TableHolder {
         return table;
     }
 
+    public void createTableForExistingGame(GameSettings settings, List<GameParticipant> participants,
+                                           CardGameMediator mediator) {
+        GameTable table = new GameTable(settings, participants, mediator);
+        awaitingTables.put(String.valueOf(table.getTableId()), table);
+        runTableIfFull(table);
+    }
+
     private void runTableIfFull(GameTable table) {
         if (table.isFull()) {
             String tableId = String.valueOf(table.getTableId());
