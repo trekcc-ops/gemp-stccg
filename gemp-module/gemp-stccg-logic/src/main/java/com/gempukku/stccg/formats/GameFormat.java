@@ -43,8 +43,6 @@ public interface GameFormat extends AbstractGameFormat {
 
     int getMissions();
 
-    boolean hasFixedPlayerOrder();
-
     GameType getGameType();
 
     boolean hallVisible();

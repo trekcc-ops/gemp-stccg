@@ -16,6 +16,7 @@ import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.st1e.*;
 
@@ -32,6 +33,7 @@ public class GameTestBuilder {
     private final List<String> _players;
     private boolean _skipStartingHands;
     private final Collection<StoppableCard> _cardsToStop = new ArrayList<>();
+    private final String _firstPlayerName;
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
                            List<String> playerNames) throws InvalidGameOperationException {
@@ -40,7 +42,7 @@ public class GameTestBuilder {
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
                            List<String> playerNames, GameRandomizer randomizer) throws InvalidGameOperationException {
-        GameFormat format = formatLibrary.get("debug1e");
+        GameFormat format = formatLibrary.get("st1emoderncomplete");
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "991_001"); // dummy 1E dilemma
@@ -52,11 +54,15 @@ public class GameTestBuilder {
         _game = new ST1EGame(format, _decks, cardBlueprintLibrary, GameTimer.GLACIAL_TIMER, randomizer);
         _startingPhase = Phase.SEED_DOORWAY;
         _players = playerNames;
+        _firstPlayerName = playerNames.getFirst();
     }
 
     public ST1EGame initializeGame() throws InvalidGameOperationException {
         // Initialize player order
-        _game.getGameState().getCurrentProcess().process(_game);
+        if (_players.contains(_firstPlayerName)) {
+            PlayerOrder playerOrder = new PlayerOrder(false, _firstPlayerName, _players);
+            _game.getGameState().initializePlayerOrder(playerOrder);
+        }
 
         if (!_startingPhase.isSeedPhase()) {
             // draw starting hand

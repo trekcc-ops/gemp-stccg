@@ -13,12 +13,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
 
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
-        List<String> playerOrder;
-        if (cardGame.getFormat().hasFixedPlayerOrder()) {
-            playerOrder = Arrays.asList(cardGame.getAllPlayerIds());
-        } else {
-            playerOrder = getPlayerOrderByRollingDice(cardGame);
-        }
+        List<String> playerOrder = getPlayerOrderByRollingDice(cardGame);
         cardGame.sendMessage(playerOrder.getFirst() + " will go first");
         cardGame.getGameState().initializePlayerOrder(new PlayerOrder(playerOrder));
     }
