@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.actions.movecard.DockAction;
 import com.gempukku.stccg.actions.movecard.UndockAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;

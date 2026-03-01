@@ -2,7 +2,11 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.User;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.formats.GameFormat;
+import com.gempukku.stccg.game.CardGameMediator;
+import com.gempukku.stccg.game.GameParticipant;
+import com.gempukku.stccg.game.GameResultListener;
+import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
 
@@ -25,9 +29,19 @@ public class GameTable {
         WAITING, PLAYING, FINISHED
     }
 
+    public GameTable(GameSettings gameSettings, Collection<GameParticipant> participants, CardGameMediator mediator) {
+        this.gameSettings = gameSettings;
+        this.capacity = 2;
+        _tableStatus = TableStatus.WAITING;
+        for (GameParticipant participant : participants) {
+            addPlayer(participant);
+        }
+        _cardGameMediator = mediator;
+    }
+
     public GameTable(GameSettings gameSettings, GameParticipant... participants) {
         this.gameSettings = gameSettings;
-        this.capacity = 2; // manually change Tribbles player limit
+        this.capacity = 2;
         _tableStatus = TableStatus.WAITING;
         for (GameParticipant participant : participants) {
             addPlayer(participant);
@@ -48,6 +62,7 @@ public class GameTable {
         _cardGameMediator.startGame();
         return _cardGameMediator;
     }
+
 
     public final CardGameMediator getMediator() {
         return _cardGameMediator;
@@ -117,17 +132,8 @@ public class GameTable {
             if (isForLeague()) {
                 listenerList.add(new LeagueGameResultListener(gameSettings, leagueService));
             }
-            createNewGame(gameServer, tournamentName, listenerList);
+            gameServer.createNewGame(tournamentName, this, listenerList);
         }
-    }
-
-    public void createTournamentGameInternal(GameServer gameServer, List<GameResultListener> listeners,
-                                             String tournamentName) {
-        createNewGame(gameServer, tournamentName, listeners);
-    }
-
-    private void createNewGame(GameServer server, String gameName, List<GameResultListener> listeners) {
-        server.createNewGame(gameName, this, listeners);
     }
 
 
@@ -162,6 +168,10 @@ public class GameTable {
 
     public boolean shouldBeRemoved() {
         return _cardGameMediator != null && _cardGameMediator.isDestroyed();
+    }
+
+    public GameFormat getGameFormat() {
+        return gameSettings.getGameFormat();
     }
 
 }

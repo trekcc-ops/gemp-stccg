@@ -1,6 +1,7 @@
 package com.gempukku.stccg.database;
 
 import com.gempukku.stccg.TextUtils;
+import com.gempukku.stccg.common.AppConfig;
 import org.sql2o.Sql2o;
 
 import java.nio.charset.StandardCharsets;
@@ -347,8 +348,12 @@ public class DbPlayerDAO implements PlayerDAO {
         }
 
         String lowerCase = login.toLowerCase();
-        return !lowerCase.startsWith("admin") &&
-                !lowerCase.startsWith("guest") && !lowerCase.startsWith("system") && !lowerCase.startsWith("bye");
+        for (String reservedName : AppConfig.getForbiddenUsernames()) {
+            if (lowerCase.startsWith(reservedName.toLowerCase())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean loginExists(String login) {

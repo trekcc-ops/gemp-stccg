@@ -65,6 +65,28 @@ public class CardGameMediator {
     private final Set<String> _requestedCancel = new HashSet<>();
     private ZonedDateTime _endTime;
 
+    public CardGameMediator(DefaultGame cardGame, String gameName, boolean allowSpectators, GameTimer timeSettings,
+                            boolean isCompetitive) {
+
+        _allowSpectators = allowSpectators;
+        _gameName = gameName;
+        _timeSettings = timeSettings;
+
+        _playerDecks.putAll(cardGame.getPlayerDecks());
+        _playersPlaying.addAll(Arrays.asList(cardGame.getAllPlayerIds()));
+        _playerClocks.putAll(cardGame.getGameState().getPlayerClocks());
+
+        _game = cardGame;
+        cardGame.addGameResultListener(new GameMediatorListener(this));
+
+        // Game may be immediately cancelled if an error comes up while initializing game
+        if (_game.isCancelled()) {
+            cancelGameDueToError();
+        }
+
+        _gameChat = createGameChat(isCompetitive, _game.getAllPlayerIds());
+    }
+
 
     public CardGameMediator(GameParticipant[] participants, CardBlueprintLibrary blueprintLibrary,
                             boolean allowSpectators, GameTimer timeSettings, GameFormat gameFormat, GameType gameType,
@@ -96,7 +118,27 @@ public class CardGameMediator {
             cancelGameDueToError();
         }
 
-        _gameChat = createGameChat(isCompetitive, participants);
+        _gameChat = createGameChat(isCompetitive, _game.getAllPlayerIds());
+    }
+
+    private GameChatRoomMediator createGameChat(boolean isCompetitive, String[] playerNames) {
+        String chatRoomName = "Game " + _gameId;
+        Set<String> allowedUsers = new HashSet<>();
+
+        if (isCompetitive) {
+            allowedUsers.addAll(Arrays.asList(playerNames));
+        }
+
+        String welcomeMessage = isCompetitive ? "Welcome to private room" : "Welcome to room";
+        GameChatRoomMediator chatRoom = new GameChatRoomMediator(false, allowedUsers,
+                false, chatRoomName);
+        try {
+            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID,
+                    welcomeMessage + ": " + chatRoomName, true);
+        } catch (PrivateInformationException | ChatCommandErrorException exp) {
+            // Ignore, sent as admin
+        }
+        return chatRoom;
     }
 
     private GameChatRoomMediator createGameChat(boolean isCompetitive, GameParticipant[] participants) {
@@ -174,6 +216,7 @@ public class CardGameMediator {
             startClocksForUsersPendingDecision();
         }
     }
+
 
     public final void cleanup() {
         try (CloseableWriteLock ignored = _writeLock.open()) {

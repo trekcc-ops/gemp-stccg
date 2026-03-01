@@ -1,6 +1,8 @@
 package com.gempukku.stccg.database;
 
+import com.gempukku.stccg.common.AppConfig;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.service.AdminService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,4 +32,20 @@ public interface DeckDAO {
         return result;
     }
 
+    default CardDeck getDeckIfOwnedOrInLibrary(User requestingUser, String deckName, AdminService adminService)
+            throws DeckNotFoundException {
+        if (getDeckForUser(requestingUser, deckName) instanceof CardDeck userDeck) {
+            return userDeck;
+        } else {
+            try {
+                User librarianUser = adminService.getPlayer(AppConfig.getLibrarianUsername());
+                if (getDeckForUser(librarianUser, deckName) instanceof CardDeck libraryDeck) {
+                    return libraryDeck;
+                }
+            } catch(UserNotFoundException ignored) {
+                // No specific error handling beyond the DeckNotFoundException that will be thrown by this method
+            }
+        }
+        throw new DeckNotFoundException("Could not find deck '" + deckName + "' in your decks or the deck library");
+    }
 }

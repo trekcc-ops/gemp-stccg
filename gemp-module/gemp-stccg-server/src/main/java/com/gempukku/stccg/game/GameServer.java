@@ -63,4 +63,12 @@ public class GameServer extends AbstractServer {
         }
     }
 
+    public void addAndStartExistingGame(CardGameMediator mediator, List<GameResultListener> listenerList) {
+        for (GameCreationListener listener : _gameCreationListeners) {
+            listener.process(mediator);
+        }
+        mediator.initialize(listenerList);
+        mediator.startGame();
+        addMediatorToRunningGames(mediator);
+    }
 }

@@ -12,10 +12,7 @@ import com.gempukku.stccg.collection.CollectionsManager;
 import com.gempukku.stccg.database.*;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
-import com.gempukku.stccg.game.GameChatCreationListener;
-import com.gempukku.stccg.game.GameHistoryService;
-import com.gempukku.stccg.game.GameRecordingCreationListener;
-import com.gempukku.stccg.game.GameServer;
+import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.hall.GameCreationListener;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.hall.TableHolder;
@@ -116,6 +113,9 @@ public class ServerObjects {
         hallServer.startServer();
         gameServer.startServer();
         chatServer.startServer();
+
+        SampleGameLibrary gameLibrary = new SampleGameLibrary(_cardBlueprintLibrary, _formatLibrary);
+        gameLibrary.addGamesToHall(hallServer);
     }
 
 
@@ -124,4 +124,5 @@ public class ServerObjects {
         mapper.setInjectableValues(_injectables);
         return new ServerChannelInitializer(mapper, _adminService);
     }
+
 }

@@ -6,7 +6,6 @@
         "minimumDrawDeckSize": 0,
         "maximumSeedDeckSize": 999,
         "missions": -1,
-        "firstPlayerFixed": true,
         "hall": true
     },
     {

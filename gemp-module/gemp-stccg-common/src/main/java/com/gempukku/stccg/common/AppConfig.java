@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Properties;
 
 public class AppConfig {
@@ -76,6 +77,7 @@ public class AppConfig {
     public static File getCardsPath() { return getResourceFile("cards"); }
 
     public static File getFormatDefinitionsPath() { return getResourceFile("stccgFormats.json"); }
+    public static File getSampleGameLibraryPath() { return getResourceFile("gameLibrary.json"); }
     public static File getProductPath() { return getResourceFile("product"); }
     public static File getSealedPath() { return getResourceFile("sealed"); }
     public static File getDraftPath() { return getResourceFile("draft"); }
@@ -84,5 +86,13 @@ public class AppConfig {
     public static int getPort() {
         String port = getProperty("port");
         return Integer.parseInt(port);
+    }
+
+    public static String getLibrarianUsername() {
+        return "Librarian";
+    }
+
+    public static List<String> getForbiddenUsernames() {
+        return List.of(getLibrarianUsername(), "admin", "system", "bye");
     }
 }

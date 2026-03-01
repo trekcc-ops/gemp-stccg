@@ -9,14 +9,19 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.database.DeckDAO;
+import com.gempukku.stccg.database.DeckNotFoundException;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.UserNotFoundException;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.hall.GameSettings;
 import com.gempukku.stccg.hall.HallException;
 import com.gempukku.stccg.hall.HallServer;
-import com.gempukku.stccg.league.*;
+import com.gempukku.stccg.league.League;
+import com.gempukku.stccg.league.LeagueNotFoundException;
+import com.gempukku.stccg.league.LeagueSeries;
+import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.service.AdminService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +45,9 @@ public class CreateTableRequestHandler implements UriRequestHandler {
     private final GameServer _gameServer;
     private final LeagueService _leagueService;
     private final boolean _isVisible;
+    private final FormatLibrary _formatLibrary;
+    private boolean _tableCreationFailed;
+    private boolean _tableJoinFailed;
 
     CreateTableRequestHandler(
             @JsonProperty("format")
@@ -108,6 +116,7 @@ public class CreateTableRequestHandler implements UriRequestHandler {
         _series = series;
         _timer = gameTimer;
         _format = format;
+        _formatLibrary = formatLibrary;
     }
 
     @Override
@@ -116,76 +125,60 @@ public class CreateTableRequestHandler implements UriRequestHandler {
 
         User resourceOwner = request.user();
 
-        if (_isInviteOnly) {
-            String errorMessage = "";
-            if (_desc.isEmpty()) {
-                errorMessage = "Invite-only games must have your intended opponent in the description";
-            } else if (_desc.equalsIgnoreCase(resourceOwner.getName())) {
-                errorMessage = "Absolutely no playing with yourself!!  Private matches must be with someone else.";
-            } else {
-                try {
-                    User player = _adminService.getPlayer(_desc);
-                    if (player == null)
-                        throw new RuntimeException();
-                } catch (RuntimeException ex) {
-                    errorMessage = "Cannot find player '" + _desc + "'. " +
-                            "Check your spelling and capitalization and ensure it is exact.";
-                }
-            }
-            if (!errorMessage.isEmpty()) {
-                responseWriter.writeXmlMarshalExceptionResponse(errorMessage);
-                return;
-            }
-        }
+        /* Verifies:
+            Hall server is not in shutdown mode
+            Constructor of this class did not throw error messages
+            Table name follows expected guidelines
+            Deck can be played by requesting user
+            Deck is legal for table format
+         */
 
         if (_hallServer.isShutdown()) {
             responseWriter.writeXmlMarshalExceptionResponse("Server is in shutdown mode. " +
                     "Server will be restarted after all running games are finished.");
         } else if (_hallExceptionMessage != null) {
             responseWriter.writeXmlMarshalExceptionResponse(_hallExceptionMessage);
+        } else if (validateTableName(request.userName()) instanceof String errorMessage &&
+                !errorMessage.isEmpty()) {
+            responseWriter.writeXmlMarshalExceptionResponse(errorMessage);
         } else {
-
-            boolean isUsingLibrarianDeck = false;
-            CardDeck cardDeck = null;
             try {
-                cardDeck = _hallServer.validateUserAndDeck(_format, resourceOwner, _deckName,
-                        _cardBlueprintLibrary, _deckDAO);
-            } catch(HallException e) {
-                try {
-                    //try again assuming it's a new player with one of the default library decks selected
-                    cardDeck = _hallServer.validateUserAndDeck(_format, _adminService.getPlayer("Librarian"),
-                            _deckName, _cardBlueprintLibrary, _deckDAO);
-                    isUsingLibrarianDeck = true;
-                } catch(HallException ignored) {
-                    responseWriter.writeXmlMarshalExceptionResponse(e);
-                }
-            }
-
-            if (cardDeck != null) {
-                try {
-                    String descToUse = (_league == null && isUsingLibrarianDeck) ? ("(New Player) " + _desc) : _desc;
-                    GameSettings gameSettings = new GameSettings(_format, _league, _series, _league != null,
-                            _isPrivate, _isInviteOnly, !_isVisible, _timer, descToUse);
-                    _hallServer.createNewTable(resourceOwner, gameSettings, cardDeck, _gameServer, _leagueService);
-                    responseWriter.writeXmlOkResponse();
-                } catch (Exception ex) {
-                    //This is a worthless error that doesn't need to be spammed into the log
-                    if (doNotIgnoreError(ex)) {
-                        LOGGER.error("Error response for {}", request.uri(), ex);
-                    }
-                    responseWriter.writeXmlMarshalExceptionResponse(
-                            "Failed to create table. Please try again later.");
-                }
+                CardDeck deckFromData = _deckDAO.getDeckIfOwnedOrInLibrary(request.user(), _deckName, _adminService);
+                CardDeck deckWithErrata = _hallServer.validateDeckIsLegal(_format, _cardBlueprintLibrary, deckFromData);
+                GameSettings gameSettings = new GameSettings(_format, _league, _series, _league != null,
+                        _isPrivate, _isInviteOnly, !_isVisible, _timer, _desc);
+                _hallServer.createNewTable(resourceOwner, gameSettings, deckWithErrata, _gameServer, _leagueService);
+                responseWriter.writeXmlOkResponse();
+            } catch(DeckNotFoundException | HallException exp) {
+                responseWriter.writeXmlMarshalExceptionResponse(exp);
+            } catch(Exception exp) {
+                LOGGER.error("Error response for {}", request.uri(), exp);
+                responseWriter.writeXmlMarshalExceptionResponse(
+                        "Failed to create table. Please try again later.");
             }
         }
     }
 
-    private static boolean doNotIgnoreError(Exception ex) {
-        String msg = ex.getMessage();
-
-        if ((msg != null && msg.contains("You don't have a deck registered yet"))) return false;
-        assert msg != null;
-        return !msg.contains("Your selected deck is not valid for this format");
+    private String validateTableName(String requestingUserName) {
+        String errorMessage = "";
+        if (_isInviteOnly) {
+            if (_desc.isEmpty() || _desc.equalsIgnoreCase(requestingUserName)) {
+                errorMessage = "Invite-only games must have your opponent's user name in the description.";
+            } else {
+                try {
+                    User player = _adminService.getPlayer(_desc);
+                    if (player == null) {
+                        String expMessage = "Cannot find player '" + _desc + "'. " +
+                                "Check your spelling and capitalization and ensure it is exact.";
+                        throw new UserNotFoundException(expMessage);
+                    }
+                } catch (UserNotFoundException ex) {
+                    errorMessage = "Cannot find player '" + _desc + "'. " +
+                            "Check your spelling and capitalization and ensure it is exact.";
+                }
+            }
+        }
+        return errorMessage;
     }
 
 }

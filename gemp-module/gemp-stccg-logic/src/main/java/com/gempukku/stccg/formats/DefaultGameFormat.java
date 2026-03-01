@@ -12,7 +12,7 @@ import com.gempukku.stccg.common.filterable.SubDeck;
 import java.util.*;
 
 @JsonPropertyOrder({ "gameType", "code", "name", "order", "discardPileIsPublic", "playtest", "minimumDrawDeckSize",
-        "maximumSeedDeckSize", "missions", "maximumSameName", "hall", "noShuffle", "firstPlayerFixed"
+        "maximumSeedDeckSize", "missions", "maximumSameName", "hall"
 })
 public class DefaultGameFormat implements GameFormat {
 
@@ -48,10 +48,6 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _limit2Cards = new ArrayList<>();
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
-
-    @JsonProperty("firstPlayerFixed")
-    private final boolean _firstPlayerFixed;
-
     private final GameType _gameType;
 
     @JsonCreator
@@ -66,8 +62,7 @@ public class DefaultGameFormat implements GameFormat {
                               @JsonProperty("maximumSeedDeckSize") Integer maxSeedDeck,
                               @JsonProperty("bannedCards") @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> bannedCards,
                               @JsonProperty("missions") Integer missions,
-                              @JsonProperty("hall") Boolean hallVisible,
-                              @JsonProperty("firstPlayerFixed") Boolean firstPlayerFixed) {
+                              @JsonProperty("hall") Boolean hallVisible) {
         _name = name;
         _code = code;
         _order = 1000;
@@ -78,7 +73,6 @@ public class DefaultGameFormat implements GameFormat {
         _hallVisible = Objects.requireNonNullElse(hallVisible, true);
         _missions = Objects.requireNonNullElse(missions, 6);
         _maximumSeedDeckSize = Objects.requireNonNullElse(maxSeedDeck, 30);
-        _firstPlayerFixed = Objects.requireNonNullElse(firstPlayerFixed, false);
         _gameType =
                 Enum.valueOf(GameType.class, gameType.toUpperCase().replaceAll("[ '\\-.]", "_"));
         for (SetDefinition set : blueprintLibrary.getSetDefinitions().values()) {
@@ -357,11 +351,6 @@ public class DefaultGameFormat implements GameFormat {
     @Override
     public int getMissions() {
         return _missions;
-    }
-
-    @Override
-    public boolean hasFixedPlayerOrder() {
-        return _firstPlayerFixed;
     }
 
     public String toString() {
