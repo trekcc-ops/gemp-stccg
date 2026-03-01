@@ -124,6 +124,14 @@ public class CreateTableRequestHandler implements UriRequestHandler {
 
         User resourceOwner = request.user();
 
+        /* Verifies:
+            Hall server is not in shutdown mode
+            Constructor of this class did not throw error messages
+            Table name follows expected guidelines
+            Deck can be played by requesting user
+            Deck is legal for table format
+         */
+
         if (_hallServer.isShutdown()) {
             responseWriter.writeXmlMarshalExceptionResponse("Server is in shutdown mode. " +
                     "Server will be restarted after all running games are finished.");
@@ -169,10 +177,8 @@ public class CreateTableRequestHandler implements UriRequestHandler {
     private String validateTableName(String requestingUserName) {
         String errorMessage = "";
         if (_isInviteOnly) {
-            if (_desc.isEmpty()) {
-                errorMessage = "Invite-only games must have your intended opponent in the description";
-            } else if (_desc.equalsIgnoreCase(requestingUserName)) {
-                errorMessage = "Absolutely no playing with yourself!!  Private matches must be with someone else.";
+            if (_desc.isEmpty() || _desc.equalsIgnoreCase(requestingUserName)) {
+                errorMessage = "Invite-only games must have your opponent's user name in the description.";
             } else {
                 try {
                     User player = _adminService.getPlayer(_desc);
