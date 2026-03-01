@@ -69,7 +69,8 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
             }
         } else if (_cardCountLastSelected == null || _cardsDrawnSinceLastSelection == _cardCountLastSelected) {
             AwaitingDecision selectCardCountDecision = new IntegerAwaitingDecision(_performingPlayerId,
-                    DecisionContext.SELECT_NUMBER_OF_CARDS_TO_DRAW, _minCardsToDraw - _cardsAlreadyDrawnCount,
+                    DecisionContext.SELECT_NUMBER_OF_CARDS_TO_DRAW,
+                    Math.max(_minCardsToDraw - _cardsAlreadyDrawnCount,0),
                     _maxCardsToDraw - _cardsAlreadyDrawnCount, cardGame) {
                 @Override
                 public void decisionMade(String result) throws DecisionResultInvalidException {
