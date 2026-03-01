@@ -132,7 +132,11 @@ public class ServerObjects {
         try {
             GameTestBuilder builder = new GameTestBuilder(_cardBlueprintLibrary, _formatLibrary, List.of("asdf", "qwer"));
             builder.addMission(MissionType.PLANET, Affiliation.FEDERATION, "asdf");
-            builder.setPhase(Phase.EXECUTE_ORDERS);
+            builder.addSeedDeckCard("155_021", "Attention All Hands", "asdf");
+            builder.addSeedDeckCard("155_021", "Attention All Hands", "qwer");
+            builder.addSeedDeckCard("155_022", "Continuing Mission", "asdf");
+            builder.addSeedDeckCard("155_022", "Continuing Mission", "qwer");
+            builder.setPhase(Phase.SEED_FACILITY);
             builder.initializeGame();
             hallServer.createTableForTestingExistingGame(builder.getGame(), gameName);
         } catch(Exception exp) {

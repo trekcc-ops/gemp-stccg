@@ -6,9 +6,12 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.DeckDAO;
-import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.database.DeckNotFoundException;
 import com.gempukku.stccg.game.GameServer;
+import com.gempukku.stccg.hall.GameSettings;
+import com.gempukku.stccg.hall.GameTable;
 import com.gempukku.stccg.hall.HallException;
 import com.gempukku.stccg.hall.HallServer;
 import com.gempukku.stccg.league.LeagueService;
@@ -53,46 +56,38 @@ public class JoinTableRequestHandler implements UriRequestHandler {
     @Override
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
-        User resourceOwner = request.user();
-        User libraryOwner = _adminService.getPlayer("Librarian");
 
         if (_hallServer.isShutdown()) {
             throw new HallException(
                     "Server is in shutdown mode. Server will be restarted after all running games are finished.");
         }
 
+        GameTable gameTable = _hallServer.getActiveTableById(_tableId);
 
-        // DO NOT LOSE THIS EXCEPTION CATCHING PROCESS
+        if (gameTable == null) {
+            throw new HallException("Table was already removed");
+        } else if (gameTable.wasGameStarted()) {
+            throw new HallException("Table is already taken or was removed");
+        } else if (gameTable.hasPlayer(request.userName())) {
+            throw new HallException("You can't play against yourself");
+        }
+
         try {
-            _hallServer.joinTableAsPlayer(_tableId, resourceOwner, resourceOwner, _deckName, _cardLibrary, _deckDAO,
-                    _leagueService, _gameServer);
+            CardDeck deckFromData = _deckDAO.getDeckIfOwnedOrInLibrary(request.user(), _deckName, _adminService);
+            CardDeck deckWithErrata =
+                    _hallServer.validateDeckIsLegal(gameTable.getGameFormat(), _cardLibrary, deckFromData);
+            GameSettings settings = gameTable.getGameSettings();
+            _hallServer.validatePlayerForLeague(request.userName(), settings);
+            gameTable.validateOpponentForLeague(request.userName(), _leagueService);
+            _hallServer.joinTableAsPlayer(_leagueService, _gameServer, request.userName(),
+                    deckWithErrata, gameTable);
             responseWriter.writeXmlOkResponse();
-        } catch (HallException e) {
-            try {
-                //Try again assuming it's a new player using the default deck library decks
-                _hallServer.joinTableAsPlayer(_tableId, resourceOwner, libraryOwner, _deckName, _cardLibrary, _deckDAO,
-                        _leagueService, _gameServer);
-                responseWriter.writeXmlOkResponse();
-                return;
-            } catch (HallException ex) {
-                if (doNotIgnoreError(ex)) {
-                    LOGGER.error("Error response for {}", request.uri(), ex);
-                }
-            } catch (Exception ex) {
-                LOGGER.error("Additional error response for {}", request.uri(), ex);
-                throw ex;
-            }
-            responseWriter.writeXmlMarshalExceptionResponse(e.getMessage());
+        } catch(DeckNotFoundException | HallException exp) {
+            responseWriter.writeXmlMarshalExceptionResponse(exp);
+        } catch(Exception exp) {
+            LOGGER.error("Error response for {}", request.uri(), exp);
+            responseWriter.writeXmlMarshalExceptionResponse(exp);
         }
     }
-
-    private static boolean doNotIgnoreError(Exception ex) {
-        String msg = ex.getMessage();
-
-        if ((msg != null && msg.contains("You don't have a deck registered yet"))) return false;
-        assert msg != null;
-        return !msg.contains("Your selected deck is not valid for this format");
-    }
-
 
 }

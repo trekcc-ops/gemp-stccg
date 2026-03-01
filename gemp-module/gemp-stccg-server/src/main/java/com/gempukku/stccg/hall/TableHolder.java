@@ -30,15 +30,12 @@ public class TableHolder {
 
     private List<GameTable> getActiveLeagueTablesForUser(String userName, League league) {
         List<GameTable> result = new ArrayList<>();
-        for (GameTable awaitingTable : awaitingTables.values()) {
-            if (awaitingTable.playerIsPlayingForLeague(userName, league)) {
-                result.add(awaitingTable);
-            }
-        }
-
-        for (GameTable runningTable : runningTables.values()) {
-            if (runningTable.playerIsPlayingForLeague(userName, league)) {
-                result.add(runningTable);
+        Collection<GameTable> tablesToReview = new ArrayList<>();
+        tablesToReview.addAll(awaitingTables.values());
+        tablesToReview.addAll(runningTables.values());
+        for (GameTable table : tablesToReview) {
+            if (table.playerIsPlayingForLeague(userName, league)) {
+                result.add(table);
             }
         }
         return result;
@@ -60,7 +57,7 @@ public class TableHolder {
         }
     }
 
-    private void addTableToAwaitingTables(GameTable table) {
+    void addTableToAwaitingTables(GameTable table) {
         awaitingTables.put(String.valueOf(table.getTableId()), table);
         runTableIfFull(table);
     }
@@ -69,12 +66,6 @@ public class TableHolder {
         GameTable table = new GameTable(gameSettings, participants);
         addTableToAwaitingTables(table);
         return table;
-    }
-
-    public void createTableForExistingGame(GameSettings settings, List<GameParticipant> participants,
-                                           CardGameMediator mediator) {
-        GameTable table = new GameTable(settings, participants, mediator);
-        addTableToAwaitingTables(table);
     }
 
     void runTableIfFull(GameTable table) {

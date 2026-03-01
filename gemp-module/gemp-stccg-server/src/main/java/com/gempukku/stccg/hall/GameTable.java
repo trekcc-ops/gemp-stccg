@@ -2,6 +2,7 @@ package com.gempukku.stccg.hall;
 
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
 import com.gempukku.stccg.game.GameResultListener;
@@ -30,7 +31,7 @@ public class GameTable {
 
     public GameTable(GameSettings gameSettings, Collection<GameParticipant> participants, CardGameMediator mediator) {
         this.gameSettings = gameSettings;
-        this.capacity = 2; // manually change Tribbles player limit
+        this.capacity = 2;
         _tableStatus = TableStatus.WAITING;
         for (GameParticipant participant : participants) {
             addPlayer(participant);
@@ -40,7 +41,7 @@ public class GameTable {
 
     public GameTable(GameSettings gameSettings, GameParticipant... participants) {
         this.gameSettings = gameSettings;
-        this.capacity = 2; // manually change Tribbles player limit
+        this.capacity = 2;
         _tableStatus = TableStatus.WAITING;
         for (GameParticipant participant : participants) {
             addPlayer(participant);
@@ -167,6 +168,10 @@ public class GameTable {
 
     public boolean shouldBeRemoved() {
         return _cardGameMediator != null && _cardGameMediator.isDestroyed();
+    }
+
+    public GameFormat getGameFormat() {
+        return gameSettings.getGameFormat();
     }
 
 }

@@ -9,6 +9,7 @@ import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.database.DeckDAO;
+import com.gempukku.stccg.database.DeckNotFoundException;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.database.UserNotFoundException;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -141,35 +142,19 @@ public class CreateTableRequestHandler implements UriRequestHandler {
                 !errorMessage.isEmpty()) {
             responseWriter.writeXmlMarshalExceptionResponse(errorMessage);
         } else {
-            User librarianUser = null;
             try {
-                librarianUser = _adminService.getPlayer("librarian");
-            } catch(UserNotFoundException ignored) {
-                // If librarian user can't be found, don't use it
-            }
-            CardDeck cardDeck = _deckDAO.getDeckIfOwnedOrInLibrary(request.user(), librarianUser, _deckName);
-            if (cardDeck == null) {
+                CardDeck deckFromData = _deckDAO.getDeckIfOwnedOrInLibrary(request.user(), _deckName, _adminService);
+                CardDeck deckWithErrata = _hallServer.validateDeckIsLegal(_format, _cardBlueprintLibrary, deckFromData);
+                GameSettings gameSettings = new GameSettings(_format, _league, _series, _league != null,
+                        _isPrivate, _isInviteOnly, !_isVisible, _timer, _desc);
+                _hallServer.createNewTable(resourceOwner, gameSettings, deckWithErrata, _gameServer, _leagueService);
+                responseWriter.writeXmlOkResponse();
+            } catch(DeckNotFoundException | HallException exp) {
+                responseWriter.writeXmlMarshalExceptionResponse(exp);
+            } catch(Exception exp) {
+                LOGGER.error("Error response for {}", request.uri(), exp);
                 responseWriter.writeXmlMarshalExceptionResponse(
-                        "Unable to find deck '" + _deckName + "' in your deck list or the deck library");
-            } else {
-                try {
-                    cardDeck = _hallServer.validateDeckIsLegal(_format, _cardBlueprintLibrary, cardDeck);
-                } catch(HallException exp) {
-                    responseWriter.writeXmlMarshalExceptionResponse(exp);
-                }
-                try {
-                    GameSettings gameSettings = new GameSettings(_format, _league, _series, _league != null,
-                            _isPrivate, _isInviteOnly, !_isVisible, _timer, _desc);
-                    _hallServer.createNewTable(resourceOwner, gameSettings, cardDeck, _gameServer, _leagueService);
-                    responseWriter.writeXmlOkResponse();
-                } catch (Exception ex) {
-                    //This is a worthless error that doesn't need to be spammed into the log
-                    if (doNotIgnoreError(ex)) {
-                        LOGGER.error("Error response for {}", request.uri(), ex);
-                    }
-                    responseWriter.writeXmlMarshalExceptionResponse(
-                            "Failed to create table. Please try again later.");
-                }
+                        "Failed to create table. Please try again later.");
             }
         }
     }
@@ -194,14 +179,6 @@ public class CreateTableRequestHandler implements UriRequestHandler {
             }
         }
         return errorMessage;
-    }
-
-    private static boolean doNotIgnoreError(Exception ex) {
-        String msg = ex.getMessage();
-
-        if ((msg != null && msg.contains("You don't have a deck registered yet"))) return false;
-        assert msg != null;
-        return !msg.contains("Your selected deck is not valid for this format");
     }
 
 }

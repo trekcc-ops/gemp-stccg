@@ -114,6 +114,12 @@ public class HallServer extends AbstractServer {
         }
     }
 
+    public GameTable getActiveTableById(String tableId) {
+        try (CloseableReadLock ignored = _readLock.open()) {
+            return _tableHolder.getActiveTableById(tableId);
+        }
+    }
+
     private void cancelTournamentQueues() throws SQLException, IOException {
         for (TournamentQueue tournamentQueue : _tournamentQueues.values())
             tournamentQueue.leaveAllPlayers(_collectionsManager);
@@ -158,7 +164,8 @@ public class HallServer extends AbstractServer {
                 CardGameMediator mediator = new CardGameMediator(cardGame, gameName, settings.allowsSpectators(),
                         settings.getTimeSettings(), settings.isCompetitive());
 
-                _tableHolder.createTableForExistingGame(settings, participants, mediator);
+                GameTable table = new GameTable(settings, participants, mediator);
+                _tableHolder.addTableToAwaitingTables(table);
                 List<GameResultListener> listenerList = List.of(new NotifyHallListenersGameResultListener(this));
                 _gameServer.addAndStartExistingGame(mediator, listenerList);
             }
@@ -185,32 +192,10 @@ public class HallServer extends AbstractServer {
         }
     }
 
-    public final void joinTableAsPlayer(String tableId, User player, User deckOwner, String deckName,
-                                        CardBlueprintLibrary cardBlueprintLibrary, DeckDAO deckDAO,
-                                        LeagueService leagueService, GameServer gameServer)
+    public final void joinTableAsPlayer(LeagueService leagueService, GameServer gameServer,
+                                        String userName, CardDeck cardDeck, GameTable gameTable)
             throws HallException {
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            String userName = player.getName();
-
-            GameTable gameTable = _tableHolder.getActiveTableById(tableId);
-
-            if (gameTable == null) {
-                throw new HallException("Table was already removed");
-            }
-
-            GameSettings gameSettings = gameTable.getGameSettings();
-
-            CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName,
-                    cardBlueprintLibrary, deckDAO);
-
-            if (gameTable.wasGameStarted())
-                throw new HallException("Table is already taken or was removed");
-
-            if (gameTable.hasPlayer(player.getName()))
-                throw new HallException("You can't play against yourself");
-
-            _tableHolder.validatePlayerForLeague(userName, gameSettings);
-            gameTable.validateOpponentForLeague(userName, leagueService);
             gameTable.addPlayer(new GameParticipant(userName, cardDeck));
             _tableHolder.runTableIfFull(gameTable);
             gameTable.createGameIfFull(gameServer, this, leagueService);
@@ -459,6 +444,10 @@ public class HallServer extends AbstractServer {
             if (changed)
                 hallChanged();
         }
+    }
+
+    public void validatePlayerForLeague(String playerName, GameSettings settings) throws HallException {
+        _tableHolder.validatePlayerForLeague(playerName, settings);
     }
 
 }
