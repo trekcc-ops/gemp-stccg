@@ -330,7 +330,8 @@ public class HallServer extends AbstractServer {
     public CardDeck validateDeckIsLegal(GameFormat format, CardBlueprintLibrary cardBlueprintLibrary,
                                         CardDeck cardDeck) throws HallException {
         CardDeck deck = format.applyErrata(cardBlueprintLibrary, cardDeck);
-        List<String> validations = format.validateDeck(cardBlueprintLibrary, deck);
+        DeckValidation validation = new DeckValidation(deck, cardBlueprintLibrary, format);
+        List<String> validations = validation.getAllErrors();
         if(!validations.isEmpty()) {
             String firstValidation = validations.stream().findFirst().orElse(null);
             long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();

@@ -45,6 +45,8 @@ public class CreateTableRequestHandler implements UriRequestHandler {
     private final LeagueService _leagueService;
     private final boolean _isVisible;
     private final FormatLibrary _formatLibrary;
+    private boolean _tableCreationFailed;
+    private boolean _tableJoinFailed;
 
     CreateTableRequestHandler(
             @JsonProperty("format")
