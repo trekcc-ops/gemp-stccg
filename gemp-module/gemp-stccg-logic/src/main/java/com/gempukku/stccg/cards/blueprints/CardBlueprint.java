@@ -197,6 +197,35 @@ public class CardBlueprint {
     }
 
     // Setter/getter methods for card features
+
+    public boolean canBePlayed() {
+        if (_playThisCardActionBlueprint != null) {
+            return true;
+        } else if (List.of(CardType.PERSONNEL, CardType.EQUIPMENT, CardType.SHIP, CardType.SITE).contains(_cardType)) {
+            return true;
+        } else {
+            for (ActionBlueprint blueprint : _actionBlueprints) {
+                if (blueprint instanceof PlayThisCardAsResponseActionBlueprint) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public boolean canBeSeeded() {
+        if (List.of(CardType.MISSION, CardType.DILEMMA, CardType.ARTIFACT, CardType.SITE).contains(_cardType)) {
+            return true;
+        } else {
+            for (ActionBlueprint blueprint : _actionBlueprints) {
+                if (blueprint instanceof SeedThisCardActionBlueprint) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
     public String getBlueprintId() { return _blueprintId; }
     public void setTitle(String title) {
         this.title = title;
