@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.DiscardCardToPointAreaAction;
 import com.gempukku.stccg.cards.CardNotFoundException;

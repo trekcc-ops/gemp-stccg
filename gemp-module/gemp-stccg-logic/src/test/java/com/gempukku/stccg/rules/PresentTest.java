@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;

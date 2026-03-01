@@ -217,6 +217,7 @@ public class CardGameMediator {
         }
     }
 
+
     public final void cleanup() {
         try (CloseableWriteLock ignored = _writeLock.open()) {
 

@@ -1,4 +1,4 @@
-package com.gempukku.stccg;
+package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
@@ -14,18 +14,12 @@ import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
-import com.gempukku.stccg.game.GameRandomizer;
-import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.processes.GameProcess;
 import com.gempukku.stccg.processes.st1e.*;
 
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GameTestBuilder {
 
@@ -60,7 +54,7 @@ public class GameTestBuilder {
         _players = playerNames;
     }
 
-    public ST1EGame startGame() throws InvalidGameOperationException {
+    public ST1EGame initializeGame() throws InvalidGameOperationException {
         // Initialize player order
         _game.getGameState().getCurrentProcess().process(_game);
 
@@ -90,13 +84,15 @@ public class GameTestBuilder {
         if (!_cardsToStop.isEmpty()) {
             StopCardsAction stopAction = new StopCardsAction(_game, _players.getFirst(), _cardsToStop);
             executeAction(stopAction);
-            for (StoppableCard stoppable : _cardsToStop) {
-                assertTrue(stoppable.isStopped());
-            }
         }
 
         _game.getGameState().setCurrentProcess(currentProcess);
         _game.setCurrentPhase(_startingPhase);
+        return _game;
+    }
+
+    public ST1EGame startGame() throws InvalidGameOperationException {
+        initializeGame();
         _game.startGame();
         return _game;
     }
@@ -187,8 +183,6 @@ public class GameTestBuilder {
         playAction.setDestination(mission);
         playAction.setAffiliation(shipCard.getCurrentAffiliations().getFirst());
         executeAction(playAction);
-        assertTrue(shipCard.isInPlay());
-        assertTrue(shipCard.isAtSameLocationAsCard(mission));
         return shipCard;
     }
 
@@ -212,10 +206,11 @@ public class GameTestBuilder {
             playAction.setAffiliation(affiliatedCard.getCurrentAffiliations().getFirst());
         }
         executeAction(playAction);
-        assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isAtSameLocationAsCard(mission));
-        assertTrue(cardToAdd.isOnPlanet(_game));
-        return cardToAdd;
+        if (!cardToAdd.isInPlay() || !cardToAdd.isAtSameLocationAsCard(mission) || !cardToAdd.isOnPlanet(_game)) {
+            throw new InvalidGameOperationException("Did not achieve expected results from GameTestBuilder");
+        } else {
+            return cardToAdd;
+        }
     }
 
     public FacilityCard addOutpost(Affiliation affiliation, String ownerName, MissionCard mission)
@@ -252,7 +247,6 @@ public class GameTestBuilder {
             seedAction.setDestination(mission);
             seedAction.setAffiliation(facility.getCurrentAffiliations().getFirst());
             executeAction(seedAction);
-            assertTrue(facilityCard.isInPlay());
             return facility;
         } else {
             throw new CardNotFoundException("Card incorrect type: " + facilityCard.getClass().getSimpleName());
@@ -264,8 +258,6 @@ public class GameTestBuilder {
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
         _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND, null);
-        assertTrue(cardToAdd.isInHand(_game));
-        assertFalse(cardToAdd.isInPlay());
         return cardToAdd;
     }
 
@@ -273,8 +265,6 @@ public class GameTestBuilder {
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
         _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DISCARD, null);
-        assertTrue(cardToAdd.isInDiscard(_game));
-        assertFalse(cardToAdd.isInPlay());
         return cardToAdd;
     }
 
@@ -284,8 +274,6 @@ public class GameTestBuilder {
                                                     Class<T> clazz) throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
         _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND, null);
-        assertTrue(cardToAdd.isInHand(_game));
-        assertFalse(cardToAdd.isInPlay());
         return cardToAdd;
     }
 
@@ -315,8 +303,6 @@ public class GameTestBuilder {
         }
         executeAction(reportAction);
 
-        assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isAboard(cardWithCrew));
         return cardToAdd;
     }
 
@@ -331,8 +317,6 @@ public class GameTestBuilder {
 
         executeAction(reportAction);
 
-        assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isAboard(cardWithCrew));
         return cardToAdd;
     }
 
@@ -345,8 +329,6 @@ public class GameTestBuilder {
         reportAction.setAffiliation(cardToAdd.getCurrentAffiliations().getFirst());
         executeAction(reportAction);
 
-        assertTrue(cardToAdd.isInPlay());
-        assertTrue(cardToAdd.isDockedAtCardId(facility.getCardId()));
         return cardToAdd;
     }
 
@@ -394,7 +376,6 @@ public class GameTestBuilder {
         SeedCardAction seedAction = new SeedCardAction(_game, cardToAdd, Zone.CORE);
         executeAction(seedAction);
 
-        assertTrue(cardToAdd.isInPlay());
         return cardToAdd;
     }
 

@@ -3,7 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Phase;
 import org.junit.jupiter.api.Assertions;

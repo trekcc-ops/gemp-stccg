@@ -3,7 +3,7 @@ package com.gempukku.stccg.gamestate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.processes.GameProcess;

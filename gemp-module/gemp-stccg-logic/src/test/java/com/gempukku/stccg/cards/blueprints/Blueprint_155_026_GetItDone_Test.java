@@ -2,7 +2,7 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.rules;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.GameTestBuilder;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.playcard.DownloadAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
