@@ -138,7 +138,7 @@ public class HallServer extends AbstractServer {
                 final GameTable gameTable = _tableHolder.createTable(gameSettings, participants);
                 List<GameResultListener> listenerList = List.of(listener,
                         new NotifyHallListenersGameResultListener(this));
-                gameTable.createTournamentGameInternal(gameServer, listenerList, tournamentName);
+                gameServer.createNewGame(tournamentName, gameTable, listenerList);
             }
         }
     }
@@ -188,16 +188,32 @@ public class HallServer extends AbstractServer {
                                         CardBlueprintLibrary cardBlueprintLibrary, DeckDAO deckDAO,
                                         LeagueService leagueService, GameServer gameServer)
             throws HallException {
-        if (_shutdown)
-            throw new HallException(
-                    "Server is in shutdown mode. Server will be restarted after all running games are finished.");
-
-        GameSettings gameSettings = _tableHolder.getGameSettings(tableId);
-        CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName,
-                cardBlueprintLibrary, deckDAO);
-
         try (CloseableWriteLock ignored = _writeLock.open()) {
-            _tableHolder.joinTable(tableId, player, cardDeck, gameServer, this, leagueService);
+            String userName = player.getName();
+
+            GameTable gameTable = _tableHolder.getActiveTableById(tableId);
+
+            if (gameTable == null) {
+                throw new HallException("Table was already removed");
+            }
+
+            GameSettings gameSettings = gameTable.getGameSettings();
+
+            CardDeck cardDeck = validateUserAndDeck(gameSettings.getGameFormat(), deckOwner, deckName,
+                    cardBlueprintLibrary, deckDAO);
+
+            if (gameTable.wasGameStarted())
+                throw new HallException("Table is already taken or was removed");
+
+            if (gameTable.hasPlayer(player.getName()))
+                throw new HallException("You can't play against yourself");
+
+            _tableHolder.validatePlayerForLeague(userName, gameSettings);
+            gameTable.validateOpponentForLeague(userName, leagueService);
+            gameTable.addPlayer(new GameParticipant(userName, cardDeck));
+            _tableHolder.runTableIfFull(gameTable);
+            gameTable.createGameIfFull(gameServer, this, leagueService);
+            hallChanged();
         }
     }
 
@@ -308,6 +324,30 @@ public class HallServer extends AbstractServer {
                 tournamentsOnServer.put(tournamentKey, props);
             }
         }
+    }
+
+    public CardDeck validateDeckIsLegal(GameFormat format, CardBlueprintLibrary cardBlueprintLibrary,
+                                        CardDeck cardDeck) throws HallException {
+        CardDeck deck = format.applyErrata(cardBlueprintLibrary, cardDeck);
+        List<String> validations = format.validateDeck(cardBlueprintLibrary, deck);
+        if(!validations.isEmpty()) {
+            String firstValidation = validations.stream().findFirst().orElse(null);
+            long newLineCount = firstValidation.chars().filter(x -> x == '\n').count();
+            if (firstValidation.contains("\n"))
+                firstValidation = firstValidation.substring(0, firstValidation.indexOf("\n"));
+            long issueCount = validations.size() + newLineCount;
+            StringBuilder validationMessage = new StringBuilder();
+            validationMessage.append("Your selected deck is incompatible with the '");
+            validationMessage.append(format.getName()).append("' format. ");
+            if (issueCount <= 1) {
+                validationMessage.append(firstValidation);
+            } else {
+                validationMessage.append("Issues include: '").append(firstValidation).append("' and ");
+                validationMessage.append(issueCount - 1).append(" other issues.");
+            }
+            throw new HallException(validationMessage.toString());
+        }
+        return cardDeck;
     }
 
     public CardDeck validateUserAndDeck(GameFormat format, User player, String deckName,

@@ -1,10 +1,8 @@
 package com.gempukku.stccg.hall;
 
-import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameParticipant;
-import com.gempukku.stccg.game.GameServer;
 import com.gempukku.stccg.league.League;
 import com.gempukku.stccg.league.LeagueService;
 import com.gempukku.stccg.service.AdminService;
@@ -62,21 +60,24 @@ public class TableHolder {
         }
     }
 
-    public final GameTable createTable(GameSettings gameSettings, GameParticipant... participants) {
-        GameTable table = new GameTable(gameSettings, participants);
+    private void addTableToAwaitingTables(GameTable table) {
         awaitingTables.put(String.valueOf(table.getTableId()), table);
         runTableIfFull(table);
+    }
+
+    public final GameTable createTable(GameSettings gameSettings, GameParticipant... participants) {
+        GameTable table = new GameTable(gameSettings, participants);
+        addTableToAwaitingTables(table);
         return table;
     }
 
     public void createTableForExistingGame(GameSettings settings, List<GameParticipant> participants,
                                            CardGameMediator mediator) {
         GameTable table = new GameTable(settings, participants, mediator);
-        awaitingTables.put(String.valueOf(table.getTableId()), table);
-        runTableIfFull(table);
+        addTableToAwaitingTables(table);
     }
 
-    private void runTableIfFull(GameTable table) {
+    void runTableIfFull(GameTable table) {
         if (table.isFull()) {
             String tableId = String.valueOf(table.getTableId());
             awaitingTables.remove(tableId);
@@ -90,37 +91,6 @@ public class TableHolder {
         }
     }
 
-    public final void joinTable(String tableId, User player, CardDeck deck, GameServer gameServer,
-                                     HallServer hallServer, LeagueService leagueService) throws HallException {
-        final GameTable awaitingTable = awaitingTables.get(tableId);
-        String userName = player.getName();
-
-        if (awaitingTable == null || awaitingTable.wasGameStarted())
-            throw new HallException("Table is already taken or was removed");
-
-        if (awaitingTable.hasPlayer(player))
-            throw new HallException("You can't play against yourself");
-
-        validatePlayerForLeague(userName, awaitingTable.getGameSettings());
-        awaitingTable.validateOpponentForLeague(userName, leagueService);
-        awaitingTable.addPlayer(new GameParticipant(userName, deck));
-        runTableIfFull(awaitingTable);
-        awaitingTable.createGameIfFull(gameServer, hallServer, leagueService);
-        hallServer.hallChanged();
-    }
-
-
-    public final GameSettings getGameSettings(String tableId) throws HallException {
-        GameTable gameTable = awaitingTables.get(tableId);
-        if (gameTable == null) {
-            gameTable = runningTables.get(tableId);
-        }
-        if (gameTable == null) {
-            throw new HallException("Table was already removed");
-        } else {
-            return gameTable.getGameSettings();
-        }
-    }
 
     public final void leaveAwaitingTable(User player, String tableId) {
         GameTable table = awaitingTables.get(tableId);
@@ -228,4 +198,7 @@ public class TableHolder {
         return true;
     }
 
+    public GameTable getActiveTableById(String tableId) {
+        return Objects.requireNonNullElse(awaitingTables.get(tableId), runningTables.get(tableId));
+    }
 }

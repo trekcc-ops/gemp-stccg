@@ -54,7 +54,15 @@ public class JoinTableRequestHandler implements UriRequestHandler {
     public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         User resourceOwner = request.user();
+        User libraryOwner = _adminService.getPlayer("Librarian");
 
+        if (_hallServer.isShutdown()) {
+            throw new HallException(
+                    "Server is in shutdown mode. Server will be restarted after all running games are finished.");
+        }
+
+
+        // DO NOT LOSE THIS EXCEPTION CATCHING PROCESS
         try {
             _hallServer.joinTableAsPlayer(_tableId, resourceOwner, resourceOwner, _deckName, _cardLibrary, _deckDAO,
                     _leagueService, _gameServer);
@@ -62,7 +70,6 @@ public class JoinTableRequestHandler implements UriRequestHandler {
         } catch (HallException e) {
             try {
                 //Try again assuming it's a new player using the default deck library decks
-                User libraryOwner = _adminService.getPlayer("Librarian");
                 _hallServer.joinTableAsPlayer(_tableId, resourceOwner, libraryOwner, _deckName, _cardLibrary, _deckDAO,
                         _leagueService, _gameServer);
                 responseWriter.writeXmlOkResponse();

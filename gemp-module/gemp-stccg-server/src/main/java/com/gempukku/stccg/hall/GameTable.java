@@ -131,17 +131,8 @@ public class GameTable {
             if (isForLeague()) {
                 listenerList.add(new LeagueGameResultListener(gameSettings, leagueService));
             }
-            createNewGame(gameServer, tournamentName, listenerList);
+            gameServer.createNewGame(tournamentName, this, listenerList);
         }
-    }
-
-    public void createTournamentGameInternal(GameServer gameServer, List<GameResultListener> listeners,
-                                             String tournamentName) {
-        createNewGame(gameServer, tournamentName, listeners);
-    }
-
-    private void createNewGame(GameServer server, String gameName, List<GameResultListener> listeners) {
-        server.createNewGame(gameName, this, listeners);
     }
 
 

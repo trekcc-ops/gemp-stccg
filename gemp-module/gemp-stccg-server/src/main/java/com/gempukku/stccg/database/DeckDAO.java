@@ -30,4 +30,13 @@ public interface DeckDAO {
         return result;
     }
 
+    default CardDeck getDeckIfOwnedOrInLibrary(User requestingUser, User librarianUser, String deckName) {
+        if (getDeckForUser(requestingUser, deckName) instanceof CardDeck userDeck) {
+            return userDeck;
+        } else if (getDeckForUser(librarianUser, deckName) instanceof CardDeck libraryDeck) {
+            return libraryDeck;
+        } else {
+            return null;
+        }
+    }
 }
