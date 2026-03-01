@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
-import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -92,9 +92,8 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
 
                 if (!cardTarget.cannotBeResolved(cardGame)) {
 
-                    SelectAndReportForFreeCardAction reportAction =
-                            new SelectAndReportForFreeCardAction(cardGame, actionContext.card().getOwnerName(), cardTarget, actionContext.card(),
-                                    targetMap);
+                    ReportCardAction reportAction = new ReportCardAction(cardGame, actionContext.card().getOwnerName(),
+                            actionContext.card(), targetMap);
                     appendActionToContext(cardGame, reportAction, actionContext);
                     if (reportAction.canBeInitiated(cardGame)) {
                         return reportAction;

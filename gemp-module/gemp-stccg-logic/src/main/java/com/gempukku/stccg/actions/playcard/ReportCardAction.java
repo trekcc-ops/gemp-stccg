@@ -39,6 +39,13 @@ public class ReportCardAction extends PlayCardAction {
         _cardTargets.add(_targetResolver);
     }
 
+    public ReportCardAction(DefaultGame cardGame, String performingPlayerName,
+                            PhysicalCard performingCard,
+                            Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap) {
+        super(cardGame, performingCard, null, performingPlayerName, null, ActionType.PLAY_CARD);
+        _targetResolver = new ReportCardResolver(performingPlayerName, targetMap);
+        _cardTargets.add(_targetResolver);
+    }
 
 
     @Override
@@ -48,6 +55,7 @@ public class ReportCardAction extends PlayCardAction {
 
     public void processEffect(DefaultGame cardGame) {
         try {
+            _cardEnteringPlay = _targetResolver.getCardEnteringPlay();
             if (_cardEnteringPlay instanceof ReportableCard reportable) {
                 Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
                 if (reportable instanceof AffiliatedCard affiliatedCard) {
@@ -103,4 +111,7 @@ public class ReportCardAction extends PlayCardAction {
     }
 
 
+    public void selectCardToPlay(ReportableCard cardToPlay) {
+        _targetResolver.selectCardToPlay(cardToPlay);
+    }
 }

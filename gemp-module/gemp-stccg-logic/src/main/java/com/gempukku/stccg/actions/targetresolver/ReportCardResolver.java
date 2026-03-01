@@ -13,40 +13,51 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.google.common.collect.Iterables;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ReportCardResolver implements ActionCardResolver {
 
-    private final ReportableCard _cardEnteringPlay;
+    private ReportableCard _cardEnteringPlay;
     private PhysicalCard _destinationCard;
     private Affiliation _affiliationToReportAs;
     private final String _performingPlayerName;
     private SelectCardsAction _selectDestinationAction;
+    private SelectCardsAction _selectCardToPlayAction;
     private boolean _isFailed;
     private SelectAffiliationAction _affiliationSelectionAction;
-    private final Map<PhysicalCard, List<Affiliation>> _destinationAndAffiliationMap;
+    private final Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> _targetMap = new HashMap<>();
 
     public ReportCardResolver(DefaultGame cardGame, ReportableCard cardEnteringPlay) {
         _cardEnteringPlay = cardEnteringPlay;
         _performingPlayerName = cardEnteringPlay.getOwnerName();
-        _destinationAndAffiliationMap = ((ST1EGame) cardGame).getRules()
+        Map<PhysicalCard, List<Affiliation>> destinationAndAffiliationMap = ((ST1EGame) cardGame).getRules()
                 .getDestinationAndAffiliationMapForReportingCard(cardEnteringPlay, (ST1EGame) cardGame,
                         false);
+        if (!destinationAndAffiliationMap.isEmpty()) {
+            _targetMap.put(cardEnteringPlay, destinationAndAffiliationMap);
+        }
     }
 
     public ReportCardResolver(ReportableCard cardEnteringPlay, Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap) {
         _cardEnteringPlay = cardEnteringPlay;
         _performingPlayerName = cardEnteringPlay.getOwnerName();
-        _destinationAndAffiliationMap = calculatedDestinationMap;
+        if (!calculatedDestinationMap.isEmpty()) {
+            _targetMap.put(cardEnteringPlay, calculatedDestinationMap);
+        }
     }
 
+    public ReportCardResolver(String performingPlayerName,
+                              Map<PhysicalCard, Map<PhysicalCard, List<Affiliation>>> targetMap) {
+        _performingPlayerName = performingPlayerName;
+        _targetMap.putAll(targetMap);
+    }
 
     @Override
     public void resolve(DefaultGame cardGame) throws InvalidGameLogicException {
         if (cardGame instanceof ST1EGame stGame) {
-            if (!_isFailed && _destinationCard == null) {
+            if (!_isFailed && _cardEnteringPlay == null) {
+                selectCardEnteringPlay(stGame);
+            } else if (!_isFailed && _destinationCard == null) {
                 selectDestination(stGame);
             } else if (!_isFailed && _cardEnteringPlay instanceof AffiliatedCard &&
                     _affiliationToReportAs == null) {
@@ -58,9 +69,28 @@ public class ReportCardResolver implements ActionCardResolver {
         }
     }
 
+    private void selectCardEnteringPlay(ST1EGame stGame) {
+        if (_selectCardToPlayAction == null) {
+            Collection<PhysicalCard> options = _targetMap.keySet();
+            _selectCardToPlayAction = new SelectVisibleCardsAction(stGame, _performingPlayerName,
+                    "Choose a card to report",
+                    Filters.inCards(options), 1, 1);
+            stGame.addActionToStack(_selectCardToPlayAction);
+        } else if (_selectCardToPlayAction.wasCompleted()) {
+            Collection<PhysicalCard> cardResult = _selectCardToPlayAction.getSelectedCards();
+            if (cardResult.size() == 1 && Iterables.getOnlyElement(cardResult) instanceof ReportableCard reportable) {
+                _cardEnteringPlay = reportable;
+            } else {
+                _isFailed = true;
+            }
+        } else if (_selectCardToPlayAction.wasFailed()) {
+            _isFailed = true;
+        }
+    }
+
     private void selectDestination(ST1EGame stGame) {
         if (_selectDestinationAction == null) {
-            Collection<PhysicalCard> destinationOptions = _destinationAndAffiliationMap.keySet();
+            Collection<PhysicalCard> destinationOptions = _targetMap.get(_cardEnteringPlay).keySet();
             _selectDestinationAction = new SelectVisibleCardsAction(stGame, _performingPlayerName,
                     "Choose a card to report " + _cardEnteringPlay.getCardLink() + " to",
                     Filters.inCards(destinationOptions), 1, 1);
@@ -78,7 +108,7 @@ public class ReportCardResolver implements ActionCardResolver {
     }
 
     private void selectAffiliation(ST1EGame stGame) {
-        Collection<Affiliation> affiliationOptions = _destinationAndAffiliationMap.get(_destinationCard);
+        Collection<Affiliation> affiliationOptions = _targetMap.get(_cardEnteringPlay).get(_destinationCard);
         if (affiliationOptions.size() == 1) {
             _affiliationToReportAs = Iterables.getOnlyElement(affiliationOptions);
         } else if (affiliationOptions.isEmpty()) {
@@ -109,7 +139,7 @@ public class ReportCardResolver implements ActionCardResolver {
     @Override
     public boolean cannotBeResolved(DefaultGame cardGame) {
         return _isFailed || (!(cardGame instanceof ST1EGame)) ||
-                _destinationAndAffiliationMap.isEmpty();
+                _targetMap.isEmpty();
     }
 
     public PhysicalCard getDestination() {
@@ -126,5 +156,21 @@ public class ReportCardResolver implements ActionCardResolver {
 
     public void setAffiliation(Affiliation affiliation) {
         _affiliationToReportAs = affiliation;
+    }
+
+    public ReportableCard getCardEnteringPlay() {
+        return _cardEnteringPlay;
+    }
+
+    public Collection<? extends PhysicalCard> getSelectableCardsToEnterPlay() {
+        if (_cardEnteringPlay != null) {
+            return List.of(_cardEnteringPlay);
+        } else {
+            return _targetMap.keySet();
+        }
+    }
+
+    public void selectCardToPlay(ReportableCard cardToPlay) {
+        _cardEnteringPlay = cardToPlay;
     }
 }
