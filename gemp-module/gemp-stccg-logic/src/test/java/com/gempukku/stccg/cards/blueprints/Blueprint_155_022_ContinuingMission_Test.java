@@ -138,7 +138,8 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         assertEquals(initialHandSize - 1, hand.size());
 
         // Play Lopez; has a DL icon, so can't draw a card
-        playCard(P1, lopez);
+        useGameText(P1, attention);
+        selectCard(P1, lopez);
         assertEquals(initialHandSize - 2, hand.size());
         assertTrue(lopez.isInPlay());
         assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, continuing));
@@ -177,7 +178,8 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         assertEquals(initialHandSize, hand.size());
 
         // Play Linda Larson; can't draw a card twice in one turn
-        playCard(P1, larson);
+        useGameText(P1, attention);
+        selectCard(P1, larson);
         assertTrue(larson.isInPlay());
         assertEquals(initialHandSize - 1, hand.size());
         assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, continuing));

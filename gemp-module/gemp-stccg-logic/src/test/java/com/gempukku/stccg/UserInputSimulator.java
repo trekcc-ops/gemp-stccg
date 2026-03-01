@@ -345,9 +345,11 @@ public interface UserInputSimulator {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         List<PlayCardAction> actions = getSelectableActionsOfClass(playerId, PlayCardAction.class);
         for (PlayCardAction action : actions) {
-            if (action.getSelectableCardsToPlay(getGame()).contains(cardToPlay)) {
-                if (action instanceof SelectAndReportForFreeCardAction reportAction) {
-                    reportAction.setCardReporting(cardToPlay);
+            if (action.getSelectableCardsToPlayForTesting(getGame()).contains(cardToPlay)) {
+                if (action.getSelectableCardsToPlayForTesting(getGame()).contains(cardToPlay) &&
+                        action instanceof ReportCardAction reportAction &&
+                        cardToPlay instanceof ReportableCard reportable) {
+                    reportAction.selectCardToPlay(reportable);
                 }
                 selectAction(playerId, action);
                 return action;

@@ -7,6 +7,8 @@ import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
+import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
 import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -21,7 +23,7 @@ import java.util.List;
 
 public class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
-    protected final PhysicalCard _cardEnteringPlay;
+    protected PhysicalCard _cardEnteringPlay;
     private final EnterPlayActionType _type;
     @JsonProperty("destinationZone")
     protected Zone _destinationZone;
@@ -72,7 +74,16 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
 
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return cardGame.getRules().cardCanEnterPlay(cardGame, _cardEnteringPlay, _type);
+        if (_cardEnteringPlay != null) {
+            return cardGame.getRules().cardCanEnterPlay(cardGame, _cardEnteringPlay, _type);
+        } else {
+            for (ActionTargetResolver resolver : _cardTargets) {
+                if (resolver.cannotBeResolved(cardGame)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -85,8 +96,14 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
     @JsonIgnore
-    public Collection<? extends PhysicalCard> getSelectableCardsToPlay(DefaultGame cardGame) {
-        return List.of(_cardEnteringPlay);
+    public Collection<? extends PhysicalCard> getSelectableCardsToPlayForTesting(DefaultGame cardGame) {
+        if (_cardEnteringPlay != null) {
+            return List.of(_cardEnteringPlay);
+        } else if (_cardTargets.size() == 1 && _cardTargets.getFirst() instanceof ReportCardResolver resolver) {
+            return resolver.getSelectableCardsToEnterPlay();
+        } else {
+            return null;
+        }
     }
 
     protected void putCardIntoPlay(DefaultGame cardGame) throws PlayerNotFoundException {

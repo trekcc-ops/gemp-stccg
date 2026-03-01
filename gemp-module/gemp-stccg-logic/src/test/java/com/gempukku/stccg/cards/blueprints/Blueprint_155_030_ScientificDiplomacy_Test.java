@@ -27,11 +27,7 @@ public class Blueprint_155_030_ScientificDiplomacy_Test extends AbstractAtTest {
     private PersonnelCard christopher;
     private FacilityCard outpost;
     private PersonnelCard amaros;
-    private MissionCard mission2;
-    private FacilityCard outpost2;
     private ShipCard mercShip;
-    private PersonnelCard picard;
-    private PersonnelCard baran;
     private PhysicalCard taitt1;
     private PhysicalCard taitt2;
 
@@ -41,7 +37,7 @@ public class Blueprint_155_030_ScientificDiplomacy_Test extends AbstractAtTest {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         _game = builder.getGame();
         mission = builder.addMission("155_039", "Host Metaphasic Shielding Test", P1);
-        mission2 = builder.addMission(MissionType.PLANET, Affiliation.FERENGI, P1);
+        MissionCard mission2 = builder.addMission(MissionType.PLANET, Affiliation.FERENGI, P1);
         outpost = builder.addOutpost(Affiliation.KLINGON, P1, mission);
 
         builder.addDrawDeckCard("101_083", "Metaphasic Shields", P1);
@@ -53,11 +49,11 @@ public class Blueprint_155_030_ScientificDiplomacy_Test extends AbstractAtTest {
 
 
         mercShip = builder.addShipInSpace("101_354", "Mercenary Ship", P1, mission);
-        picard = (includePicardOnMercShip) ?
+        PersonnelCard picard = (includePicardOnMercShip) ?
                 builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, mercShip, PersonnelCard.class) :
                 null;
-        baran = builder.addCardAboardShipOrFacility("101_290", "Baran", P1, mercShip, PersonnelCard.class);
-        outpost2 = builder.addOutpost(Affiliation.FERENGI, P1, mission2);
+        PersonnelCard baran = builder.addCardAboardShipOrFacility("101_290", "Baran", P1, mercShip, PersonnelCard.class);
+        FacilityCard outpost2 = builder.addOutpost(Affiliation.FERENGI, P1, mission2);
         builder.addCardToCoreAsSeeded("155_022", "Continuing Mission", P1); // to get TNG icon
         sciDiplomacyToSeed = builder.addSeedDeckCard("155_030", "Scientific Diplomacy", P1);
         sciDipInHand1 = builder.addCardInHand("155_030", "Scientific Diplomacy", P1);

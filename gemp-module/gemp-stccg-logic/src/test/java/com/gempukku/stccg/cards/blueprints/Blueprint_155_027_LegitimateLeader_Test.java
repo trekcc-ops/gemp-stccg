@@ -1,9 +1,8 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.actions.playcard.DownloadAction;
-import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -14,6 +13,7 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.google.common.collect.Iterables;
 import org.junit.jupiter.api.Test;
@@ -138,18 +138,17 @@ public class Blueprint_155_027_LegitimateLeader_Test extends AbstractAtTest {
 
         initializeGame(WhereIsGowron.notInPlay, false);
         assertEquals(0, getSelectableActionsOfClass(P1, DownloadAction.class).size());
-        assertEquals(0, getSelectableActionsOfClass(P1, SelectAndReportForFreeCardAction.class).size());
+        assertThrows(DecisionResultInvalidException.class, () -> performAction(P1, ReportCardAction.class, legitimateLeader));
 
         initializeGame(WhereIsGowron.notInPlay, true);
         assertNotEquals(0, getSelectableActionsOfClass(P1, DownloadAction.class).size());
-        assertEquals(0, getSelectableActionsOfClass(P1, SelectAndReportForFreeCardAction.class).size());
+        assertThrows(DecisionResultInvalidException.class, () -> performAction(P1, ReportCardAction.class, legitimateLeader));
     }
 
     @Test
     public void reportForFreeTest() throws Exception {
         initializeGame(WhereIsGowron.onPlanet, true);
-        assertEquals(1, getSelectableActionsOfClass(P1, SelectAndReportForFreeCardAction.class).size());
-        performAction(P1, SelectAndReportForFreeCardAction.class, legitimateLeader);
+        performAction(P1, ReportCardAction.class, legitimateLeader);
         assertTrue(selectableCardsAre(P1, List.of(divok, multiAffilKlingon)));
         selectCard(P1, multiAffilKlingon);
         assertTrue(selectableCardsAre(P1, List.of(klingonMission, yourAlphaKlingonOutpost, yourGammaKlingonOutpost)));
@@ -165,15 +164,15 @@ public class Blueprint_155_027_LegitimateLeader_Test extends AbstractAtTest {
         assertEquals(1, _game.getGameState().getNormalCardPlaysAvailable(P1));
 
         // Cannot use it again even though there is another valid target, because it's a once per turn action
-        assertEquals(0, getSelectableActionsOfClass(P1, SelectAndReportForFreeCardAction.class).size());
+        assertThrows(DecisionResultInvalidException.class, () -> performAction(P1, ReportCardAction.class, legitimateLeader));
 
         // Can't use on opponent's turn
         skipToNextTurnAndPhase(P2, Phase.CARD_PLAY);
-        assertEquals(0, getSelectableActionsOfClass(P1, SelectAndReportForFreeCardAction.class).size());
+        assertThrows(DecisionResultInvalidException.class, () -> performAction(P1, ReportCardAction.class, legitimateLeader));
 
         // Can use it on your next turn
         skipToNextTurnAndPhase(P1, Phase.CARD_PLAY);
-        assertEquals(1, getSelectableActionsOfClass(P1, SelectAndReportForFreeCardAction.class).size());
+        assertDoesNotThrow(() -> performAction(P1, ReportCardAction.class, legitimateLeader));
     }
 
 }

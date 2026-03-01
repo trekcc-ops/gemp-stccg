@@ -1,15 +1,15 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.actions.playcard.DownloadReportableCardToDestinationAction;
-import com.gempukku.stccg.actions.playcard.SelectAndReportForFreeCardAction;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import org.junit.jupiter.api.Test;
 
@@ -93,7 +93,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
     public void testThis(boolean larsonInPlay) throws Exception {
         initializeGame(larsonInPlay, false);
 
-        selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
+        selectAction(ReportCardAction.class, attention, P1);
         for (PhysicalCard card : playableCards) {
             assertTrue(getSelectableCards(P1).contains(card));
         }
@@ -106,7 +106,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
         selectCard(P1, lopez1);
         assertTrue(lopez1.isInPlay());
 
-        assertThrows(DecisionResultInvalidException.class, () -> selectAction(SelectAndReportForFreeCardAction.class, attention, P1));
+        assertThrows(DecisionResultInvalidException.class, () -> selectAction(ReportCardAction.class, attention, P1));
     }
 
     @Test
@@ -123,7 +123,7 @@ public class Blueprint_155_021_AAH_Test extends AbstractAtTest {
     @Test
     public void validDestinationsTest() throws Exception {
         initializeGame(true, true);
-        selectAction(SelectAndReportForFreeCardAction.class, attention, P1);
+        selectAction(ReportCardAction.class, attention, P1);
         selectCard(P1, lopez1);
         assertFalse(lopez1.isInPlay());
 
