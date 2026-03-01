@@ -1,0 +1,43 @@
+[
+  {
+    "gameName": "Testing 1E Game Builder",
+    "players": ["asdf", "qwer"],
+    "phase": "SEED_FACILITY",
+    "missions": [
+      {
+        "blueprintId": "113_003",
+        "owner": "asdf"
+      }
+    ],
+    "seedDeck": [
+      ["155_021", "155_022", "155_022"],
+      ["155_021", "155_022", "155_022"]
+    ],
+    "drawDeck": [
+      [], []
+    ]
+  },
+  {
+    "gameName": "AAH Free Report",
+    "players": ["asdf", "qwer"],
+    "phase": "CARD_PLAY",
+    "missions": [
+      {
+        "blueprintId": "113_003",
+        "owner": "asdf",
+        "IN_SPACE": [
+          {
+            "blueprintId": "101_104",
+            "owner": "asdf"
+          }
+        ]
+      }
+    ],
+    "core": [
+      ["155_021", "155_022"]
+    ],
+    "hand": [
+      ["101_202", "101_202"]
+    ]
+  }
+]

@@ -160,7 +160,7 @@ public class HallServer extends AbstractServer {
 
                 GameSettings settings = new GameSettings(cardGame.getFormat(), null, null,
                         false, false, false, false, GameTimer.GLACIAL_TIMER,
-                        "Game settings user description");
+                        gameName);
                 CardGameMediator mediator = new CardGameMediator(cardGame, gameName, settings.allowsSpectators(),
                         settings.getTimeSettings(), settings.isCompetitive());
 

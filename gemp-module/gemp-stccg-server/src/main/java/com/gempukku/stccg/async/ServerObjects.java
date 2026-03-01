@@ -9,9 +9,6 @@ import com.gempukku.stccg.chat.HallChatRoomMediator;
 import com.gempukku.stccg.collection.CachedCollectionDAO;
 import com.gempukku.stccg.collection.CachedTransferDAO;
 import com.gempukku.stccg.collection.CollectionsManager;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.MissionType;
-import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.database.*;
 import com.gempukku.stccg.draft.DraftFormatLibrary;
 import com.gempukku.stccg.formats.FormatLibrary;
@@ -103,8 +100,6 @@ public class ServerObjects {
         HallServer hallServer =
                 new HallServer(collectionsManager, tournamentService, gameServer, hallChat, tableHolder);
 
-        buildTableAndPreLoadedGame("Testing Game Injection", hallServer);
-
         // Add services and servers to injectables for client request methods
         _injectables.addValue(AdminService.class, _adminService);
         _injectables.addValue(GameHistoryService.class, gameHistoryService);
@@ -118,6 +113,9 @@ public class ServerObjects {
         hallServer.startServer();
         gameServer.startServer();
         chatServer.startServer();
+
+        SampleGameLibrary gameLibrary = new SampleGameLibrary(_cardBlueprintLibrary, _formatLibrary);
+        gameLibrary.addGamesToHall(hallServer);
     }
 
 
@@ -125,23 +123,6 @@ public class ServerObjects {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setInjectableValues(_injectables);
         return new ServerChannelInitializer(mapper, _adminService);
-    }
-
-
-    private void buildTableAndPreLoadedGame(String gameName, HallServer hallServer) {
-        try {
-            GameTestBuilder builder = new GameTestBuilder(_cardBlueprintLibrary, _formatLibrary, List.of("asdf", "qwer"));
-            builder.addMission(MissionType.PLANET, Affiliation.FEDERATION, "asdf");
-            builder.addSeedDeckCard("155_021", "Attention All Hands", "asdf");
-            builder.addSeedDeckCard("155_021", "Attention All Hands", "qwer");
-            builder.addSeedDeckCard("155_022", "Continuing Mission", "asdf");
-            builder.addSeedDeckCard("155_022", "Continuing Mission", "qwer");
-            builder.setPhase(Phase.SEED_FACILITY);
-            builder.initializeGame();
-            hallServer.createTableForTestingExistingGame(builder.getGame(), gameName);
-        } catch(Exception exp) {
-            LOGGER.info(exp);
-        }
     }
 
 }
