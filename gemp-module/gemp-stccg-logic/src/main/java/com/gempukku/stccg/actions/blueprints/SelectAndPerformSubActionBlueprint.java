@@ -34,6 +34,23 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
+    public SelectAndInsertAction createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
+                                              GameTextContext context)
+            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+        List<Action> actionsToSelect = new ArrayList<>();
+        Map<Action, String> messageMap = new HashMap<>();
+
+        for (int i = 0; i < _subActions.size(); i++) {
+            SubActionBlueprint blueprint = _subActions.get(i);
+            Action subAction = blueprint.createAction(cardGame, parentAction, context);
+            actionsToSelect.add(subAction);
+            messageMap.put(subAction, _actionDescriptions.get(i));
+        }
+
+        return new SelectAndInsertAction(cardGame, parentAction, context.yourName(), actionsToSelect, messageMap);
+    }
+
+    @Override
     public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
 

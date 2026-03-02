@@ -15,9 +15,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DownloadReportableActionBlueprint implements SubActionBlueprint {
 
     private final ReportCardsResolverBlueprint _cardTarget;
@@ -28,18 +25,15 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
         _cardTarget = cardTarget;
     }
 
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext)
+    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext)
             throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        List<Action> result = new ArrayList<>();
         ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, actionContext);
         if (cardResolver instanceof ReportMultipleCardsResolver multipleResolver) {
-            Action downloadAction =
-                    new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK,
-                            actionContext.yourName(), actionContext.card(), multipleResolver);
-            result.add(downloadAction);
+            return new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK, actionContext.yourName(),
+                    actionContext.card(), multipleResolver);
+        } else {
+            return null;
         }
-        return result;
     }
 
     @Override

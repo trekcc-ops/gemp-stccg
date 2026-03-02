@@ -11,9 +11,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ConditionalSubActionBlueprint implements SubActionBlueprint {
 
     private final SubActionBlueprint _trueAction;
@@ -33,19 +30,14 @@ public class ConditionalSubActionBlueprint implements SubActionBlueprint {
         _ifCondition = ifCondition;
     }
 
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-
-        List<Action> result = new ArrayList<>();
-
+    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context)
+            throws InvalidCardDefinitionException, PlayerNotFoundException, InvalidGameLogicException {
         boolean isConditionTrue = _ifCondition.accepts(context, cardGame);
         if (isConditionTrue) {
-            result.addAll(_trueAction.createActions(cardGame, action, context));
+            return _trueAction.createAction(cardGame, parentAction, context);
         } else {
-            result.addAll(_falseAction.createActions(cardGame, action, context));
+            return _falseAction.createAction(cardGame, parentAction, context);
         }
-        return result;
     }
 
 }

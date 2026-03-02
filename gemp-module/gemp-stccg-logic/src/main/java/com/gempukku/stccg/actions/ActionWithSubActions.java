@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -9,6 +10,7 @@ import java.util.LinkedList;
 
 public abstract class ActionWithSubActions extends ActionyAction {
 
+    protected final LinkedList<SubActionBlueprint> _subActions = new LinkedList<>();
     protected final LinkedList<Action> _actionEffects = new LinkedList<>();
     protected final LinkedList<Action> _processedActions = new LinkedList<>();
 
@@ -49,6 +51,14 @@ public abstract class ActionWithSubActions extends ActionyAction {
 
     public final void insertActions(Collection<Action> actions) {
         _actionEffects.addAll(0, actions);
+    }
+
+    public final void insertActionsNext(Collection<Action> actions) {
+        if (_actionEffects.isEmpty()) {
+            insertActions(actions);
+        } else {
+            _actionEffects.addAll(1, actions);
+        }
     }
 
     public abstract PhysicalCard getPerformingCard();
