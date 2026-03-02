@@ -8,10 +8,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.ComparatorType;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.Characteristic;
-import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.common.filterable.*;
 import com.google.common.collect.Iterables;
 
 import java.io.IOException;
@@ -222,6 +219,11 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 String loreText = parameter;
                 yield (cardGame, actionContext) ->
                         (CardFilter) (game, physicalCard) -> physicalCard.getLore().contains(loreText);
+            }
+            case "textInTitle" -> {
+                String titleText = parameter;
+                yield (cardGame, actionContext) ->
+                        (CardFilter) (game, physicalCard) -> physicalCard.getTitle().contains(titleText);
             }
             case "title" -> new CardTitleFilterBlueprint(parameter);
             default -> throw new InvalidCardDefinitionException(

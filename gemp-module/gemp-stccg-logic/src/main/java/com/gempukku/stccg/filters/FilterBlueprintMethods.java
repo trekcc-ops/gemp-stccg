@@ -114,6 +114,8 @@ public interface FilterBlueprintMethods {
         appendSimpleFilter("self", thisCard);
         appendSimpleFilter("stopped", (cardGame, actionContext) -> Filters.stopped);
         appendSimpleFilter("thisCard", thisCard);
+        appendSimpleFilter("ownedByYou", (cardGame, actionContext) ->
+                new OwnedByPlayerFilter(actionContext.yourName()));
         appendSimpleFilter("your", yours);
         appendSimpleFilter("yours", yours);
     }

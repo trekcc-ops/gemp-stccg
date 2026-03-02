@@ -18,7 +18,7 @@
             "integrity" : 8,
             "cunning" : 7,
             "strength" : 5,
-            "image-url" : "https://www.trekcc.org/1e/cardimages/tngsup/20V.jpg",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/agt/AGTR023.jpg",
             "rarity" : "P"
         },
         {
@@ -36,7 +36,7 @@
             "integrity" : 6,
             "cunning" : 7,
             "strength" : 8,
-            "image-url" : "https://www.trekcc.org/1e/cardimages/errata/KTemoc.jpg",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/agt/AGTR026.jpg",
             "rarity" : "P"
         },
         {
@@ -54,7 +54,7 @@
             "integrity" : 5,
             "cunning" : 8,
             "strength" : 6,
-            "image-url" : "https://www.trekcc.org/1e/cardimages/errata/Sunad.jpg",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/agt/AGTR031.jpg",
             "rarity" : "P"
         },
         {
@@ -70,7 +70,7 @@
             "range" : 7,
             "weapons" : 8,
             "shields" : 7,
-            "image-url" : "https://www.trekcc.org/1e/cardimages/tngsup/38V.jpg",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/agt/AGTR035.jpg",
             "rarity" : "P"
         }
     ]

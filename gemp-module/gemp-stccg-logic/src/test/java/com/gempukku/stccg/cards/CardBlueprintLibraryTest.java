@@ -35,7 +35,8 @@ public class CardBlueprintLibraryTest {
 
         assertEquals(totalCardCount, _cardLibrary.getAllBlueprintIds().size());
         int firstEdCardCount = _cardLibrary.getAllBlueprints().stream()
-                .filter(blueprint -> blueprint.getGameType() == GameType.FIRST_EDITION)
+                .filter(blueprint -> blueprint.getGameType() == GameType.FIRST_EDITION &&
+                        !blueprint.getBlueprintId().startsWith("991_"))
                 .toList().size();
         assertTrue(firstEdCardCount > 0);
     }

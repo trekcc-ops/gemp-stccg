@@ -263,7 +263,13 @@ public class CardBlueprint {
     public List<CardIcon> getIcons() {
         return Objects.requireNonNullElseGet(_icons, LinkedList::new);
     }
-    public boolean hasIcon(CardIcon icon) { return _icons != null && _icons.contains(icon); }
+    public boolean hasIcon(CardIcon icon) {
+        if (icon == CardIcon.DELTA_QUADRANT_ICON) {
+            return quadrant == Quadrant.DELTA;
+        } else {
+            return _icons != null && _icons.contains(icon);
+        }
+    }
     public void setQuadrant(Quadrant quadrant) {
         this.quadrant = quadrant;
     }

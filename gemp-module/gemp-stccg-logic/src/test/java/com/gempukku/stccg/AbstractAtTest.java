@@ -16,6 +16,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
@@ -104,6 +105,19 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         return actionFound;
     }
 
+    protected boolean selectableCardsAre(String playerName, PhysicalCard... expectedCards) {
+        try {
+            Collection<? extends PhysicalCard> selectableCards = getSelectableCards(playerName);
+            if (selectableCards.size() != expectedCards.length) {
+                return false;
+            } else {
+                return selectableCards.containsAll(List.of(expectedCards));
+            }
+        } catch(DecisionResultInvalidException exp) {
+            return false;
+        }
+    }
+
     protected boolean selectableCardsAre(String playerName, Collection<? extends PhysicalCard> expectedCards) {
         try {
             Collection<? extends PhysicalCard> selectableCards = getSelectableCards(playerName);
@@ -115,6 +129,18 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         } catch(DecisionResultInvalidException exp) {
             return false;
         }
+    }
+
+    protected int getHandSize(String playerName) {
+        try {
+            return _game.getPlayer(playerName).getCardsInHand().size();
+        } catch(PlayerNotFoundException exp) {
+            return 0;
+        }
+    }
+
+    protected boolean cardWasRemovedFromGame(PhysicalCard card) {
+        return card.getZone() == Zone.REMOVED;
     }
 
 }

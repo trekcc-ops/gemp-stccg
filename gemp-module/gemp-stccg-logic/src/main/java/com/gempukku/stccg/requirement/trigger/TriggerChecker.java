@@ -3,10 +3,12 @@ package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.gempukku.stccg.requirement.CardInPlayRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = CardInPlayRequirement.class, name = "cardInPlay"),
         @JsonSubTypes.Type(value = ConditionTriggerChecker.class, name = "condition"),
         @JsonSubTypes.Type(value = EndOfTurnTriggerChecker.class, name = "endOfTurn"),
         @JsonSubTypes.Type(value = KilledTriggerChecker.class, name = "killed"),

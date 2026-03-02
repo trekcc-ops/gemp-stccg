@@ -14,10 +14,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.decisions.ActionSelectionDecision;
-import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
-import com.gempukku.stccg.decisions.AwaitingDecision;
-import com.gempukku.stccg.decisions.CardSelectionDecision;
+import com.gempukku.stccg.decisions.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -405,6 +402,37 @@ public interface UserInputSimulator {
             throws DecisionResultInvalidException, InvalidGameOperationException {
         return beamCards(playerId, cardWithTransporters, List.of(cardToBeam), destination);
     }
+
+    default void playerSaysYes(String player) throws DecisionResultInvalidException, InvalidGameOperationException {
+        if (getGame().getAwaitingDecision(player) instanceof YesNoDecision yesNo) {
+            getGame().removeDecision(player);
+            try {
+                yesNo.decisionMade("0");
+            } catch (DecisionResultInvalidException exp) {
+                getGame().sendAwaitingDecision(yesNo);
+                throw exp;
+            }
+            getGame().carryOutPendingActionsUntilDecisionNeeded();
+        } else {
+            throw new DecisionResultInvalidException("Player cannot say 'yes' to this decision");
+        }
+    }
+
+    default void playerSaysNo(String player) throws DecisionResultInvalidException, InvalidGameOperationException {
+        if (getGame().getAwaitingDecision(player) instanceof YesNoDecision yesNo) {
+            getGame().removeDecision(player);
+            try {
+                yesNo.decisionMade("1");
+            } catch (DecisionResultInvalidException exp) {
+                getGame().sendAwaitingDecision(yesNo);
+                throw exp;
+            }
+            getGame().carryOutPendingActionsUntilDecisionNeeded();
+        } else {
+            throw new DecisionResultInvalidException("Player cannot say 'no' to this decision");
+        }
+    }
+
 
     default void playerDecided(String player, String answer) throws DecisionResultInvalidException,
             InvalidGameOperationException {

@@ -8,10 +8,11 @@ import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 
 import java.util.Objects;
 
-public class CardInPlayRequirement implements Requirement {
+public class CardInPlayRequirement implements TriggerChecker {
 
     private final FilterBlueprint _filterBlueprint;
     private final int _countAtLeast;

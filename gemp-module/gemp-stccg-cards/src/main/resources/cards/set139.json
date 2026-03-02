@@ -4,6 +4,44 @@
     "gameType": "First Edition",
     "cards": [
         {
+            "blueprintId": "139_006",
+            "title": "Flim-Flam Artist",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "property-logo": "tng-logo",
+            "lore": "The universe is full of hucksters, charlatans, swindlers, confidence men, and Ferengi.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront/HMF_6V.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "drawCards",
+                            "player": "opponent",
+                            "count": 1,
+                            "optional": true
+                        },
+                        {
+                            "type": "if",
+                            "ifCondition": {
+                                "type": "cardInPlay",
+                                "filter": "thisMission + delta-quadrant-icon"
+                            },
+                            "actionIfTrue": {
+                                "type": "overcomeCondition",
+                                "requires": "Diplomacy + Computer Skill x2 OR Law + CUNNING>50"
+                            },
+                            "actionIfFalse": {
+                                "type": "overcomeCondition",
+                                "requires": "Diplomacy + Computer Skill x2 OR Law + CUNNING>32"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "139_010",
             "title": "Murder Investigation",
             "type": "dilemma",

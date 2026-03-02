@@ -68,6 +68,23 @@
             "cunning" : 5,
             "strength" : 6,
             "image-url" : "https://www.trekcc.org/1e/cardimages/sfl/25.jpg"
+        },
+        {
+            "blueprintId" : "245_026",
+            "title" : "Vengar",
+            "type" : "personnel",
+            "affiliation" : "cardassian",
+            "property-logo" : "tng-logo",
+            "classification" : "SCIENCE",
+            "icons": "staff",
+            "lore" : "Cardassian crewman on the <i>Vetar</i>. He was briefly taken hostage while assessing buildings and equipment expected to be left behind on Dorvan V.",
+            "species" : "cardassian",
+            "gender" : "male",
+            "skill-box" : "[*] Navigation [*] Greed [*] Anthropology [*] Leadership",
+            "integrity" : 4,
+            "cunning" : 7,
+            "strength" : 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/sfl/26.jpg"
         }
     ]
 }

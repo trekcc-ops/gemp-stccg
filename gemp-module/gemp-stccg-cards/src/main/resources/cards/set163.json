@@ -4,6 +4,14 @@
     "gameType" : "First Edition",
     "cards" : [
         {
+            "blueprintId" : "163_018",
+            "title" : "Fitting In",
+            "type": "interrupt",
+            "property-logo" : "ds9-logo",
+            "lore" : "To prevent the assassination of Captain Kirk in 2268, the crew of the <i>U.S.S. Defiant</i> needed to blend into the background of daily life aboard the <i>Starship Enterprise</i>.",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/tstl/18.jpg"
+        },
+        {
             "blueprintId" : "163_026",
             "title" : "Goran",
             "type" : "personnel",

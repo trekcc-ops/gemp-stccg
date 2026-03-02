@@ -44,6 +44,88 @@
             ]
         },
         {
+            "blueprintId": "161_007",
+            "title": "Ornaran Threat",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "tng-logo",
+            "lore": "Suffering from felicium withdrawal, T'Jon threatened William T. Riker's life in an attempt to manipulate Jean-Luc Picard. Picard refused to enable the Ornaran's addiction.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/7.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 1,
+                                "random": true
+                            },
+                            "saveToMemoryId": "stoppedPersonnel"
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Diplomacy x2 + MEDICAL OR SECURITY x2 + STRENGTH>25",
+                            "failEffect": {
+                                "type": "kill",
+                                "target": {
+                                    "type": "memory",
+                                    "memoryId": "stoppedPersonnel"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "161_015",
+            "title": "Illegitimate Leader of the Empire",
+            "type": "incident",
+            "icons": "warp-core",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/15.jpg",
+            "playThisCardAction": {
+                "type": "playThis"
+            },
+            "actions": [
+                {
+                    "type": "downloadCardToDestination",
+                    "inPlaceOfNormalCardPlay": true,
+                    "filter": "tng-icon + (affiliation=klingon OR affiliation=romulan) + (textInLore(Duras) OR textInTitle(Duras))",
+                    "destination": {
+                        "type": "toCard",
+                        "destinationCardFilter": "yours + facility"
+                    }
+                },
+                {
+                    "type": "playCardForFree",
+                    "limit": {
+                        "type": "eachOfYourTurns",
+                        "count": 1
+                    },
+                    "destination": {
+                        "type": "toCard",
+                        "destinationCardFilter": "yours + ((affiliation=klingon + outpost) OR name(Duras) OR name(Lursa) OR name(B'Etor) OR name(Sisters of Duras))"
+                    },
+                    "filter": "not(Honor) + affiliation=klingon + tng-icon"
+                },
+                {
+                    "type" : "requiredTrigger",
+                    "trigger" : {
+                        "type" : "cardInPlay",
+                        "filter": "ownedByYou + (name(Gowron) OR (klingon + Honor))"
+                    },
+                    "triggerDuringSeed" : true,
+                    "effect" : {
+                        "type": "discardThisCard"
+                    }
+                }
+            ]
+        },
+        {
             "blueprintId": "161_021",
             "title": "Advanced Combat Training",
             "type": "mission",

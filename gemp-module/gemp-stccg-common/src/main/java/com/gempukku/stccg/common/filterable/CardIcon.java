@@ -8,12 +8,14 @@ public enum CardIcon implements Filterable {
     COMMAND("Command", "https://www.trekcc.org/forum/images/smilies/icon_command.gif"),
     COMMUNICATIONS_SUBCOMMAND("Communications", "https://www.trekcc.org/forum/images/smilies/icon_sc_comm.png"),
     DEFENSE_SUBCOMMAND("Defense", "https://www.trekcc.org/forum/images/smilies/icon_sc_def.png"),
+    DELTA_QUADRANT_ICON("Delta Quadrant", "https://www.trekcc.org/forum/images/smilies/icon_1e_dq.jpg"),
     DS9_ICON("Deep Space Nine", "https://www.trekcc.org/forum/images/smilies/icon_ds91e.png"),
     EARTH("Earth", "https://www.trekcc.org/forum/images/smilies/icon_earth.gif"),
     ENT_ERA("22nd Century", "https://www.trekcc.org/forum/images/smilies/icon_22nd_century.png"),
     FUTURE("Future","https://www.trekcc.org/images/icons/future.gif"),
     FIRST_CONTACT_ICON("First Contact", "https://www.trekcc.org/images/icons/1e/icon_first_contact.jpg"),
     HOLOGRAPHIC("holographic", "https://www.trekcc.org/forum/images/smilies/icon_hologram.jpg"),
+    KCA_ICON("Klingon-Cardassian Alliance", "https://www.trekcc.org/images/icons/1e/Alliance.jpg"),
     MAQUIS("Maquis", "https://www.trekcc.org/forum/images/smilies/icon_maquis.png"),
     NAVIGATION_SUBCOMMAND("Navigation", "https://www.trekcc.org/forum/images/smilies/icon_sc_nav.png"),
     NEMESIS_DESCENT_LEFT("Nemesis", "https://www.trekcc.org/images/icons/1e/Nemesis_Yellow_Left.jpg"),
@@ -25,6 +27,7 @@ public enum CardIcon implements Filterable {
     SKILL_DOT("Skill dot", "https://www.trekcc.org/forum/images/smilies/icon_skilldot.png"),
     STAFF("Staff", "https://www.trekcc.org/forum/images/smilies/icon_staff.gif"),
     TNG_ICON("The Next Generation", "https://www.trekcc.org/forum/images/smilies/icon_tng1e.png"),
+    TOS_ICON("The Original Series", "https://www.trekcc.org/images/icons/1e/OriginalSeries.jpg"),
     WARP_CORE("Warp Core", "https://www.trekcc.org/forum/images/smilies/icon_warpcore.jpg");
 
     private final String _iconURL;

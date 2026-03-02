@@ -300,6 +300,7 @@ public class ValidateCardLibraryTest extends AbstractAtTest {
                 case CLASSIC_FILMS_ICON -> "[Film]";
                 case COMMAND -> "[Cmd]";
                 case COMMUNICATIONS_SUBCOMMAND -> "[Com]";
+                case DELTA_QUADRANT_ICON ->  "[DQ]";
                 case DEFENSE_SUBCOMMAND -> "[Def]";
                 case DS9_ICON -> null;
                 case EARTH -> null;
@@ -307,6 +308,7 @@ public class ValidateCardLibraryTest extends AbstractAtTest {
                 case FUTURE -> null;
                 case FIRST_CONTACT_ICON -> "[FC]";
                 case HOLOGRAPHIC -> null;
+                case KCA_ICON -> "[KCA]";
                 case MAQUIS -> "[Maq]";
                 case NAVIGATION_SUBCOMMAND -> "[Nav]";
                 case NEMESIS_DESCENT_LEFT -> null;
@@ -318,6 +320,7 @@ public class ValidateCardLibraryTest extends AbstractAtTest {
                 case SKILL_DOT -> null;
                 case STAFF -> "[Stf]";
                 case TNG_ICON -> null;
+                case TOS_ICON -> "[TOS]";
                 case WARP_CORE -> "[WC]";
             };
             sb.append(iconText);

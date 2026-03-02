@@ -1,0 +1,24 @@
+{
+    "setId" : "126",
+    "setName" : "The Motion Pictures",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "126_057",
+            "title" : "John Harriman",
+            "type" : "personnel",
+            "affiliation" : "federation",
+            "property-logo" : "generations-logo",
+            "icons": ["command","au-icon","classic-films-icon"],
+            "classification": "OFFICER",
+            "species": "human",
+            "gender": "male",
+            "lore": "Son of a respected Federation official. Captain of <i>U.S.S. Enterprise-B</i>. Usually confident in dealing with reporters, but on the ship's maiden voyage was having an off day.",
+            "skill-box": "[*] SECURITY [*] Diplomacy [*] Geology [*] Honor",
+            "integrity": 8,
+            "cunning": 5,
+            "strength": 7,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/tmpr/57.jpg"
+        }
+    ]
+}
