@@ -1796,7 +1796,7 @@
         }
         {
             blueprintId: 101_251
-            title: Worf
+            "title": "Worf",
             type: personnel
             affiliation: federation
             property-logo: tng-logo
@@ -1927,7 +1927,7 @@
         }
         {
             blueprintId: 101_258
-            title: Duras
+            "title": "Duras",
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
@@ -1964,7 +1964,7 @@
         }
         {
             blueprintId: 101_261
-            title: Gowron
+            "title": "Gowron",
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
@@ -2162,7 +2162,7 @@
         }
         {
             blueprintId: 101_280
-            title: Lursa
+            "title": "Lursa",
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
@@ -2316,7 +2316,7 @@
         }
         {
             blueprintId: 101_297
-            title: Gorta
+            "title": "Gorta",
             type: personnel
             affiliation: non-aligned
             property-logo: tng-logo
@@ -2580,7 +2580,7 @@
         }
         {
             blueprintId: 101_324
-            title: Thei
+            "title": "Thei",
             type: personnel
             affiliation: romulan
             uniqueness: universal

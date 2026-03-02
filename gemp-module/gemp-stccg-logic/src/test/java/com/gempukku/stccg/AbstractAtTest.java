@@ -105,6 +105,19 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         return actionFound;
     }
 
+    protected boolean selectableCardsAre(String playerName, PhysicalCard... expectedCards) {
+        try {
+            Collection<? extends PhysicalCard> selectableCards = getSelectableCards(playerName);
+            if (selectableCards.size() != expectedCards.length) {
+                return false;
+            } else {
+                return selectableCards.containsAll(List.of(expectedCards));
+            }
+        } catch(DecisionResultInvalidException exp) {
+            return false;
+        }
+    }
+
     protected boolean selectableCardsAre(String playerName, Collection<? extends PhysicalCard> expectedCards) {
         try {
             Collection<? extends PhysicalCard> selectableCards = getSelectableCards(playerName);

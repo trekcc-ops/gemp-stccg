@@ -308,6 +308,7 @@ public class ValidateCardLibraryTest extends AbstractAtTest {
                 case FUTURE -> null;
                 case FIRST_CONTACT_ICON -> "[FC]";
                 case HOLOGRAPHIC -> null;
+                case KCA_ICON -> "[KCA]";
                 case MAQUIS -> "[Maq]";
                 case NAVIGATION_SUBCOMMAND -> "[Nav]";
                 case NEMESIS_DESCENT_LEFT -> null;

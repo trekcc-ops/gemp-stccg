@@ -1,0 +1,25 @@
+{
+    "setId" : "122",
+    "setName" : "Mirror, Mirror",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "122_098",
+            "title" : "Telok",
+            "type" : "personnel",
+            "affiliation" : "klingon",
+            "property-logo" : "ds9-logo",
+            "quadrant": "mirror",
+            "icons": ["command","kca-icon"],
+            "classification": "SECURITY",
+            "lore" : "Served for four years as a bodyguard in the house of Duras. Took a position aboard Terok Nor to escape the unpredictable demands of Lursa and B'Etor.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": "[*] Leadership [*] Computer Skill [*] Treachery [*] Stellar Cartography",
+            "range" : 4,
+            "weapons" : 6,
+            "shields" : 9,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/crossoversup/67.jpg"
+        }
+    ]
+}
