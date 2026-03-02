@@ -20,6 +20,23 @@
             "weapons" : 6,
             "shields" : 9,
             "image-url" : "https://www.trekcc.org/1e/cardimages/crossoversup/67.jpg"
+        },
+        {
+            "blueprintId" : "122_100",
+            "title" : "Balok",
+            "type" : "personnel",
+            "affiliation" : "non-aligned",
+            "property-logo" : "tos-logo",
+            "icons": ["command","au-icon","tos-icon"],
+            "classification": "OFFICER",
+            "lore" : "Humanoid envoy from the First Federation. Gentle, benevolent, and mature adult male, despite his youthful appearance. Enjoys drinking tranya.",
+            "species": "humanoid",
+            "gender": "male",
+            "skill-box": "[*] Diplomacy [*] Honor [*] Leadership",
+            "range" : 8,
+            "weapons" : 8,
+            "shields" : 4,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/mm/balok.gif"
         }
     ]
 }

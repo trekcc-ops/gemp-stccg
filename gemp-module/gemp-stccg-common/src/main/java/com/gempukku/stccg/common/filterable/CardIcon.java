@@ -27,6 +27,7 @@ public enum CardIcon implements Filterable {
     SKILL_DOT("Skill dot", "https://www.trekcc.org/forum/images/smilies/icon_skilldot.png"),
     STAFF("Staff", "https://www.trekcc.org/forum/images/smilies/icon_staff.gif"),
     TNG_ICON("The Next Generation", "https://www.trekcc.org/forum/images/smilies/icon_tng1e.png"),
+    TOS_ICON("The Original Series", "https://www.trekcc.org/images/icons/1e/OriginalSeries.jpg"),
     WARP_CORE("Warp Core", "https://www.trekcc.org/forum/images/smilies/icon_warpcore.jpg");
 
     private final String _iconURL;
