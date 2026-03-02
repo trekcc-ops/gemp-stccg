@@ -31,10 +31,14 @@ public abstract class ActionWithSubActions extends ActionyAction {
     protected void processEffect(DefaultGame cardGame) {
         if (_currentSubAction == null && !_queuedSubActions.isEmpty()) {
             try {
-                _currentSubAction =
-                        _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+                SubActionBlueprint nextSubAction = _queuedSubActions.getFirst();
                 _queuedSubActions.removeFirst();
-                cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
+                if (nextSubAction.isPlayableInFull(cardGame, _actionContext)) {
+                    _currentSubAction = nextSubAction.createAction(cardGame, this, _actionContext);
+                    cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
+                } else {
+                    setAsFailed();
+                }
             } catch(Exception exp) {
                 cardGame.sendErrorMessage(exp);
                 setAsFailed();
@@ -52,15 +56,11 @@ public abstract class ActionWithSubActions extends ActionyAction {
     }
 
 
-    public final void appendEffect(SubActionBlueprint subAction) {
+    public final void appendSubAction(SubActionBlueprint subAction) {
         _queuedSubActions.add(subAction);
     }
 
 
     public abstract PhysicalCard getPerformingCard();
-
-    public void insertAction(SubActionBlueprint action) {
-        _queuedSubActions.addFirst(action);
-    }
 
 }

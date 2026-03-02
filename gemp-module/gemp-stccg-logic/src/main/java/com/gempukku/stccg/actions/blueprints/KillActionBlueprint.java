@@ -1,15 +1,12 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.discard.KillAction;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
-
-import java.util.List;
 
 public class KillActionBlueprint implements SubActionBlueprint {
 
@@ -20,13 +17,11 @@ public class KillActionBlueprint implements SubActionBlueprint {
         _targetResolver = target;
     }
 
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public KillAction createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
         String performingPlayerId = (context instanceof DilemmaEncounterGameTextContext) ?
             context.card().getOwnerName() : context.yourName();
-        return List.of(
-                new KillAction(cardGame, performingPlayerId,
-                        context.card(), _targetResolver.getTargetResolver(cardGame, context)));
+        return new KillAction(cardGame, performingPlayerId, context.card(),
+                _targetResolver.getTargetResolver(cardGame, context));
     }
 
 }

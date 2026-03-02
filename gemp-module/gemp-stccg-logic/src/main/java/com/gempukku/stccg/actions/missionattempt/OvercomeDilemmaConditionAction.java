@@ -9,14 +9,11 @@ import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.StoppableCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,14 +87,8 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                 if (!_additionalSuccessActions.isEmpty()) {
                     SubActionBlueprint passAction = _additionalSuccessActions.getFirst();
                     _additionalSuccessActions.remove(passAction);
-                    try {
-                        List<Action> passActions = passAction.createActions(cardGame, _parentAction, _actionContext);
-                        for (int i = passActions.size() - 1; i >= 0; i--) {
-                            cardGame.addActionToStack(passActions.get(i));
-                        }
-                    } catch(InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException ignored) {
-
-                    }
+                    Action actionToStack = passAction.createAction(cardGame, _parentAction, _actionContext);
+                    cardGame.addActionToStack(actionToStack);
                 } else {
                     setAsSuccessful();
                 }
@@ -105,14 +96,8 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                 if (!_additionalFailActions.isEmpty()) {
                     SubActionBlueprint failAction = _additionalFailActions.getFirst();
                     _additionalFailActions.remove(failAction);
-                    try {
-                        List<Action> failActions = failAction.createActions(cardGame, _parentAction, _actionContext);
-                        for (int i = failActions.size() - 1; i >= 0; i--) {
-                            cardGame.addActionToStack(failActions.get(i));
-                        }
-                    } catch(InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException ignored) {
-
-                    }
+                    Action failActionToStack = failAction.createAction(cardGame, _parentAction, _actionContext);
+                    cardGame.addActionToStack(failActionToStack);
                 } else if (!_cardsStopped) {
                     Collection<StoppableCard> cardsToStop =
                             new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));

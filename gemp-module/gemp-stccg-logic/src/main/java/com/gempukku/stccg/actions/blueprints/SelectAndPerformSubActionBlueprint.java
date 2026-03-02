@@ -7,8 +7,6 @@ import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +33,7 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
 
     @Override
     public SelectAndInsertAction createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                              GameTextContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+                                              GameTextContext context) {
         List<Action> actionsToSelect = new ArrayList<>();
         Map<Action, String> messageMap = new HashMap<>();
 
@@ -48,24 +45,6 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
         }
 
         return new SelectAndInsertAction(cardGame, parentAction, context.yourName(), actionsToSelect, messageMap);
-    }
-
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-
-        List<Action> actionsToSelect = new ArrayList<>();
-        Map<Action, String> messageMap = new HashMap<>();
-
-        for (int i = 0; i < _subActions.size(); i++) {
-            SubActionBlueprint blueprint = _subActions.get(i);
-            Action subAction = blueprint.createActions(cardGame, action, context).getFirst();
-            actionsToSelect.add(subAction);
-            messageMap.put(subAction, _actionDescriptions.get(i));
-        }
-
-        return List.of(new SelectAndInsertAction(cardGame, action, context.yourName(), actionsToSelect,
-                messageMap));
     }
 
 }

@@ -6,16 +6,10 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.turn.AddCostSubAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({@JsonSubTypes.Type(value = ActivateTribblePowerEffectBlueprint.class, name = "activateTribblePower"),
+@JsonSubTypes({
         @JsonSubTypes.Type(value = AddModifierEffectBlueprint.class, name = "addModifier"),
         @JsonSubTypes.Type(value = DrawCardsActionBlueprint.class, name = "drawCards"),
         @JsonSubTypes.Type(value = DiscardSubActionBlueprint.class, name = "discard"),
@@ -50,32 +44,12 @@ public interface SubActionBlueprint {
                     new AddCostSubAction(cardGame, actionContext, action, this);
             action.appendCost(sysAction);
         } else {
-            action.appendEffect(this);
+            action.appendSubAction(this);
         }
     }
 
-    default Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        List<Action> actions = createActions(cardGame, parentAction, context);
-        if (actions.size() > 1) {
-            throw new InvalidGameLogicException("Too many actions");
-        } else if (actions.isEmpty()) {
-            return null;
-        } else {
-            return actions.getFirst();
-        }
-    }
+    Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context);
 
-    default List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                       GameTextContext context) throws InvalidGameLogicException,
-            InvalidCardDefinitionException, PlayerNotFoundException {
-        List<Action> result = new ArrayList<>();
-        Action actionToAdd = createAction(cardGame, parentAction, context);
-        if (actionToAdd != null) {
-            result.add(actionToAdd);
-        }
-        return result;
-    }
     default boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) { return true; }
 
     default boolean isPlayabilityCheckedForEffect() {

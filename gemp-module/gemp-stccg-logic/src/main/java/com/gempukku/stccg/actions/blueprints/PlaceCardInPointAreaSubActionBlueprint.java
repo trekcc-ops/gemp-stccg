@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.placecard.PlaceCardInPointAreaAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
@@ -10,13 +9,9 @@ import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.evaluator.SingleValueSource;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.player.YouPlayerSource;
-
-import java.util.List;
 
 public class PlaceCardInPointAreaSubActionBlueprint implements SubActionBlueprint {
 
@@ -37,12 +32,12 @@ public class PlaceCardInPointAreaSubActionBlueprint implements SubActionBlueprin
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+    public PlaceCardInPointAreaAction createAction(DefaultGame cardGame, ActionWithSubActions action,
+                                                   GameTextContext context) {
         final String performingPlayerId = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
-        return List.of(new PlaceCardInPointAreaAction(cardGame, performingPlayerId, cardTarget, _points, context,
-                context.card()));
+        return new PlaceCardInPointAreaAction(
+                cardGame, performingPlayerId, cardTarget, _points, context, context.card());
     }
 
     @Override

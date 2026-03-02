@@ -12,7 +12,6 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +49,8 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
         }
     }
 
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
-        List<Action> result = new ArrayList<>();
+    public OvercomeDilemmaConditionAction createAction(DefaultGame cardGame, ActionWithSubActions action,
+                                                       GameTextContext context) {
         Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
         OvercomeDilemmaConditionAction actionToReturn = null;
         for (Action pendingAction : actionStack) {
@@ -61,7 +59,6 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
                 actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
                         encounterAction, _conditions, encounterAction.getAttemptingUnit(), _failEffects,
                         _successEffects, _discardDilemma, context);
-                result.add(actionToReturn);
                 break;
             } else if (pendingAction instanceof AttemptMissionAction attemptAction &&
                     !context.card().isBeingEncountered(cardGame)
@@ -70,7 +67,6 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
                     actionToReturn = new OvercomeDilemmaConditionAction(cardGame, context.card(),
                             attemptAction, _conditions, attemptAction.getAttemptingUnit(), _failEffects,
                             _successEffects, _discardDilemma, context);
-                    result.add(actionToReturn);
                     break;
                 } catch(InvalidGameLogicException ignored) {
 
@@ -78,15 +74,9 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
             }
         }
         if (actionToReturn != null && _costAction != null) {
-            try {
-                List<Action> costActions = _costAction.createActions(cardGame, action, context);
-                for (Action costAction : costActions) {
-                    actionToReturn.appendCost(costAction);
-                }
-            } catch(PlayerNotFoundException | InvalidCardDefinitionException | InvalidGameLogicException ignored) {
-
-            }
+            Action costAction = _costAction.createAction(cardGame, action, context);
+            actionToReturn.appendCost(costAction);
         }
-        return result;
+        return actionToReturn;
     }
 }

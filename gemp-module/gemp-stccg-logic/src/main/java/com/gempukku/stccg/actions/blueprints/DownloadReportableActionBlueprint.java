@@ -8,12 +8,9 @@ import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.ReportCardsResolverBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ReportMultipleCardsResolver;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.YouCanDownloadFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 public class DownloadReportableActionBlueprint implements SubActionBlueprint {
 
@@ -25,12 +22,11 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
         _cardTarget = cardTarget;
     }
 
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, actionContext);
+    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+        ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, context);
         if (cardResolver instanceof ReportMultipleCardsResolver multipleResolver) {
-            return new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK, actionContext.yourName(),
-                    actionContext.card(), multipleResolver);
+            return new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK, context.yourName(),
+                    context.card(), multipleResolver);
         } else {
             return null;
         }

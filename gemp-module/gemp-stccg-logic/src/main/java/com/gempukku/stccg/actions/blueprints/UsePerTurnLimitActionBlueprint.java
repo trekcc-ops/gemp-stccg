@@ -9,9 +9,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.LimitCounter;
 
-import java.util.Collections;
-import java.util.List;
-
 public class UsePerTurnLimitActionBlueprint implements SubActionBlueprint {
 
     private final ActionBlueprint _parentActionBlueprint;
@@ -22,12 +19,10 @@ public class UsePerTurnLimitActionBlueprint implements SubActionBlueprint {
         _parentActionBlueprint = parentActionBlueprint;
         _limitPerTurn = limitPerTurn;
     }
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction,
+    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
                                       GameTextContext actionContext) {
-        Action usageLimitAction = new UseOncePerTurnAction(cardGame,
+        return new UseOncePerTurnAction(cardGame,
                 actionContext.card(), _parentActionBlueprint, actionContext.yourName());
-        return Collections.singletonList(usageLimitAction);
     }
 
     @Override
