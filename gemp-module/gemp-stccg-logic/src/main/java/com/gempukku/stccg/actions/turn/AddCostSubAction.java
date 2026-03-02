@@ -4,10 +4,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
@@ -26,16 +23,13 @@ public class AddCostSubAction extends SystemQueueAction {
 
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        try {
-            final Action actionToAdd = _blueprint.createAction(cardGame, _parentAction, _actionContext);
-            if (actionToAdd != null) {
-                _parentAction.insertCosts(List.of(actionToAdd));
-            }
-        } catch (InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException exp) {
-            cardGame.sendErrorMessage(exp);
+        final Action actionToAdd = _blueprint.createAction(cardGame, _parentAction, _actionContext);
+        if (actionToAdd != null) {
+            _parentAction.insertCosts(List.of(actionToAdd));
+            setAsSuccessful();
+        } else {
             setAsFailed();
         }
-        setAsSuccessful();
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
