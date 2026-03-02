@@ -44,6 +44,43 @@
             ]
         },
         {
+            "blueprintId": "161_007",
+            "title": "Ornaran Threat",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "tng-logo",
+            "lore": "Suffering from felicium withdrawal, T'Jon threatened William T. Riker's life in an attempt to manipulate Jean-Luc Picard. Picard refused to enable the Ornaran's addiction.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/7.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 1,
+                                "random": true
+                            },
+                            "saveToMemoryId": "stoppedPersonnel"
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Diplomacy x2 + MEDICAL OR SECURITY x2 + STRENGTH>25",
+                            "failEffect": {
+                                "type": "kill",
+                                "target": {
+                                    "type": "memory",
+                                    "memoryId": "stoppedPersonnel"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "161_021",
             "title": "Advanced Combat Training",
             "type": "mission",
