@@ -220,6 +220,11 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 yield (cardGame, actionContext) ->
                         (CardFilter) (game, physicalCard) -> physicalCard.getLore().contains(loreText);
             }
+            case "textInTitle" -> {
+                String titleText = parameter;
+                yield (cardGame, actionContext) ->
+                        (CardFilter) (game, physicalCard) -> physicalCard.getTitle().contains(titleText);
+            }
             case "title" -> new CardTitleFilterBlueprint(parameter);
             default -> throw new InvalidCardDefinitionException(
                     "Unable to parse parameterized filter blueprint with type '" + type + "' and parameter '" + parameter + "'");

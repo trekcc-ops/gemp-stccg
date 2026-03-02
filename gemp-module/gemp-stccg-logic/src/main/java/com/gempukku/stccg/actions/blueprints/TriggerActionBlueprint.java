@@ -8,13 +8,12 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.PlayPhaseRequirement;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 
 import java.util.List;
 
 public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
 
-    protected TriggerActionBlueprint(TriggerChecker triggerChecker, List<Requirement> requirements,
+    protected TriggerActionBlueprint(Requirement triggerChecker, List<Requirement> requirements,
                                      List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
                                      boolean triggerDuringSeed, PlayerSource player) {
         super(costs, effects, player);
