@@ -320,6 +320,7 @@ public class ValidateCardLibraryTest extends AbstractAtTest {
                 case SKILL_DOT -> null;
                 case STAFF -> "[Stf]";
                 case TNG_ICON -> null;
+                case TOS_ICON -> "[TOS]";
                 case WARP_CORE -> "[WC]";
             };
             sb.append(iconText);
