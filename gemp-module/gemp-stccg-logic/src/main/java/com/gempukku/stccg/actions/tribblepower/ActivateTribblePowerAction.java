@@ -12,14 +12,16 @@ import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public abstract class ActivateTribblePowerAction extends ActionWithSubActions {
     protected final PhysicalCard _performingCard;
     protected Map<String, Boolean> _progressIndicators = new HashMap<>();
+    protected final LinkedList<Action> _actionEffects = new LinkedList<>();
 
-    public ActivateTribblePowerAction(TribblesGame cardGame, GameTextContext actionContext, PhysicalCard performingCard) {
-        super(cardGame, actionContext.yourName(), ActionType.ACTIVATE_TRIBBLE_POWER);
+    public ActivateTribblePowerAction(TribblesGame cardGame, GameTextContext context, PhysicalCard performingCard) {
+        super(cardGame, context.yourName(), ActionType.ACTIVATE_TRIBBLE_POWER, context);
         _performingCard = performingCard;
     }
 
@@ -86,7 +88,7 @@ public abstract class ActivateTribblePowerAction extends ActionWithSubActions {
     protected final Action getNextAction() {
         final Action effect = _actionEffects.poll();
         if (effect != null)
-            _processedActions.add(effect);
+            _processedSubActions.add(effect);
         return effect;
     }
 
@@ -99,6 +101,10 @@ public abstract class ActivateTribblePowerAction extends ActionWithSubActions {
 
     public PhysicalCard getPerformingCard() {
         return _performingCard;
+    }
+
+    public final void appendEffect(Action action) {
+        _actionEffects.add(action);
     }
 
 }

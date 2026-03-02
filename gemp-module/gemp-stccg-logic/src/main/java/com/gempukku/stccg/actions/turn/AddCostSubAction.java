@@ -11,16 +11,14 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
-public class AddSubactionEffectsAction extends SystemQueueAction {
+public class AddCostSubAction extends SystemQueueAction {
 
-    private final boolean _isCost;
     private final ActionWithSubActions _parentAction;
     private final SubActionBlueprint _blueprint;
 
-    public AddSubactionEffectsAction(DefaultGame cardGame, GameTextContext actionContext, boolean isCost,
-                                     ActionWithSubActions parentAction, SubActionBlueprint blueprint) {
+    public AddCostSubAction(DefaultGame cardGame, GameTextContext actionContext,
+                            ActionWithSubActions parentAction, SubActionBlueprint blueprint) {
         super(cardGame, actionContext, parentAction.getPerformingPlayerId());
-        _isCost = isCost;
         _parentAction = parentAction;
         _blueprint = blueprint;
     }
@@ -31,10 +29,7 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
         try {
             final Action actionToAdd = _blueprint.createAction(cardGame, _parentAction, _actionContext);
             if (actionToAdd != null) {
-                if (_isCost)
-                    _parentAction.insertCosts(List.of(actionToAdd));
-                else
-                    _parentAction.insertAction(actionToAdd);
+                _parentAction.insertCosts(List.of(actionToAdd));
             }
         } catch (InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);

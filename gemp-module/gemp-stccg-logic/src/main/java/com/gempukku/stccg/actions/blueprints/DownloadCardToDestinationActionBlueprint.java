@@ -129,7 +129,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                 EnterPlayAtDestinationResolver resolver =
                         new EnterPlayAtDestinationResolver(performingPlayerName, destinationTargetMap);
                 DownloadCardAction action =
-                        new DownloadCardAction(cardGame, performingPlayerName, resolver, thisCard);
+                        new DownloadCardAction(cardGame, performingPlayerName, resolver, thisCard, actionContext);
                 appendActionToContext(cardGame, action, actionContext);
                 if (action.canBeInitiated(cardGame)) {
                     return action;

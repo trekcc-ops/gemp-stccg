@@ -8,8 +8,6 @@ import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.List;
-
 public class UseGameTextAction extends ActionWithSubActions implements TopLevelSelectableAction {
 
     protected final PhysicalCard _performingCard;
@@ -26,8 +24,8 @@ public class UseGameTextAction extends ActionWithSubActions implements TopLevelS
 
     public boolean requirementsAreMet(DefaultGame game) { return true; }
 
-    public List<Action> getSubActions() {
-        return _actionEffects;
+    public Action getCurrentSubAction() {
+        return _currentSubAction;
     }
 
 }

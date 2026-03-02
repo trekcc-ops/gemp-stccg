@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.actions.targetresolver.AttemptingUnitResolver;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -41,7 +42,8 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
                                 MissionLocation mission) throws InvalidGameLogicException {
-        super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION);
+        super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION,
+                new GameTextContext(cardForAction, player.getPlayerId()));
         _performingCard = cardForAction;
         _locationId = mission.getLocationId();
 

@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -21,8 +22,9 @@ public class DownloadCardAction extends ActionWithSubActions implements Download
     private final EnterPlayAtDestinationResolver _targetResolver;
 
     public DownloadCardAction(DefaultGame cardGame, String performingPlayerName,
-                              EnterPlayAtDestinationResolver cardTarget, PhysicalCard performingCard) {
-        super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD);
+                              EnterPlayAtDestinationResolver cardTarget, PhysicalCard performingCard,
+                              GameTextContext context) {
+        super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD, context);
         _targetResolver = cardTarget;
         _performingCard = performingCard;
         _cardTargets.add(cardTarget);

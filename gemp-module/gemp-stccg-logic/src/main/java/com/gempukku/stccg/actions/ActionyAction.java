@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.blueprints.UsePerGameLimitActionBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
-import com.gempukku.stccg.actions.turn.AddSubactionEffectsAction;
+import com.gempukku.stccg.actions.turn.AddCostSubAction;
 import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
@@ -233,7 +233,7 @@ public abstract class ActionyAction implements Action {
         for (Action costAction : _costs) {
             if (costAction instanceof UseOncePerGameAction) {
                 return true;
-            } else if (costAction instanceof AddSubactionEffectsAction addAction &&
+            } else if (costAction instanceof AddCostSubAction addAction &&
                     addAction.getSubAction() instanceof UsePerGameLimitActionBlueprint
             ) {
                 return true;

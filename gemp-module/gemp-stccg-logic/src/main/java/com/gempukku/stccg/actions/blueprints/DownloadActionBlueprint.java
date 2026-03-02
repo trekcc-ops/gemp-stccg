@@ -43,7 +43,7 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
         if (!destinationMap.isEmpty()) {
             EnterPlayAtDestinationResolver resolver =
                     new EnterPlayAtDestinationResolver(performingPlayerName, destinationMap);
-            return new DownloadCardAction(cardGame, performingPlayerName, resolver, actionContext.card());
+            return new DownloadCardAction(cardGame, performingPlayerName, resolver, actionContext.card(), actionContext);
         } else {
             return null;
         }
