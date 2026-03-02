@@ -8,6 +8,7 @@ public enum CardIcon implements Filterable {
     COMMAND("Command", "https://www.trekcc.org/forum/images/smilies/icon_command.gif"),
     COMMUNICATIONS_SUBCOMMAND("Communications", "https://www.trekcc.org/forum/images/smilies/icon_sc_comm.png"),
     DEFENSE_SUBCOMMAND("Defense", "https://www.trekcc.org/forum/images/smilies/icon_sc_def.png"),
+    DELTA_QUADRANT_ICON("Delta Quadrant", "https://www.trekcc.org/forum/images/smilies/icon_1e_dq.jpg"),
     DS9_ICON("Deep Space Nine", "https://www.trekcc.org/forum/images/smilies/icon_ds91e.png"),
     EARTH("Earth", "https://www.trekcc.org/forum/images/smilies/icon_earth.gif"),
     ENT_ERA("22nd Century", "https://www.trekcc.org/forum/images/smilies/icon_22nd_century.png"),

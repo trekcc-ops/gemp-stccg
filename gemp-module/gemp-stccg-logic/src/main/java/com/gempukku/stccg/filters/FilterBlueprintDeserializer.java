@@ -8,10 +8,7 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.ComparatorType;
-import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.Characteristic;
-import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.common.filterable.*;
 import com.google.common.collect.Iterables;
 
 import java.io.IOException;

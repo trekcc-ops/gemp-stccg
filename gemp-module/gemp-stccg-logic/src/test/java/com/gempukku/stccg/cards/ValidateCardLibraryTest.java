@@ -300,6 +300,7 @@ public class ValidateCardLibraryTest extends AbstractAtTest {
                 case CLASSIC_FILMS_ICON -> "[Film]";
                 case COMMAND -> "[Cmd]";
                 case COMMUNICATIONS_SUBCOMMAND -> "[Com]";
+                case DELTA_QUADRANT_ICON ->  "[DQ]";
                 case DEFENSE_SUBCOMMAND -> "[Def]";
                 case DS9_ICON -> null;
                 case EARTH -> null;
