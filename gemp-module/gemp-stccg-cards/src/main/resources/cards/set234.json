@@ -1,0 +1,50 @@
+{
+    "setId" : "234",
+    "setName" : "Second Star to the Right",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "234_021",
+            "title" : "Pavel Chekov",
+            "type" : "personnel",
+            "affiliation" : "federation",
+            "property-logo" : "generations-logo",
+            "icons": ["command","au-icon","classic-films-icon"],
+            "classification": "OFFICER",
+            "persona": "Ensign Chekov",
+            "species": "human",
+            "gender": "male",
+            "lore": "After a long career, <b>Ensign Chekov</b> was a guest at the <i>U.S.S. Enterprise-B</i> launch. Commander who assisted as a nurse due to a lack of medical staff.",
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Navigation"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Anthropology"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Biology"
+                    },
+                    {
+                        "type" : "specialModifier",
+                        "text" : "Your [univ] [Fed] [Stf] [CF] personnel present gain MEDICAL.",
+                        "modifier" : {
+                            "type" : "gainSkill",
+                            "skills": "MEDICAL",
+                            "modifiedCards": "yours + personnel + universal + federation + staff + classic-films-icon"
+                        }
+                    }
+                ]
+            },
+            "integrity": 8,
+            "cunning": 7,
+            "strength": 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/ssttr/21.jpg"
+        }
+    ]
+}
