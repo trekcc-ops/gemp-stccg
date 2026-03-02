@@ -29,12 +29,12 @@ public class AddSubactionEffectsAction extends SystemQueueAction {
     @Override
     protected void processEffect(DefaultGame cardGame) {
         try {
-            final List<Action> actions = _blueprint.createActions(cardGame, _parentAction, _actionContext);
-            if (actions != null) {
+            final Action actionToAdd = _blueprint.createAction(cardGame, _parentAction, _actionContext);
+            if (actionToAdd != null) {
                 if (_isCost)
-                    _parentAction.insertCosts(actions);
+                    _parentAction.insertCosts(List.of(actionToAdd));
                 else
-                    _parentAction.insertActions(actions);
+                    _parentAction.insertAction(actionToAdd);
             }
         } catch (InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);

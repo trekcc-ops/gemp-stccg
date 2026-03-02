@@ -63,4 +63,8 @@ public abstract class ActionWithSubActions extends ActionyAction {
 
     public abstract PhysicalCard getPerformingCard();
 
+    public void insertAction(Action actionToAdd) {
+        _actionEffects.addFirst(actionToAdd);
+    }
+
 }
