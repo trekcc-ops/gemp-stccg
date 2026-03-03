@@ -14,7 +14,6 @@ import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.gamestate.MissionLocation;
@@ -160,7 +159,6 @@ public class CardBlueprint {
 
     @JsonProperty("tribble-power")
     protected TribblePower tribblePower;
-    private List<FilterBlueprint> targetFilters;
 
     @JsonProperty("image-options")
     private final Map<Affiliation, String> _imageOptions = new HashMap<>();
@@ -432,12 +430,6 @@ public class CardBlueprint {
         return result;
     }
 
-
-    public void appendTargetFilter(FilterBlueprint targetFilter) {
-        if (targetFilters == null)
-            targetFilters = new LinkedList<>();
-        targetFilters.add(targetFilter);
-    }
 
     public ActionBlueprint getDiscardedFromPlayTrigger(RequiredType requiredType) {
         return null;
