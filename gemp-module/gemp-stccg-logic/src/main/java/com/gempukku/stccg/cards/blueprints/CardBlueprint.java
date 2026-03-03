@@ -21,7 +21,6 @@ import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.blueprints.ModifierBlueprint;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.requirement.PlayOutOfSequenceRequirement;
-import com.gempukku.stccg.requirement.Requirement;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -166,8 +165,6 @@ public class CardBlueprint {
     @JsonProperty("modifiers")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
     protected final List<ModifierBlueprint> inPlayModifiers = new LinkedList<>();
-
-    private List<Requirement> playInOtherPhaseConditions;
 
     @JsonProperty("playOutOfSequenceCondition")
     @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -399,12 +396,6 @@ public class CardBlueprint {
         return result;
     }
 
-
-    public void appendPlayInOtherPhaseCondition(Requirement requirement) {
-        if (playInOtherPhaseConditions == null)
-            playInOtherPhaseConditions = new LinkedList<>();
-        playInOtherPhaseConditions.add(requirement);
-    }
 
     public PlayCardAction getPlayThisCardAction(DefaultGame cardGame, String performingPlayerName,
                                                 PhysicalCard thisCard) {
