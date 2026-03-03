@@ -39,6 +39,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
     private final int _locationId;
     private boolean _successDetermined;
     private boolean _missionSpecHelped;
+    private boolean _failedToOvercomeCondition;
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
                                 MissionLocation mission) throws InvalidGameLogicException {
@@ -101,7 +102,18 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
 
     protected void processEffect(DefaultGame cardGame) {
         try {
-            if (cardGame instanceof ST1EGame stGame) {
+            if (_failedToOvercomeCondition) {
+                if (_currentSubAction != null) {
+                    _processedSubActions.add(_currentSubAction);
+                    _currentSubAction = null;
+                } else if (!_queuedSubActions.isEmpty()) {
+                    _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+                    _queuedSubActions.removeFirst();
+                    cardGame.addActionToStack(_currentSubAction);
+                } else {
+                    setAsFailed();
+                }
+            } else if (cardGame instanceof ST1EGame stGame) {
                 AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
                 MissionLocation missionLocation;
                 GameLocation gameLocation = stGame.getGameState().getLocationById(_locationId);
@@ -195,4 +207,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
         return _performingCard;
     }
 
+    public void setAsConditionFailed() {
+        _failedToOvercomeCondition = true;
+    }
 }

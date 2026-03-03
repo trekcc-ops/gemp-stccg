@@ -22,6 +22,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
     private final AttemptingUnit _attemptingUnit;
+    private boolean _failedToOvercomeCondition;
 
     private final int _locationId;
     private boolean _nullified;
@@ -61,25 +62,25 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
                 _nullified = true;
             }
         } else if (_currentSubAction != null) {
-            if (_currentSubAction.wasFailed() && !(_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
+            if (!_failedToOvercomeCondition && _currentSubAction.wasFailed() &&
+                    !(_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
                 setAsSuccessful();
             } else if (_currentSubAction.wasFailed() && (_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
-                setAsFailed();
-                _parentAction.setAsFailed();
+                _failedToOvercomeCondition = true;
             }
             _processedSubActions.add(_currentSubAction);
             _currentSubAction = null;
         } else if (!_queuedSubActions.isEmpty()) {
-            try {
-                _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
-                _queuedSubActions.removeFirst();
-                cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
-            } catch(Exception exp) {
-                cardGame.sendErrorMessage(exp);
-                setAsFailed();
-            }
+            _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+            _queuedSubActions.removeFirst();
+            cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
         } else {
-            setAsSuccessful();
+            if (_failedToOvercomeCondition) {
+                setAsFailed();
+                _parentAction.setAsFailed();
+            } else {
+                setAsSuccessful();
+            }
         }
         if (wasSuccessful() && !_nullified) {
             PhysicalCard encounteredCard = _cardTarget.getCard();
