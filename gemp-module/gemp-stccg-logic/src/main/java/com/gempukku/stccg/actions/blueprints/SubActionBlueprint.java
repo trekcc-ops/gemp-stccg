@@ -4,23 +4,14 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.turn.AddSubactionEffectsAction;
+import com.gempukku.stccg.actions.turn.AddCostSubAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-
-import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-@JsonSubTypes({@JsonSubTypes.Type(value = ActivateTribblePowerEffectBlueprint.class, name = "activateTribblePower"),
+@JsonSubTypes({
         @JsonSubTypes.Type(value = AddModifierEffectBlueprint.class, name = "addModifier"),
-        @JsonSubTypes.Type(value = SubActionWithCostBlueprint.class, name = "costToEffect"),
         @JsonSubTypes.Type(value = DrawCardsActionBlueprint.class, name = "drawCards"),
-        @JsonSubTypes.Type(value = ChooseStuffSubActionBlueprint.class,
-                names = {"chooseANumber", "chooseOpponent", "choosePlayer", "choosePlayerExcept",
-                        "choosePlayerWithCardsInDeck", "chooseTribblePower"}),
         @JsonSubTypes.Type(value = DiscardSubActionBlueprint.class, name = "discard"),
         @JsonSubTypes.Type(value = DiscardThisCardSubActionBlueprint.class, name = "discardThisCard"),
         @JsonSubTypes.Type(value = DownloadActionBlueprint.class, name = "download"),
@@ -48,17 +39,17 @@ public interface SubActionBlueprint {
 
     default void addEffectToAction(DefaultGame cardGame, boolean cost, ActionWithSubActions action,
                                    GameTextContext actionContext) {
-        final AddSubactionEffectsAction sysAction =
-                new AddSubactionEffectsAction(cardGame, actionContext, cost, action, this);
         if (cost) {
+            final AddCostSubAction sysAction =
+                    new AddCostSubAction(cardGame, actionContext, action, this);
             action.appendCost(sysAction);
         } else {
-            action.appendEffect(sysAction);
+            action.appendSubAction(this);
         }
     }
 
-    List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext actionContext)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException;
+    Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context);
+
     default boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) { return true; }
 
     default boolean isPlayabilityCheckedForEffect() {

@@ -499,6 +499,14 @@ public class GameTestBuilder {
                 if (node.has("IN_SPACE")) {
                     addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
                 }
+                if (node.has("SEEDED_UNDERNEATH")) {
+                    for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
+                        String seedCardBlueprintId = seedCardNode.get("blueprintId").textValue();
+                        String seedCardOwner = seedCardNode.get("owner").textValue();
+                        CardBlueprint seedCardBlueprint = library.getCardBlueprint(seedCardBlueprintId);
+                        addSeedCardUnderMission(seedCardBlueprintId, seedCardBlueprint.getTitle(), seedCardOwner, mission);
+                    }
+                }
             }
         }
     }
@@ -516,10 +524,15 @@ public class GameTestBuilder {
             };
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             PhysicalCard cardToAdd = switch(childType) {
+                case ABOARD -> addCardAboardShipOrFacility(
+                        blueprintId, blueprint.getTitle(), ownerName, (CardWithCrew) parentCard, ReportableCard.class);
                 case IN_SPACE -> addCardInSpace(blueprint, ownerName, parentCard);
                 default -> throw new InvalidGameOperationException(
                         "GameTestBuilder is not yet equipped to handle ChildCardRelationshipType '" + childType + "'");
             };
+            if (node.has("ABOARD")) {
+                addJsonCards(library, node.get("ABOARD"), ChildCardRelationshipType.ABOARD, cardToAdd);
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
@@ -9,14 +11,11 @@ import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.cards.physicalcard.StoppableCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,14 +31,12 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     private boolean _conditionsMet;
     private final boolean _discardDilemma;
     private final PhysicalCard _dilemma;
-    private boolean _cardsStopped;
     private final List<SubActionBlueprint> _additionalFailActions = new ArrayList<>();
     private final List<SubActionBlueprint> _additionalSuccessActions = new ArrayList<>();
-    private boolean _dilemmaDiscarded;
 
 
     public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
-                                          EncounterSeedCardAction encounterAction, MissionRequirement conditions,
+                                          ActionWithSubActions parentAction, MissionRequirement conditions,
                                           AttemptingUnit attemptingUnit, List<SubActionBlueprint> failDilemmaActions,
                                           List<SubActionBlueprint> successActions, boolean discardDilemma,
                                           GameTextContext context) {
@@ -48,28 +45,10 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         _attemptingUnit = attemptingUnit;
         _additionalFailActions.addAll(failDilemmaActions);
         _conditions = conditions;
-        _parentAction = encounterAction;
+        _parentAction = parentAction;
         _discardDilemma = discardDilemma;
         _additionalSuccessActions.addAll(successActions);
     }
-
-    public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
-                                          AttemptMissionAction attemptAction,
-                                          MissionRequirement conditions,
-                                          AttemptingUnit attemptingUnit, List<SubActionBlueprint> failDilemmaActions,
-                                          List<SubActionBlueprint> successActions, boolean discardDilemma,
-                                          GameTextContext context) {
-        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, context);
-        _dilemma = dilemma;
-        _parentAction = attemptAction;
-        _attemptingUnit = attemptingUnit;
-        _additionalFailActions.addAll(failDilemmaActions);
-        _conditions = conditions;
-        _discardDilemma = discardDilemma;
-        _additionalSuccessActions.addAll(successActions);
-    }
-
-
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -87,59 +66,49 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
             }
         } else {
             if (_conditionsMet) {
-                if (!_additionalSuccessActions.isEmpty()) {
-                    SubActionBlueprint passAction = _additionalSuccessActions.getFirst();
-                    _additionalSuccessActions.remove(passAction);
-                    try {
-                        List<Action> passActions = passAction.createActions(cardGame, _parentAction, _actionContext);
-                        for (int i = passActions.size() - 1; i >= 0; i--) {
-                            cardGame.addActionToStack(passActions.get(i));
-                        }
-                    } catch(InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException ignored) {
-
-                    }
-                } else {
-                    setAsSuccessful();
-                }
+                _parentAction.insertSubActions(_additionalSuccessActions);
+                setAsSuccessful();
             } else {
-                if (!_additionalFailActions.isEmpty()) {
-                    SubActionBlueprint failAction = _additionalFailActions.getFirst();
-                    _additionalFailActions.remove(failAction);
-                    try {
-                        List<Action> failActions = failAction.createActions(cardGame, _parentAction, _actionContext);
-                        for (int i = failActions.size() - 1; i >= 0; i--) {
-                            cardGame.addActionToStack(failActions.get(i));
-                        }
-                    } catch(InvalidCardDefinitionException | InvalidGameLogicException | PlayerNotFoundException ignored) {
-
-                    }
-                } else if (!_cardsStopped) {
-                    Collection<StoppableCard> cardsToStop =
-                            new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
-                    if (_attemptingUnit instanceof ShipCard ship) {
-                        cardsToStop.add(ship);
-                    }
-                    _cardsStopped = true;
-                    cardGame.addActionToStack(new StopCardsAction(cardGame, _performingPlayerId, cardsToStop));
-                } else if (_discardDilemma && !_dilemmaDiscarded && _dilemma.getParentCard() == null) {
-                    _dilemmaDiscarded = true;
-                    cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma));
-                } else {
-                    completeActionWithFailure();
-                }
+                setAsFailed();
             }
         }
     }
 
     @Override
     public void setAsFailed() {
-        _conditionsChecked = true;
-        _conditionsMet = false;
-        setAsInitiated();
+        _parentAction.removeRemainingSubActions();
+        _parentAction.insertSubActions(_additionalFailActions);
+        _parentAction.appendSubAction(new SubActionBlueprint() {
+            @Override
+            public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+                Collection<StoppableCard> cardsToStop =
+                        new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
+                if (_attemptingUnit instanceof ShipCard ship) {
+                    cardsToStop.add(ship);
+                }
+                return new StopCardsAction(cardGame, _performingPlayerId, cardsToStop);
+            }
+        });
+        _parentAction.appendSubAction(new SubActionBlueprint() {
+            @Override
+            public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+                if (_discardDilemma && _dilemma.getParentCard() == null) {
+                    return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma);
+                } else {
+                    return null;
+                }
+            }
+        });
+
+        if (_parentAction instanceof AttemptMissionAction attemptAction) {
+            attemptAction.setAsConditionFailed();
+        }
+        super.setAsFailed();
     }
 
-    private void completeActionWithFailure() {
-        super.setAsFailed();
-        _parentAction.setAsFailed();
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private PhysicalCard getTargetCard() {
+        return _dilemma;
     }
 }

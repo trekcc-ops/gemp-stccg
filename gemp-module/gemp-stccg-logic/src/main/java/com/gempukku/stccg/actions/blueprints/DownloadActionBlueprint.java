@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
@@ -10,7 +9,10 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.*;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class DownloadActionBlueprint implements SubActionBlueprint {
 
@@ -23,9 +25,8 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
         _destinationFilter = Objects.requireNonNullElse(destinationFilter, new AnyCardFilterBlueprint());
     }
 
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext) {
-        List<Action> result = new ArrayList<>();
+    public DownloadCardAction createAction(DefaultGame cardGame, ActionWithSubActions action,
+                                           GameTextContext actionContext) {
         String performingPlayerName = actionContext.yourName();
         Collection<PhysicalCard> downloadableCards =
                 Filters.filter(cardGame, _cardToDownloadFilter.getFilterable(cardGame, actionContext));
@@ -42,10 +43,10 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
         if (!destinationMap.isEmpty()) {
             EnterPlayAtDestinationResolver resolver =
                     new EnterPlayAtDestinationResolver(performingPlayerName, destinationMap);
-            Action downloadAction = new DownloadCardAction(cardGame, performingPlayerName, resolver, actionContext.card());
-            result.add(downloadAction);
+            return new DownloadCardAction(cardGame, performingPlayerName, resolver, actionContext.card(), actionContext);
+        } else {
+            return null;
         }
-        return result;
     }
 
     @Override

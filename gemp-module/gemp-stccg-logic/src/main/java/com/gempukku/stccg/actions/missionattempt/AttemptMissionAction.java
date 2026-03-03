@@ -8,6 +8,7 @@ import com.gempukku.stccg.actions.choose.SelectAttemptingUnitAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.actions.targetresolver.AttemptingUnitResolver;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -38,10 +39,12 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
     private final int _locationId;
     private boolean _successDetermined;
     private boolean _missionSpecHelped;
+    private boolean _failedToOvercomeCondition;
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
                                 MissionLocation mission) throws InvalidGameLogicException {
-        super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION);
+        super(cardGame, player.getPlayerId(), ActionType.ATTEMPT_MISSION,
+                new GameTextContext(cardForAction, player.getPlayerId()));
         _performingCard = cardForAction;
         _locationId = mission.getLocationId();
 
@@ -99,7 +102,18 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
 
     protected void processEffect(DefaultGame cardGame) {
         try {
-            if (cardGame instanceof ST1EGame stGame) {
+            if (_failedToOvercomeCondition) {
+                if (_currentSubAction != null) {
+                    _processedSubActions.add(_currentSubAction);
+                    _currentSubAction = null;
+                } else if (!_queuedSubActions.isEmpty()) {
+                    _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+                    _queuedSubActions.removeFirst();
+                    cardGame.addActionToStack(_currentSubAction);
+                } else {
+                    setAsFailed();
+                }
+            } else if (cardGame instanceof ST1EGame stGame) {
                 AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
                 MissionLocation missionLocation;
                 GameLocation gameLocation = stGame.getGameState().getLocationById(_locationId);
@@ -193,4 +207,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
         return _performingCard;
     }
 
+    public void setAsConditionFailed() {
+        _failedToOvercomeCondition = true;
+    }
 }

@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -23,26 +22,11 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
     private final AttemptingUnit _attemptingUnit;
+    private boolean _failedToOvercomeCondition;
 
     private final int _locationId;
     private boolean _nullified;
-    private boolean _subActionFailed;
     private boolean _nullifyAttempted;
-
-    public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
-                                   AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
-                                   int locationId)
-            throws InvalidGameLogicException {
-        super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD);
-        try {
-            _parentAction = Objects.requireNonNull(attemptAction);
-            _cardTarget = new FixedCardResolver(encounteredCard);
-            _attemptingUnit = Objects.requireNonNull(attemptingUnit);
-            _locationId = locationId;
-        } catch(NullPointerException npe) {
-            throw new InvalidGameLogicException(npe.getMessage());
-        }
-    }
 
     public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
@@ -77,21 +61,26 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
                 setAsSuccessful();
                 _nullified = true;
             }
-        } else if (!_actionEffects.isEmpty()) {
-            Action subAction = _actionEffects.getFirst();
-            if (subAction.wasSuccessful()) {
-                _actionEffects.remove(subAction);
-                _processedActions.add(subAction);
-            } else if (subAction.wasFailed() && !(subAction instanceof OvercomeDilemmaConditionAction)) {
+        } else if (_currentSubAction != null) {
+            if (!_failedToOvercomeCondition && _currentSubAction.wasFailed() &&
+                    !(_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
                 setAsSuccessful();
-            } else if (subAction.wasFailed() && (subAction instanceof OvercomeDilemmaConditionAction)) {
+            } else if (_currentSubAction.wasFailed() && (_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
+                _failedToOvercomeCondition = true;
+            }
+            _processedSubActions.add(_currentSubAction);
+            _currentSubAction = null;
+        } else if (!_queuedSubActions.isEmpty()) {
+            _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+            _queuedSubActions.removeFirst();
+            cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
+        } else {
+            if (_failedToOvercomeCondition) {
                 setAsFailed();
                 _parentAction.setAsFailed();
             } else {
-                cardGame.getActionsEnvironment().addActionToStack(subAction);
+                setAsSuccessful();
             }
-        } else {
-            setAsSuccessful();
         }
         if (wasSuccessful() && !_nullified) {
             PhysicalCard encounteredCard = _cardTarget.getCard();

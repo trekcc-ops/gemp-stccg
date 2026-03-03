@@ -17,6 +17,7 @@ import java.util.List;
 public class SampleGameLibrary {
 
     private final List<GameTestBuilder> games;
+    private boolean _errorEncountered = false;
 
     private static final Logger LOGGER = LogManager.getLogger(SampleGameLibrary.class);
 
@@ -32,6 +33,7 @@ public class SampleGameLibrary {
             GameTestBuilder[] gameData = mapper.readValue(path, GameTestBuilder[].class);
             games.addAll(Arrays.asList(gameData));
         } catch (Exception exp) {
+            _errorEncountered = true;
             LOGGER.error(exp);
         }
     }
@@ -45,6 +47,10 @@ public class SampleGameLibrary {
                 LOGGER.error(exp);
             }
         }
+    }
+
+    public boolean loadedSuccessfully() {
+        return !_errorEncountered;
     }
 
 }

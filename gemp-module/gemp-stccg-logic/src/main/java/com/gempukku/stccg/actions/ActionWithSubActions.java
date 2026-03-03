@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions;
 
+import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -9,8 +10,9 @@ import java.util.LinkedList;
 
 public abstract class ActionWithSubActions extends ActionyAction {
 
-    protected final LinkedList<Action> _actionEffects = new LinkedList<>();
-    protected final LinkedList<Action> _processedActions = new LinkedList<>();
+    protected final LinkedList<SubActionBlueprint> _queuedSubActions = new LinkedList<>();
+    protected Action _currentSubAction;
+    protected final LinkedList<Action> _processedSubActions = new LinkedList<>();
 
     public ActionWithSubActions(int actionId, ActionType actionType, String performingPlayerName,
                                 ActionStatus status) {
@@ -23,34 +25,50 @@ public abstract class ActionWithSubActions extends ActionyAction {
     }
 
     public ActionWithSubActions(DefaultGame cardGame, String performingPlayerId, ActionType actionType) {
-        super(cardGame, performingPlayerId, actionType);
+        super(cardGame, actionType, performingPlayerId, null);
     }
 
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        if (!_actionEffects.isEmpty()) {
-            Action subAction = _actionEffects.getFirst();
-            if (subAction.wasSuccessful()) {
-                _actionEffects.remove(subAction);
-                _processedActions.add(subAction);
-            } else if (subAction.wasFailed()) {
-                this.setAsFailed();
-            } else {
-                cardGame.getActionsEnvironment().addActionToStack(subAction);
+        if (_currentSubAction == null && !_queuedSubActions.isEmpty()) {
+            try {
+                SubActionBlueprint nextSubAction = _queuedSubActions.getFirst();
+                _queuedSubActions.removeFirst();
+                if (nextSubAction.isPlayableInFull(cardGame, _actionContext)) {
+                    _currentSubAction = nextSubAction.createAction(cardGame, this, _actionContext);
+                    cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
+                } else {
+                    setAsFailed();
+                }
+            } catch(Exception exp) {
+                cardGame.sendErrorMessage(exp);
+                setAsFailed();
             }
+        } else if (_currentSubAction != null && _currentSubAction.wasSuccessful()) {
+            _processedSubActions.add(_currentSubAction);
+            _currentSubAction = null;
+        } else if (_currentSubAction != null && _currentSubAction.wasFailed()) {
+            _processedSubActions.add(_currentSubAction);
+            _currentSubAction = null;
+            setAsFailed();
         } else {
             setAsSuccessful();
         }
     }
 
-    public final void appendEffect(Action action) {
-        _actionEffects.add(action);
+    public final void appendSubAction(SubActionBlueprint subAction) {
+        _queuedSubActions.add(subAction);
     }
 
-    public final void insertActions(Collection<Action> actions) {
-        _actionEffects.addAll(0, actions);
-    }
 
     public abstract PhysicalCard getPerformingCard();
+
+    public void insertSubActions(Collection<SubActionBlueprint> subActions) {
+        _queuedSubActions.addAll(0, subActions);
+    }
+
+    public void removeRemainingSubActions() {
+        _queuedSubActions.clear();
+    }
 
 }

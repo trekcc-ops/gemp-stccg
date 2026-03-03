@@ -7,14 +7,9 @@ import com.gempukku.stccg.actions.discard.DiscardCardToPointAreaAction;
 import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.SingleValueSource;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-
-import java.util.List;
 
 public class ScorePointsSubActionBlueprint implements SubActionBlueprint {
 
@@ -32,10 +27,10 @@ public class ScorePointsSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
+    public ScorePointsAction createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
         int pointValue = _points.evaluateExpression(cardGame, context);
-        Action pointsAction = new ScorePointsAction(cardGame, context.card(), context.yourName(), pointValue);
+        ScorePointsAction pointsAction =
+                new ScorePointsAction(cardGame, context.card(), context.yourName(), pointValue);
         if (_discardThisCard) {
             Zone discardToZone = cardGame.getRules().getDiscardZone(true);
             if (discardToZone == Zone.DISCARD) {
@@ -48,7 +43,7 @@ public class ScorePointsSubActionBlueprint implements SubActionBlueprint {
                 pointsAction.appendCost(costAction);
             }
         }
-        return List.of(pointsAction);
+        return pointsAction;
     }
 
 }

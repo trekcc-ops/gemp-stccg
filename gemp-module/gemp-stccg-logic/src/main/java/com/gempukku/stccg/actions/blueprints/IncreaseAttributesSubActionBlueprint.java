@@ -12,7 +12,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,20 +44,18 @@ public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint 
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
-        List<Action> result = new ArrayList<>();
+    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
         PhysicalCard performingCard = context.card();
         for (String playerName : cardGame.getAllPlayerIds()) {
             if (performingCard.isControlledBy(playerName)) {
                 ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
                 if (_untilEndOfTurn) {
-                    Action action = new IncreaseAttributesUntilEndOfTurnAction(_attributes, cardGame, performingCard,
+                    return new IncreaseAttributesUntilEndOfTurnAction(_attributes, cardGame, performingCard,
                             context.yourName(), cardTarget, _amount);
-                    result.add(action);
                 }
             }
         }
-        return result;
+        return null;
     }
 
 }

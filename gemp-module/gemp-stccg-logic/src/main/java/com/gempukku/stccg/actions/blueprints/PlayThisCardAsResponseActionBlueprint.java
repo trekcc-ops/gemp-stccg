@@ -42,12 +42,10 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
             throw new InvalidCardDefinitionException("Unable to add response action with no defined trigger");
         }
         _effects.addFirst(new SubActionBlueprint() {
-            @Override
-            public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action,
+            public Action createAction(DefaultGame cardGame, ActionWithSubActions action,
                                               GameTextContext actionContext) {
-                Action playCardAction = new PlayCardAction(cardGame, actionContext.card(), actionContext.card(),
+                return new PlayCardAction(cardGame, actionContext.card(), actionContext.card(),
                     actionContext.card().getOwnerName(), Zone.CORE, ActionType.PLAY_CARD, actionContext);
-                return List.of(playCardAction);
             }
         });
         if (discardAfter) {

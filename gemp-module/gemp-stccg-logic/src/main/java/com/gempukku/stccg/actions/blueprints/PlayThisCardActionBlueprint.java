@@ -90,7 +90,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
             }
         } else if (cardGame instanceof ST1EGame) {
             action = new PlayCardAction(cardGame, thisCard, thisCard, performingPlayerName, Zone.CORE,
-                ActionType.PLAY_CARD);
+                ActionType.PLAY_CARD, actionContext);
         }
         if (action != null) {
             if (!_forFree)

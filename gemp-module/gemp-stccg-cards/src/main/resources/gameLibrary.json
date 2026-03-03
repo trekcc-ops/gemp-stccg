@@ -39,5 +39,39 @@
     "hand": [
       ["101_202", "101_202","156_010"]
     ]
+  },
+  {
+    "gameName": "Friendly Fire",
+    "players": ["asdf", "qwer"],
+    "phase": "EXECUTE_ORDERS",
+    "missions": [
+      {
+        "blueprintId": "101_154",
+        "owner": "asdf",
+        "IN_SPACE": [
+          {
+            "blueprintId": "101_331",
+            "owner": "asdf",
+            "ABOARD": [
+              {
+                "blueprintId": "101_242",
+                "owner": "asdf"
+              },
+              {
+                "blueprintId": "112_215",
+                "owner": "asdf"
+              }
+            ]
+          }
+        ],
+        "SEEDED_UNDERNEATH": [
+          {
+            "blueprintId": "115_010",
+            "owner": "qwer"
+          }
+        ]
+      }
+    ]
   }
+
 ]

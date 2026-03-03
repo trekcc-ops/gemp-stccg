@@ -45,7 +45,7 @@ public interface UserInputSimulator {
                     choice = action;
                 } else if (action instanceof UseGameTextAction useTextAction) {
                     if (useTextAction.getPerformingCard() == performingCard &&
-                            actionClass.isAssignableFrom(useTextAction.getSubActions().getFirst().getClass())) {
+                            actionClass.isAssignableFrom(useTextAction.getCurrentSubAction().getClass())) {
                         choice = action;
                     }
                 }
@@ -107,7 +107,7 @@ public interface UserInputSimulator {
                     }
                 } else if (action instanceof UseGameTextAction useTextAction) {
                     if (useTextAction.getPerformingCard() == card &&
-                            clazz.isAssignableFrom(useTextAction.getSubActions().getFirst().getClass())) {
+                            clazz.isAssignableFrom(useTextAction.getCurrentSubAction().getClass())) {
                         choice = (T) action;
                     }
                 }

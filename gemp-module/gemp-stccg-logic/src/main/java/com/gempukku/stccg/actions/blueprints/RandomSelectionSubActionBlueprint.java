@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
 import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
@@ -19,9 +18,7 @@ import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.player.YourOpponentPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
@@ -44,9 +41,8 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
         _count = Objects.requireNonNullElse(count, new ConstantValueSource(1));
     }
 
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
-        List<Action> result = new ArrayList<>();
+    public SelectRandomCardsAction createAction(DefaultGame cardGame, ActionWithSubActions action,
+                                                GameTextContext context) {
         if (_requirement == null || _requirement.accepts(context, cardGame)) {
             CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
             Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, filter);
@@ -56,11 +52,10 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
                     Math.min(_count.getMinimum(cardGame, context), filteredCards.size()) :
                     _count.getMinimum(cardGame, context);
             int max = Math.min(_count.getMaximum(cardGame, context), filteredCards.size());
-            Action selectAction =
-                    new SelectRandomCardsAction(cardGame, performingPlayer, filter, context, _saveToMemoryId, min, max);
-            result.add(selectAction);
+            return new SelectRandomCardsAction(cardGame, performingPlayer, filter, context, _saveToMemoryId, min, max);
+        } else {
+            return null;
         }
-        return result;
     }
 
 }

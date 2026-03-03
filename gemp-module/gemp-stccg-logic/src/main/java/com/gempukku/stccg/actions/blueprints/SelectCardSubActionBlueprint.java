@@ -17,9 +17,7 @@ import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 public class SelectCardSubActionBlueprint implements SubActionBlueprint {
@@ -42,17 +40,17 @@ public class SelectCardSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
-        List<Action> result = new ArrayList<>();
-        if (_requirement == null || _requirement.accepts(context, cardGame)) {
-            CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
-            Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, filter);
-            String performingPlayer = _selectingPlayer.getPlayerName(cardGame, context);
-            Action selectAction =
-                    new SelectVisibleCardAction(cardGame, performingPlayer, "Select a card", filteredCards, context, _saveToMemoryId);
-            result.add(selectAction);
-        }
-        return result;
+    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+        CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
+        Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, filter);
+        String performingPlayer = _selectingPlayer.getPlayerName(cardGame, context);
+        return new SelectVisibleCardAction(
+                cardGame, performingPlayer, "Select a card", filteredCards, context, _saveToMemoryId);
+    }
+
+    @Override
+    public boolean isPlayableInFull(DefaultGame cardGame, GameTextContext context) {
+        return _requirement == null || _requirement.accepts(context, cardGame);
     }
 
 }

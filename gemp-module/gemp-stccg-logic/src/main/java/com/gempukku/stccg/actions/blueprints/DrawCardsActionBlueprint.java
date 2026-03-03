@@ -13,14 +13,11 @@ import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.player.PlayerResolver;
 import com.gempukku.stccg.player.PlayerSource;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class DrawCardsActionBlueprint implements SubActionBlueprint {
@@ -39,41 +36,41 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         _optional = optional;
     }
 
-    @Override
-    public List<Action> createActions(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        final String targetPlayerId;
-        targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
-        int min = Math.max(_countSource.getMinimum(cardGame, context), 0);
-        int max = Math.min(_countSource.getMaximum(cardGame, context),
-                cardGame.getPlayer(targetPlayerId).getCardsInDrawDeck().size());
+    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+        try {
+            final String targetPlayerId;
+            targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
+            int min = Math.max(_countSource.getMinimum(cardGame, context), 0);
+            int max = Math.min(_countSource.getMaximum(cardGame, context),
+                    cardGame.getPlayer(targetPlayerId).getCardsInDrawDeck().size());
 
-        List<Action> result = new ArrayList<>();
+            if (_optional) {
+                Action decisionAction = new MakeDecisionAction(cardGame, targetPlayerId, "", context) {
 
-        if (_optional) {
-            Action decisionAction = new MakeDecisionAction(cardGame, targetPlayerId, "", context) {
+                    @Override
+                    protected AwaitingDecision getDecision(DefaultGame cardGame) {
+                        AwaitingDecision decisionToSend = new YesNoDecision(targetPlayerId, "Do you want to draw?", cardGame) {
+                            @Override
+                            protected void yes() {
+                                cardGame.addActionToStack(makeAction(cardGame, context.card(), targetPlayerId, min, max));
+                            }
 
-                @Override
-                protected AwaitingDecision getDecision(DefaultGame cardGame) {
-                    AwaitingDecision decisionToSend = new YesNoDecision(targetPlayerId, "Do you want to draw?", cardGame) {
-                        @Override
-                        protected void yes() {
-                            cardGame.addActionToStack(makeAction(cardGame, context.card(), targetPlayerId, min, max));
-                        }
+                            @Override
+                            protected void no() {
 
-                        @Override
-                        protected void no() {
-
-                        }
-                    };
-                    return decisionToSend;
-                }
-            };
-            result.add(decisionAction);
-        } else {
-            result.add(makeAction(cardGame, context.card(), targetPlayerId, min, max));
+                            }
+                        };
+                        return decisionToSend;
+                    }
+                };
+                return decisionAction;
+            } else {
+                return makeAction(cardGame, context.card(), targetPlayerId, min, max);
+            }
+        } catch(PlayerNotFoundException exp) {
+            cardGame.sendErrorMessage(exp);
+            return null;
         }
-        return result;
     }
 
     private Action makeAction(DefaultGame cardGame, PhysicalCard thisCard, String performingPlayerName,
