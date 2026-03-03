@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
 import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -41,8 +40,7 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
         _count = Objects.requireNonNullElse(count, new ConstantValueSource(1));
     }
 
-    public SelectRandomCardsAction createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                                GameTextContext context) {
+    public SelectRandomCardsAction createAction(DefaultGame cardGame, GameTextContext context) {
         if (_requirement == null || _requirement.accepts(context, cardGame)) {
             CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
             Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, filter);

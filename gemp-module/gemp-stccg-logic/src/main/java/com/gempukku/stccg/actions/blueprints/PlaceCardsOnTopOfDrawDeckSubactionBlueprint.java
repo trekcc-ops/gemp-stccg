@@ -29,7 +29,7 @@ public class PlaceCardsOnTopOfDrawDeckSubactionBlueprint implements SubActionBlu
     }
 
     @Override
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
         final String performingPlayerId = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
         return new PlaceCardOnTopOfDrawDeckAction(cardGame, performingPlayerId, cardTarget);

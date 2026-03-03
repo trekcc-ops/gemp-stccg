@@ -20,8 +20,7 @@ public class RemoveCardsFromGameSubActionBlueprint implements SubActionBlueprint
     }
 
     @Override
-    public RemoveCardFromPlayAction createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                      GameTextContext actionContext) {
+    public RemoveCardFromPlayAction createAction(DefaultGame cardGame, GameTextContext actionContext) {
         if (_target.canBeResolved(cardGame, actionContext) &&
                 _target.getTargetResolver(cardGame, actionContext) != null) {
             ActionCardResolver resolver = _target.getTargetResolver(cardGame, actionContext);

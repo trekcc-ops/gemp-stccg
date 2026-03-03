@@ -32,8 +32,7 @@ public class DiscardThisCardSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public DiscardAction createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                      GameTextContext context) {
+    public DiscardAction createAction(DefaultGame cardGame, GameTextContext context) {
         if (_requirement == null || _requirement.accepts(context, cardGame)) {
             if (_toPointArea) {
                 return new DiscardCardToPointAreaAction(cardGame, context.card(), context.yourName(), context.card());

@@ -19,7 +19,7 @@ public class NullifySubActionBlueprint implements SubActionBlueprint {
         _cardTargetBlueprint = cardTargetBlueprint;
     }
 
-    public NullifyCardAction createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public NullifyCardAction createAction(DefaultGame cardGame, GameTextContext context) {
         ActionCardResolver cardResolver = _cardTargetBlueprint.getTargetResolver(cardGame, context);
         return new NullifyCardAction(cardGame, context.card(), context.yourName(), cardResolver);
     }

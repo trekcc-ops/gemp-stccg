@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -36,7 +35,7 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface SubActionBlueprint {
 
-    Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context);
+    Action createAction(DefaultGame cardGame, GameTextContext context);
 
     default boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) { return true; }
 

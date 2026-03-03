@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
@@ -29,7 +28,7 @@ public class PlaceCardsOnBottomOfDrawDeckSubactionBlueprint implements SubAction
     }
 
     @Override
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
         final String performingPlayerId = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
         return new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayerId, cardTarget);

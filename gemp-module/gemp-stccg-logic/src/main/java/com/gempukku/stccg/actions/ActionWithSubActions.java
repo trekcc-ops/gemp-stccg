@@ -41,7 +41,7 @@ public abstract class ActionWithSubActions extends ActionyAction {
                 SubActionBlueprint nextSubAction = _queuedSubActions.getFirst();
                 _queuedSubActions.removeFirst();
                 if (nextSubAction.isPlayableInFull(cardGame, _actionContext)) {
-                    _currentSubAction = nextSubAction.createAction(cardGame, this, _actionContext);
+                    _currentSubAction = nextSubAction.createAction(cardGame, _actionContext);
                     cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
                 } else {
                     setAsFailed();
@@ -97,7 +97,7 @@ public abstract class ActionWithSubActions extends ActionyAction {
             _processedCosts.add(_currentCostBeingPaid);
             _currentCostBeingPaid = null;
         } else if (!_queuedCosts.isEmpty()) {
-            Action cost = _queuedCosts.getFirst().createAction(cardGame, this, _actionContext);
+            Action cost = _queuedCosts.getFirst().createAction(cardGame, _actionContext);
             if (cost == null) {
                 setAsFailed();
             } else {

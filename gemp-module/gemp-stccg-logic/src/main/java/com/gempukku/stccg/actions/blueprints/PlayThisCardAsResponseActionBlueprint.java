@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
@@ -42,10 +41,9 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
             throw new InvalidCardDefinitionException("Unable to add response action with no defined trigger");
         }
         _effects.addFirst(new SubActionBlueprint() {
-            public Action createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                              GameTextContext actionContext) {
-                return new PlayCardAction(cardGame, actionContext.card(), actionContext.card(),
-                    actionContext.card().getOwnerName(), Zone.CORE, ActionType.PLAY_CARD, actionContext);
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
+                return new PlayCardAction(cardGame, context.card(), context.card(),
+                    context.card().getOwnerName(), Zone.CORE, ActionType.PLAY_CARD, context);
             }
         });
         if (discardAfter) {

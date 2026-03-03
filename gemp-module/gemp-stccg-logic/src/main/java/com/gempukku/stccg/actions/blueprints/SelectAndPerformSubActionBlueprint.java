@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectAndInsertAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -32,19 +31,18 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public SelectAndInsertAction createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                              GameTextContext context) {
+    public SelectAndInsertAction createAction(DefaultGame cardGame, GameTextContext context) {
         List<Action> actionsToSelect = new ArrayList<>();
         Map<Action, String> messageMap = new HashMap<>();
 
         for (int i = 0; i < _subActions.size(); i++) {
             SubActionBlueprint blueprint = _subActions.get(i);
-            Action subAction = blueprint.createAction(cardGame, parentAction, context);
+            Action subAction = blueprint.createAction(cardGame, context);
             actionsToSelect.add(subAction);
             messageMap.put(subAction, _actionDescriptions.get(i));
         }
 
-        return new SelectAndInsertAction(cardGame, parentAction, context.yourName(), actionsToSelect, messageMap);
+        return new SelectAndInsertAction(cardGame, context.yourName(), actionsToSelect, messageMap);
     }
 
 }

@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
@@ -32,7 +31,7 @@ public class StopSubActionBlueprint implements SubActionBlueprint {
         _requirement = requirement;
     }
 
-    public StopCardsAction createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public StopCardsAction createAction(DefaultGame cardGame, GameTextContext context) {
         String performingPlayerId = (context instanceof DilemmaEncounterGameTextContext) ?
                 context.card().getOwnerName() : context.yourName();
         if (_requirement == null || _requirement.accepts(context, cardGame)) {

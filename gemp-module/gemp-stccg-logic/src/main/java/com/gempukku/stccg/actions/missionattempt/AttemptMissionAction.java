@@ -107,7 +107,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                     _processedSubActions.add(_currentSubAction);
                     _currentSubAction = null;
                 } else if (!_queuedSubActions.isEmpty()) {
-                    _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+                    _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, _actionContext);
                     _queuedSubActions.removeFirst();
                     cardGame.addActionToStack(_currentSubAction);
                 } else {

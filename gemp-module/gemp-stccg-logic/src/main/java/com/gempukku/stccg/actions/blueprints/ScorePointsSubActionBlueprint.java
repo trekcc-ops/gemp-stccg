@@ -24,7 +24,7 @@ public class ScorePointsSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public ScorePointsAction createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public ScorePointsAction createAction(DefaultGame cardGame, GameTextContext context) {
         int pointValue = _points.evaluateExpression(cardGame, context);
         ScorePointsAction pointsAction =
                 new ScorePointsAction(cardGame, context.card(), context.yourName(), pointValue, context);

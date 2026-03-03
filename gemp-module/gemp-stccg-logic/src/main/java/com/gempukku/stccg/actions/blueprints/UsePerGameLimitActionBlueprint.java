@@ -19,8 +19,7 @@ public class UsePerGameLimitActionBlueprint implements SubActionBlueprint {
         _parentActionBlueprint = parentActionBlueprint;
         _limitPerGame = limitPerGame;
     }
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                      GameTextContext actionContext) {
+    public Action createAction(DefaultGame cardGame, GameTextContext actionContext) {
         return new UseOncePerGameAction(
                 cardGame, actionContext.card(), actionContext.yourName(), _parentActionBlueprint);
     }

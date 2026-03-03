@@ -71,7 +71,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
             _processedSubActions.add(_currentSubAction);
             _currentSubAction = null;
         } else if (!_queuedSubActions.isEmpty()) {
-            _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+            _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, _actionContext);
             _queuedSubActions.removeFirst();
             cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
         } else {

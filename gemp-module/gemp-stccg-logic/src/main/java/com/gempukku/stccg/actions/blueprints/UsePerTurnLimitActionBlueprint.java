@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.usage.UseOncePerTurnAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -19,10 +18,8 @@ public class UsePerTurnLimitActionBlueprint implements SubActionBlueprint {
         _parentActionBlueprint = parentActionBlueprint;
         _limitPerTurn = limitPerTurn;
     }
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                      GameTextContext actionContext) {
-        return new UseOncePerTurnAction(cardGame,
-                actionContext.card(), _parentActionBlueprint, actionContext.yourName());
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
+        return new UseOncePerTurnAction(cardGame, context.card(), _parentActionBlueprint, context.yourName());
     }
 
     @Override

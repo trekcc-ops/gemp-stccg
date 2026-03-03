@@ -84,7 +84,7 @@ public class OvercomeDilemmaConditionAction extends ActionWithSubActions {
         _parentAction.insertSubActions(_additionalFailActions);
         _parentAction.appendSubAction(new SubActionBlueprint() {
             @Override
-            public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
                 Collection<StoppableCard> cardsToStop =
                         new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
                 if (_attemptingUnit instanceof ShipCard ship) {
@@ -95,7 +95,7 @@ public class OvercomeDilemmaConditionAction extends ActionWithSubActions {
         });
         _parentAction.appendSubAction(new SubActionBlueprint() {
             @Override
-            public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
                 if (_discardDilemma && _dilemma.getParentCard() == null) {
                     return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma);
                 } else {

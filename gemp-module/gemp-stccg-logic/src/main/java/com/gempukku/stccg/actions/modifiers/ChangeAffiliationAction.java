@@ -29,7 +29,7 @@ public class ChangeAffiliationAction extends ActionWithSubActions implements Top
         _performingCard = card;
         _selectAffiliationAction = new SelectAffiliationAction(
                 cardGame, _performingPlayerId, getAffiliationOptions(cardGame));
-        appendCost((cardGame1, parentAction, context) -> _selectAffiliationAction);
+        appendCost((cardGame1, context) -> _selectAffiliationAction);
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {

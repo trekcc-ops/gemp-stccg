@@ -17,8 +17,7 @@ public class PlaceOnThisMissionActionBlueprint implements SubActionBlueprint {
         _modifier = modifier;
     }
     @Override
-    public PlaceCardOnMissionAction createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                      GameTextContext actionContext) {
+    public PlaceCardOnMissionAction createAction(DefaultGame cardGame, GameTextContext actionContext) {
         PhysicalCard card = actionContext.card();
         int locationId = card.getLocationId();
         if (_modifier != null) {

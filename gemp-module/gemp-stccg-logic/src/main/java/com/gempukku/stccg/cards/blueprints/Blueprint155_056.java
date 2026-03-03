@@ -55,7 +55,7 @@ public class Blueprint155_056 extends CardBlueprint {
                 skillOptions.add(SkillName.PHYSICS);
                 skillOptions.add(SkillName.NAVIGATION);
                     // TODO - This won't actually do anything at present other than the selection
-                action.appendCost((cardGame1, parentAction, context) ->
+                action.appendCost((cardGame1, context) ->
                         new SelectSkillAction(cardGame1, thisCard.getOwnerName(), skillOptions));
                 return action;
             }
