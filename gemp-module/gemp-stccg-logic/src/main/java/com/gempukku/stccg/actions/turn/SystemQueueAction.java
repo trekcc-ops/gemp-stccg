@@ -11,10 +11,6 @@ public abstract class SystemQueueAction extends ActionyAction {
         super(game, performingPlayerName, ActionType.SYSTEM_QUEUE);
     }
 
-    protected SystemQueueAction(DefaultGame game, GameTextContext actionContext, String performingPlayerName) {
-        super(game, performingPlayerName, ActionType.SYSTEM_QUEUE, actionContext);
-    }
-
     public boolean requirementsAreMet(DefaultGame cardGame) { return true; }
 
 }
