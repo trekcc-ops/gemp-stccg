@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions.missionattempt;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
@@ -102,5 +104,11 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
             attemptAction.setAsConditionFailed();
         }
         super.setAsFailed();
+    }
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private PhysicalCard getTargetCard() {
+        return _dilemma;
     }
 }
