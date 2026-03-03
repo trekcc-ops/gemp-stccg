@@ -17,7 +17,6 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
     protected final List<SubActionBlueprint> _effects = new LinkedList<>();
     private final PlayerSource _performingPlayer;
-    private int _blueprintId;
 
     protected DefaultActionBlueprint(PlayerSource performingPlayer) {
         _performingPlayer = performingPlayer;
@@ -73,8 +72,8 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     @Override
     public void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action,
                                       GameTextContext actionContext) {
-        costs.forEach(cost -> cost.addEffectToAction(true, action));
-        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action));
+        costs.forEach(action::appendCost);
+        _effects.forEach(action::appendSubAction);
     }
 
     public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,

@@ -36,14 +36,6 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface SubActionBlueprint {
 
-    default void addEffectToAction(boolean cost, ActionWithSubActions action) {
-        if (cost) {
-            action.appendCost(this);
-        } else {
-            action.appendSubAction(this);
-        }
-    }
-
     Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context);
 
     default boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) { return true; }
