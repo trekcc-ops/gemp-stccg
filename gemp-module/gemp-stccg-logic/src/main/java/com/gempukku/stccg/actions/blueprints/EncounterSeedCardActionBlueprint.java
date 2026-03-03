@@ -37,7 +37,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
         EncounterSeedCardAction encounterAction =
                 new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
                         missionLocation.getLocationId(), actionContext);
-        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, encounterAction, actionContext));
+        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, encounterAction));
         return encounterAction;
     }
 

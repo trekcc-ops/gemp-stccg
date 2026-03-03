@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
@@ -22,7 +21,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class OvercomeDilemmaConditionAction extends ActionyAction {
+public class OvercomeDilemmaConditionAction extends ActionWithSubActions {
 
     private final AttemptingUnit _attemptingUnit;
     private final ActionWithSubActions _parentAction; // typically an encounter, but sometimes an attempt
@@ -72,6 +71,11 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
                 setAsFailed();
             }
         }
+    }
+
+    @Override
+    public PhysicalCard getPerformingCard() {
+        return _dilemma;
     }
 
     @Override

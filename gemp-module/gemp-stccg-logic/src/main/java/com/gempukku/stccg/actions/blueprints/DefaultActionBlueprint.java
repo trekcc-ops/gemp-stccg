@@ -73,8 +73,8 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     @Override
     public void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action,
                                       GameTextContext actionContext) {
-        costs.forEach(cost -> cost.addEffectToAction(cardGame, true, action, actionContext));
-        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
+        costs.forEach(cost -> cost.addEffectToAction(true, action));
+        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(false, action));
     }
 
     public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,

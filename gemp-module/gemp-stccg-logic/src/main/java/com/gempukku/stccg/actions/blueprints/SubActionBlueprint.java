@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.turn.AddCostSubAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -37,12 +36,9 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface SubActionBlueprint {
 
-    default void addEffectToAction(DefaultGame cardGame, boolean cost, ActionWithSubActions action,
-                                   GameTextContext actionContext) {
+    default void addEffectToAction(boolean cost, ActionWithSubActions action) {
         if (cost) {
-            final AddCostSubAction sysAction =
-                    new AddCostSubAction(cardGame, actionContext, action, this);
-            action.appendCost(sysAction);
+            action.appendCost(this);
         } else {
             action.appendSubAction(this);
         }

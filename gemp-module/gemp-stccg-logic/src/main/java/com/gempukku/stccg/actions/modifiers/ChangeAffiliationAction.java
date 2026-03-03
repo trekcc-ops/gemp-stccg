@@ -3,9 +3,10 @@ package com.gempukku.stccg.actions.modifiers;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.game.DefaultGame;
@@ -17,18 +18,18 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChangeAffiliationAction extends ActionyAction implements TopLevelSelectableAction {
+public class ChangeAffiliationAction extends ActionWithSubActions implements TopLevelSelectableAction {
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final AffiliatedCard _performingCard;
     private final SelectAffiliationAction _selectAffiliationAction;
 
     public ChangeAffiliationAction(DefaultGame cardGame, Player player, AffiliatedCard card) {
-        super(cardGame, player, ActionType.CHANGE_AFFILIATION);
+        super(cardGame, player.getPlayerId(), ActionType.CHANGE_AFFILIATION, new GameTextContext(card, player.getPlayerId()));
         _performingCard = card;
         _selectAffiliationAction = new SelectAffiliationAction(
                 cardGame, _performingPlayerId, getAffiliationOptions(cardGame));
-        appendCost(_selectAffiliationAction);
+        appendCost((cardGame1, parentAction, context) -> _selectAffiliationAction);
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {

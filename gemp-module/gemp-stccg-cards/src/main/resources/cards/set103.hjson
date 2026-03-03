@@ -74,7 +74,7 @@
         } */
         {
             blueprintId: 103_032
-            title: Alternate Universe Door
+            "title": "Alternate Universe Door",
             type: doorway
             property-logo: tng-logo
             image-url: https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg

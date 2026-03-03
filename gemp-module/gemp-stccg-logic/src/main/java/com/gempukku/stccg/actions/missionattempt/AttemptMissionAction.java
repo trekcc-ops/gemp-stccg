@@ -158,7 +158,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                                     requirement.canBeMetWithMissionSpecialistHelping(personnelAttempting, cardGame);
                             mission.setAsCompleted();
                             cardGame.addActionToStack(
-                                    new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints()));
+                                    new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints(), _actionContext));
                         } else {
                             setAsFailed();
                         }

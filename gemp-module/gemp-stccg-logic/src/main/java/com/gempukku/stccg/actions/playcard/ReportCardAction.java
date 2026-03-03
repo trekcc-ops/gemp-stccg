@@ -1,8 +1,8 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.blueprints.UseNormalCardPlayBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
-import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -24,8 +24,9 @@ public class ReportCardAction extends PlayCardAction {
 
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree) {
         super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
-        if (!forFree)
-            appendCost(new UseNormalCardPlayAction(cardGame, _performingPlayerId));
+        if (!forFree) {
+            appendCost(new UseNormalCardPlayBlueprint());
+        }
         _targetResolver = new ReportCardResolver(cardGame, cardToPlay);
         _cardTargets.add(_targetResolver);
     }
@@ -33,8 +34,9 @@ public class ReportCardAction extends PlayCardAction {
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
                             Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap) {
         super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
-        if (!forFree)
-            appendCost(new UseNormalCardPlayAction(cardGame, _performingPlayerId));
+        if (!forFree) {
+            appendCost(new UseNormalCardPlayBlueprint());
+        }
         _targetResolver = new ReportCardResolver(cardToPlay, calculatedDestinationMap);
         _cardTargets.add(_targetResolver);
     }

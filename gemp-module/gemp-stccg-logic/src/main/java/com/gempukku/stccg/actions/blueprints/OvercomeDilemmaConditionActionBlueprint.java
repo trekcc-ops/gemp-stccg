@@ -74,8 +74,7 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
             }
         }
         if (actionToReturn != null && _costAction != null) {
-            Action costAction = _costAction.createAction(cardGame, action, context);
-            actionToReturn.appendCost(costAction);
+            actionToReturn.appendCost(_costAction);
         }
         return actionToReturn;
     }

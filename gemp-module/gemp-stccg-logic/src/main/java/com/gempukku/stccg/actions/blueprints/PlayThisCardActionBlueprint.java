@@ -8,7 +8,6 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardToDesinationAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
-import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
@@ -93,8 +92,9 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
                 ActionType.PLAY_CARD, actionContext);
         }
         if (action != null) {
-            if (!_forFree)
-                action.appendCost(new UseNormalCardPlayAction(cardGame, performingPlayerName));
+            if (!_forFree) {
+                action.appendCost(new UseNormalCardPlayBlueprint());
+            }
             appendActionToContext(cardGame, action, actionContext);
         }
         return action;

@@ -1,10 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.discard.DiscardCardToPointAreaAction;
-import com.gempukku.stccg.actions.discard.DiscardSingleCardAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -30,18 +27,11 @@ public class ScorePointsSubActionBlueprint implements SubActionBlueprint {
     public ScorePointsAction createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
         int pointValue = _points.evaluateExpression(cardGame, context);
         ScorePointsAction pointsAction =
-                new ScorePointsAction(cardGame, context.card(), context.yourName(), pointValue);
+                new ScorePointsAction(cardGame, context.card(), context.yourName(), pointValue, context);
         if (_discardThisCard) {
             Zone discardToZone = cardGame.getRules().getDiscardZone(true);
-            if (discardToZone == Zone.DISCARD) {
-                Action costAction =
-                        new DiscardSingleCardAction(cardGame, context.card(), context.yourName(), context.card());
-                pointsAction.appendCost(costAction);
-            } else if (discardToZone == Zone.POINT_AREA) {
-                Action costAction = 
-                        new DiscardCardToPointAreaAction(cardGame, context.card(), context.yourName(), context.card());
-                pointsAction.appendCost(costAction);
-            }
+            boolean toPointArea = discardToZone == Zone.POINT_AREA;
+            pointsAction.appendCost(new DiscardThisCardSubActionBlueprint(toPointArea));
         }
         return pointsAction;
     }

@@ -1,32 +1,22 @@
 package com.gempukku.stccg.actions;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.blueprints.UsePerGameLimitActionBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
-import com.gempukku.stccg.actions.turn.AddCostSubAction;
-import com.gempukku.stccg.actions.usage.UseOncePerGameAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.physicalcard.NonEmptyListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
 public abstract class ActionyAction implements Action {
-    private String _cardActionPrefix;
     @JsonProperty("actionId")
     private int _actionId;
     protected final List<ActionTargetResolver> _cardTargets = new LinkedList<>();
-    protected final LinkedList<Action> _costs = new LinkedList<>();
-    protected final LinkedList<Action> _processedCosts = new LinkedList<>();
 
     protected final String _performingPlayerId;
     protected final ActionType _actionType;
@@ -36,7 +26,7 @@ public abstract class ActionyAction implements Action {
     @JsonProperty("status")
     private ActionStatus _actionStatus;
 
-    private ActionyAction(int actionId, ActionType actionType, String performingPlayerId,
+    protected ActionyAction(int actionId, ActionType actionType, String performingPlayerId,
                           GameTextContext actionContext, ActionStatus status) {
         _actionContext = actionContext;
         _actionId = actionId;
@@ -46,17 +36,13 @@ public abstract class ActionyAction implements Action {
     }
 
 
-    protected ActionyAction(DefaultGame cardGame, ActionType actionType, String performingPlayerId,
+    private ActionyAction(DefaultGame cardGame, ActionType actionType, String performingPlayerId,
                             GameTextContext actionContext) {
         this(cardGame.getActionsEnvironment().getNextActionId(), actionType, performingPlayerId, actionContext,
                 ActionStatus.virtual);
         ActionsEnvironment environment = cardGame.getActionsEnvironment();
         environment.logAction(this);
         environment.incrementActionId();
-    }
-
-    protected ActionyAction(int actionId, ActionType actionType, String performingPlayerId, ActionStatus status) {
-        this(actionId, actionType, performingPlayerId, null, status);
     }
 
 
@@ -78,39 +64,21 @@ public abstract class ActionyAction implements Action {
         return _performingPlayerId;
     }
     public ActionType getActionType() { return _actionType; }
-    public final void appendCost(Action cost) {
-        _costs.add(cost);
-    }
-    public final void insertCosts(Collection<Action> costs) {
-        _costs.addAll(0, costs);
-    }
+
     public final boolean wasInitiated() {
         return _actionStatus.wasInitiated();
     }
 
-    public final boolean canBeInitiated(DefaultGame cardGame) {
-        return requirementsAreMet(cardGame) && costsCanBePaid(cardGame) &&
+    public boolean canBeInitiated(DefaultGame cardGame) {
+        return requirementsAreMet(cardGame) &&
                 !cardGame.playerRestrictedFromPerformingActionDueToModifiers(_performingPlayerId, this) &&
                 !wasInitiated();
     }
 
     public abstract boolean requirementsAreMet(DefaultGame cardGame);
 
-    public boolean costsCanBePaid(DefaultGame game) {
-        // TODO - This may not accurately show if not all costs can be paid
-        // TODO - Not sure on the legality here. Is it legal to initiate an action if you can't fully pay the costs?
-        for (Action cost : _costs)
-            if (!cost.canBeInitiated(game)) {
-                return false;
-            }
-        return true;
-    }
-
     public int getActionId() { return _actionId; }
 
-    @JsonInclude(value = JsonInclude.Include.CUSTOM, valueFilter = NonEmptyListFilter.class)
-    @JsonIdentityReference(alwaysAsId=true)
-    public List<Action> getCosts() { return _costs; }
 
     public void startPerforming() {
         _actionStatus = ActionStatus.initiation_started;
@@ -190,8 +158,6 @@ public abstract class ActionyAction implements Action {
     protected void continueInitiation(DefaultGame cardGame) throws InvalidGameLogicException {
         if (!_cardTargets.isEmpty()) {
             resolveNextTarget(cardGame);
-        } else if (!_costs.isEmpty()) {
-            payNextCost(cardGame);
         } else {
             _actionStatus = ActionStatus.initiation_complete;
             if (this instanceof ActionWithRespondableInitiation respondableAction) {
@@ -213,37 +179,12 @@ public abstract class ActionyAction implements Action {
         }
     }
 
-    protected final void payNextCost(DefaultGame cardGame) {
-        Action costAction = _costs.getFirst();
-        if (costAction.wasSuccessful()) {
-            _costs.remove(costAction);
-            _processedCosts.add(costAction);
-        } else if (costAction.wasFailed()) {
-            this.setAsFailed();
-        } else {
-            cardGame.addActionToStack(costAction);
-        }
-    }
-
     public void setAsInitiated() {
         _actionStatus = ActionStatus.initiation_complete;
     }
 
     public boolean hasOncePerGameLimit() {
-        for (Action costAction : _costs) {
-            if (costAction instanceof UseOncePerGameAction) {
-                return true;
-            } else if (costAction instanceof AddCostSubAction addAction &&
-                    addAction.getSubAction() instanceof UsePerGameLimitActionBlueprint
-            ) {
-                return true;
-            }
-        }
         return false;
-    }
-
-    public boolean wasOnlyVirtual() {
-        return _actionStatus == ActionStatus.virtual;
     }
 
 }
