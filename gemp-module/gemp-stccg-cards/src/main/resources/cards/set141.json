@@ -28,6 +28,19 @@
             "lore": "Observe cycle of rebirth with devout pilgrims.",
             "mission-requirements": "Navigation + Anthropology + Stellar Cartography + INTEGRITY>28",
             "image-url": "https://www.trekcc.org/1e/cardimages/sas/SAS_19V.jpg"
+        },
+        {
+            "blueprintId": "141_020",
+            "title": "Prevent Rebellion",
+            "type": "mission",
+            "mission-type": "planet",
+            "point-box": 35,
+            "span": 3,
+            "affiliation-icons": ["non-aligned","starfleet","vulcan"],
+            "location": "Coridan",
+            "lore": "Intercede on restless local planet to stabilize local space.",
+            "mission-requirements": "Anthropology + Honor + SECURITY + INTEGRITY>29",
+            "image-url": "https://www.trekcc.org/1e/cardimages/sas/SAS_20V.jpg"
         }
     ]
 }
