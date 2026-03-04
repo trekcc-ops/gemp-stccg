@@ -1,5 +1,6 @@
 package com.gempukku.stccg.processes.st1e;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToSeedCardStackAction;
 import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
@@ -69,7 +70,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            TopLevelSelectableAction action = getSelectedAction(result);
+                            Action action = getSelectedAction(result);
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {

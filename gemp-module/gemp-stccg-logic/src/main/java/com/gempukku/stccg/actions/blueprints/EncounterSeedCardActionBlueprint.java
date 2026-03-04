@@ -53,7 +53,7 @@ public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
                     EncounterSeedCardAction newAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
                             card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocationId(),
                             context);
-                    appendActionToContext(cardGame, newAction, context);
+                    appendSubActions(newAction);
                     return newAction;
                 }
             }

@@ -39,7 +39,7 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
             return null;
         } else if (context.acceptsAllRequirements(cardGame, _requirements)) {
             UseGameTextAction action = new UseGameTextAction(cardGame, card, context);
-            appendActionToContext(cardGame, action, context);
+            appendSubActions(action);
             return action;
         }
         return null;

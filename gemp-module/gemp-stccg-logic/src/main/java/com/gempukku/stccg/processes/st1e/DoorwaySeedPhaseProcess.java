@@ -1,7 +1,8 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -34,7 +35,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
             for (PhysicalCard seedCard : player.getCardsInGroup(Zone.SEED_DECK)) {
                 if (seedCard.getCardType() == CardType.DOORWAY) {
-                    List<TopLevelSelectableAction> seedActions = seedCard.createSeedCardActions(cardGame);
+                    List<SeedCardAction> seedActions = seedCard.createSeedCardActions(cardGame);
                     if (seedActions.size() == 1) {
                         if (alreadyHasACopyInSeedList(seedCard, doorwaySeeds)) {
                             if (!seedActions.getFirst().hasOncePerGameLimit()) {
@@ -57,12 +58,12 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                                 try {
                                     List<PhysicalCard> cards = getSelectedCardsByResponse(result);
                                     for (PhysicalCard card : cards) {
-                                        List<TopLevelSelectableAction> seedActions =
+                                        List<SeedCardAction> seedActions =
                                                 card.createSeedCardActions(cardGame);
                                         if (seedActions.size() != 1) {
                                             throw new InvalidGameLogicException("Could not create a seed action");
                                         } else {
-                                            TopLevelSelectableAction action = Iterables.getOnlyElement(seedActions);
+                                            Action action = Iterables.getOnlyElement(seedActions);
                                             cardGame.getActionsEnvironment().addActionToStack(action);
                                         }
                                     }

@@ -2,8 +2,6 @@ package com.gempukku.stccg.cards.blueprints;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.game.GameTestBuilder;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -14,16 +12,18 @@ import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.decisions.ActionSelectionDecision;
-import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,9 +98,9 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         assertEquals(11, picard.getIntegrity(_game));
         assertEquals(10, picard.getCunning(_game));
         assertEquals(8, picard.getStrength(_game));
-        assertFalse(canUseCardAgain());
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, getItDone));
         skipToNextTurnAndPhase(P1, Phase.EXECUTE_ORDERS);
-        assertTrue(canUseCardAgain());
+        assertDoesNotThrow(() -> useGameText(P1, getItDone));
         String gameStateString = _game.getGameState().serializeComplete();
     }
 
@@ -112,10 +112,10 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         playerDecided(P1, "1");
         selectCard(P1, cardToDiscard);
         assertEquals(9, runabout.getFullRange(_game));
-        assertFalse(canUseCardAgain());
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, getItDone));
         skipToNextTurnAndPhase(P1, Phase.EXECUTE_ORDERS);
         assertEquals(7, runabout.getFullRange(_game)); // confirm that runabout's range is back to normal
-        assertTrue(canUseCardAgain());
+        assertDoesNotThrow(() -> useGameText(P1, getItDone));
         String gameStateString = _game.getGameState().serializeComplete();
     }
 
@@ -129,24 +129,10 @@ public class Blueprint_155_026_GetItDone_Test extends AbstractAtTest {
         for (PhysicalCard wallace : wallaces) {
             assertEquals(Zone.DRAW_DECK, wallace.getZone());
         }
-        assertFalse(canUseCardAgain());
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, getItDone));
         skipToNextTurnAndPhase(P1, Phase.EXECUTE_ORDERS);
-        assertTrue(canUseCardAgain());
+        assertDoesNotThrow(() -> useGameText(P1, getItDone));
         String gameStateString = _game.getGameState().serializeComplete();
-    }
-
-    private boolean canUseCardAgain() {
-        boolean result = false;
-        AwaitingDecision decision = _game.getAwaitingDecision(P1);
-        if (decision instanceof ActionSelectionDecision actionSelection) {
-            for (TopLevelSelectableAction action : actionSelection.getActions()) {
-                PhysicalCard cardSource = action.getPerformingCard();
-                if (cardSource != null && Objects.equals(cardSource.getTitle(), "Get It Done")) {
-                    result = true;
-                }
-            }
-        }
-        return result;
     }
 
 }

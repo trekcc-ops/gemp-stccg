@@ -2,7 +2,6 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ShipCard;
@@ -38,7 +37,7 @@ public class ST1EEndOfTurnProcess extends ST1EGameProcess {
         drawAction.processEffect(cardGame);
         cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
         cardGame.sendActionResultToClient();
-        final List<TopLevelSelectableAction> playableActions =
+        final List<? extends Action> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, player);
         Phase phase = cardGame.getCurrentPhase();
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase,currentPlayerName)) {

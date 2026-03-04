@@ -1,7 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -33,11 +32,11 @@ public class ActionsEnvironment {
         _untilEndOfTurnActionProxies.add(actionProxy);
     }
 
-    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
+    public List<? extends Action> getPhaseActions(DefaultGame cardGame, Player player) {
+        List<Action> result = new LinkedList<>();
 
         for (ActionProxy actionProxy : _actionProxies) {
-            for (TopLevelSelectableAction action : actionProxy.getPhaseActions(cardGame, player)) {
+            for (Action action : actionProxy.getPhaseActions(cardGame, player)) {
                 if (action.canBeInitiated(cardGame)) {
                     result.add(action);
                 }

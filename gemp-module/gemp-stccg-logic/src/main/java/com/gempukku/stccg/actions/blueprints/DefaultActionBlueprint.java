@@ -1,9 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
@@ -38,21 +36,17 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
             for (SubActionBlueprint blueprint : effects) {
                 if (blueprint.isPlayabilityCheckedForEffect())
                     addRequirement(new CostCanBePaidRequirement(blueprint));
-                addEffect(blueprint);
+                _effects.add(blueprint);
             }
         }
     }
 
     public void addRequirement(Requirement requirement) {
-        this._requirements.add(requirement);
+        _requirements.add(requirement);
     }
 
     public void addCost(SubActionBlueprint subActionBlueprint) {
         costs.add(subActionBlueprint);
-    }
-
-    public void addEffect(SubActionBlueprint subActionBlueprint) {
-        _effects.add(subActionBlueprint);
     }
 
     @Override
@@ -69,15 +63,9 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         return _performingPlayer.isPlayer(requestingPlayerName, cardGame, context);
     }
 
-    @Override
-    public void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action,
-                                      GameTextContext actionContext) {
+    protected void appendSubActions(ActionWithSubActions action) {
         costs.forEach(action::appendCost);
         _effects.forEach(action::appendSubAction);
     }
-
-    public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                          PhysicalCard thisCard);
-
 
 }

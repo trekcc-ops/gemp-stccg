@@ -6,7 +6,9 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.SeedThisCardActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialResponseActionSkill;
@@ -289,9 +291,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return card.getBlueprint() == _blueprint;
     }
 
-    public List<TopLevelSelectableAction> createSeedCardActions(DefaultGame cardGame) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
-        for (ActionBlueprint source : _blueprint.getSeedCardActionSources()) {
+    public List<SeedCardAction> createSeedCardActions(DefaultGame cardGame) {
+        List<SeedCardAction> result = new LinkedList<>();
+        for (SeedThisCardActionBlueprint source : _blueprint.getSeedCardActionSources()) {
             result.add(source.createAction(cardGame, _ownerName, this));
         }
         return result;
@@ -365,12 +367,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
     @Override
-    public Collection<TopLevelSelectableAction> getOptionalResponseActionsWhileInPlay(DefaultGame game, Player player) {
+    public Collection<? extends Action> getOptionalResponseActionsWhileInPlay(DefaultGame game, Player player) {
         String playerName = player.getPlayerId();
         if (_blueprint == null || hasTextRemoved(game)) {
             return new ArrayList<>();
         } else {
-            List<TopLevelSelectableAction> playerActions = new ArrayList<>();
+            List<Action> playerActions = new ArrayList<>();
             _blueprint.getTriggers(RequiredType.OPTIONAL).forEach(actionSource -> {
                 if (actionSource != null) {
                     TopLevelSelectableAction action = actionSource.createAction(game, playerName, this);
@@ -385,7 +387,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
                             responseSkill.isOptional()) {
                         ActionBlueprint blueprint = responseSkill.getActionBlueprint();
                         if (blueprint != null) {
-                            TopLevelSelectableAction action = blueprint.createAction(game, playerName, this);
+                            Action action = blueprint.createAction(game, playerName, this);
                             if (action != null) {
                                 playerActions.add(action);
                             }

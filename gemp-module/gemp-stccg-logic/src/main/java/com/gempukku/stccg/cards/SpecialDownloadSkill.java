@@ -3,6 +3,7 @@ package com.gempukku.stccg.cards;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.DefaultActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.DownloadCardToDestinationActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.UsageLimitBlueprint;
 import com.gempukku.stccg.filters.CardTitleFilterBlueprint;
@@ -11,7 +12,7 @@ import com.gempukku.stccg.requirement.Requirement;
 
 public class SpecialDownloadSkill extends SpecialActionSkill {
 
-    private final ActionBlueprint _downloadActionBlueprint;
+    private final DefaultActionBlueprint _downloadActionBlueprint;
 
     @JsonCreator
     @SuppressWarnings("unused") // Used in JSON deserialization

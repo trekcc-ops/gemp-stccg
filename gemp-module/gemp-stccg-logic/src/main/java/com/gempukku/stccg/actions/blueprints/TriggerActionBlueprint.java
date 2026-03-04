@@ -33,7 +33,7 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
         GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext)) {
             UseGameTextAction action = new UseGameTextAction(cardGame, thisCard, actionContext);
-            appendActionToContext(cardGame, action, actionContext);
+            appendSubActions(action);
             return action;
         }
         return null;

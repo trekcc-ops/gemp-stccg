@@ -94,7 +94,7 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
 
                     ReportCardAction reportAction = new ReportCardAction(cardGame, actionContext.card().getOwnerName(),
                             actionContext.card(), targetMap);
-                    appendActionToContext(cardGame, reportAction, actionContext);
+                    appendSubActions(reportAction);
                     if (reportAction.canBeInitiated(cardGame)) {
                         return reportAction;
                     }

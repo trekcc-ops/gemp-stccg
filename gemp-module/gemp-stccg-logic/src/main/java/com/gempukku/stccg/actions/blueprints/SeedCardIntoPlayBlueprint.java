@@ -52,7 +52,7 @@ public class SeedCardIntoPlayBlueprint extends DefaultActionBlueprint {
 
         SeedCardAction action = new SeedCardToDestinationAction(cardGame, performingPlayerName, seedableCards, destinationOptions,
                 thisCard);
-        appendActionToContext(cardGame, action, actionContext);
+        appendSubActions(action);
         return action;
     }
 

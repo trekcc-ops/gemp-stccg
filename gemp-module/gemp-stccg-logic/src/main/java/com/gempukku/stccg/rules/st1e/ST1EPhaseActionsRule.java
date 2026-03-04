@@ -1,6 +1,6 @@
 package com.gempukku.stccg.rules.st1e;
 
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
@@ -18,8 +18,8 @@ import java.util.Map;
 public class ST1EPhaseActionsRule extends ST1ERule {
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
+    public List<Action> getPhaseActions(DefaultGame cardGame, Player player) {
+        List<Action> result = new LinkedList<>();
         boolean isPlayersTurn = cardGame.getCurrentPlayerId().equals(player.getPlayerId());
         if (cardGame instanceof ST1EGame stGame) {
             final GameState gameState = cardGame.getGameState();

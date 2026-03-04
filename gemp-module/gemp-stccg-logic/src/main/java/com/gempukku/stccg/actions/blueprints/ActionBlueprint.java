@@ -2,12 +2,10 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.requirement.Requirement;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({@JsonSubTypes.Type(value = SeedThisCardActionBlueprint.class, name = "seedThis"),
@@ -26,12 +24,5 @@ import com.gempukku.stccg.requirement.Requirement;
 })
 public interface ActionBlueprint {
     boolean isValid(DefaultGame cardGame, GameTextContext actionContext);
-
-    void addRequirement(Requirement requirement);
-
-    void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action, GameTextContext actionContext);
-    TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard);
-
-    void addCost(SubActionBlueprint subActionBlueprint);
-    void addEffect(SubActionBlueprint subActionBlueprint);
+    Action createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard);
 }

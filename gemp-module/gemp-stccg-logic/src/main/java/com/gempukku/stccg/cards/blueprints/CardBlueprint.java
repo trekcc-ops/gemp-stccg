@@ -10,6 +10,8 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
+import com.gempukku.stccg.actions.turn.PlayThisCardAsResponseAction;
 import com.gempukku.stccg.cards.*;
 import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.*;
@@ -387,11 +389,11 @@ public class CardBlueprint {
     }
 
 
-    public List<ActionBlueprint> getSeedCardActionSources() {
-        List<ActionBlueprint> result = new LinkedList<>();
+    public List<SeedThisCardActionBlueprint> getSeedCardActionSources() {
+        List<SeedThisCardActionBlueprint> result = new LinkedList<>();
         for (ActionBlueprint source : _actionBlueprints) {
-            if (source instanceof SeedThisCardActionBlueprint)
-                result.add(source);
+            if (source instanceof SeedThisCardActionBlueprint seedBlueprint)
+                result.add(seedBlueprint);
         }
         return result;
     }
@@ -406,13 +408,14 @@ public class CardBlueprint {
         }
     }
 
-    public List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame,
-                                                                                PhysicalCard thisCard, Player player,
-                                                                                ActionResult actionResult) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
+    public List<PlayThisCardAsResponseAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame,
+                                                                                    PhysicalCard thisCard, Player player,
+                                                                                    ActionResult actionResult) {
+        List<PlayThisCardAsResponseAction> result = new LinkedList<>();
         for (ActionBlueprint blueprint : _actionBlueprints) {
             if (blueprint instanceof PlayThisCardAsResponseActionBlueprint responseBlueprint) {
-                TopLevelSelectableAction action = responseBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
+                PlayThisCardAsResponseAction action =
+                        responseBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
                 if (action != null) {
                     result.add(action);
                 }
@@ -564,14 +567,14 @@ public class CardBlueprint {
     }
 
 
-    public List<TopLevelSelectableAction> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
+    public List<Action> getGameTextActionsWhileInPlay(Player player, PhysicalCard thisCard,
                                                                         DefaultGame cardGame) {
-        List<TopLevelSelectableAction> result = new ArrayList<>();
+        List<Action> result = new ArrayList<>();
         for (ActionBlueprint actionBlueprint : _actionBlueprints) {
             if (actionBlueprint instanceof ActivateCardActionBlueprint ||
                     actionBlueprint instanceof PlayCardForFreeActionBlueprint ||
                     actionBlueprint instanceof DownloadCardToDestinationActionBlueprint) {
-                TopLevelSelectableAction action = actionBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
+                Action action = actionBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
                 if (action != null) result.add(action);
             }
         }
@@ -648,12 +651,12 @@ public class CardBlueprint {
         return allBlueprints.indexOf(blueprint);
     }
 
-    public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName,
+    public List<SeedCardAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName,
                                                                  PhysicalCard thisCard) {
-        List<TopLevelSelectableAction> result = new ArrayList<>();
+        List<SeedCardAction> result = new ArrayList<>();
         for (ActionBlueprint actionBlueprint : _actionBlueprints) {
             if (actionBlueprint instanceof SeedCardIntoPlayBlueprint seedBlueprint) {
-                TopLevelSelectableAction seedAction = seedBlueprint.createAction(cardGame, performingPlayerName, thisCard);
+                SeedCardAction seedAction = seedBlueprint.createAction(cardGame, performingPlayerName, thisCard);
                 if (seedAction != null && seedAction.canBeInitiated(cardGame)) {
                     result.add(seedAction);
                 }

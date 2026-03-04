@@ -65,11 +65,11 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
                                     facility, performingPlayerName, stGame);
                     action = new SeedFacilityAction(cardGame, facility, destinationMap);
                 }
-                appendActionToContext(cardGame, action, actionContext);
+                appendSubActions(action);
                 return action;
             } else if (_toCore) {
                 action = new SeedCardAction(cardGame, thisCard, Zone.CORE, actionContext);
-                appendActionToContext(cardGame, action, actionContext);
+                appendSubActions(action);
                 return action;
             } else if (_destinationFilter != null) {
                 CardFilter destination = _destinationFilter.getFilterable(cardGame, actionContext);
@@ -77,7 +77,7 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
                 if (!destinationOptions.isEmpty()) {
                     action = new SeedCardToDestinationAction(cardGame, performingPlayerName,
                         List.of(thisCard), destinationOptions, thisCard, _onPlanet);
-                    appendActionToContext(cardGame, action, actionContext);
+                    appendSubActions(action);
                     return action;
                 }
             }

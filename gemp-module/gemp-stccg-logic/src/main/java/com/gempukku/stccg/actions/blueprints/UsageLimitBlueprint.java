@@ -31,7 +31,7 @@ public class UsageLimitBlueprint {
         _count = count;
     }
 
-    public void applyLimitToActionBlueprint(ActionBlueprint actionBlueprint) {
+    public void applyLimitToActionBlueprint(DefaultActionBlueprint actionBlueprint) {
         switch(_type) {
             case eachOfYourTurns:
                 actionBlueprint.addCost(new UsePerTurnLimitActionBlueprint(actionBlueprint, _count));

@@ -1,6 +1,7 @@
 package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
@@ -39,8 +40,9 @@ public interface UserInputSimulator {
         Action choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (action.getPerformingCard() == performingCard &&
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof TopLevelSelectableAction topLevelAction &&
+                        topLevelAction.getPerformingCard() == performingCard &&
                         actionClass.isAssignableFrom(action.getClass())) {
                     choice = action;
                 } else if (action instanceof UseGameTextAction useTextAction) {
@@ -100,9 +102,9 @@ public interface UserInputSimulator {
         T choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (clazz.isAssignableFrom(action.getClass())) {
-                    if (action.getPerformingCard() == card) {
+            for (Action action : actionDecision.getActions()) {
+                if (clazz.isAssignableFrom(action.getClass()) && action instanceof CardPerformedAction cardAction) {
+                    if (cardAction.getPerformingCard() == card) {
                         choice = (T) action;
                     }
                 } else if (action instanceof UseGameTextAction useTextAction) {
@@ -154,8 +156,8 @@ public interface UserInputSimulator {
         Action choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
-            for (TopLevelSelectableAction action : actionDecision.getActions()) {
-                if (action.getPerformingCard() == card)
+            for (Action action : actionDecision.getActions()) {
+                if (action instanceof CardPerformedAction cardAction && cardAction.getPerformingCard() == card)
                     choice = action;
             }
             actionDecision.decisionMade(choice);

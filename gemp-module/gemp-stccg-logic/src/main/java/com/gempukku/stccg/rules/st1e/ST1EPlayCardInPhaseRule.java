@@ -1,5 +1,6 @@
 package com.gempukku.stccg.rules.st1e;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
@@ -24,8 +25,8 @@ import java.util.Objects;
 public class ST1EPlayCardInPhaseRule extends ST1ERule {
 
     @Override
-    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
-        final List<TopLevelSelectableAction> result = new LinkedList<>();
+    public List<Action> getPhaseActions(DefaultGame cardGame, Player player) {
+        final List<Action> result = new LinkedList<>();
         if (cardGame instanceof ST1EGame stGame) {
             final List<PhysicalCard> cardsInHand = player.getCardsInHand();
             final String currentPlayerId = cardGame.getGameState().getCurrentPlayerId();
@@ -50,7 +51,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                     if (isCurrentPlayer) {
                         if (canCardBeSeeded(card, stGame)) {
                             ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
-                            for (TopLevelSelectableAction action : stCard.createSeedCardActions(cardGame)) {
+                            for (SeedCardAction action : stCard.createSeedCardActions(cardGame)) {
                                 if (action != null && action.canBeInitiated(cardGame)) {
                                     result.add(action);
                                 }
@@ -61,7 +62,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                 for (PhysicalCard card : stGame.getAllCardsInPlay()) {
                     if (isCurrentPlayer && card.isControlledBy(player)) {
                         ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
-                        for (TopLevelSelectableAction action : stCard.createSeedPhaseActions(cardGame, player.getPlayerId())) {
+                        for (SeedCardAction action : stCard.createSeedPhaseActions(cardGame, player.getPlayerId())) {
                             if (action != null && action.canBeInitiated(cardGame)) {
                                 result.add(action);
                             }

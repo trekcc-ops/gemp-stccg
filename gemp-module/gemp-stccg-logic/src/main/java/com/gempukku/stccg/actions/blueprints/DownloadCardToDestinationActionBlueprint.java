@@ -130,7 +130,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                         new EnterPlayAtDestinationResolver(performingPlayerName, destinationTargetMap);
                 DownloadCardAction action =
                         new DownloadCardAction(cardGame, performingPlayerName, resolver, thisCard, actionContext);
-                appendActionToContext(cardGame, action, actionContext);
+                appendSubActions(action);
                 if (action.canBeInitiated(cardGame)) {
                     return action;
                 }
@@ -157,7 +157,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                 DownloadReportableCardToDestinationAction downloadAction =
                         new DownloadReportableCardToDestinationAction(cardGame, performingPlayerName, cardTarget,
                                 thisCard, targetMap);
-                appendActionToContext(cardGame, downloadAction, actionContext);
+                appendSubActions(downloadAction);
                 if (downloadAction.canBeInitiated(cardGame)) {
                     return downloadAction;
                 }
@@ -183,7 +183,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
             }
             DownloadReportableCardToDestinationAction action2 = new DownloadReportableCardToDestinationAction(
                     cardGame, performingPlayerName, cardTarget, thisCard, targetMap);
-            appendActionToContext(cardGame, action2, actionContext);
+            appendSubActions(action2);
             if (action2.canBeInitiated(cardGame)) {
                 return action2;
             }

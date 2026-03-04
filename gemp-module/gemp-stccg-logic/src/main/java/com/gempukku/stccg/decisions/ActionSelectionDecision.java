@@ -12,7 +12,7 @@ import java.util.List;
 public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
     @JsonProperty("actions")
-    final List<TopLevelSelectableAction> _actions;
+    final List<? extends Action> _actions;
 
     @JsonProperty("context")
     private final DecisionContext _context;
@@ -22,7 +22,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
     @JsonProperty("max")
     private static final int MAX_SELECTIONS = 1;
 
-    public ActionSelectionDecision(String playerName, DecisionContext context, List<TopLevelSelectableAction> actions,
+    public ActionSelectionDecision(String playerName, DecisionContext context, List<? extends Action> actions,
                                    DefaultGame cardGame, boolean required) {
         super(playerName, context, cardGame);
         _context = context;
@@ -31,7 +31,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
     }
 
 
-    public ActionSelectionDecision(Player player, DecisionContext context, List<TopLevelSelectableAction> actions,
+    public ActionSelectionDecision(Player player, DecisionContext context, List<? extends Action> actions,
                                    DefaultGame cardGame, boolean required) {
         super(player, context, cardGame);
         _context = context;
@@ -41,7 +41,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
 
     public String getElementType() { return "ACTION"; }
 
-    public List<TopLevelSelectableAction> getActions() { return _actions; }
+    public List<? extends Action> getActions() { return _actions; }
 
     public void decisionMade(Action action) throws DecisionResultInvalidException {
         if (action instanceof TopLevelSelectableAction && _actions.contains(action))
@@ -51,12 +51,12 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
         }
     }
 
-    protected TopLevelSelectableAction getSelectedAction(String result) throws DecisionResultInvalidException {
+    protected Action getSelectedAction(String result) throws DecisionResultInvalidException {
         if (result.isEmpty())
             return null;
         try {
             int actionId = Integer.parseInt(result);
-            for (TopLevelSelectableAction action : _actions) {
+            for (Action action : _actions) {
                 if (action.getActionId() == actionId) {
                     return action;
                 }

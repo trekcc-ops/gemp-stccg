@@ -95,7 +95,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
             if (!_forFree) {
                 action.appendCost(new UseNormalCardPlayBlueprint());
             }
-            appendActionToContext(cardGame, action, actionContext);
+            appendSubActions(action);
         }
         return action;
     }

@@ -38,13 +38,13 @@ public class ActionResult {
     private final Set<Integer> _triggerActionIdsUsed = new HashSet<>();
 
     // Actions that can be initiated as optional responses. The key of this map is player name.
-    private final Map<String, List<TopLevelSelectableAction>> _optionalAfterTriggerActions = new HashMap<>();
+    private final Map<String, List<Action>> _optionalAfterTriggerActions = new HashMap<>();
 
     // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
     private boolean _initialized;
     private ActionOrder _optionalResponsePlayerOrder;
-    private final List<TopLevelSelectableAction> _requiredResponses = new ArrayList<>();
+    private final List<Action> _requiredResponses = new ArrayList<>();
     private int _passCount;
     protected final Action _action;
 
@@ -92,7 +92,7 @@ public class ActionResult {
     public void createOptionalAfterTriggerActions(DefaultGame game) {
         for (Player player : game.getPlayers()) {
             String playerName = player.getPlayerId();
-            List<TopLevelSelectableAction> playerActions = new LinkedList<>();
+            List<Action> playerActions = new LinkedList<>();
             for (PhysicalCard card : game.getAllCardsInPlay()) {
                 playerActions.addAll(card.getOptionalResponseActionsWhileInPlay(game, player));
             }
@@ -106,10 +106,10 @@ public class ActionResult {
 
     public String getPerformingPlayerId() { return _performingPlayerId; }
 
-    public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame) {
-        List<TopLevelSelectableAction> gatheredActions = new LinkedList<>();
+    public List<Action> getRequiredResponseActions(DefaultGame cardGame) {
+        List<Action> gatheredActions = new LinkedList<>();
         for (ActionProxy actionProxy : cardGame.getAllActionProxies()) {
-            List<TopLevelSelectableAction> actions = actionProxy.getRequiredAfterTriggers(cardGame, this);
+            List<Action> actions = actionProxy.getRequiredAfterTriggers(cardGame, this);
             if (actions != null) {
                 gatheredActions.addAll(actions);
             }
@@ -122,10 +122,10 @@ public class ActionResult {
     }
 
 
-    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerName) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
+    public List<Action> getOptionalAfterActions(DefaultGame cardGame, String playerName) {
+        List<Action> result = new LinkedList<>();
         if (_optionalAfterTriggerActions.get(playerName) != null) {
-            for (TopLevelSelectableAction action : _optionalAfterTriggerActions.get(playerName)) {
+            for (Action action : _optionalAfterTriggerActions.get(playerName)) {
                 if (action.canBeInitiated(cardGame) && !_triggerActionIdsUsed.contains(action.getActionId())) {
                     result.add(action);
                 }
@@ -140,14 +140,13 @@ public class ActionResult {
     }
 
 
-    private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame,
-                                                                  List<TopLevelSelectableAction> possibleActions,
+    private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame, List<Action> possibleActions,
                                                                   String activePlayerName) {
         return new ActionSelectionDecision(activePlayerName, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
                 possibleActions, cardGame, false) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
-                TopLevelSelectableAction action = getSelectedAction(result);
+                Action action = getSelectedAction(result);
                 if (action != null) {
                     _passCount = 0;
                     cardGame.getActionsEnvironment().addActionToStack(action);
@@ -160,7 +159,7 @@ public class ActionResult {
     }
 
     private void refreshActions(DefaultGame cardGame) {
-        for (List<TopLevelSelectableAction> optionalActions : _optionalAfterTriggerActions.values()) {
+        for (List<Action> optionalActions : _optionalAfterTriggerActions.values()) {
             optionalActions.removeIf(action -> !action.canBeInitiated(cardGame));
         }
         _requiredResponses.removeIf(nextAction -> !nextAction.canBeInitiated(cardGame));
@@ -189,7 +188,7 @@ public class ActionResult {
         } else {
             _optionalResponsePlayerOrder.advancePlayer();
             final String activePlayerName = _optionalResponsePlayerOrder.getCurrentPlayerName();
-            List<TopLevelSelectableAction> possibleActions = getOptionalAfterActions(cardGame, activePlayerName);
+            List<Action> possibleActions = getOptionalAfterActions(cardGame, activePlayerName);
             if (possibleActions.isEmpty()) {
                 _passCount++;
             } else {

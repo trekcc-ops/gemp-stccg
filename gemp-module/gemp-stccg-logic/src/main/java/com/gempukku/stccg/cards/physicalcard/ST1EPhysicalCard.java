@@ -7,6 +7,7 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.ReportCardAction;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -132,7 +133,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableC
         }
     }
 
-    public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName) {
+    public List<SeedCardAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName) {
         return _blueprint.createSeedPhaseActions(cardGame, performingPlayerName, this);
     }
 
