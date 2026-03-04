@@ -10,6 +10,7 @@ import com.gempukku.stccg.actions.blueprints.SeedThisCardActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialResponseActionSkill;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -294,7 +295,8 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     public List<SeedCardAction> createSeedCardActions(DefaultGame cardGame) {
         List<SeedCardAction> result = new LinkedList<>();
         for (SeedThisCardActionBlueprint source : _blueprint.getSeedCardActionSources()) {
-            result.add(source.createAction(cardGame, _ownerName, this));
+            GameTextContext context = new GameTextContext(this, _ownerName);
+            result.add(source.createAction(cardGame, context));
         }
         return result;
     }

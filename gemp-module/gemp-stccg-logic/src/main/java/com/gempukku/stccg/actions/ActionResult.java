@@ -97,7 +97,7 @@ public class ActionResult {
                 playerActions.addAll(card.getOptionalResponseActionsWhileInPlay(game, player));
             }
             for (PhysicalCard card : player.getCardsInHand()) {
-                playerActions.addAll(card.getOptionalResponseActionsWhileInHand(game, player, this));
+                playerActions.addAll(card.getOptionalResponseActionsWhileInHand(game, player));
             }
             _optionalAfterTriggerActions.put(playerName, playerActions);
         }

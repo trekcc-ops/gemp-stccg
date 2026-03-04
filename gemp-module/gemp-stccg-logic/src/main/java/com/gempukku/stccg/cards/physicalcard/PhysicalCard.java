@@ -165,9 +165,8 @@ public interface PhysicalCard {
 
     void reveal();
 
-    default List<? extends Action> getOptionalResponseActionsWhileInHand(DefaultGame cardGame, Player player,
-                                                                                 ActionResult actionResult) {
-        return getBlueprint().getOptionalResponseActionsWhileInHand(cardGame, this, player, actionResult);
+    default List<? extends Action> getOptionalResponseActionsWhileInHand(DefaultGame cardGame, Player player) {
+        return getBlueprint().getOptionalResponseActionsWhileInHand(cardGame, this, player);
     }
 
 

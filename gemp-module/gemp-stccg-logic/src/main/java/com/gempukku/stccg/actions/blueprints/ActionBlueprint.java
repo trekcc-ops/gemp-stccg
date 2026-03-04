@@ -24,5 +24,11 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface ActionBlueprint {
     boolean isValid(DefaultGame cardGame, GameTextContext actionContext);
-    Action createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard);
+    default Action createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
+        GameTextContext context = new GameTextContext(thisCard, performingPlayerName);
+        return createAction(cardGame, context);
+    }
+    default Action createAction(DefaultGame cardGame, GameTextContext context) {
+        return createAction(cardGame, context.yourName(), context.card());
+    }
 }

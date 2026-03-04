@@ -404,18 +404,24 @@ public class CardBlueprint {
         if (_playThisCardActionBlueprint == null) {
             return null;
         } else {
-            return _playThisCardActionBlueprint.createAction(cardGame, performingPlayerName, thisCard);
+            if (thisCard.isOwnedBy(performingPlayerName)) {
+                GameTextContext context = new GameTextContext(thisCard, performingPlayerName);
+                return _playThisCardActionBlueprint.createAction(cardGame, context);
+            } else {
+                return null;
+            }
         }
     }
 
     public List<PlayThisCardAsResponseAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame,
-                                                                                    PhysicalCard thisCard, Player player,
-                                                                                    ActionResult actionResult) {
+                                                                                    PhysicalCard thisCard, Player player) {
         List<PlayThisCardAsResponseAction> result = new LinkedList<>();
         for (ActionBlueprint blueprint : _actionBlueprints) {
-            if (blueprint instanceof PlayThisCardAsResponseActionBlueprint responseBlueprint) {
+            if (blueprint instanceof PlayThisCardAsResponseActionBlueprint responseBlueprint &&
+                    thisCard.isOwnedBy(player.getPlayerId())) {
+                GameTextContext context = new GameTextContext(thisCard, player.getPlayerId());
                 PlayThisCardAsResponseAction action =
-                        responseBlueprint.createAction(cardGame, player.getPlayerId(), thisCard);
+                        responseBlueprint.createAction(cardGame, context);
                 if (action != null) {
                     result.add(action);
                 }

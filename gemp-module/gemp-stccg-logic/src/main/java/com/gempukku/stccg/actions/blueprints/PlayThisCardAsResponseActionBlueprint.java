@@ -10,7 +10,6 @@ import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.turn.PlayThisCardAsResponseAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
@@ -50,12 +49,11 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
     }
 
     @Override
-    public PlayThisCardAsResponseAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard) {
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (isValid(cardGame, actionContext) &&
-                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.PLAY)) {
-            PlayThisCardAsResponseAction action = new PlayThisCardAsResponseAction(cardGame, thisCard, actionContext);
+    public PlayThisCardAsResponseAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (context.acceptsAllRequirements(cardGame, _requirements) &&
+                cardGame.getRules().cardCanEnterPlay(cardGame, context.card(), EnterPlayActionType.PLAY)) {
+            PlayThisCardAsResponseAction action =
+                    new PlayThisCardAsResponseAction(cardGame, context.card(), context);
             appendSubActions(action);
             return action;
         }

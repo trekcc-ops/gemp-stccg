@@ -45,8 +45,9 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
         }
     }
 
-    @Override
-    public SeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
+    public SeedCardAction createAction(DefaultGame cardGame, GameTextContext context) {
+        PhysicalCard thisCard = context.card();
+        String performingPlayerName = context.yourName();
         GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
         if (isValid(cardGame, actionContext) &&
                 cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.SEED)) {

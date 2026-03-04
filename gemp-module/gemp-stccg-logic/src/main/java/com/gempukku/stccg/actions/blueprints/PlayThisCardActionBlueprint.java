@@ -65,31 +65,28 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
         _onPlanet = onPlanet;
     }
 
-    @Override
-    public PlayCardAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard) {
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (!isValid(cardGame, actionContext) ||
-                !cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.PLAY)) {
+    public PlayCardAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (!context.acceptsAllRequirements(cardGame, _requirements) ||
+                !cardGame.getRules().cardCanEnterPlay(cardGame, context.card(), EnterPlayActionType.PLAY)) {
             return null;
         }
         PlayCardAction action = null;
-        if (cardGame instanceof ST1EGame stGame && actionContext.card() instanceof FacilityCard facility) {
-            CardFilter additionalFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
+        if (cardGame instanceof ST1EGame stGame && context.card() instanceof FacilityCard facility) {
+            CardFilter additionalFilter = _destinationBlueprint.getFilterable(cardGame, context);
             PlayFacilityResolver resolver = new PlayFacilityResolver(stGame, facility, additionalFilter);
             if (!resolver.cannotBeResolved(cardGame)) {
                 action = new PlayFacilityAction(cardGame, facility, resolver);
             }
         } else if (_destinationBlueprint != null) {
-            CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
+            CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, context);
             Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destinationFilter);
             if (!destinationOptions.isEmpty()) {
-                action = new PlayCardToDesinationAction(cardGame, performingPlayerName, thisCard, destinationOptions,
-                        actionContext, _onPlanet);
+                action = new PlayCardToDesinationAction(cardGame, context.yourName(), context.card(), destinationOptions,
+                        context, _onPlanet);
             }
         } else if (cardGame instanceof ST1EGame) {
-            action = new PlayCardAction(cardGame, thisCard, thisCard, performingPlayerName, Zone.CORE,
-                ActionType.PLAY_CARD, actionContext);
+            action = new PlayCardAction(cardGame, context.card(), context.card(), context.yourName(), Zone.CORE,
+                    ActionType.PLAY_CARD, context);
         }
         if (action != null) {
             if (!_forFree) {
