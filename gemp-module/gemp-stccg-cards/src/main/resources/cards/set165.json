@@ -16,6 +16,20 @@
             "lore": "Study final collapse of unstable and formerly forbidden planet.",
             "mission-requirements": "Geology + CUNNING>42 + (Biology + Exobiology + SCIENCE OR SECURITY + Transporter Skill + Treachery)",
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront4/12.jpg"
+        },
+        {
+            "blueprintId": "165_015",
+            "title": "Navigate Argolis Cluster",
+            "type": "mission",
+            "mission-type": "space",
+            "region": "Argolis Cluster",
+            "point-box": 35,
+            "span": 4,
+            "affiliation-icons": ["federation","klingon","dominion"],
+            "location": "Protostar cluster",
+            "lore": "Engage enemy near vital sensor array.",
+            "mission-requirements": "Stellar Cartography + Navigation x2 + Physics OR OFFICER + Leadership + SECURITY + STRENGTH>36",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront4/15.jpg"
         }
     ]
 }
