@@ -305,7 +305,7 @@ export default function CardDetailsDialog( {gamestate, cardId, setCardIdFunc, is
                         }
                     </Stack>
                     <Stack direction={"column"} spacing={2} alignItems={"center"} justifyContent={"center"}>
-                        <Card card={cardData} gamestate={gamestate} openCardDetailsFunc={setCardIdFunc} />
+                        <Card card={cardData} openCardDetailsFunc={setCardIdFunc} />
                         <Box>
                             <ButtonGroup variant="contained" aria-label="Card actions">
                                 {flyButton(gamestate, cardData)}
