@@ -1,0 +1,21 @@
+{
+    "setId": "165",
+    "setName": "Homefront IV",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "165_012",
+            "title": "Genesis Planet",
+            "type": "mission",
+            "mission-type": "planet",
+            "region": "Mutara",
+            "point-box": 35,
+            "span": 4,
+            "affiliation-icons": ["federation","romulan","klingon"],
+            "location": "Genesis",
+            "lore": "Study final collapse of unstable and formerly forbidden planet.",
+            "mission-requirements": "Geology + CUNNING>42 + (Biology + Exobiology + SCIENCE OR SECURITY + Transporter Skill + Treachery)",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront4/12.jpg"
+        }
+    ]
+}
