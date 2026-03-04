@@ -1,0 +1,20 @@
+{
+    "setId": "141",
+    "setName": "Straight and Steady",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "141_017",
+            "title": "Control Plague",
+            "type": "mission",
+            "mission-type": "planet",
+            "point-box": 35,
+            "span": 2,
+            "affiliation-icons": ["federation","klingon"],
+            "location": "Qu'Vat",
+            "lore": "Prevent the spread of a lethal disfiguring virus - at any cost.",
+            "mission-requirements": "Biology + Exobiology + MEDICAL x2 + CUNNING>34",
+            "image-url": "https://www.trekcc.org/1e/cardimages/sas/SAS_17V.jpg"
+        }
+    ]
+}
