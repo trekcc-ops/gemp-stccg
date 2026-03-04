@@ -43,7 +43,7 @@ const HideAfterTimeout = ({children, delayMs}) => {
     return retval;
 } 
 
-export default function Card( {card, gamestate, index, openCardDetailsFunc, sx} ) {
+export default function Card( {card, index, openCardDetailsFunc, sx} ) {
     const imageUrl = useTrekccImage(card.imageUrl);
 
     const columnPosition = index ? `${index+1}/auto` : undefined;
