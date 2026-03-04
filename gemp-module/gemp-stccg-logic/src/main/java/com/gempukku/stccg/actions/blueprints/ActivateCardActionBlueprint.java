@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
@@ -33,12 +32,9 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
             }
     }
 
-    public UseGameTextAction createAction(DefaultGame cardGame, String requestingPlayerName, PhysicalCard card) {
-        GameTextContext context = new GameTextContext(card, requestingPlayerName);
-        if (!isActionForPlayer(requestingPlayerName, cardGame, context)) {
-            return null;
-        } else if (context.acceptsAllRequirements(cardGame, _requirements)) {
-            UseGameTextAction action = new UseGameTextAction(cardGame, card, context);
+    public UseGameTextAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (context.acceptsAllRequirements(cardGame, _requirements)) {
+            UseGameTextAction action = new UseGameTextAction(cardGame, context.card(), context);
             appendSubActions(action);
             return action;
         }

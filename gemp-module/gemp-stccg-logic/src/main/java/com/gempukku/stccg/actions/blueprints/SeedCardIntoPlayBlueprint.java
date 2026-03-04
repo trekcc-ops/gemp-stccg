@@ -34,24 +34,22 @@ public class SeedCardIntoPlayBlueprint extends DefaultActionBlueprint {
         }
     }
 
-    @Override
-    public SeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        CardFilter seedableCardFilter = _cardToSeedBlueprint.getFilterable(cardGame, actionContext);
-        CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, actionContext);
+    public SeedCardAction createAction(DefaultGame cardGame, GameTextContext context) {
+        CardFilter seedableCardFilter = _cardToSeedBlueprint.getFilterable(cardGame, context);
+        CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, context);
         Collection<PhysicalCard> seedableCards = Filters.filter(cardGame, Zone.SEED_DECK, seedableCardFilter,
                 new CanEnterPlayFilter(EnterPlayActionType.SEED),
-                Filters.owner(performingPlayerName));
+                Filters.owner(context.yourName()));
         Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destinationFilter);
 
         if (seedableCards.isEmpty() || destinationOptions.isEmpty()) {
             return null;
-        } else if (!isValid(cardGame, actionContext)) {
+        } else if (!(context.acceptsAllRequirements(cardGame, _requirements))) {
             return null;
         }
 
-        SeedCardAction action = new SeedCardToDestinationAction(cardGame, performingPlayerName, seedableCards, destinationOptions,
-                thisCard);
+        SeedCardAction action = new SeedCardToDestinationAction(cardGame, context.yourName(),
+                seedableCards, destinationOptions, context.card());
         appendSubActions(action);
         return action;
     }

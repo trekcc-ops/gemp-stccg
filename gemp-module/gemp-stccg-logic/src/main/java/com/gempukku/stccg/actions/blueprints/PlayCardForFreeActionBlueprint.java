@@ -54,16 +54,14 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
     }
 
     @Override
-    public PlayCardAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard) {
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (!isValid(cardGame, actionContext)) {
+    public PlayCardAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (!context.acceptsAllRequirements(cardGame, _requirements)) {
             return null;
         }
 
         CardFilter playableCardFilter = Filters.and(
-                _filterBlueprint.getFilterable(cardGame, actionContext),
-                new InYourHandFilter(performingPlayerName),
+                _filterBlueprint.getFilterable(cardGame, context),
+                new InYourHandFilter(context.yourName()),
                 new CanEnterPlayFilter(EnterPlayActionType.PLAY)
         );
 
@@ -74,7 +72,7 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
             for (PhysicalCard card : playableCards) {
                 if (card instanceof ReportableCard reportable) {
                     Collection<PhysicalCard> destinations =
-                            _destinationBlueprint.getDestinationOptions(stGame, performingPlayerName, card, actionContext);
+                            _destinationBlueprint.getDestinationOptions(stGame, context.yourName(), card, context);
                     Map<PhysicalCard, List<Affiliation>> destinationMap = stGame.getRules()
                             .getDestinationAndAffiliationMapForReportingCard(reportable, stGame, destinations, true,
                                     playableCardFilter);
@@ -86,14 +84,14 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
 
             if (!targetMap.isEmpty()) {
 
-                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, performingPlayerName,
+                SelectCardAction selectAction = new SelectVisibleCardAction(cardGame, context.yourName(),
                         "Select a card to play", targetMap.keySet());
                 SelectCardsResolver cardTarget = new SelectCardsResolver(selectAction);
 
                 if (!cardTarget.cannotBeResolved(cardGame)) {
 
-                    ReportCardAction reportAction = new ReportCardAction(cardGame, actionContext.card().getOwnerName(),
-                            actionContext.card(), targetMap);
+                    ReportCardAction reportAction = new ReportCardAction(cardGame, context.card().getOwnerName(),
+                            context.card(), targetMap);
                     appendSubActions(reportAction);
                     if (reportAction.canBeInitiated(cardGame)) {
                         return reportAction;

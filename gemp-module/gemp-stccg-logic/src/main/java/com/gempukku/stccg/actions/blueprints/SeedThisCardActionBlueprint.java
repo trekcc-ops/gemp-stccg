@@ -48,8 +48,7 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
     public SeedCardAction createAction(DefaultGame cardGame, GameTextContext context) {
         PhysicalCard thisCard = context.card();
         String performingPlayerName = context.yourName();
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (isValid(cardGame, actionContext) &&
+        if (context.acceptsAllRequirements(cardGame, _requirements) &&
                 cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.SEED)) {
             SeedCardAction action;
             if (thisCard instanceof FacilityCard facility && cardGame instanceof ST1EGame stGame) {
@@ -69,11 +68,11 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
                 appendSubActions(action);
                 return action;
             } else if (_toCore) {
-                action = new SeedCardAction(cardGame, thisCard, Zone.CORE, actionContext);
+                action = new SeedCardAction(cardGame, thisCard, Zone.CORE, context);
                 appendSubActions(action);
                 return action;
             } else if (_destinationFilter != null) {
-                CardFilter destination = _destinationFilter.getFilterable(cardGame, actionContext);
+                CardFilter destination = _destinationFilter.getFilterable(cardGame, context);
                 Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destination);
                 if (!destinationOptions.isEmpty()) {
                     action = new SeedCardToDestinationAction(cardGame, performingPlayerName,

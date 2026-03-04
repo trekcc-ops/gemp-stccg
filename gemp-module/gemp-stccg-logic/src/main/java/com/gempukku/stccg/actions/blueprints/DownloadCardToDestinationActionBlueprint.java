@@ -73,14 +73,13 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
     }
 
 
-    @Override
-    public DownloadAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                       PhysicalCard thisCard) {
+    public DownloadAction createAction(DefaultGame cardGame, GameTextContext actionContext) {
 
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (!isValid(cardGame, actionContext)) {
+        if (!actionContext.acceptsAllRequirements(cardGame, _requirements)) {
             return null;
         }
+        String performingPlayerName = actionContext.yourName();
+        PhysicalCard thisCard = actionContext.card();
 
         CardFilter downloadableCardFilter = _filterBlueprint.getFilterable(cardGame, actionContext);
         Collection<PhysicalCard> downloadableCards = Filters.filter(cardGame, downloadableCardFilter);

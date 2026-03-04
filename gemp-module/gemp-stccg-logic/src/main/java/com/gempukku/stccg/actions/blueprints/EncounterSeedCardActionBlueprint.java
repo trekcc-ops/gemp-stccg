@@ -3,66 +3,42 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
-import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.YouPlayerSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 public class EncounterSeedCardActionBlueprint extends DefaultActionBlueprint {
 
     @JsonCreator
     private EncounterSeedCardActionBlueprint(@JsonProperty("effect")
                                             @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                            List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
+                                            List<SubActionBlueprint> effects) {
         super(new ArrayList<>(), Objects.requireNonNullElse(effects, new LinkedList<>()),
                 new YouPlayerSource());
     }
 
-    public EncounterSeedCardAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard,
-                                                AttemptingUnit attemptingUnit, MissionLocation missionLocation,
-                                                AttemptMissionAction missionAttemptAction)
-            throws InvalidGameLogicException {
-        GameTextContext actionContext = new DilemmaEncounterGameTextContext(thisCard, performingPlayerName);
-        EncounterSeedCardAction encounterAction =
-                new EncounterSeedCardAction(cardGame, performingPlayerName, thisCard, attemptingUnit, missionAttemptAction,
-                        missionLocation.getLocationId(), actionContext);
-        _effects.forEach(encounterAction::appendSubAction);
-        return encounterAction;
-    }
-
-    @Override
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard card) {
+    public EncounterSeedCardAction createAction(DefaultGame cardGame, GameTextContext context) {
         try {
-            GameTextContext context = new DilemmaEncounterGameTextContext(card, performingPlayerName);
-            Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
-            for (Action action : actionStack) {
-                if (action instanceof AttemptMissionAction attemptAction &&
-                        attemptAction.getLocationId() == card.getLocationId()) {
-                    EncounterSeedCardAction newAction = new EncounterSeedCardAction(cardGame, performingPlayerName,
-                            card, attemptAction.getAttemptingUnit(), attemptAction, attemptAction.getLocationId(),
-                            context);
-                    appendSubActions(newAction);
-                    return newAction;
-                }
+            if (context instanceof DilemmaEncounterGameTextContext dilemmaContext) {
+                EncounterSeedCardAction encounterAction =
+                        new EncounterSeedCardAction(cardGame, context.yourName(), context.card(),
+                                dilemmaContext.attemptingUnit(), dilemmaContext.attemptAction(), context);
+                _effects.forEach(encounterAction::appendSubAction);
+                return encounterAction;
+            } else {
+                throw new InvalidGameLogicException("Cannot create encounter action with provided context object");
             }
-            throw new InvalidGameLogicException("Could not identify an active mission attempt for this encounter");
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             return null;
         }
     }
-
-
 }

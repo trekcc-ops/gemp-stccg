@@ -3,6 +3,7 @@ package com.gempukku.stccg.rules.st1e;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -37,11 +38,12 @@ public class SpecialDownloadRule extends ST1ERule {
                                                                                     String playerName) {
         List<Action> result = new ArrayList<>();
         for (PhysicalCard card : cardGame.getAllCardsInPlay()) {
-            if (card instanceof PersonnelCard personnel) {
+            if (card instanceof PersonnelCard personnel && personnel.isControlledBy(playerName)) {
                 for (Skill skill : personnel.getSkills(cardGame)) {
                     if (skill instanceof SpecialDownloadSkill downloadSkill) {
                         ActionBlueprint blueprint = downloadSkill.getActionBlueprint();
-                        Action action = blueprint.createAction(cardGame, playerName, card);
+                        GameTextContext context = new GameTextContext(personnel, playerName);
+                        Action action = blueprint.createAction(cardGame, context);
                         if (action != null) {
                             result.add(action);
                         }

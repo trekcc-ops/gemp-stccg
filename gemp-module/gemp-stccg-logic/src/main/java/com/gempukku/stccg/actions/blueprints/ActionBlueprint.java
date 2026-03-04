@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -23,12 +22,5 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = VolunteerForSelectionActionBlueprint.class, name = "volunteerForRandomSelection")
 })
 public interface ActionBlueprint {
-    boolean isValid(DefaultGame cardGame, GameTextContext actionContext);
-    default Action createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
-        GameTextContext context = new GameTextContext(thisCard, performingPlayerName);
-        return createAction(cardGame, context);
-    }
-    default Action createAction(DefaultGame cardGame, GameTextContext context) {
-        return createAction(cardGame, context.yourName(), context.card());
-    }
+    Action createAction(DefaultGame cardGame, GameTextContext context);
 }
