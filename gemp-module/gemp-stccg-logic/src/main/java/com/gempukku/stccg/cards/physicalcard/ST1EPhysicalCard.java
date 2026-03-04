@@ -19,7 +19,6 @@ import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 import java.util.Objects;
@@ -103,9 +102,9 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableC
     @Override
     public List<Action> getEncounterActions(DefaultGame cardGame, AttemptMissionAction attemptAction,
                                             AttemptingUnit attemptingUnit, MissionLocation missionLocation)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        return _blueprint.getEncounterSeedCardActions(this, attemptAction, cardGame, attemptingUnit,
-                missionLocation);
+            throws InvalidGameLogicException {
+        return _blueprint.getEncounterSeedCardActions(this, attemptAction, cardGame, attemptingUnit
+        );
     }
 
     @Override
@@ -130,10 +129,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableC
         } else {
             return isOnPlanetSurface(cardGame);
         }
-    }
-
-    public List<TopLevelSelectableAction> createSeedPhaseActions(DefaultGame cardGame, String performingPlayerName) {
-        return _blueprint.createSeedPhaseActions(cardGame, performingPlayerName, this);
     }
 
     public void setAsAboard(PhysicalCard destination) {

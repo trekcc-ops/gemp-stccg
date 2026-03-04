@@ -4,7 +4,6 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -40,7 +39,7 @@ public class SelectCardSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
         CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
         Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, filter);
         String performingPlayer = _selectingPlayer.getPlayerName(cardGame, context);

@@ -21,8 +21,7 @@ public class DiscardSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public DiscardSingleCardAction createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                                GameTextContext actionContext) {
+    public DiscardSingleCardAction createAction(DefaultGame cardGame, GameTextContext actionContext) {
         ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, actionContext);
         PhysicalCard performingCard = actionContext.card();
         String playerName = actionContext.yourName();

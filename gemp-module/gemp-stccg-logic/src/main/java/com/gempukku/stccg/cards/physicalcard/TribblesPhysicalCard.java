@@ -1,7 +1,6 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -39,7 +38,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
+    public TribblesPlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
         return new TribblesPlayCardAction(cardGame, this);
     }
 

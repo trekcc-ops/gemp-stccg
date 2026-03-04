@@ -18,6 +18,8 @@ import java.util.Map;
 public abstract class ActivateTribblePowerAction extends ActionWithSubActions {
     protected final PhysicalCard _performingCard;
     protected Map<String, Boolean> _progressIndicators = new HashMap<>();
+    protected final LinkedList<Action> _costs = new LinkedList<>();
+
     protected final LinkedList<Action> _actionEffects = new LinkedList<>();
 
     public ActivateTribblePowerAction(TribblesGame cardGame, GameTextContext context, PhysicalCard performingCard) {

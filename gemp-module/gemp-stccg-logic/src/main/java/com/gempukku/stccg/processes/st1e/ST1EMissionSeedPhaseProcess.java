@@ -2,7 +2,6 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -36,7 +35,7 @@ public class ST1EMissionSeedPhaseProcess extends ST1EGameProcess {
     public void process(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
         Player currentPlayer = cardGame.getCurrentPlayer();
 
-        final List<TopLevelSelectableAction> playableActions =
+        final List<? extends Action> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
         ST1EGameState gameState = getST1EGame(cardGame).getGameState();
         Phase currentPhase = gameState.getCurrentPhase();

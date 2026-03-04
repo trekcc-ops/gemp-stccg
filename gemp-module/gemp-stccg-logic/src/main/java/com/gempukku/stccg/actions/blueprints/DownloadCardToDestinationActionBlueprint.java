@@ -73,14 +73,13 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
     }
 
 
-    @Override
-    public DownloadAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                       PhysicalCard thisCard) {
+    public DownloadAction createAction(DefaultGame cardGame, GameTextContext actionContext) {
 
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (!isValid(cardGame, actionContext)) {
+        if (!actionContext.acceptsAllRequirements(cardGame, _requirements)) {
             return null;
         }
+        String performingPlayerName = actionContext.yourName();
+        PhysicalCard thisCard = actionContext.card();
 
         CardFilter downloadableCardFilter = _filterBlueprint.getFilterable(cardGame, actionContext);
         Collection<PhysicalCard> downloadableCards = Filters.filter(cardGame, downloadableCardFilter);
@@ -130,7 +129,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                         new EnterPlayAtDestinationResolver(performingPlayerName, destinationTargetMap);
                 DownloadCardAction action =
                         new DownloadCardAction(cardGame, performingPlayerName, resolver, thisCard, actionContext);
-                appendActionToContext(cardGame, action, actionContext);
+                appendSubActions(action);
                 if (action.canBeInitiated(cardGame)) {
                     return action;
                 }
@@ -157,7 +156,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
                 DownloadReportableCardToDestinationAction downloadAction =
                         new DownloadReportableCardToDestinationAction(cardGame, performingPlayerName, cardTarget,
                                 thisCard, targetMap);
-                appendActionToContext(cardGame, downloadAction, actionContext);
+                appendSubActions(downloadAction);
                 if (downloadAction.canBeInitiated(cardGame)) {
                     return downloadAction;
                 }
@@ -183,7 +182,7 @@ public class DownloadCardToDestinationActionBlueprint extends DefaultActionBluep
             }
             DownloadReportableCardToDestinationAction action2 = new DownloadReportableCardToDestinationAction(
                     cardGame, performingPlayerName, cardTarget, thisCard, targetMap);
-            appendActionToContext(cardGame, action2, actionContext);
+            appendSubActions(action2);
             if (action2.canBeInitiated(cardGame)) {
                 return action2;
             }

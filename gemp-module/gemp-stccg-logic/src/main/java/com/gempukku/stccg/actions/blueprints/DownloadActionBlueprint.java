@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.playcard.DownloadCardAction;
 import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -25,8 +24,7 @@ public class DownloadActionBlueprint implements SubActionBlueprint {
         _destinationFilter = Objects.requireNonNullElse(destinationFilter, new AnyCardFilterBlueprint());
     }
 
-    public DownloadCardAction createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                           GameTextContext actionContext) {
+    public DownloadCardAction createAction(DefaultGame cardGame, GameTextContext actionContext) {
         String performingPlayerName = actionContext.yourName();
         Collection<PhysicalCard> downloadableCards =
                 Filters.filter(cardGame, _cardToDownloadFilter.getFilterable(cardGame, actionContext));

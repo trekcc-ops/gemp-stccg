@@ -7,9 +7,9 @@ import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.blueprints.UseNormalCardPlayBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
 import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
-import com.gempukku.stccg.actions.usage.UseNormalCardPlayAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -46,7 +46,7 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
     protected PlayCardAction(int actionId, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                              String performingPlayerName, Zone toZone, ActionType actionType,
                              ActionStatus status) {
-        super(actionId, actionType, performingPlayerName, status);
+        super(actionId, actionType, performingPlayerName, status, new GameTextContext(actionSource, performingPlayerName));
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
@@ -60,7 +60,7 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
 
     public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType) {
-        super(cardGame, performingPlayerName, actionType);
+        super(cardGame, performingPlayerName, actionType, new GameTextContext(actionSource, performingPlayerName));
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
@@ -135,7 +135,7 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
     }
 
     public void removeNormalCardPlayCost() {
-        _costs.removeIf(cost -> cost instanceof UseNormalCardPlayAction);
+        _queuedCosts.removeIf(cost -> cost instanceof UseNormalCardPlayBlueprint);
     }
 
 }

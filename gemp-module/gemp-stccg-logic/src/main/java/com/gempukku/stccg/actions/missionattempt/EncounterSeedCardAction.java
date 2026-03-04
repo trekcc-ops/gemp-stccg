@@ -24,20 +24,18 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
     private final AttemptingUnit _attemptingUnit;
     private boolean _failedToOvercomeCondition;
 
-    private final int _locationId;
     private boolean _nullified;
     private boolean _nullifyAttempted;
 
     public EncounterSeedCardAction(DefaultGame cardGame, String encounteringPlayerName, PhysicalCard encounteredCard,
                                    AttemptingUnit attemptingUnit, AttemptMissionAction attemptAction,
-                                   int locationId, GameTextContext actionContext)
+                                   GameTextContext actionContext)
             throws InvalidGameLogicException {
         super(cardGame, encounteringPlayerName, ActionType.ENCOUNTER_SEED_CARD, actionContext);
         try {
             _parentAction = Objects.requireNonNull(attemptAction);
             _cardTarget = new FixedCardResolver(encounteredCard);
             _attemptingUnit = Objects.requireNonNull(attemptingUnit);
-            _locationId = locationId;
         } catch(NullPointerException npe) {
             throw new InvalidGameLogicException(npe.getMessage());
         }
@@ -71,7 +69,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
             _processedSubActions.add(_currentSubAction);
             _currentSubAction = null;
         } else if (!_queuedSubActions.isEmpty()) {
-            _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, this, _actionContext);
+            _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, _actionContext);
             _queuedSubActions.removeFirst();
             cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
         } else {
@@ -96,7 +94,6 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
 
     public AttemptingUnit getAttemptingUnit() { return _attemptingUnit; }
     public PhysicalCard getEncounteredCard() { return _cardTarget.getCard(); }
-    public AttemptMissionAction getAttemptAction() { return _parentAction; }
 
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)

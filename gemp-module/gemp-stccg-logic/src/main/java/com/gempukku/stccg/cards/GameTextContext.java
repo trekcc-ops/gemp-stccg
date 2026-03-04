@@ -10,17 +10,15 @@ import com.google.common.collect.Multimap;
 import java.util.*;
 
 public class GameTextContext {
-    private final String _performingPlayerName;
+    private final String _yourName;
     private final Multimap<String, Integer> _cardMemoryNew = HashMultimap.create();
     private final Map<String, String> _valueMemory = new HashMap<>();
     private final PhysicalCard _thisCard;
 
     public GameTextContext(PhysicalCard thisCard, String yourName) {
-        _performingPlayerName = yourName;
+        _yourName = yourName;
         _thisCard = thisCard;
     }
-
-    public String getPerformingPlayerId() { return _performingPlayerName; }
 
 
     public void setValueToMemory(String memory, String value) {
@@ -94,7 +92,7 @@ public class GameTextContext {
     }
 
     public String yourName() {
-        return _performingPlayerName;
+        return _yourName;
     }
 
 }

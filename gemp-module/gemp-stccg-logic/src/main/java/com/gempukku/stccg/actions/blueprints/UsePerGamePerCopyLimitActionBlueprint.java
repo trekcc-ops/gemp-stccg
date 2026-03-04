@@ -20,8 +20,7 @@ public class UsePerGamePerCopyLimitActionBlueprint implements SubActionBlueprint
         _limitPerGame = limitPerGame;
     }
     @Override
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction,
-                                      GameTextContext actionContext) {
+    public Action createAction(DefaultGame cardGame, GameTextContext actionContext) {
         return new UseOncePerGamePerCopyAction(cardGame,
                 actionContext.card(), actionContext.yourName(), _parentActionBlueprint);
     }

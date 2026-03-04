@@ -8,8 +8,6 @@ import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
 
-import java.util.Collection;
-
 @JsonTypeInfo(use = JsonTypeInfo.Id.MINIMAL_CLASS, property = "className")
 @JsonIgnoreProperties(value = { "actionType" }, allowGetters = true)
 @JsonIdentityInfo(scope=Action.class, generator= ObjectIdGenerators.PropertyGenerator.class, property="actionId")
@@ -21,10 +19,6 @@ public interface Action {
 
     @JsonProperty("actionId")
     int getActionId();
-
-    void insertCosts(Collection<Action> actions);
-
-    void appendCost(Action costAction);
 
     @JsonProperty("actionType")
     ActionType getActionType();

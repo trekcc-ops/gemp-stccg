@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.choose.MakeDecisionAction;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -36,7 +35,7 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         _optional = optional;
     }
 
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
         try {
             final String targetPlayerId;
             targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);

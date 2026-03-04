@@ -44,7 +44,7 @@ public class IncreaseAttributesSubActionBlueprint implements SubActionBlueprint 
     }
 
     @Override
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
         PhysicalCard performingCard = context.card();
         for (String playerName : cardGame.getAllPlayerIds()) {
             if (performingCard.isControlledBy(playerName)) {

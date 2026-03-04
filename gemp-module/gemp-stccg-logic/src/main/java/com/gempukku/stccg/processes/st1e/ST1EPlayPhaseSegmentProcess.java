@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -33,7 +32,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Phase phase = cardGame.getCurrentPhase();
         Player selectingPlayer = cardGame.getPlayer(_currentlySelectingPlayerName);
-        final List<TopLevelSelectableAction> playableActions =
+        final List<? extends Action> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, selectingPlayer);
         if (!playableActions.isEmpty() || !cardGame.shouldAutoPass(phase, _currentlySelectingPlayerName)) {
             AwaitingDecision decision =
@@ -74,7 +73,7 @@ public class ST1EPlayPhaseSegmentProcess extends ST1EGameProcess {
         private final DefaultGame _game;
 
         protected SelectTopLevelPhaseActionsDecision(String selectingPlayerName,
-                                                     List<TopLevelSelectableAction> playableActions,
+                                                     List<? extends Action> playableActions,
                                                      DefaultGame cardGame) {
             super(selectingPlayerName, DecisionContext.SELECT_PHASE_ACTION, playableActions, cardGame, false);
             _game = cardGame;

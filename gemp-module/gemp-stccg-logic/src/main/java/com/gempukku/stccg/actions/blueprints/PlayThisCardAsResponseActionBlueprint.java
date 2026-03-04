@@ -5,15 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.turn.PlayThisCardAsResponseAction;
-import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
@@ -42,10 +38,9 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
             throw new InvalidCardDefinitionException("Unable to add response action with no defined trigger");
         }
         _effects.addFirst(new SubActionBlueprint() {
-            public Action createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                              GameTextContext actionContext) {
-                return new PlayCardAction(cardGame, actionContext.card(), actionContext.card(),
-                    actionContext.card().getOwnerName(), Zone.CORE, ActionType.PLAY_CARD, actionContext);
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
+                return new PlayCardAction(cardGame, context.card(), context.card(),
+                    context.card().getOwnerName(), Zone.CORE, ActionType.PLAY_CARD, context);
             }
         });
         if (discardAfter) {
@@ -54,13 +49,12 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
     }
 
     @Override
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                 PhysicalCard thisCard) {
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (isValid(cardGame, actionContext) &&
-                cardGame.getRules().cardCanEnterPlay(cardGame, thisCard, EnterPlayActionType.PLAY)) {
-            UseGameTextAction action = new PlayThisCardAsResponseAction(cardGame, thisCard, actionContext);
-            appendActionToContext(cardGame, action, actionContext);
+    public PlayThisCardAsResponseAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (context.acceptsAllRequirements(cardGame, _requirements) &&
+                cardGame.getRules().cardCanEnterPlay(cardGame, context.card(), EnterPlayActionType.PLAY)) {
+            PlayThisCardAsResponseAction action =
+                    new PlayThisCardAsResponseAction(cardGame, context.card(), context);
+            appendSubActions(action);
             return action;
         }
         return null;

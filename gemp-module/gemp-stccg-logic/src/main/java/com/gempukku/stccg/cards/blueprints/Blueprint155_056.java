@@ -5,8 +5,8 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectSkillAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
-import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.ActionSkill;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -48,14 +48,15 @@ public class Blueprint155_056 extends CardBlueprint {
         return new ActionSkill("When reported, selects Anthropology, Physics, or Navigation.") {
             @Override
             public TopLevelSelectableAction getAction(DefaultGame cardGame, PhysicalCard thisCard) {
-                final TopLevelSelectableAction action = new UseGameTextAction(cardGame, thisCard,
+                UseGameTextAction action = new UseGameTextAction(cardGame, thisCard,
                         new GameTextContext(thisCard, thisCard.getOwnerName()));
                 List<SkillName> skillOptions = new LinkedList<>();
                 skillOptions.add(SkillName.ANTHROPOLOGY);
                 skillOptions.add(SkillName.PHYSICS);
                 skillOptions.add(SkillName.NAVIGATION);
                     // TODO - This won't actually do anything at present other than the selection
-                action.appendCost(new SelectSkillAction(cardGame, thisCard.getOwnerName(), skillOptions));
+                action.appendCost((cardGame1, context) ->
+                        new SelectSkillAction(cardGame1, thisCard.getOwnerName(), skillOptions));
                 return action;
             }
         };

@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.missionattempt.OvercomeDilemmaConditionAction;
@@ -49,8 +48,7 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
         }
     }
 
-    public OvercomeDilemmaConditionAction createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                                       GameTextContext context) {
+    public OvercomeDilemmaConditionAction createAction(DefaultGame cardGame, GameTextContext context) {
         Stack<Action> actionStack = cardGame.getActionsEnvironment().getActionStack();
         OvercomeDilemmaConditionAction actionToReturn = null;
         for (Action pendingAction : actionStack) {
@@ -74,8 +72,7 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
             }
         }
         if (actionToReturn != null && _costAction != null) {
-            Action costAction = _costAction.createAction(cardGame, action, context);
-            actionToReturn.appendCost(costAction);
+            actionToReturn.appendCost(_costAction);
         }
         return actionToReturn;
     }

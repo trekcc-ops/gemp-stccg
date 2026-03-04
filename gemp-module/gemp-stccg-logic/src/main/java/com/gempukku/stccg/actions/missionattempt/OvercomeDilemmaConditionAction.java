@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
 import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
@@ -22,7 +21,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class OvercomeDilemmaConditionAction extends ActionyAction {
+public class OvercomeDilemmaConditionAction extends ActionWithSubActions {
 
     private final AttemptingUnit _attemptingUnit;
     private final ActionWithSubActions _parentAction; // typically an encounter, but sometimes an attempt
@@ -75,12 +74,17 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     }
 
     @Override
+    public PhysicalCard getPerformingCard() {
+        return _dilemma;
+    }
+
+    @Override
     public void setAsFailed() {
         _parentAction.removeRemainingSubActions();
         _parentAction.insertSubActions(_additionalFailActions);
         _parentAction.appendSubAction(new SubActionBlueprint() {
             @Override
-            public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
                 Collection<StoppableCard> cardsToStop =
                         new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
                 if (_attemptingUnit instanceof ShipCard ship) {
@@ -91,7 +95,7 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
         });
         _parentAction.appendSubAction(new SubActionBlueprint() {
             @Override
-            public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
                 if (_discardDilemma && _dilemma.getParentCard() == null) {
                     return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma);
                 } else {

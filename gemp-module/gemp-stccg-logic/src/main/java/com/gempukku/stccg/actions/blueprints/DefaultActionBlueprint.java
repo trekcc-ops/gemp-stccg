@@ -1,9 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
@@ -17,7 +15,6 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
     protected final List<SubActionBlueprint> costs = new LinkedList<>();
     protected final List<SubActionBlueprint> _effects = new LinkedList<>();
     private final PlayerSource _performingPlayer;
-    private int _blueprintId;
 
     protected DefaultActionBlueprint(PlayerSource performingPlayer) {
         _performingPlayer = performingPlayer;
@@ -39,46 +36,26 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
             for (SubActionBlueprint blueprint : effects) {
                 if (blueprint.isPlayabilityCheckedForEffect())
                     addRequirement(new CostCanBePaidRequirement(blueprint));
-                addEffect(blueprint);
+                _effects.add(blueprint);
             }
         }
     }
 
     public void addRequirement(Requirement requirement) {
-        this._requirements.add(requirement);
+        _requirements.add(requirement);
     }
 
     public void addCost(SubActionBlueprint subActionBlueprint) {
         costs.add(subActionBlueprint);
     }
 
-    public void addEffect(SubActionBlueprint subActionBlueprint) {
-        _effects.add(subActionBlueprint);
-    }
-
-    @Override
-    public boolean isValid(DefaultGame cardGame, GameTextContext context) {
-        boolean isValidPlayer = _performingPlayer.isPlayer(context.yourName(), cardGame, context);
-        if (!isValidPlayer) {
-            return false;
-        } else {
-            return context.acceptsAllRequirements(cardGame, _requirements);
-        }
-    }
-
     protected boolean isActionForPlayer(String requestingPlayerName, DefaultGame cardGame, GameTextContext context) {
         return _performingPlayer.isPlayer(requestingPlayerName, cardGame, context);
     }
 
-    @Override
-    public void appendActionToContext(DefaultGame cardGame, ActionWithSubActions action,
-                                      GameTextContext actionContext) {
-        costs.forEach(cost -> cost.addEffectToAction(cardGame, true, action, actionContext));
-        _effects.forEach(actionEffect -> actionEffect.addEffectToAction(cardGame, false, action, actionContext));
+    protected void appendSubActions(ActionWithSubActions action) {
+        costs.forEach(action::appendCost);
+        _effects.forEach(action::appendSubAction);
     }
-
-    public abstract TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName,
-                                                          PhysicalCard thisCard);
-
 
 }

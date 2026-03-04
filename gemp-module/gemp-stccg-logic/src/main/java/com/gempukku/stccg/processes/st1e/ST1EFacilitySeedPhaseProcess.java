@@ -2,7 +2,6 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
 import com.gempukku.stccg.actions.draw.DrawMultipleCardsUnrespondableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -36,9 +35,10 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Player currentPlayer = cardGame.getCurrentPlayer();
 
-        final List<TopLevelSelectableAction> playableActions =
+        final List<? extends Action> playableActions =
                 cardGame.getActionsEnvironment().getPhaseActions(cardGame, currentPlayer);
-        if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase(),currentPlayer.getPlayerId() )) {
+        if (playableActions.isEmpty() &&
+                cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase(),currentPlayer.getPlayerId() )) {
             _consecutivePasses++;
         } else {
             cardGame.sendAwaitingDecision(

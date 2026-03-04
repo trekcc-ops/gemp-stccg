@@ -3,7 +3,8 @@ package com.gempukku.stccg.actions.scorepoints;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -12,7 +13,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Objects;
 
-public class ScorePointsAction extends ActionyAction {
+public class ScorePointsAction extends ActionWithSubActions {
 
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
@@ -21,8 +22,9 @@ public class ScorePointsAction extends ActionyAction {
     @JsonProperty("pointsScored")
     private final int _points;
 
-    public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, String scoringPlayerName, int points) {
-        super(cardGame, scoringPlayerName, ActionType.SCORE_POINTS);
+    public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, String scoringPlayerName,
+                             int points, GameTextContext context) {
+        super(cardGame, scoringPlayerName, ActionType.SCORE_POINTS, context);
         _performingCard = Objects.requireNonNull(source);
         _points = points;
     }
@@ -30,7 +32,8 @@ public class ScorePointsAction extends ActionyAction {
 
     public ScorePointsAction(DefaultGame cardGame, PhysicalCard source, Player scoringPlayer, int points)
             throws InvalidGameLogicException {
-        super(cardGame, scoringPlayer, ActionType.SCORE_POINTS);
+        super(cardGame, scoringPlayer.getPlayerId(), ActionType.SCORE_POINTS,
+                new GameTextContext(source, scoringPlayer.getPlayerId()));
         try {
             _performingCard = Objects.requireNonNull(source);
         } catch(NullPointerException npe) {
@@ -54,5 +57,10 @@ public class ScorePointsAction extends ActionyAction {
             cardGame.sendErrorMessage(exp);
             setAsFailed();
         }
+    }
+
+    @Override
+    public PhysicalCard getPerformingCard() {
+        return _performingCard;
     }
 }

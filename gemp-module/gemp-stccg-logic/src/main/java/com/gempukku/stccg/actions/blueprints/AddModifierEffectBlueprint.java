@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions.blueprints;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.modifiers.AddUntilModifierAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -27,7 +26,7 @@ public class AddModifierEffectBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context) {
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
         PhysicalCard performingCard = context.card();
         if (performingCard.isControlledBy(context.yourName())) {
             return new AddUntilModifierAction(cardGame, context.yourName(), _modifierSource, _until, context);

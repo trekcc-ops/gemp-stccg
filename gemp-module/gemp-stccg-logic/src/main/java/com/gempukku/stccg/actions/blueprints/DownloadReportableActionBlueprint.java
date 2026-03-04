@@ -2,7 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.playcard.DownloadMultipleReportablesActionNew;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.ReportCardsResolverBlueprint;
@@ -22,7 +21,7 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
         _cardTarget = cardTarget;
     }
 
-    public Action createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public Action createAction(DefaultGame cardGame, GameTextContext context) {
         ActionCardResolver cardResolver = _cardTarget.getTargetResolver(cardGame, context);
         if (cardResolver instanceof ReportMultipleCardsResolver multipleResolver) {
             return new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK, context.yourName(),

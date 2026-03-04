@@ -19,8 +19,7 @@ public class RuleSet<T extends DefaultGame> {
 
     private void applyGenericRules(T cardGame) {
         applyActionProxiesAsRules(cardGame,
-                new RequiredTriggersRule(),
-                new DiscardedCardRule()
+                new RequiredTriggersRule()
         );
     }
 

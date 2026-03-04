@@ -50,7 +50,7 @@ public class PlaceCardInPointAreaAction extends ActionyAction {
         }
 
         int pointsToScore = _pointValue.evaluateExpression(cardGame, _actionContext);
-        cardGame.addActionToStack(new ScorePointsAction(cardGame, _performingCard, _performingPlayerId, pointsToScore));
+        cardGame.addActionToStack(new ScorePointsAction(cardGame, _performingCard, _performingPlayerId, pointsToScore, _actionContext));
         setAsSuccessful();
     }
 

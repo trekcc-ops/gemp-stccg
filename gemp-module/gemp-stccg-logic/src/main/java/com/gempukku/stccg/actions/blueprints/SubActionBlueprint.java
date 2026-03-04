@@ -2,9 +2,6 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.turn.AddCostSubAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -35,20 +32,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = ShuffleCardsIntoDrawDeckSubActionBlueprint.class, name = "shuffleCardsIntoDrawDeck"),
         @JsonSubTypes.Type(value = StopSubActionBlueprint.class, name = "stop")
 })
-public interface SubActionBlueprint {
-
-    default void addEffectToAction(DefaultGame cardGame, boolean cost, ActionWithSubActions action,
-                                   GameTextContext actionContext) {
-        if (cost) {
-            final AddCostSubAction sysAction =
-                    new AddCostSubAction(cardGame, actionContext, action, this);
-            action.appendCost(sysAction);
-        } else {
-            action.appendSubAction(this);
-        }
-    }
-
-    Action createAction(DefaultGame cardGame, ActionWithSubActions parentAction, GameTextContext context);
+public interface SubActionBlueprint extends ActionBlueprint {
 
     default boolean isPlayableInFull(DefaultGame cardGame, GameTextContext actionContext) { return true; }
 

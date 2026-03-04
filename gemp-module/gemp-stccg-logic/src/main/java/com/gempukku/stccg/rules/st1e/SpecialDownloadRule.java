@@ -1,8 +1,9 @@
 package com.gempukku.stccg.rules.st1e;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -15,12 +16,12 @@ import java.util.List;
 
 public class SpecialDownloadRule extends ST1ERule {
 
-    public List<TopLevelSelectableAction> getPhaseActions(DefaultGame cardGame, Player player) {
+    public List<Action> getPhaseActions(DefaultGame cardGame, Player player) {
         return getSpecialDownloadsThatPlayerCanInitiate(cardGame, player.getPlayerId());
     }
 
     @Override
-    public List<TopLevelSelectableAction> getOptionalAfterActions(DefaultGame cardGame, String playerId,
+    public List<Action> getOptionalAfterActions(DefaultGame cardGame, String playerId,
                                                                   ActionResult actionResult) {
         if (actionResult.hasAnyType(List.of(
                 ActionResult.Type.JUST_PLAYED,
@@ -33,15 +34,16 @@ public class SpecialDownloadRule extends ST1ERule {
         }
     }
 
-    private List<TopLevelSelectableAction> getSpecialDownloadsThatPlayerCanInitiate(DefaultGame cardGame,
+    private List<Action> getSpecialDownloadsThatPlayerCanInitiate(DefaultGame cardGame,
                                                                                     String playerName) {
-        List<TopLevelSelectableAction> result = new ArrayList<>();
+        List<Action> result = new ArrayList<>();
         for (PhysicalCard card : cardGame.getAllCardsInPlay()) {
-            if (card instanceof PersonnelCard personnel) {
+            if (card instanceof PersonnelCard personnel && personnel.isControlledBy(playerName)) {
                 for (Skill skill : personnel.getSkills(cardGame)) {
                     if (skill instanceof SpecialDownloadSkill downloadSkill) {
                         ActionBlueprint blueprint = downloadSkill.getActionBlueprint();
-                        TopLevelSelectableAction action = blueprint.createAction(cardGame, playerName, card);
+                        GameTextContext context = new GameTextContext(personnel, playerName);
+                        Action action = blueprint.createAction(cardGame, context);
                         if (action != null) {
                             result.add(action);
                         }

@@ -1,9 +1,7 @@
 package com.gempukku.stccg.actions.blueprints;
 
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.PlayPhaseRequirement;
@@ -29,11 +27,10 @@ public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
     }
 
     @Override
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard thisCard) {
-        GameTextContext actionContext = new GameTextContext(thisCard, performingPlayerName);
-        if (isValid(cardGame, actionContext)) {
-            UseGameTextAction action = new UseGameTextAction(cardGame, thisCard, actionContext);
-            appendActionToContext(cardGame, action, actionContext);
+    public UseGameTextAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (context.acceptsAllRequirements(cardGame, _requirements)) {
+            UseGameTextAction action = new UseGameTextAction(cardGame, context.card(), context);
+            appendSubActions(action);
             return action;
         }
         return null;

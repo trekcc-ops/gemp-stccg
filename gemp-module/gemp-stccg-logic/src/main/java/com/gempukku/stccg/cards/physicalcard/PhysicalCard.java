@@ -5,9 +5,10 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
-import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
 import com.gempukku.stccg.common.filterable.*;
@@ -98,12 +99,12 @@ public interface PhysicalCard {
 
     Collection<PhysicalCard> getAttachedCards(DefaultGame game);
 
-    List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult);
+    List<? extends Action> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult);
 
     boolean isUnique();
 
     boolean isCopyOf(PhysicalCard card);
-    List<TopLevelSelectableAction> createSeedCardActions(DefaultGame cardGame);
+    List<SeedCardAction> createSeedCardActions(DefaultGame cardGame);
 
 
     boolean hasIcon(DefaultGame game, CardIcon icon);
@@ -164,9 +165,8 @@ public interface PhysicalCard {
 
     void reveal();
 
-    default List<TopLevelSelectableAction> getOptionalResponseActionsWhileInHand(DefaultGame cardGame, Player player,
-                                                                                 ActionResult actionResult) {
-        return getBlueprint().getOptionalResponseActionsWhileInHand(cardGame, this, player, actionResult);
+    default List<? extends Action> getOptionalResponseActionsWhileInHand(DefaultGame cardGame, Player player) {
+        return getBlueprint().getOptionalResponseActionsWhileInHand(cardGame, this, player);
     }
 
 
@@ -186,7 +186,7 @@ public interface PhysicalCard {
     @JsonProperty("cardId")
     void setCardId(int cardId);
 
-    Collection<TopLevelSelectableAction> getOptionalResponseActionsWhileInPlay(DefaultGame game, Player player);
+    Collection<? extends Action> getOptionalResponseActionsWhileInPlay(DefaultGame game, Player player);
 
     boolean isBeingEncounteredBy(String playerName, DefaultGame cardGame);
     boolean isBeingEncountered(DefaultGame cardGame);

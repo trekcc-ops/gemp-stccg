@@ -17,7 +17,7 @@ public class KillActionBlueprint implements SubActionBlueprint {
         _targetResolver = target;
     }
 
-    public KillAction createAction(DefaultGame cardGame, ActionWithSubActions action, GameTextContext context) {
+    public KillAction createAction(DefaultGame cardGame, GameTextContext context) {
         String performingPlayerId = (context instanceof DilemmaEncounterGameTextContext) ?
             context.card().getOwnerName() : context.yourName();
         return new KillAction(cardGame, performingPlayerId, context.card(),

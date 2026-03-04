@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.placecard.PlaceCardInPointAreaAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
@@ -32,8 +31,7 @@ public class PlaceCardInPointAreaSubActionBlueprint implements SubActionBlueprin
     }
 
     @Override
-    public PlaceCardInPointAreaAction createAction(DefaultGame cardGame, ActionWithSubActions action,
-                                                   GameTextContext context) {
+    public PlaceCardInPointAreaAction createAction(DefaultGame cardGame, GameTextContext context) {
         final String performingPlayerId = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
         return new PlaceCardInPointAreaAction(
