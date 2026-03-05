@@ -173,26 +173,22 @@ public class DeckValidation {
         List<String> uniqueLocations = new LinkedList<>();
         for (String blueprintId : missionsPile) {
             try {
-                StringBuilder result = new StringBuilder();
                 CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
                 if (blueprint.getCardType() != CardType.MISSION) {
-                    result.append("Missions pile contains non-mission card: ").append(blueprint.getTitle());
+                    _errors.add("Missions pile contains non-mission card: " + blueprint.getTitle());
                 } else if (!blueprint.isUniversal()) {
                     uniqueLocations.add(blueprint.getLocation());
                 }
-                _errors.add(result.toString());
             } catch(CardNotFoundException ignored) {
                 _invalidBlueprintIds.add(blueprintId);
             }
         }
         List<String> distinctUniqueLocations = uniqueLocations.stream().distinct().toList();
         for (String location : distinctUniqueLocations) {
-            StringBuilder result = new StringBuilder();
             int locationCount = Collections.frequency(uniqueLocations, location);
             if (locationCount > 1) {
-                result.append("Deck has ").append(locationCount).append(" unique missions at location: ").append(location);
+                _errors.add("Deck has " + locationCount + " unique missions at location: " + location);
             }
-            _errors.add(result.toString());
         }
     }
 
