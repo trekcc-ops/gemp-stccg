@@ -508,4 +508,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         }
     }
 
+    public boolean isAtop(PhysicalCard otherCard) {
+        if (_parentCardRelationship == ChildCardRelationshipType.ATOP && otherCard != null) {
+            return Objects.equals(otherCard, _parentCard);
+        } else {
+            return false;
+        }
+    }
+
 }

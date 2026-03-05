@@ -262,4 +262,6 @@ public interface PhysicalCard {
     }
 
     PhysicalCard getAboardCard();
+
+    boolean isAtop(PhysicalCard physicalCard);
 }

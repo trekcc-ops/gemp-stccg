@@ -9,6 +9,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
+        @JsonSubTypes.Type(value = AndRequirement.class, name = "and"),
         @JsonSubTypes.Type(value = CardsAreSameAffiliationRequirement.class, name = "cardsAreSameAffiliation"),
         @JsonSubTypes.Type(value = ThisCardIsFacingDilemmaRequirement.class, name = "thisCardIsFacingDilemma"),
         @JsonSubTypes.Type(value = ThisCardIsOnPlanetRequirement.class, name = "thisCardIsOnPlanet"),
@@ -21,6 +22,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = PlayOutOfSequenceRequirement.class, name = "playOutOfSequenceCondition"),
         @JsonSubTypes.Type(value = ThisCardAboardCardRequirement.class, names = "thisCardAboardCard"),
         @JsonSubTypes.Type(value = ThisCardPresentWithCardRequirement.class, names = "thisCardPresentWithCard"),
+        @JsonSubTypes.Type(value = YouHaveSolvedMissionRequirement.class, names = "youHaveSolvedMission"),
         @JsonSubTypes.Type(value = YourTurnRequirement.class, name = "yourTurn")
 })
 public interface Requirement {

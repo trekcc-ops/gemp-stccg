@@ -8,8 +8,12 @@ import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.ComparatorType;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.CardAttribute;
+import com.gempukku.stccg.common.filterable.Characteristic;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.google.common.collect.Iterables;
+import org.apache.logging.log4j.core.util.Integers;
 
 import java.io.IOException;
 import java.util.*;
@@ -179,6 +183,14 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 }
             }
             case "locationName" -> new LocationNameFilterBlueprint(parameter);
+            case "matchingAffiliation" -> {
+                FilterBlueprint filter = createFilterBlueprint(parameter);
+                yield (cardGame, context) -> {
+                    CardFilter cardFilter = filter.getFilterable(cardGame, context);
+                    Collection<PhysicalCard> cardsToMatch = Filters.filter(cardGame, cardFilter);
+                    return new MatchingAffiliationFilter(cardsToMatch, context.yourName());
+                };
+            }
             case "memoryId" -> {
                 String memoryId = parameter;
                 yield (cardGame, actionContext) -> {
@@ -209,6 +221,19 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 int iconCount = Integer.parseInt(parameter);
                 ComparatorType comparatorToUse = comparatorType;
                 yield (cardGame, actionContext) -> new SpecialDownloadIconCountFilter(iconCount, comparatorToUse);
+            }
+            case "skill" -> {
+                String multiplierSplit = "(?=x\\d+)";
+                String[] splitParameters = parameter.split(multiplierSplit);
+                SkillName skillName = SkillName.getSkill(splitParameters[0].trim());
+                int level = (splitParameters.length == 1) ?
+                        1 : Integers.parseInt(splitParameters[1].replace("x",""));
+                if (skillName != null) {
+                    yield (cardGame, context) -> new HasSkillFilter(skillName, level);
+                } else {
+                    throw new InvalidCardDefinitionException(
+                            "Cannot process parameterized filter blueprint with parameter '" + parameter + "'");
+                }
             }
             case "skill-dots" -> {
                 int skillDotCount = Integer.parseInt(parameter);
