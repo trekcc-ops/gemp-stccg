@@ -6,7 +6,6 @@
         {
             "blueprintId" : "127_023",
             "title" : "Robert DeSoto",
-            "java-blueprint" : true,
             "type" : "personnel",
             "affiliation" : "federation",
             "property-logo" : "tng-logo",
