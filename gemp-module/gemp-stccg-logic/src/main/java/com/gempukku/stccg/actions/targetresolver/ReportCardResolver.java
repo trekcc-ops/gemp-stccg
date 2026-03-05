@@ -31,8 +31,8 @@ public class ReportCardResolver implements ActionCardResolver {
         _cardEnteringPlay = cardEnteringPlay;
         _performingPlayerName = cardEnteringPlay.getOwnerName();
         Map<PhysicalCard, List<Affiliation>> destinationAndAffiliationMap = ((ST1EGame) cardGame).getRules()
-                .getDestinationAndAffiliationMapForReportingCard(cardEnteringPlay, (ST1EGame) cardGame,
-                        false);
+                .getDestinationAndAffiliationMapForReportingCardWithNoSpecialReporting(cardEnteringPlay, (ST1EGame) cardGame
+                );
         if (!destinationAndAffiliationMap.isEmpty()) {
             _targetMap.put(cardEnteringPlay, destinationAndAffiliationMap);
         }

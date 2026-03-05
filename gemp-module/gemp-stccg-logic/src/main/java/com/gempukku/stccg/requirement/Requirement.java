@@ -19,6 +19,7 @@ import com.gempukku.stccg.game.DefaultGame;
         @JsonSubTypes.Type(value = OrRequirement.class, name = "or"),
         @JsonSubTypes.Type(value = PhaseRequirement.class, name = "phase"),
         @JsonSubTypes.Type(value = PlayOutOfSequenceRequirement.class, name = "playOutOfSequenceCondition"),
+        @JsonSubTypes.Type(value = ThisCardAboardCardRequirement.class, names = "thisCardAboardCard"),
         @JsonSubTypes.Type(value = ThisCardPresentWithCardRequirement.class, names = "thisCardPresentWithCard"),
         @JsonSubTypes.Type(value = YourTurnRequirement.class, name = "yourTurn")
 })
@@ -28,7 +29,7 @@ public interface Requirement {
 
     @JsonIgnore
     default Condition getCondition(GameTextContext context, PhysicalCard thisCard, DefaultGame cardGame) {
-        return null;
+        return cardGame1 -> accepts(context, cardGame1);
     }
 
 }

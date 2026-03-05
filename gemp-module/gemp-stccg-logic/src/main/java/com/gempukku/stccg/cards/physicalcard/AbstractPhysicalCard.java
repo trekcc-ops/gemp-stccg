@@ -500,4 +500,12 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return false;
     }
 
+    public PhysicalCard getAboardCard() {
+        if (_parentCardRelationship == ChildCardRelationshipType.ABOARD) {
+            return _parentCard;
+        } else {
+            return null;
+        }
+    }
+
 }

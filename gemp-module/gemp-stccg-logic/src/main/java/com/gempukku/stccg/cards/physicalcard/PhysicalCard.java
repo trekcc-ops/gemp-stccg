@@ -260,4 +260,6 @@ public interface PhysicalCard {
     default boolean isPresentWith(ST1EGame stGame, PhysicalCard otherCard) {
         return stGame.cardsArePresentWithEachOther(this, otherCard);
     }
+
+    PhysicalCard getAboardCard();
 }

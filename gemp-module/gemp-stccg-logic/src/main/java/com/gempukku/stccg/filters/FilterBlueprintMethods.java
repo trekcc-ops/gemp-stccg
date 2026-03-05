@@ -1,6 +1,7 @@
 package com.gempukku.stccg.filters;
 
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
+import com.gempukku.stccg.cards.physicalcard.CardWithCompatibility;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.game.ST1EGame;
@@ -75,6 +76,13 @@ public interface FilterBlueprintMethods {
         });
         appendSimpleFilter("cardyoucandownload", (cardGame, actionContext) ->
                 Filters.cardsYouCanDownload(actionContext.yourName()));
+        appendSimpleFilter("compatibleWithThisCard", (cardGame, actionContext) -> (game, physicalCard) -> {
+            PhysicalCard thisCard12 = actionContext.card();
+            return physicalCard instanceof CardWithCompatibility compatibleCard &&
+                    game instanceof ST1EGame stGame &&
+                    thisCard12 instanceof CardWithCompatibility compatibleThisCard &&
+                    compatibleCard.isCompatibleWith(stGame, compatibleThisCard);
+        });
         appendSimpleFilter("encounteringthiscard", (cardGame, actionContext) ->
                 new EncounteringCardFilter(actionContext.card()));
         appendSimpleFilter("inCrewOrAwayTeamEncountering", (cardGame, actionContext) ->
@@ -125,7 +133,8 @@ public interface FilterBlueprintMethods {
         return input
                 .toLowerCase()
                 .replace(" ", "")
-                .replace("_", "");
+                .replace("_", "")
+                .replace(".", "");
     }
 
 

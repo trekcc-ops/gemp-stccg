@@ -40,6 +40,17 @@ public interface ModifiersQuerying {
         return affiliationsAdded;
     }
 
+    default Collection<PhysicalCard> getAdditionalDestinationOptionsForPlayingCard(PhysicalCard cardToPlay) {
+        Collection<PhysicalCard> result = new ArrayList<>();
+        for (Modifier modifier : getModifiersAffectingCardByEffect(ModifierEffect.ADD_DESTINATION, cardToPlay)) {
+            if (modifier instanceof AddCardPlayDestinationModifier destinationModifier) {
+                result.addAll(destinationModifier.getAdditionalDestinationOptions(getGame(), cardToPlay));
+            }
+        }
+        return result;
+    }
+
+
 
      default boolean isCardAllowingPlayerToPlayAUCards(String playerName) {
         for (Modifier modifier : getModifiersInEffect(ModifierEffect.AU_CARDS_ENTER_PLAY)) {
