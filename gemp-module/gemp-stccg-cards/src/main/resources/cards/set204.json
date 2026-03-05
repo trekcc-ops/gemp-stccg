@@ -43,6 +43,24 @@
             "image-url" : "https://www.trekcc.org/1e/cardimages/comingofage/5.jpg"
         },
         {
+            "blueprintId" : "204_007",
+            "title" : "Tajor",
+            "type" : "personnel",
+            "affiliation" : "cardassian",
+            "uniqueness" : "universal",
+            "property-logo" : "tng-logo",
+            "classification" : "ENGINEER",
+            "icons" : "command",
+            "lore" : "Typical Cardassian military aide. Fleet logistics expert and skilled negotiator. Glinn who assisted Lemec in 2369. Friend of Corak.",
+            "species" : "cardassian",
+            "gender" : "male",
+            "skill-box" : "[*] Diplomacy [*] Archaeology",
+            "integrity" : 6,
+            "cunning" : 7,
+            "strength" : 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/comingofage/7.jpg"
+        },
+        {
             "blueprintId" : "204_010",
             "title" : "Aletia",
             "type" : "personnel",
