@@ -75,6 +75,22 @@
             "cunning": 6,
             "strength": 6,
             "property-logo": "tng-logo"
+        },
+        {
+            "blueprintId": "991_008",
+            "title": "V.I.P. for DeSoto Test",
+            "type": "personnel",
+            "affiliation": "federation,romulan",
+            "classification": "V.I.P.",
+            "skill-box": "[*] Diplomacy",
+            "species": "human",
+            "lore": "blork",
+            "gender": "male",
+            "uniqueness": "universal",
+            "integrity": 6,
+            "cunning": 6,
+            "strength": 6,
+            "property-logo": "tng-logo"
         }
     ]
 }

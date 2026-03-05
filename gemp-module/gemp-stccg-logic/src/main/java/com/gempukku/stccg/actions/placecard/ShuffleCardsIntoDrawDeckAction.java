@@ -56,7 +56,7 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             CardPile<PhysicalCard> drawDeck = performingPlayer.getDrawDeck();
-            drawDeck.shuffle();
+            cardGame.shuffleCardPile(drawDeck);
             setAsSuccessful();
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);

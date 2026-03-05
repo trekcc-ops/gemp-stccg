@@ -1,0 +1,46 @@
+{
+    "setId": "141",
+    "setName": "Straight and Steady",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "141_017",
+            "title": "Control Plague",
+            "type": "mission",
+            "mission-type": "planet",
+            "point-box": 35,
+            "span": 2,
+            "affiliation-icons": ["federation","klingon"],
+            "location": "Qu'Vat",
+            "lore": "Prevent the spread of a lethal disfiguring virus - at any cost.",
+            "mission-requirements": "Biology + Exobiology + MEDICAL x2 + CUNNING>34",
+            "image-url": "https://www.trekcc.org/1e/cardimages/sas/SAS_17V.jpg"
+        },
+        {
+            "blueprintId": "141_019",
+            "title": "Observe Stellar Rebirth",
+            "type": "mission",
+            "mission-type": "space",
+            "point-box": 35,
+            "span": 4,
+            "affiliation-icons": ["federation","non-aligned"],
+            "location": "Near a stellar nursery",
+            "lore": "Observe cycle of rebirth with devout pilgrims.",
+            "mission-requirements": "Navigation + Anthropology + Stellar Cartography + INTEGRITY>28",
+            "image-url": "https://www.trekcc.org/1e/cardimages/sas/SAS_19V.jpg"
+        },
+        {
+            "blueprintId": "141_020",
+            "title": "Prevent Rebellion",
+            "type": "mission",
+            "mission-type": "planet",
+            "point-box": 35,
+            "span": 3,
+            "affiliation-icons": ["non-aligned","starfleet","vulcan"],
+            "location": "Coridan",
+            "lore": "Intercede on restless local planet to stabilize local space.",
+            "mission-requirements": "Anthropology + Honor + SECURITY + INTEGRITY>29",
+            "image-url": "https://www.trekcc.org/1e/cardimages/sas/SAS_20V.jpg"
+        }
+    ]
+}

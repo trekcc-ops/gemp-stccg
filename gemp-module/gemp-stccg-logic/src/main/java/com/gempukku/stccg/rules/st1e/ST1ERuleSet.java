@@ -163,11 +163,11 @@ public class ST1ERuleSet extends RuleSet<ST1EGame> {
         return false;
     }
 
-    public Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCard(
-            ReportableCard reportingCard, ST1EGame cardGame, boolean specialReporting
+    public Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCardWithNoSpecialReporting(
+            ReportableCard reportingCard, ST1EGame cardGame
     ) {
-        return PlayCardDestinationRules.getDestinationAndAffiliationMapForReportingCards(
-                reportingCard, cardGame, specialReporting);
+        return PlayCardDestinationRules.getReportCardTargetMapWithNoSpecifiedDestinations(
+                reportingCard, cardGame);
     }
 
     public Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCard(

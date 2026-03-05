@@ -12,6 +12,20 @@
             "image-url" : "https://www.trekcc.org/1e/cardimages/tstl/18.jpg"
         },
         {
+            "blueprintId" : "163_023",
+            "title" : "Locate Terrorist Leader",
+            "type": "mission",
+            "mission-type": "planet",
+            "region": "Valo",
+            "location": "Third moon of Valo I",
+            "lore": "Find Bajoran terrorist's resistance cell.",
+            "point-box": 35,
+            "span": 4,
+            "mission-requirements": "Anthropology + SECURITY + Computer Skill + (Honor OR Treachery OR Resistance)",
+            "affiliation-icons": ["federation","cardassian","bajoran"],
+            "image-url" : "https://www.trekcc.org/1e/cardimages/tstl/23.jpg"
+        },
+        {
             "blueprintId" : "163_026",
             "title" : "Goran",
             "type" : "personnel",

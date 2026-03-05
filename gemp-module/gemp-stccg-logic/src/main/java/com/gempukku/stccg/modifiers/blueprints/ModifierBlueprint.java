@@ -19,6 +19,7 @@ import java.util.List;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AddAffiliationIconToMissionModifierBlueprint.class, name = "addAffiliationIconToMission"),
+        @JsonSubTypes.Type(value = AddCardPlayDestinationModifierBlueprint.class, name = "addCardPlayDestination"),
         @JsonSubTypes.Type(value = AddCunningModifierBlueprint.class, name = "addCunning"),
         @JsonSubTypes.Type(value = AddRangeModifierBlueprint.class, name = "addRange"),
         @JsonSubTypes.Type(value = AddShieldsModifierBlueprint.class, name = "addShields"),

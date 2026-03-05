@@ -6,7 +6,6 @@
         {
             "blueprintId" : "127_023",
             "title" : "Robert DeSoto",
-            "java-blueprint" : true,
             "type" : "personnel",
             "affiliation" : "federation",
             "property-logo" : "tng-logo",
@@ -18,6 +17,36 @@
             "integrity" : 8,
             "cunning" : 7,
             "strength" : 5,
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "specialModifier",
+                        "text": "If on <i>U.S.S. Hood</i>, your compatible V.I.P.s may report aboard.",
+                        "modifier": {
+                            "type": "addCardPlayDestination",
+                            "ifCondition": {
+                                "type": "thisCardAboardCard",
+                                "aboardCardFilter": "name(U.S.S. Hood)"
+                            },
+                            "cardsPlayedFilter": "yours + V.I.P. + compatibleWithThisCard",
+                            "destinationFilter": "thisShip"
+                        }
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Leadership"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Honor"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Exobiology"
+                    }
+                ]
+            },
             "image-url" : "https://www.trekcc.org/1e/cardimages/agt/AGTR023.jpg",
             "rarity" : "P"
         },
