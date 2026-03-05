@@ -144,6 +144,20 @@
                     }
                 ]
             }
+        },
+        {
+            "blueprintId" : "159_035",
+            "title" : "Trolarak",
+            "type" : "ship",
+            "affiliation" : "romulan",
+            "property-logo" : "tng-logo",
+            "ship-class": "D'DERIDEX CLASS",
+            "lore" : "Warbird involved in the 2369 race to unravel the DNA puzzle discovered by Richard Galen. Commanded by Galathon.",
+            "gametext": ["Cloaking Device","Holodeck","Tractor Beam"],
+            "range" : 8,
+            "weapons" : 8,
+            "shields" : 8,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/35.jpg"
         }
     ]
 }
