@@ -2711,6 +2711,21 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR336.jpg
         }
         {
+            blueprintId: 101_337
+            title: U.S.S. Hood
+            type: ship
+            affiliation: federation
+            property-logo: tng-logo
+            ship-class: EXCELSIOR CLASS
+            lore: Registry number NCC-42296. Named for the 20th century admiral, Sir Horace Hood. Commanded by Robert DeSoto.
+            staffing: staff,staff
+            gametext: Tractor Beam
+            range: 7
+            weapons: 6
+            shields: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR337.jpg
+        }
+        {
             blueprintId: 101_339
             title: U.S.S. Nebula
             type: ship
