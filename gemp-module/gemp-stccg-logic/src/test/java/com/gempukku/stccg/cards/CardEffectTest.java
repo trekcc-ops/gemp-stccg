@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CardEffectTest {
 
-    private boolean showListInConsole = true;
+    private boolean showListInConsole = false;
 
     @Test
     public void drawEffectTest() {
@@ -22,6 +23,7 @@ public class CardEffectTest {
             }
         }
         assertFalse(blueprints.isEmpty());
+        assertTrue(blueprints.stream().anyMatch(blueprint -> blueprint.getTitle().equals("Dedication to Duty")));
         if (showListInConsole) {
             System.out.println("Cards with draw effect:");
             for (CardBlueprint blueprint : blueprints) {
