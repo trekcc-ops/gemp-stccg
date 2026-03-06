@@ -795,6 +795,23 @@
             "image-url" : "https://www.trekcc.org/1e/cardimages/ds9/karina.gif"
         },
         {
+            "blueprintId" : "112_240",
+            "title" : "Selveth",
+            "type" : "personnel",
+            "affiliation" : "romulan",
+            "property-logo" : "ds9-logo",
+            "classification" : "ENGINEER",
+            "icons" : "staff",
+            "lore" : "Female Romulan. Piloted a warbird in the secret Tal Shiar/Obsidian Order operation to destroy Dominion homeworld in 2371. Served under Colonel Lovok.",
+            "species" : "romulan",
+            "gender" : "female",
+            "skill-box" : "[*] Navigation x2 [*] Stellar Cartography [*] Geology",
+            "integrity" : 6,
+            "cunning" : 7,
+            "strength" : 5,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/ds9/selveth.gif"
+        },
+        {
             "blueprintId" : "112_242",
             "title" : "Vakis",
             "type" : "personnel",
