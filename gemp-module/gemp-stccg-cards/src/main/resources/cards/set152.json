@@ -252,6 +252,24 @@
             "strength": 3,
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/40.jpg",
             "rarity": "V"
+        },
+        {
+            "blueprintId": "152_054",
+            "title": "Travis Mayweather",
+            "type": "personnel",
+            "affiliation": "starfleet",
+            "icons": ["staff","au-icon","ent-era"],
+            "lore": "Space boomer born aboard the <i>ECS Horizon</i>. Joined Starfleet to travel as far - and as fast - as he could. Enjoys ancient gangster stories.",
+            "classification": "OFFICER",
+            "property-logo": "ent-logo",
+            "species": "human",
+            "gender": "male",
+            "skill-box": "[*] Navigation x2 [*] Astrophysics [*] Geology [*] Transporter Skill [DL] Space Boomer",
+            "integrity": 6,
+            "cunning": 7,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/54.jpg",
+            "rarity": "V"
         }
     ]
 }
