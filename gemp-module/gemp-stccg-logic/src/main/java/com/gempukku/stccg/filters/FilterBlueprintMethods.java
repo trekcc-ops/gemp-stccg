@@ -106,7 +106,7 @@ public interface FilterBlueprintMethods {
                 physicalCard.getCardType() == CardType.MISSION &&
                         physicalCard.isAtSameLocationAsCard(actionContext.card()));
         appendSimpleFilter("thisPersonnel", (cardGame, actionContext) -> (game, physicalCard) -> {
-            if (physicalCard.getCardType() == CardType.PERSONNEL || actionContext.card() == null) {
+            if (physicalCard.getCardType() != CardType.PERSONNEL || actionContext.card() == null) {
                 return false;
             } else {
                 return physicalCard == actionContext.card() || actionContext.card().isAtop(physicalCard);
