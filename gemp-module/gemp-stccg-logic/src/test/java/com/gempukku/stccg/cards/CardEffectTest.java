@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CardEffectTest {
 
-    private boolean showListInConsole = false;
+    private final boolean showListInConsole = false;
 
     @Test
     public void drawEffectTest() {

@@ -9,7 +9,6 @@ import com.gempukku.stccg.actions.playcard.PlayCardToDesinationAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
 import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
@@ -45,8 +44,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
                                        SubActionBlueprint immediateEffect,
                                        @JsonProperty(value = "discardAfter")
                                        boolean discardAfter
-    )
-            throws InvalidCardDefinitionException {
+    ) {
         super(new YouPlayerSource());
         _destinationBlueprint = destinationBlueprint;
         if (perGameLimit != null) {
