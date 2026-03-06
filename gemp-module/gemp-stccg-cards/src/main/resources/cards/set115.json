@@ -71,6 +71,7 @@
             "blueprintId": "115_072",
             "title": "Macet",
             "type": "personnel",
+            "affiliation": "cardassian",
             "classification": "OFFICER",
             "lore": "Cardassian observer aboard the <i>U.S.S. Enterprise</i> during the <i>Phoenix</i> incident of 2367. High-ranking Gul in the Central Command. Strict disciplinarian.",
             "property-logo": "tng-logo",
