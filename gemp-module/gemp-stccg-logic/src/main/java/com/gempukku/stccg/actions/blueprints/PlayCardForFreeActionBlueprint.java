@@ -102,4 +102,9 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
         return null;
     }
 
+    @Override
+    public boolean hasPlayCardForFreeEffect() {
+        return true;
+    }
+
 }

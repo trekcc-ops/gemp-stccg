@@ -39,4 +39,8 @@ public interface SubActionBlueprint extends ActionBlueprint {
     default boolean isPlayabilityCheckedForEffect() {
         return false;
     }
+
+    default boolean hasDrawCardEffect() { return false; }
+
+    default boolean hasPlayCardForFreeEffect() { return false; }
 }

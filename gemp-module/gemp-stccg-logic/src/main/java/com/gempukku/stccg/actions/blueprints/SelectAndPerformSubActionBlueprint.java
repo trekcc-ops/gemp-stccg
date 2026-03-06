@@ -45,4 +45,14 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
         return new SelectAndInsertAction(cardGame, context.yourName(), actionsToSelect, messageMap);
     }
 
+    @Override
+    public boolean hasDrawCardEffect() {
+        for (ActionBlueprint blueprint : _subActions) {
+            if (blueprint.hasDrawCardEffect()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

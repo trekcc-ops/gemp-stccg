@@ -24,4 +24,6 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface ActionBlueprint {
     Action createAction(DefaultGame cardGame, GameTextContext context);
+    boolean hasDrawCardEffect();
+    boolean hasPlayCardForFreeEffect();
 }

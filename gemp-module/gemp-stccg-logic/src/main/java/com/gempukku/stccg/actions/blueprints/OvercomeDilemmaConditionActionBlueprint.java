@@ -76,4 +76,40 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
         }
         return actionToReturn;
     }
+
+    @Override
+    public boolean hasDrawCardEffect() {
+        if (_costAction != null && _costAction.hasDrawCardEffect()) {
+            return true;
+        }
+        for (SubActionBlueprint blueprint : _failEffects) {
+            if (blueprint.hasDrawCardEffect()) {
+                return true;
+            }
+        }
+        for (SubActionBlueprint blueprint : _successEffects) {
+            if (blueprint.hasDrawCardEffect()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasPlayCardForFreeEffect() {
+        if (_costAction != null && _costAction.hasPlayCardForFreeEffect()) {
+            return true;
+        }
+        for (SubActionBlueprint blueprint : _failEffects) {
+            if (blueprint.hasPlayCardForFreeEffect()) {
+                return true;
+            }
+        }
+        for (SubActionBlueprint blueprint : _successEffects) {
+            if (blueprint.hasPlayCardForFreeEffect()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

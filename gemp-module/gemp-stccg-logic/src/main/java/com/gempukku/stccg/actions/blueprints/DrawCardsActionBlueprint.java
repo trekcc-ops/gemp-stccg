@@ -90,4 +90,9 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
             return false;
         }
     }
+
+    @Override
+    public boolean hasDrawCardEffect() {
+        return true;
+    }
 }

@@ -35,4 +35,9 @@ public class ConditionalSubActionBlueprint implements SubActionBlueprint {
         }
     }
 
+    @Override
+    public boolean hasDrawCardEffect() {
+        return _falseAction.hasDrawCardEffect() || _trueAction.hasDrawCardEffect();
+    }
+
 }

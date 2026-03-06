@@ -1,8 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.cards.GameTextContext;
-import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
@@ -49,13 +47,38 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         costs.add(subActionBlueprint);
     }
 
-    protected boolean isActionForPlayer(String requestingPlayerName, DefaultGame cardGame, GameTextContext context) {
-        return _performingPlayer.isPlayer(requestingPlayerName, cardGame, context);
-    }
-
     protected void appendSubActions(ActionWithSubActions action) {
         costs.forEach(action::appendCost);
         _effects.forEach(action::appendSubAction);
+    }
+
+    public boolean hasDrawCardEffect() {
+        for (ActionBlueprint cost : costs) {
+            if (cost.hasDrawCardEffect()) {
+                return true;
+            }
+        }
+        for (ActionBlueprint effect : _effects) {
+            if (effect.hasDrawCardEffect()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean hasPlayCardForFreeEffect() {
+        for (ActionBlueprint cost : costs) {
+            if (cost.hasPlayCardForFreeEffect()) {
+                return true;
+            }
+        }
+        for (ActionBlueprint effect : _effects) {
+            if (effect.hasPlayCardForFreeEffect()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
