@@ -2561,6 +2561,24 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR321.jpg
         }
         {
+            blueprintId: 101_322
+            "title": "Tarus",
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SCIENCE
+            icons: staff
+            lore: "Representative of male Romulans trained in the field of science. Specialist in the study of extra-dimensional life-forms.",
+            species: romulan
+            gender: male
+            skill-box: "[*] Stellar Cartography"
+            integrity: 4
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR322.jpg
+        }
+        {
             blueprintId: 101_323
             title: Taul
             type: personnel

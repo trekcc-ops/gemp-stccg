@@ -4,6 +4,23 @@
     "gameType" : "First Edition",
     "cards" : [
         {
+            "blueprintId" : "202_030",
+            "title" : "Jean Hajar",
+            "type" : "personnel",
+            "affiliation" : "federation",
+            "property-logo" : "tng-logo",
+            "classification" : "SECURITY",
+            "icons": "staff",
+            "lore" : "Nova Squadron navigator. In 2368, she attempted to perform an illegal Kolvoord Starburst maneuver with Wesley Crusher and Sito Jaxa. Talented cadet.",
+            "species" : "human",
+            "gender" : "female",
+            "skill-box" : "[*] Navigation x2 [*] Transporter Skill [*] Physics [*] Youth [*] Astrophysics [DL] Space Boomer",
+            "integrity" : 5,
+            "cunning" : 7,
+            "strength" : 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/metamorphosis/30.jpg"
+        },
+        {
             "blueprintId" : "202_048",
             "title" : "Seth Matthews",
             "type" : "personnel",

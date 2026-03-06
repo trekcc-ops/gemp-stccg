@@ -5,9 +5,11 @@ import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.cardgroup.DiscardPile;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -42,6 +44,8 @@ public class Player {
 
     @JsonProperty("seedDeck")
     PhysicalCardGroup<PhysicalCard> _seedDeck;
+
+    Map<MissionCard, List<MissionType>> _missionsSolved = new HashMap<>();
 
     @JsonCreator
     public Player(
@@ -189,6 +193,26 @@ public class Player {
 
     public DrawDeck getDrawDeck() {
         return _drawDeck;
+    }
+
+    public boolean hasSolvedMission() {
+        return !_missionsSolved.isEmpty();
+    }
+
+    public boolean hasSolvedMission(MissionType missionType) {
+        if (!_missionsSolved.isEmpty()) {
+            for (MissionCard mission : _missionsSolved.keySet()) {
+                List<MissionType> types = _missionsSolved.get(mission);
+                if (types.contains(missionType)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void recordSolvedMission(MissionCard missionCard) {
+        _missionsSolved.put(missionCard, missionCard.getMissionTypes());
     }
 
 }

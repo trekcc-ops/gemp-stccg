@@ -105,6 +105,13 @@ public interface FilterBlueprintMethods {
         appendSimpleFilter("thisMission", (cardGame, actionContext) -> (game, physicalCard) ->
                 physicalCard.getCardType() == CardType.MISSION &&
                         physicalCard.isAtSameLocationAsCard(actionContext.card()));
+        appendSimpleFilter("thisPersonnel", (cardGame, actionContext) -> (game, physicalCard) -> {
+            if (physicalCard.getCardType() != CardType.PERSONNEL || actionContext.card() == null) {
+                return false;
+            } else {
+                return physicalCard == actionContext.card() || actionContext.card().isAtop(physicalCard);
+            }
+        });
         appendSimpleFilter("thisShip", (cardGame, actionContext) -> new ThisShipFilter(actionContext.card()));
         appendSimpleFilter("youControlAMatchingOutpost", (cardGame, actionContext) ->
                 new YouControlAMatchingOutpostFilter(actionContext.yourName()));

@@ -57,4 +57,13 @@ public enum SkillName implements Filterable {
     }
 
     public String get_humanReadable() { return _humanReadable; }
+
+    public static SkillName getSkill(String humanReadable) {
+        for (SkillName skill : values()) {
+            if (skill.get_humanReadable().equals(humanReadable)) {
+                return skill;
+            }
+        }
+        return null;
+    }
 }

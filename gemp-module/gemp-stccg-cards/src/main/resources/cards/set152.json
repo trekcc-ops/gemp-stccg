@@ -136,6 +136,37 @@
             ]
         },
         {
+            "blueprintId": "152_018",
+            "title": "Space Boomer",
+            "type": "event",
+            "property-logo": "ent-logo",
+            "lore": "Some crave the adventure and mystique of deep space. They desire to explore the stars, navigate uncharted systems, and go boldly where no man has gone before.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/18.jpg",
+            "rarity": "V",
+            "playThisCardAction": {
+                "type": "playThis",
+                "destination": "yours + personnel + (skill(Navigation x2) OR skill(Stellar Cartography x2))"
+            },
+            "modifiers" : {
+                "type" : "addRange",
+                "ifCondition": {
+                    "type": "and",
+                    "requirements": [
+                        {
+                            "type": "thisCardAboardCard",
+                            "aboardCardFilter": "ship + matchingAffiliation(thisPersonnel)"
+                        },
+                        {
+                            "type": "youHaveSolvedMission",
+                            "missionType": "space"
+                        }
+                    ]
+                },
+                "modifiedCards" : "thisShip",
+                "amount" : 3
+            }
+        },
+        {
             "blueprintId": "152_022",
             "title": "Diplomatic Contact",
             "type": "incident",
@@ -220,6 +251,24 @@
             "cunning": 7,
             "strength": 3,
             "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/40.jpg",
+            "rarity": "V"
+        },
+        {
+            "blueprintId": "152_054",
+            "title": "Travis Mayweather",
+            "type": "personnel",
+            "affiliation": "starfleet",
+            "icons": ["staff","au-icon","ent-era"],
+            "lore": "Space boomer born aboard the <i>ECS Horizon</i>. Joined Starfleet to travel as far - and as fast - as he could. Enjoys ancient gangster stories.",
+            "classification": "OFFICER",
+            "property-logo": "ent-logo",
+            "species": "human",
+            "gender": "male",
+            "skill-box": "[*] Navigation x2 [*] Astrophysics [*] Geology [*] Transporter Skill [DL] Space Boomer",
+            "integrity": 6,
+            "cunning": 7,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront2/54.jpg",
             "rarity": "V"
         }
     ]

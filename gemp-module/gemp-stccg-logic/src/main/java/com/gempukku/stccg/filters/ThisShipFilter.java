@@ -13,10 +13,18 @@ public class ThisShipFilter implements CardFilter {
     }
     @Override
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
-        if (_contextCard.getCardType() == CardType.SHIP) {
-            return physicalCard == _contextCard;
+        return filteringCardIsThisShipForContextCard(physicalCard, _contextCard);
+    }
+
+    private boolean filteringCardIsThisShipForContextCard(PhysicalCard filteringCard, PhysicalCard contextCard) {
+        if (filteringCard.getCardType() != CardType.SHIP) {
+            return false;
+        } else if (contextCard.getCardType() == CardType.SHIP) {
+            return filteringCard == contextCard;
+        } else if (contextCard.getParentCard() != null) {
+            return filteringCardIsThisShipForContextCard(filteringCard, contextCard.getParentCard());
         } else {
-            return _contextCard.getParentCard() == physicalCard && physicalCard.getCardType() == CardType.SHIP;
+            return false;
         }
     }
 }

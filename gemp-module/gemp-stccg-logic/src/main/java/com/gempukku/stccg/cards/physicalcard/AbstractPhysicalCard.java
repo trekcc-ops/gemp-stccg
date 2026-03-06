@@ -1,6 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
@@ -500,11 +501,22 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         return false;
     }
 
+    @JsonIgnore
     public PhysicalCard getAboardCard() {
         if (_parentCardRelationship == ChildCardRelationshipType.ABOARD) {
             return _parentCard;
+        } else if (_parentCard != null) {
+            return _parentCard.getAboardCard();
         } else {
             return null;
+        }
+    }
+
+    public boolean isAtop(PhysicalCard otherCard) {
+        if (_parentCardRelationship == ChildCardRelationshipType.ATOP && otherCard != null) {
+            return Objects.equals(otherCard, _parentCard);
+        } else {
+            return false;
         }
     }
 
