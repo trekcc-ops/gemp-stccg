@@ -19,13 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class Blueprint_161_038_Agyer_Test extends AbstractAtTest {
 
-    private PhysicalCard nefets;
-    private FacilityCard outpost;
-    private PersonnelCard spock;
-    private MissionCard mission;
-    private PhysicalCard pardek;
-    private PhysicalCard bochra;
-    private PhysicalCard jacen;
     private PhysicalCard boomerInDeck;
     private PhysicalCard boomerInHand;
     private PhysicalCard selveth;
@@ -34,9 +27,9 @@ public class Blueprint_161_038_Agyer_Test extends AbstractAtTest {
     private void initializeGame()
             throws InvalidGameOperationException, CardNotFoundException {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
-        mission = builder.addMission("101_154", "Excavation", P1);
+        MissionCard mission = builder.addMission("101_154", "Excavation", P1);
         MissionCard mission2 = builder.addMission(MissionType.PLANET, Affiliation.KLINGON, P2);
-        outpost = builder.addOutpost(Affiliation.ROMULAN, P1, mission);
+        FacilityCard outpost = builder.addOutpost(Affiliation.ROMULAN, P1, mission);
 
         // downloadable cards
         boomerInDeck = builder.addDrawDeckCard("152_018", "Space Boomer", P1);
