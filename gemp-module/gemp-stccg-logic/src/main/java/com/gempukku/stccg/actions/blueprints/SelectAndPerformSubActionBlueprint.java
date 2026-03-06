@@ -7,10 +7,7 @@ import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
 
@@ -46,13 +43,8 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public boolean hasDrawCardEffect() {
-        for (ActionBlueprint blueprint : _subActions) {
-            if (blueprint.hasDrawCardEffect()) {
-                return true;
-            }
-        }
-        return false;
+    public Collection<ActionBlueprint> getAllTheoreticalSubActions() {
+        return new ArrayList<>(_subActions);
     }
 
 }

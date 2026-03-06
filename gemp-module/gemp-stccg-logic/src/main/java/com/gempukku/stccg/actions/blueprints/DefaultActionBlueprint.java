@@ -5,6 +5,8 @@ import com.gempukku.stccg.player.PlayerSource;
 import com.gempukku.stccg.requirement.CostCanBePaidRequirement;
 import com.gempukku.stccg.requirement.Requirement;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,33 +54,12 @@ public abstract class DefaultActionBlueprint implements ActionBlueprint {
         _effects.forEach(action::appendSubAction);
     }
 
-    public boolean hasDrawCardEffect() {
-        for (ActionBlueprint cost : costs) {
-            if (cost.hasDrawCardEffect()) {
-                return true;
-            }
-        }
-        for (ActionBlueprint effect : _effects) {
-            if (effect.hasDrawCardEffect()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
-    public boolean hasPlayCardForFreeEffect() {
-        for (ActionBlueprint cost : costs) {
-            if (cost.hasPlayCardForFreeEffect()) {
-                return true;
-            }
-        }
-        for (ActionBlueprint effect : _effects) {
-            if (effect.hasPlayCardForFreeEffect()) {
-                return true;
-            }
-        }
-        return false;
+    public Collection<ActionBlueprint> getAllTheoreticalSubActions() {
+        Collection<ActionBlueprint> result = new ArrayList<>();
+        result.addAll(costs);
+        result.addAll(_effects);
+        return result;
     }
 
 }

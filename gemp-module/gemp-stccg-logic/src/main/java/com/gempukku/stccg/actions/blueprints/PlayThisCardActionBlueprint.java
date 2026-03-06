@@ -97,11 +97,6 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
         return action;
     }
 
-    @Override
-    public boolean hasPlayCardForFreeEffect() {
-        return _forFree;
-    }
-
     public Collection<? extends PhysicalCard> getDestinationOptions(GameTextContext context, DefaultGame cardGame) {
         if (_destinationBlueprint != null) {
             CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, context);
@@ -111,4 +106,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
         }
     }
 
+    public boolean isForFree() {
+        return _forFree;
+    }
 }

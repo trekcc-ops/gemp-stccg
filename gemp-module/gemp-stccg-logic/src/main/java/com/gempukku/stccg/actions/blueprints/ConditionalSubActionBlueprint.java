@@ -7,6 +7,9 @@ import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.requirement.Requirement;
 
+import java.util.Collection;
+import java.util.List;
+
 public class ConditionalSubActionBlueprint implements SubActionBlueprint {
 
     private final SubActionBlueprint _trueAction;
@@ -36,8 +39,8 @@ public class ConditionalSubActionBlueprint implements SubActionBlueprint {
     }
 
     @Override
-    public boolean hasDrawCardEffect() {
-        return _falseAction.hasDrawCardEffect() || _trueAction.hasDrawCardEffect();
+    public Collection<ActionBlueprint> getAllTheoreticalSubActions() {
+        return List.of(_trueAction, _falseAction);
     }
 
 }

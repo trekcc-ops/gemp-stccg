@@ -6,6 +6,8 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.Collection;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SeedThisCardActionBlueprint.class, name = "seedThis"),
@@ -24,6 +26,34 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface ActionBlueprint {
     Action createAction(DefaultGame cardGame, GameTextContext context);
-    boolean hasDrawCardEffect();
-    boolean hasPlayCardForFreeEffect();
+
+    default boolean hasEffectOfType(Class<? extends ActionBlueprint> clazz) {
+        if (clazz.isAssignableFrom(getClass())) {
+            return true;
+        } else {
+            for (ActionBlueprint subAction : getAllTheoreticalSubActions()) {
+                if (subAction.hasEffectOfType(clazz)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    default boolean hasPlayCardForFreeEffect() {
+        if (this instanceof PlayCardForFreeActionBlueprint) {
+            return true;
+        } else if (this instanceof PlayThisCardActionBlueprint playBlueprint && playBlueprint.isForFree()) {
+            return true;
+        } else {
+            for (ActionBlueprint subAction : getAllTheoreticalSubActions()) {
+                if (subAction.hasPlayCardForFreeEffect()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    Collection<ActionBlueprint> getAllTheoreticalSubActions();
 }

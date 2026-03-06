@@ -48,5 +48,23 @@ public class CardEffectTest {
         }
     }
 
+    @Test
+    public void scorePointsTest() {
+        CardBlueprintLibrary library = new CardBlueprintLibrary();
+        List<CardBlueprint> blueprints = new ArrayList<>();
+        for (CardBlueprint blueprint : library.getAllBlueprints()) {
+            if (blueprint.hasScorePointsEffect()) {
+                blueprints.add(blueprint);
+            }
+        }
+        assertFalse(blueprints.isEmpty());
+        if (showListInConsole) {
+            System.out.println("Cards with score points effect:");
+            for (CardBlueprint blueprint : blueprints) {
+                System.out.println("  " + blueprint.getTitle());
+            }
+        }
+    }
+
 
 }

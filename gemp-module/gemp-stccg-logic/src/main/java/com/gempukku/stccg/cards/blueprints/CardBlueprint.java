@@ -698,11 +698,18 @@ public class CardBlueprint {
     }
 
     public boolean hasDrawCardEffect() {
-        return getAllActionBlueprints().stream().anyMatch(ActionBlueprint::hasDrawCardEffect);
+        return getAllActionBlueprints().stream().anyMatch(blueprint ->
+                blueprint.hasEffectOfType(DrawCardsActionBlueprint.class));
     }
 
     public boolean hasPlayCardForFreeEffect() {
         return getAllActionBlueprints().stream().anyMatch(ActionBlueprint::hasPlayCardForFreeEffect);
+    }
+
+    public boolean hasScorePointsEffect() {
+        Collection<ActionBlueprint> actions = getAllActionBlueprints();
+        return actions.stream().anyMatch(blueprint -> blueprint.hasEffectOfType(ScorePointsSubActionBlueprint.class) ||
+                blueprint.hasEffectOfType(PlaceCardInPointAreaSubActionBlueprint.class));
     }
 
     private Collection<ActionBlueprint> getAllActionBlueprints() {
