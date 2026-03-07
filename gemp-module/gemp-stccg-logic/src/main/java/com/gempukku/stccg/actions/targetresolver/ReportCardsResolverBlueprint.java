@@ -53,11 +53,6 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
                 _differentCardsOnly, _specialReporting, cardGame, context.yourName());
     }
 
-    @Override
-    public void addFilter(FilterBlueprint... filterBlueprint) {
-
-    }
-
     public void addReportableFilter(FilterBlueprint... filterBlueprints) {
         List<FilterBlueprint> newFilters = new ArrayList<>();
         newFilters.add(_reportableFilterBlueprint);

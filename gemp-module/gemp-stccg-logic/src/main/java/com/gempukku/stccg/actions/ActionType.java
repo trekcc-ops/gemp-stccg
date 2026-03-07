@@ -44,5 +44,5 @@ public enum ActionType {
     USAGE_LIMIT, // Using a cost like normal card play or a "once per turn" limit
     USE_GAME_TEXT, // Compound game text action that consists of several sub-actions
     VOLUNTEER_FOR_SELECTION,
-    PLACE_CARD_IN_POINT_AREA, WALK_CARDS
+    PLACE_CARD_IN_POINT_AREA, REVEAL_HAND_CARD, WALK_CARDS
 }

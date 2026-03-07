@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
@@ -29,9 +28,6 @@ public class ReadCardMemoryBlueprint implements TargetResolverBlueprint {
             }
         }
         return new FixedCardsResolver(memoryCards);
-    }
-
-    public void addFilter(FilterBlueprint... filterBlueprints) {
     }
 
     public boolean canBeResolved(DefaultGame cardGame, GameTextContext context) {

@@ -43,7 +43,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     @JsonProperty("locationId")
     protected int _currentLocationId;
-    private boolean _revealedSeedCard = false;
+    private boolean _revealedCard = false;
 
     @JsonProperty("parentCard")
     @JsonIdentityReference(alwaysAsId=true)
@@ -347,11 +347,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public boolean isKnownToPlayer(String playerName) {
         return _zone.isPublic() || _ownerName.equals(playerName) ||
-                isControlledBy(playerName) || _revealedSeedCard;
+                isControlledBy(playerName) || _revealedCard;
     }
 
     public void reveal() {
-        _revealedSeedCard = true;
+        _revealedCard = true;
     }
 
     public boolean hasSameControllerAsCard(DefaultGame cardGame, PhysicalCard otherCard) {

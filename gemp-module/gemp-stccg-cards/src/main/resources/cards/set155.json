@@ -25,7 +25,8 @@
                                     "type": "select",
                                     "selectingPlayer": "you",
                                     "filter": "personnel + (Astrophysics OR Navigation) + encounteringThisCard",
-                                    "count": 1
+                                    "count": 1,
+                                    "isCost": true
                                 }
                             },
                             "failEffect": {
@@ -97,7 +98,8 @@
                                     "type": "select",
                                     "filter": "personnel + encounteringThisCard",
                                     "count": 2,
-                                    "random": true
+                                    "random": true,
+                                    "isCost": true
                                 }
                             },
                             "successAction": {
@@ -174,7 +176,8 @@
                                     "type": "select",
                                     "selectingPlayer": "opponent",
                                     "filter": "personnel + (Diplomacy OR Leadership) + encounteringThisCard",
-                                    "count": 1
+                                    "count": 1,
+                                    "isCost": true
                                 }
                             }
                         }

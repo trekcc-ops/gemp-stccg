@@ -7,10 +7,6 @@ import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 public class AllCardsMatchingFilterResolverBlueprint implements TargetResolverBlueprint {
 
     private FilterBlueprint _filterBlueprint;
@@ -23,14 +19,6 @@ public class AllCardsMatchingFilterResolverBlueprint implements TargetResolverBl
     public ActionCardResolver getTargetResolver(DefaultGame cardGame, GameTextContext context) {
         CardFilter filter = _filterBlueprint.getFilterable(cardGame, context);
         return new AllCardsMatchingFilterResolver(filter);
-    }
-
-    @Override
-    public void addFilter(FilterBlueprint... filterBlueprint) {
-        Collection<FilterBlueprint> filters = new ArrayList<>();
-        filters.add(_filterBlueprint);
-        filters.addAll(Arrays.asList(filterBlueprint));
-        _filterBlueprint = new AndFilterBlueprint(filters);
     }
 
     @Override

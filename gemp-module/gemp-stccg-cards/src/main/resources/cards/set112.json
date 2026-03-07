@@ -68,7 +68,8 @@
                                     "type" : "select",
                                     "selectingPlayer" : "you",
                                     "filter" : "personnel + OFFICER + encounteringThisCard",
-                                    "count" : 1
+                                    "count" : 1,
+                                    "isCost": true
                                 }
                             }
                         }

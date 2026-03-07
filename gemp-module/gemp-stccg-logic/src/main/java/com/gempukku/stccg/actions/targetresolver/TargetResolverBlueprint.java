@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.filters.AllCardsMatchingFilterResolverBlueprint;
-import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 
 
@@ -18,8 +17,6 @@ import com.gempukku.stccg.game.DefaultGame;
 public interface TargetResolverBlueprint {
 
     ActionCardResolver getTargetResolver(DefaultGame cardGame, GameTextContext context);
-
-    void addFilter(FilterBlueprint... filterBlueprint);
 
     boolean canBeResolved(DefaultGame cardGame, GameTextContext context);
 
