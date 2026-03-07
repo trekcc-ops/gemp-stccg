@@ -79,6 +79,7 @@ public class Filters {
     public static final CardFilter undocked = new UndockedFilter();
     public static final CardFilter unique = Filters.or(Uniqueness.UNIQUE);
     public static final CardFilter universal = Filters.or(Uniqueness.UNIVERSAL);
+    public static final CardFilter Vulcan = Filters.or(Species.VULCAN, Affiliation.VULCAN);
 
     public static Collection<PhysicalCard> filterYourCardsInPlay(DefaultGame cardGame, String playerName,
                                                                  Filterable... filters) {

@@ -63,6 +63,27 @@
             ]
         },
         {
+            "blueprintId" : "109_013",
+            "title" : "Primitive Culture",
+            "type" : "dilemma",
+            "mission-type" : "planet",
+            "property-logo" : "first-contact-logo",
+            "icons" : "first-contact-icon",
+            "lore" : "First contact requires caution, subterfuge, or force. Solkar's historic visit to Earth was peaceful, but Federation/Klingon contact in 2218 would ignite a century of hostilities.",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/fc/primitiveculture.gif",
+            "actions" : [
+                {
+                    "type" : "encounter",
+                    "effect" : [
+                        {
+                            "type" : "overcomeCondition",
+                            "requires" : "personnelWith(vulcan) x3 OR (Anthropology + CIVILIAN) OR personnelWith(Vorta) + personnelWith(JemHadar) x4 OR Tal Shiar x2 OR Obsidian Order x2 OR Acquisition + Greed x2 OR personnelWith(Klingon) x6 OR personnelWith(defense-subcommand) x4"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId" : "109_063",
             "title" : "Assign Mission Specialists",
             "type" : "objective",
