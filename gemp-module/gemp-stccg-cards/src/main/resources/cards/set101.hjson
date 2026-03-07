@@ -1151,7 +1151,7 @@
         }
         {
             blueprintId: 101_204
-            title: Data
+            "title": "Data",
             type: personnel
             affiliation: federation
             property-logo: tng-logo
