@@ -117,6 +117,36 @@
             ]
         },
         {
+            "blueprintId": "178_014",
+            "title": "Occupational Hazards",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "ds9-logo",
+            "lore": "In politics, mysterious gifts should be handled with care. A bottle of poisoned kanar may have no effect on Vorta but would have been fatal to Tekeny Ghemor.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront6/14.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Greed x2 OR Treachery x2 OR CUNNING>45",
+                            "failEffect": {
+                                "type": "kill",
+                                "target": {
+                                    "type": "select",
+                                    "random": true,
+                                    "filter": "personnel + encounteringThisCard",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "178_033",
             "title": "Dominion Outpost",
             "type": "facility",
