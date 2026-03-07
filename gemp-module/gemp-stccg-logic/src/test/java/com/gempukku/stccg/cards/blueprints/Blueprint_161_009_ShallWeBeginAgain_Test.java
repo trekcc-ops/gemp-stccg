@@ -23,7 +23,7 @@ public class Blueprint_161_009_ShallWeBeginAgain_Test extends AbstractAtTest {
     private List<PersonnelCard> attemptingPersonnel;
 
     private void initializeGame(int cardsInOpponentDeck, int commandInOpponentHand, int personnelPresent) throws Exception {
-        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players, List.of(30, cardsInOpponentDeck));
         _mission = builder.addMission(MissionType.PLANET, Affiliation.FEDERATION, P1);
         beginAgain = builder.addSeedCardUnderMission("161_009", "Shall We Begin Again?", P1, _mission);
 
@@ -86,5 +86,30 @@ public class Blueprint_161_009_ShallWeBeginAgain_Test extends AbstractAtTest {
         assertEquals(2, stoppedPersonnel);
         assertEquals(Zone.REMOVED, beginAgain.getZone());
     }
+
+    @Test
+    public void notEnoughCardsToDrawTest() throws Exception {
+
+        initializeGame(8, 6, 2);
+        int handSize = getHandSize(P2);
+        int drawDeckSize = _game.getGameState().getCardGroup(P2, Zone.DRAW_DECK).size();
+        assertEquals(1, drawDeckSize);
+
+        attemptMission(P1, _mission);
+        assertEquals(handSize + 1, getHandSize(P2));
+        playerDecided(P1,"");
+
+        int stoppedPersonnel = 0;
+
+        for (PersonnelCard personnel : attemptingPersonnel) {
+            if (personnel.isStopped()) {
+                stoppedPersonnel++;
+            }
+        }
+
+        assertEquals(2, stoppedPersonnel);
+        assertEquals(Zone.REMOVED, beginAgain.getZone());
+    }
+
 
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.choose.MakeDecisionAction;
 import com.gempukku.stccg.actions.draw.DrawCardsAction;
+import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -12,10 +13,7 @@ import com.gempukku.stccg.decisions.YesNoDecision;
 import com.gempukku.stccg.evaluator.ConstantValueSource;
 import com.gempukku.stccg.evaluator.ValueSource;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.player.PlayerResolver;
-import com.gempukku.stccg.player.PlayerSource;
+import com.gempukku.stccg.player.*;
 
 import java.util.Objects;
 
@@ -39,11 +37,14 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
         try {
             final String targetPlayerId;
             targetPlayerId = _drawingPlayerSource.getPlayerName(cardGame, context);
-            int min = Math.max(_countSource.getMinimum(cardGame, context), 0);
             int max = Math.min(_countSource.getMaximum(cardGame, context),
                     cardGame.getPlayer(targetPlayerId).getCardsInDrawDeck().size());
+            int minFromSource = Math.max(_countSource.getMinimum(cardGame, context), 0);
+            int min = (context instanceof DilemmaEncounterGameTextContext &&
+                    _drawingPlayerSource instanceof YourOpponentPlayerSource) ?
+                    Math.min(max, minFromSource) : minFromSource;
 
-            if (max == 0) {
+            if (max == 0 || max < min) {
                 return null;
             }
 
