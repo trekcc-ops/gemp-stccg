@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = AddModifierEffectBlueprint.class, name = "addModifier"),
@@ -38,5 +41,9 @@ public interface SubActionBlueprint extends ActionBlueprint {
 
     default boolean isPlayabilityCheckedForEffect() {
         return false;
+    }
+
+    default Collection<ActionBlueprint> getAllTheoreticalSubActions() {
+        return new ArrayList<>();
     }
 }

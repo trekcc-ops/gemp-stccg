@@ -12,10 +12,7 @@ import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Stack;
+import java.util.*;
 
 public class OvercomeDilemmaConditionActionBlueprint implements SubActionBlueprint {
 
@@ -75,5 +72,20 @@ public class OvercomeDilemmaConditionActionBlueprint implements SubActionBluepri
             actionToReturn.appendCost(_costAction);
         }
         return actionToReturn;
+    }
+
+    @Override
+    public Collection<ActionBlueprint> getAllTheoreticalSubActions() {
+        Collection<ActionBlueprint> result = new ArrayList<>();
+        if (_costAction != null) {
+            result.add(_costAction);
+        }
+        if (!_failEffects.isEmpty()) {
+            result.addAll(_failEffects);
+        }
+        if (!_successEffects.isEmpty()) {
+            result.addAll(_successEffects);
+        }
+        return result;
     }
 }

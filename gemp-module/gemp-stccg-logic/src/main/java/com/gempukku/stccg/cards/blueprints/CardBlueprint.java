@@ -697,4 +697,37 @@ public class CardBlueprint {
         }
     }
 
+    public boolean hasDrawCardEffect() {
+        return getAllActionBlueprints().stream().anyMatch(blueprint ->
+                blueprint.hasEffectOfType(DrawCardsActionBlueprint.class));
+    }
+
+    public boolean hasPlayCardForFreeEffect() {
+        return getAllActionBlueprints().stream().anyMatch(ActionBlueprint::hasPlayCardForFreeEffect);
+    }
+
+    public boolean hasScorePointsEffect() {
+        Collection<ActionBlueprint> actions = getAllActionBlueprints();
+        return actions.stream().anyMatch(blueprint -> blueprint.hasEffectOfType(ScorePointsSubActionBlueprint.class) ||
+                blueprint.hasEffectOfType(PlaceCardInPointAreaSubActionBlueprint.class));
+    }
+
+    private Collection<ActionBlueprint> getAllActionBlueprints() {
+        Collection<ActionBlueprint> result = new ArrayList<>();
+        if (_playThisCardActionBlueprint != null) {
+            result.add(_playThisCardActionBlueprint);
+        }
+        if (!_actionBlueprints.isEmpty()) {
+            result.addAll(_actionBlueprints);
+        }
+        if (_skillBox != null) {
+            for (Skill skill : _skillBox.getSkillList()) {
+                if (skill instanceof SpecialActionSkill actionSkill) {
+                    result.add(actionSkill.getActionBlueprint());
+                }
+            }
+        }
+        return result;
+    }
+
 }

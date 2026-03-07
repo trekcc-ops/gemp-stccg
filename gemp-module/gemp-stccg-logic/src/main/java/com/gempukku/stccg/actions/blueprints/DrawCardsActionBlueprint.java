@@ -44,14 +44,15 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
                     cardGame.getPlayer(targetPlayerId).getCardsInDrawDeck().size());
 
             if (_optional) {
-                Action decisionAction = new MakeDecisionAction(cardGame, targetPlayerId, "", context) {
+                return new MakeDecisionAction(cardGame, targetPlayerId, "", context) {
 
                     @Override
-                    protected AwaitingDecision getDecision(DefaultGame cardGame) {
-                        AwaitingDecision decisionToSend = new YesNoDecision(targetPlayerId, "Do you want to draw?", cardGame) {
+                    protected AwaitingDecision getDecision(DefaultGame cardGame1) {
+                        return new YesNoDecision(targetPlayerId, "Do you want to draw?", cardGame1) {
                             @Override
                             protected void yes() {
-                                cardGame.addActionToStack(makeAction(cardGame, context.card(), targetPlayerId, min, max));
+                                cardGame1.addActionToStack(
+                                        makeAction(cardGame1, context.card(), targetPlayerId, min, max));
                             }
 
                             @Override
@@ -59,10 +60,8 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
 
                             }
                         };
-                        return decisionToSend;
                     }
                 };
-                return decisionAction;
             } else {
                 return makeAction(cardGame, context.card(), targetPlayerId, min, max);
             }
