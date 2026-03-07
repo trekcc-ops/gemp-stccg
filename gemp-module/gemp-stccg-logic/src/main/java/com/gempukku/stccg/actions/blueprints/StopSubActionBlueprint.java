@@ -36,10 +36,11 @@ public class StopSubActionBlueprint implements SubActionBlueprint {
                 context.card().getOwnerName() : context.yourName();
         if (_requirement == null || _requirement.accepts(context, cardGame)) {
             ActionCardResolver cardTarget = _targetResolver.getTargetResolver(cardGame, context);
-            return new StopCardsAction(cardGame, performingPlayerId, cardTarget, context, _saveToMemoryId);
-        } else {
-            return null;
+            if (!cardTarget.cannotBeResolved(cardGame)) {
+                return new StopCardsAction(cardGame, performingPlayerId, cardTarget, context, _saveToMemoryId);
+            }
         }
+        return null;
     }
 
 }

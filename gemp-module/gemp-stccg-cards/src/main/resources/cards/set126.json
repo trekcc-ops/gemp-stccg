@@ -4,6 +4,24 @@
     "gameType" : "First Edition",
     "cards" : [
         {
+            "blueprintId" : "126_052",
+            "title" : "Henreid",
+            "type" : "personnel",
+            "uniqueness": "universal",
+            "affiliation" : "federation",
+            "property-logo" : "st3-logo",
+            "icons": ["staff","au-icon","classic-films-icon"],
+            "classification": "OFFICER",
+            "species": "human",
+            "gender": "male",
+            "lore": "Typical first officer. Assigned to <i>Starship Excelsior</i> in 2285. Stood in for the helmsman, who was on leave when Admiral Kirk stole the <i>Starship Enterprise</i>.",
+            "skill-box": "[*] Leadership [*] Astrophysics [*] Navigation",
+            "integrity": 6,
+            "cunning": 6,
+            "strength": 7,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/tmpr/52.jpg"
+        },
+        {
             "blueprintId" : "126_057",
             "title" : "John Harriman",
             "type" : "personnel",

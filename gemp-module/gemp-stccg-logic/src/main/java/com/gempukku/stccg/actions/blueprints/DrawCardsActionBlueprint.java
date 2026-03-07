@@ -43,6 +43,10 @@ public class DrawCardsActionBlueprint implements SubActionBlueprint {
             int max = Math.min(_countSource.getMaximum(cardGame, context),
                     cardGame.getPlayer(targetPlayerId).getCardsInDrawDeck().size());
 
+            if (max == 0) {
+                return null;
+            }
+
             if (_optional) {
                 return new MakeDecisionAction(cardGame, targetPlayerId, "", context) {
 

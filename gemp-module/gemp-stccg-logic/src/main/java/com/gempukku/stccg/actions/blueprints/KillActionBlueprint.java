@@ -1,7 +1,6 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.discard.KillAction;
 import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
 import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
@@ -20,8 +19,12 @@ public class KillActionBlueprint implements SubActionBlueprint {
     public KillAction createAction(DefaultGame cardGame, GameTextContext context) {
         String performingPlayerId = (context instanceof DilemmaEncounterGameTextContext) ?
             context.card().getOwnerName() : context.yourName();
-        return new KillAction(cardGame, performingPlayerId, context.card(),
-                _targetResolver.getTargetResolver(cardGame, context));
+        if (_targetResolver.canBeResolved(cardGame, context)) {
+            return new KillAction(cardGame, performingPlayerId, context.card(),
+                    _targetResolver.getTargetResolver(cardGame, context));
+        } else {
+            return null;
+        }
     }
 
 }
