@@ -4,7 +4,6 @@ import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -21,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class Blueprint_161_009_ShallWeBeginAgain_Test extends AbstractAtTest {
     private MissionCard _mission;
     private PhysicalCard beginAgain;
-    private ShipCard runabout;
     private List<PersonnelCard> attemptingPersonnel;
 
     private void initializeGame(int cardsInOpponentDeck, int commandInOpponentHand, int personnelPresent) throws Exception {
