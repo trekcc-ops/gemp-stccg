@@ -143,6 +143,25 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR32.jpg
             rarity: C
         } */
+        {
+            blueprintId: 101_033
+            "title": "Matriarchal Society",
+            type: dilemma
+            mission-type: planet
+            lore: "The planet Angel One was dominated by its women who were intolerant of dealing with men.",
+            property-logo: tng-logo
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR33.jpg
+            rarity: U
+            actions: [
+                {
+                    type: encounter
+                    effect: {
+                        type: overcomeCondition
+                        requires: personnelWith(female) x2
+                    }
+                }
+            ]
+        }
     /*    {
             blueprintId: 101_036
             title: Microvirus
