@@ -39,6 +39,41 @@
             ]
         },
         {
+            "blueprintId": "178_007",
+            "title": "Don't Let It End This Way",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "property-logo": "st6-logo",
+            "lore": "Two assassins boarded <i>Kronos One</i>, slaughtering any crew in their path and fatally wounding Chancellor Gorkon. Gorkon's final words begged Kirk to continue the peace initiative.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront6/7.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "you",
+                                "filter": "yours + stopped + personnel",
+                                "count": {
+                                    "type": "countCardsMatchingFilter",
+                                    "forEach": 0.5,
+                                    "filter": "yours + stopped + personnel + atThisLocation",
+                                    "roundUp": true
+                                }
+                            }
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "SECURITY x2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "178_010",
             "title": "It's Green",
             "type": "dilemma",
