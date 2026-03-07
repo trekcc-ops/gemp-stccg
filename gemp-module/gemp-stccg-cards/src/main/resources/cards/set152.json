@@ -190,7 +190,7 @@
                     },
                     "cost": {
                         "type": "discard",
-                        "cards": {
+                        "target": {
                             "type": "select",
                             "filter": "not(personnel) + inYourHand"
                         }

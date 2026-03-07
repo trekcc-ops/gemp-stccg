@@ -155,6 +155,12 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 yield (cardGame, actionContext) ->
                         new AttributeFilter(CardAttribute.CUNNING, comparator, cunningAmount);
             }
+            case "[CUNNING+STRENGTH]" -> {
+                int attributeAmount = Integer.parseInt(parameter);
+                ComparatorType comparator = comparatorType;
+                yield (cardGame, actionContext) -> new AttributeFilter(
+                        List.of(CardAttribute.CUNNING, CardAttribute.STRENGTH), comparator, attributeAmount);
+            }
             case "facilityEngineerRequirement" -> {
                 FilterBlueprint engineerBlueprint = createFilterBlueprint(parameter);
                 yield new FacilityEngineerRequirementFilterBlueprint(engineerBlueprint);

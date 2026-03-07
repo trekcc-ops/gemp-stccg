@@ -352,7 +352,7 @@
                         },
                         {
                             "type": "discard",
-                            "cards": {
+                            "target": {
                                 "type": "select",
                                 "filter": "thisCard OR (inYourHand + tng-icon)",
                                 "count": 1

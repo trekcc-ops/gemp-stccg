@@ -21,7 +21,7 @@
                         "discardDilemma": true,
                         "failEffect": {
                             "type": "discard",
-                            "cards": {
+                            "target": {
                                 "type": "select",
                                 "selectingPlayer": "opponent",
                                 "filter": "highestTotalAttributes(personnel + female + encounteringThisCard)",
