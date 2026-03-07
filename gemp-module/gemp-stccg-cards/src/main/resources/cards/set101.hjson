@@ -273,7 +273,7 @@
         }
         {
             blueprintId: 101_060
-            title: Medical Kit
+            "title": "Medical Kit",
             type: equipment
             property-logo: tng-logo
             lore: Representative of specialized medical equipment. Such equipment has been developed by many races.

@@ -72,6 +72,24 @@
             "cunning" : 6,
             "strength" : 7,
             "image-url" : "https://www.trekcc.org/1e/cardimages/metamorphosis/56.jpg"
+        },
+        {
+            "blueprintId" : "202_057",
+            "title" : "Chagrith",
+            "type" : "personnel",
+            "affiliation" : "romulan",
+            "uniqueness" : "universal",
+            "property-logo" : "nemesis-logo",
+            "classification" : "SCIENCE",
+            "icons" : "staff",
+            "lore" : "One of many Reman soldiers under the command of Shinzon. Former deuterium purification specialist. He helped develop the thalaron radiation generator.",
+            "species" : "reman",
+            "gender" : "male",
+            "skill-box" : "[*] Archaeology [*] Geology [*] Physics",
+            "integrity" : 5,
+            "cunning" : 8,
+            "strength" : 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/metamorphosis/57.jpg"
         }
     ]
 }
