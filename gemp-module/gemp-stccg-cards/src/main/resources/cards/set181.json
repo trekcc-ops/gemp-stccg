@@ -4,6 +4,35 @@
     "gameType" : "First Edition",
     "cards" : [
         {
+            "blueprintId" : "181_003",
+            "title" : "Climbing the Ranks",
+            "type" : "dilemma",
+            "mission-type" : "space",
+            "property-logo": "tos-logo",
+            "lore" : "Chief Navigator Chekov attempted to advance his standing on the <i>I.S.S. Enterprise</i> by assassinating James Tiberius Kirk, who had himself eliminated Captain Pike.",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestStrength(personnel + OFFICER + not(Leadership) + presentWithThisCard)",
+                                "count": 1
+                            }
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "STRENGTH>24"
+                        }
+                    ]
+                }
+            ],
+            "image-url" : "https://www.trekcc.org/1e/cardimages/crossover/3.jpg"
+        },
+        {
             "blueprintId" : "181_037",
             "title" : "Investigate Intrusion",
             "type" : "mission",
