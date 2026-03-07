@@ -33,4 +33,8 @@ public class HasSkillFilter implements CardFilter {
             return false;
         }
     }
+
+    public boolean requiresSkill(SkillName skillName) {
+        return _skill == skillName;
+    }
 }

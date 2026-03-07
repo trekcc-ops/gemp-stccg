@@ -59,7 +59,8 @@ public class OvercomeDilemmaConditionAction extends ActionWithSubActions {
         if (!_conditionsChecked) {
             _conditionsChecked = true;
             if (_conditions != null) {
-                _conditionsMet = _conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame);
+                _conditionsMet =
+                        _conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame, _actionContext);
             } else {
                 _conditionsMet = true;
             }

@@ -43,7 +43,7 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
         else throw new InvalidCardDefinitionException("Unable to deserialize filter blueprint");
     }
 
-    private FilterBlueprint createFilterBlueprint(String initialText) throws InvalidCardDefinitionException {
+    public FilterBlueprint createFilterBlueprint(String initialText) throws InvalidCardDefinitionException {
         if (initialText.startsWith("(") && initialText.endsWith(")") &&
                 initialText.indexOf("(") == initialText.lastIndexOf("(") &&
                 initialText.indexOf(")") == initialText.lastIndexOf(")")) {
@@ -63,6 +63,17 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
             } else if (newString.split(AND_WITH_NO_PARENTHESES).length > 1) {
                 return createAndFilter(newString, subStrings);
             }
+
+            // try to identify skill filter with multiplier
+            String multiplierSplit = "(?=x\\d+)";
+            String[] splitParameters = initialText.split(multiplierSplit);
+            SkillName skillName = SkillName.getSkill(splitParameters[0].trim());
+            int level = (splitParameters.length == 1) ?
+                    1 : Integers.parseInt(splitParameters[1].replace("x",""));
+            if (skillName != null) {
+                return (cardGame, context) -> new HasSkillFilter(skillName, level);
+            }
+
         }
         throw new InvalidCardDefinitionException("Unable to create filter blueprint from text '" + initialText + "'");
     }
@@ -245,6 +256,12 @@ public class FilterBlueprintDeserializer extends StdDeserializer<FilterBlueprint
                 int skillDotCount = Integer.parseInt(parameter);
                 ComparatorType comparatorToUse = comparatorType;
                 yield (cardGame, actionContext) -> new SkillDotFilter(skillDotCount, comparatorToUse);
+            }
+            case "STRENGTH", "strength" -> {
+                int strengthAmount = Integer.parseInt(parameter);
+                ComparatorType comparator = comparatorType;
+                yield (cardGame, actionContext) ->
+                        new AttributeFilter(CardAttribute.STRENGTH, comparator, strengthAmount);
             }
             case "textInLore" -> {
                 String loreText = parameter;

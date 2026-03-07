@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
 import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.*;
+import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.filters.FilterBlueprintDeserializer;
 
 import java.io.IOException;
 import java.util.*;
@@ -18,14 +20,16 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
     final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
     final Map<String, Species> _speciesMap = new HashMap<>();
+    private final FilterBlueprintDeserializer _filterDeserializer;
 
 
-    public MissionRequirementDeserializer() {
+    public MissionRequirementDeserializer() throws InvalidCardDefinitionException {
         this(null);
     }
 
-    public MissionRequirementDeserializer(Class<?> vc) {
+    public MissionRequirementDeserializer(Class<?> vc) throws InvalidCardDefinitionException {
         super(vc);
+        _filterDeserializer = new FilterBlueprintDeserializer();
         new ArrayList<>(Arrays.asList(SkillName.values()))
                 .forEach(regularSkill -> _skillMap.put(regularSkill.get_humanReadable().toUpperCase(), regularSkill));
         new ArrayList<>(Arrays.asList(PersonnelName.values()))
@@ -92,7 +96,7 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
             if (stringSplit[0].startsWith("personnelWith(") && stringSplit[0].endsWith(")")) {
                 int numberOfPersonnelNeeded = Integer.parseInt(stringSplit[1].substring(1));
                 String requirement = stringSplit[0].substring(14,stringSplit[0].length()-1);
-                MissionRequirement personnelRequirement = createRequirement(requirement);
+                FilterBlueprint personnelRequirement = _filterDeserializer.createFilterBlueprint(requirement);
                 return new FromOnePersonnelMissionRequirement(personnelRequirement, numberOfPersonnelNeeded);
             }
         }
@@ -150,7 +154,7 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
         }
         if (text.startsWith("personnelWith(") && text.endsWith(")")) {
             String requirement = text.substring(14,text.length()-1);
-            MissionRequirement personnelRequirement = createRequirement(requirement);
+            FilterBlueprint personnelRequirement = _filterDeserializer.createFilterBlueprint(requirement);
             return new FromOnePersonnelMissionRequirement(personnelRequirement);
         }
         if (text.startsWith("characteristic(") && text.endsWith(")")) {

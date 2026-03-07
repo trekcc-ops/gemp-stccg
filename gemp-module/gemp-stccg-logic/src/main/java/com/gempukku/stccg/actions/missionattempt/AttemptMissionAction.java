@@ -153,9 +153,9 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                         MissionRequirement requirement = missionLocation.getRequirements(_performingPlayerId);
                         Collection<PersonnelCard> personnelAttempting = attemptingUnit.getAttemptingPersonnel(cardGame);
 
-                        if (requirement.canBeMetBy(personnelAttempting, cardGame)) {
-                            _missionSpecHelped =
-                                    requirement.canBeMetWithMissionSpecialistHelping(personnelAttempting, cardGame);
+                        if (requirement.canBeMetBy(personnelAttempting, cardGame, _actionContext)) {
+                            _missionSpecHelped = requirement
+                                    .canBeMetWithMissionSpecialistHelping(personnelAttempting, cardGame, _actionContext);
                             mission.setAsCompleted();
                             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
                             performingPlayer.recordSolvedMission(getMission());

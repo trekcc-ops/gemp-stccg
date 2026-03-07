@@ -54,7 +54,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
             _nullifyAttempted = true;
             if (getEncounteredCard().getNullifyRequirement() != null &&
                     getEncounteredCard().getNullifyRequirement()
-                            .canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
+                            .canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame, _actionContext)) {
                 cardGame.getActionsEnvironment().addActionToStack(new NullifyCardAction(cardGame, getEncounteredCard(),
                         _performingPlayerId, new FixedCardResolver(getEncounteredCard())));
                 setAsSuccessful();

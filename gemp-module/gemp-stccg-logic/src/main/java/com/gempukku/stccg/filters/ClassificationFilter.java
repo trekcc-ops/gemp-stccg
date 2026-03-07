@@ -21,4 +21,8 @@ public class ClassificationFilter implements CardFilter {
     public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
         return physicalCard instanceof PersonnelCard personnelCard && personnelCard.getClassification() == _classification;
     }
+
+    public boolean requiresSkill(SkillName skillName) {
+        return _classification == skillName;
+    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
@@ -57,6 +58,10 @@ public class AndFilter implements CardFilter {
                 }
             }
         }
+    }
+
+    public boolean requiresSkill(SkillName skillName) {
+        return _filters.stream().anyMatch(filter -> filter.requiresSkill(skillName));
     }
 
 }
