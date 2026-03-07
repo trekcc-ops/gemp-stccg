@@ -53,7 +53,9 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
     @Override
     protected void processEffect(DefaultGame cardGame) {
         try {
-            if (_requiredCards.size() > _min) {
+            if (_max < _min) {
+                setAsFailed();
+            } else if (_requiredCards.size() > _min) {
                 throw new InvalidGameLogicException("Volunteered too many cards for this selection");
             } else {
                 Collection<? extends PhysicalCard> selectableCards = new ArrayList<>(getSelectableCards(cardGame));

@@ -119,6 +119,40 @@
             ]
         },
         {
+            "blueprintId": "155_011",
+            "title": "Temptation",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Despite overtures of friendship from the House of Duras, the Arbiter of Succession was unswayed, noting they had manipulated the circumstances with the skill of a Romulan.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/11V.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "randomSelection",
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 3,
+                                "saveToMemoryId": "selectedPersonnel",
+                                "isCost": true
+                            }
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "selectAll",
+                                "filter": "memoryId=selectedPersonnel + not(Honor) + not(Treachery)"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "155_012",
             "title": "Tense Negotiations",
             "type": "dilemma",

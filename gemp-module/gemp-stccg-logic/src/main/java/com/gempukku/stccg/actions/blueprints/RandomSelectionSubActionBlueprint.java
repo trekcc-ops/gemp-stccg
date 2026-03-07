@@ -27,17 +27,20 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
     private final String _saveToMemoryId;
     private final PlayerSource _selectingPlayer = new YourOpponentPlayerSource();
     private final ValueSource _count;
+    private final boolean _isCost;
 
     @JsonCreator
     private RandomSelectionSubActionBlueprint(
             @JsonProperty(value = "filter", required = true) FilterBlueprint filterBlueprint,
             @JsonProperty("requires") Requirement requirementToInitiateSelection,
             @JsonProperty(value = "saveToMemoryId", required = true) String saveToMemoryId,
-            @JsonProperty("count") ValueSource count) {
+            @JsonProperty("count") ValueSource count,
+            @JsonProperty("isCost") boolean isCost) {
         _filterBlueprint = filterBlueprint;
         _requirement = requirementToInitiateSelection;
         _saveToMemoryId = Objects.requireNonNullElse(saveToMemoryId, "temp");
         _count = Objects.requireNonNullElse(count, new ConstantValueSource(1));
+        _isCost = isCost;
     }
 
     public SelectRandomCardsAction createAction(DefaultGame cardGame, GameTextContext context) {
@@ -46,7 +49,7 @@ public class RandomSelectionSubActionBlueprint implements SubActionBlueprint {
             Collection<PhysicalCard> filteredCards = Filters.filter(cardGame, filter);
             String performingPlayer = _selectingPlayer.getPlayerName(cardGame, context);
 
-            int min = (context instanceof DilemmaEncounterGameTextContext) ?
+            int min = (context instanceof DilemmaEncounterGameTextContext && !_isCost) ?
                     Math.min(_count.getMinimum(cardGame, context), filteredCards.size()) :
                     _count.getMinimum(cardGame, context);
             int max = Math.min(_count.getMaximum(cardGame, context), filteredCards.size());
