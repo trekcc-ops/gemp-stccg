@@ -162,6 +162,7 @@ export default class GameTableUI {
                 return this.getReorganizableCardGroupForCardData(cardData.attachedToCard);
             }
         }
+        
         for (let i=0; i < this.missionCardGroups.length; i++) {
             if (this.missionCardGroups[i].cardBelongs(cardData)) {
                 return this.missionCardGroups[i];
