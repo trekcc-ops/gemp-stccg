@@ -78,7 +78,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                     if (isCurrentPlayer) {
                         if (cardGame.getRules()
                                 .cardCanEnterPlay(cardGame, card, EnterPlayActionType.PLAY)) {
-                            TopLevelSelectableAction action = card.getPlayCardAction(cardGame);
+                            TopLevelSelectableAction action = card.getNormalPlayCardAction(cardGame);
                             if (action != null && action.canBeInitiated(cardGame))
                                 result.add(action);
                         }

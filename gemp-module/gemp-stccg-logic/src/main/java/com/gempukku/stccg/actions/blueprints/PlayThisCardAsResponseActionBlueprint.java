@@ -4,13 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardToDestinationAction;
 import com.gempukku.stccg.actions.turn.PlayThisCardAsResponseAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.ThisCardIsInHandRequirement;
@@ -39,8 +38,9 @@ public class PlayThisCardAsResponseActionBlueprint extends DefaultActionBlueprin
         }
         _effects.addFirst(new SubActionBlueprint() {
             public Action createAction(DefaultGame cardGame, GameTextContext context) {
-                return new PlayCardAction(cardGame, context.card(), context.card(),
-                    context.card().getOwnerName(), Zone.CORE, ActionType.PLAY_CARD, context);
+                String yourName = context.card().getOwnerName();
+                return new PlayCardToDestinationAction(cardGame, yourName,
+                    context.card(), new ProxyCoreCard(yourName),context, false);
             }
         });
         if (discardAfter) {

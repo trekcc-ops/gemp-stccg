@@ -27,6 +27,9 @@ public class EnterPlayAtDestinationResolver implements ActionTargetResolver {
         _destinationMap = destinationMap;
         if (_destinationMap.keySet().size() == 1) {
             _cardEnteringPlay = Iterables.getOnlyElement(_destinationMap.keySet());
+            if (_destinationMap.get(_cardEnteringPlay).size() == 1) {
+                _destinationCard = Iterables.getOnlyElement(_destinationMap.get(_cardEnteringPlay));
+            }
         }
     }
 

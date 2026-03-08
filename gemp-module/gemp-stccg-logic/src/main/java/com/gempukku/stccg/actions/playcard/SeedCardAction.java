@@ -40,17 +40,12 @@ public class SeedCardAction extends PlayCardAction {
     }
 
 
-    @Override
-    protected void putCardIntoPlay(DefaultGame game) {
-        GameState gameState = game.getGameState();
-        game.removeCardsFromZone(List.of(_cardEnteringPlay));
-        gameState.addCardToZone(game, _cardEnteringPlay, _destinationZone, _actionContext);
-        setAsSuccessful();
-        saveResult(new PlayCardResult(game,this, _cardEnteringPlay), game);
-    }
-
     public void processEffect(DefaultGame cardGame) {
-        putCardIntoPlay(cardGame);
+        GameState gameState = cardGame.getGameState();
+        cardGame.removeCardsFromZone(List.of(_cardEnteringPlay));
+        gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
+        setAsSuccessful();
+        saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay), cardGame);
         setAsSuccessful();
     }
 

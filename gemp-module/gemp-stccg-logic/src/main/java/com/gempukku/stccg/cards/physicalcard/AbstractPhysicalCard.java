@@ -9,6 +9,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.actions.blueprints.SeedThisCardActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -228,11 +229,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public String getFullName() { return _blueprint.getFullName(); }
 
-    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame) {
-        return getPlayCardAction(cardGame, false);
+    public TopLevelSelectableAction getNormalPlayCardAction(DefaultGame cardGame) {
+        return getPlayCardAction(cardGame, false, false);
     }
 
-    public abstract TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree);
+    public abstract PlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload);
 
 
     public boolean hasTextRemoved(DefaultGame game) {

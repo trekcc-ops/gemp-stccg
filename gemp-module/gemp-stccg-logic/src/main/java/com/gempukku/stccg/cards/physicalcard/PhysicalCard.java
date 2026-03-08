@@ -86,8 +86,9 @@ public interface PhysicalCard {
 
     String getFullName();
 
-    TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame);
-    Action getPlayCardAction(DefaultGame cardGame, boolean forFree);
+    TopLevelSelectableAction getNormalPlayCardAction(DefaultGame cardGame);
+
+    Action getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload);
 
     boolean hasTextRemoved(DefaultGame game);
 

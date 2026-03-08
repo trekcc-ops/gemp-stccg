@@ -1,8 +1,8 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -23,7 +23,7 @@ public class ProxyAnonymousCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
+    public PlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload) {
         return null;
     }
 

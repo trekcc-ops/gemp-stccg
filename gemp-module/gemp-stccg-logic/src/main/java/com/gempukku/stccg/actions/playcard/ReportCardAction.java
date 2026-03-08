@@ -31,14 +31,25 @@ public class ReportCardAction extends PlayCardAction {
         _cardTargets.add(_targetResolver);
     }
 
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree, boolean isDownload) {
+        super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
+        if (!forFree) {
+            appendCost(new UseNormalCardPlayBlueprint());
+        }
+        _targetResolver = new ReportCardResolver(cardGame, cardToPlay);
+        _cardTargets.add(_targetResolver);
+        _isDownload = isDownload;
+    }
+
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
-                            Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap) {
+                            Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap, boolean isDownload) {
         super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
         if (!forFree) {
             appendCost(new UseNormalCardPlayBlueprint());
         }
         _targetResolver = new ReportCardResolver(cardToPlay, calculatedDestinationMap);
         _cardTargets.add(_targetResolver);
+        _isDownload = isDownload;
     }
 
     public ReportCardAction(DefaultGame cardGame, String performingPlayerName,

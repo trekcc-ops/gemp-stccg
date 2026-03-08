@@ -88,6 +88,7 @@ public class Blueprint_155_016_CowboyDiplomacy_Test extends AbstractAtTest {
         initializeGame(true);
         playCard(P1, larson);
         playCard(P1, diplomacy);
+        assertEquals(Zone.POINT_AREA, diplomacy.getZone());
     }
 
     @Test

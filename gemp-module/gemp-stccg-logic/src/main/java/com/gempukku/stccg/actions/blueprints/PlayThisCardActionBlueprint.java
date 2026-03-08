@@ -2,17 +2,15 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
-import com.gempukku.stccg.actions.playcard.PlayCardToDesinationAction;
+import com.gempukku.stccg.actions.playcard.PlayCardToDestinationAction;
 import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.FilterBlueprint;
 import com.gempukku.stccg.filters.Filters;
@@ -79,12 +77,12 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
             CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, context);
             Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destinationFilter);
             if (!destinationOptions.isEmpty()) {
-                action = new PlayCardToDesinationAction(cardGame, context.yourName(), context.card(), destinationOptions,
+                action = new PlayCardToDestinationAction(cardGame, context.yourName(), context.card(), destinationOptions,
                         context, _onPlanet);
             }
         } else if (cardGame instanceof ST1EGame) {
-            action = new PlayCardAction(cardGame, context.card(), context.card(), context.yourName(), Zone.CORE,
-                    ActionType.PLAY_CARD, context);
+            action = new PlayCardToDestinationAction(cardGame, context.yourName(), context.card(),
+                    new ProxyCoreCard(context.yourName()), context, false);
         }
         if (action != null) {
             if (!_forFree) {

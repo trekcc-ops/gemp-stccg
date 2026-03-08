@@ -45,8 +45,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
             final boolean played;
 
             if (_onFilter != null) {
-                final Filterable onFilterable = _onFilter.getFilterable(cardGame, actionContext);
-                played = playedOn(cardGame, actionResult, onFilterable, filterable);
+                played = false;
             } else {
                 played = played(cardGame, actionResult, actionContext, filterable);
             }
@@ -57,20 +56,6 @@ public class PlayedTriggerChecker implements TriggerChecker {
         } else {
             return false;
         }
-    }
-
-    private static boolean playedOn(DefaultGame game, ActionResult actionResult,
-                                   Filterable targetFilter, Filterable... filters) {
-        if (actionResult.hasType(ActionResultType.JUST_PLAYED)) {
-            final PlayCardResult playResult = (PlayCardResult) actionResult;
-            final PhysicalCard attachedTo = playResult.getAttachedTo();
-            if (attachedTo == null)
-                return false;
-            PhysicalCard playedCard = playResult.getPlayedCard();
-            return Filters.and(filters).accepts(game, playedCard)
-                    && Filters.and(targetFilter).accepts(game, attachedTo);
-        }
-        return false;
     }
 
     private boolean played(DefaultGame game, ActionResult actionResult, GameTextContext context, Filterable... filters) {

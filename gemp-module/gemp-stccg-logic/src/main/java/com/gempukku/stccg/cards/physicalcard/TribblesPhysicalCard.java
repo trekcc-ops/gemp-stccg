@@ -34,7 +34,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public TribblesPlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
+    public TribblesPlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload) {
         return new TribblesPlayCardAction(cardGame, this);
     }
 

@@ -44,7 +44,7 @@ public class DownloadMultipleReportablesActionNew extends ActionyAction implemen
         Collection<PhysicalCard> _cardsToDownload = _resolver.getCardsToDownload();
         FacilityCard _destination = _resolver.getDestinationFacility();
         for (PhysicalCard card : _cardsToDownload) {
-            Action playCardAction = card.getPlayCardAction(cardGame, true);
+            Action playCardAction = card.getPlayCardAction(cardGame, true, true);
             if (playCardAction instanceof ReportCardAction reportAction) {
                 reportAction.setDestination(_destination);
                 cardGame.addActionToStack(playCardAction);
