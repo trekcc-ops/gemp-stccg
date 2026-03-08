@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AddCardsToPreseedStackActionTest extends AbstractAtTest {
 
@@ -33,7 +32,7 @@ public class AddCardsToPreseedStackActionTest extends AbstractAtTest {
     }
 
     @Test
-    public void dilemmaSeedTest() throws Exception {
+    public void serializeResultForYouTest() throws Exception {
         initializeGame();
         Action seedAction = seedDilemma(cardsToSeed.getFirst(), mission);
 
@@ -54,5 +53,15 @@ public class AddCardsToPreseedStackActionTest extends AbstractAtTest {
         assertEquals(cardsToSeed.getFirst().getCardId(), preSeedNode.get("targetCardIds").get(0).asInt());
     }
 
+    @Test
+    public void serializeResultForOpponentTest() throws Exception {
+        initializeGame();
+        Action seedAction = seedDilemma(cardsToSeed.getFirst(), mission);
+
+        JsonNode json = _game.serializeGameStateForPlayer(P2);
+        JsonNode resultsNode = json.get("actionResults");
+        assertEquals(1, resultsNode.size());
+        assertNotEquals("ADD_CARDS_TO_PRESEED_STACK", resultsNode.get(0).get("type"));
+    }
 
 }

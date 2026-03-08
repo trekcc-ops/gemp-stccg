@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
+import java.util.Objects;
 
 public class AddCardsToPreseedStackActionResult extends ActionResult {
 
@@ -35,5 +36,10 @@ public class AddCardsToPreseedStackActionResult extends ActionResult {
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> getCardsAdded() {
         return _cardsAdded;
+    }
+
+    @Override
+    public boolean isKnownToPlayer(String playerName) {
+        return Objects.equals(playerName, _performingPlayerId);
     }
 }

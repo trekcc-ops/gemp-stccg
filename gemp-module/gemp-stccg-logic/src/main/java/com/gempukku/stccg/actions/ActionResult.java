@@ -189,4 +189,8 @@ public class ActionResult {
         return _timestamp.toString();
     }
 
+    public boolean isKnownToPlayer(String playerName) {
+        return true;
+    }
+
 }
