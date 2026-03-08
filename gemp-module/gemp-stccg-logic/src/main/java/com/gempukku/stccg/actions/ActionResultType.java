@@ -9,7 +9,7 @@ public enum ActionResultType {
     DRAW_CARD,
     END_OF_TURN,
     JUST_PLAYED,
-    KILL_CARD,
+    KILL,
     PLAYER_WENT_OUT,
     RANDOM_SELECTION_INITIATED,
     SOLVE_MISSION,

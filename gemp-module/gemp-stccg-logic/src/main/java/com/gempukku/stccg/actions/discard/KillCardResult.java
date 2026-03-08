@@ -11,7 +11,7 @@ public class KillCardResult extends ActionResult {
     private final PhysicalCard _killedCard;
 
     public KillCardResult(DefaultGame cardGame, Action action, PhysicalCard killedCard) {
-        super(cardGame, ActionResultType.KILL_CARD, action);
+        super(cardGame, ActionResultType.KILL, action);
         _killedCard = killedCard;
     }
 
