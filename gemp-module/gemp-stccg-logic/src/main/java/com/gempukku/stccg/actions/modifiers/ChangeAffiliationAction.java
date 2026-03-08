@@ -70,6 +70,8 @@ public class ChangeAffiliationAction extends ActionWithSubActions implements Top
     protected void processEffect(DefaultGame cardGame) {
         Affiliation selectedAffiliation = _selectAffiliationAction.getSelectedAffiliation();
         _performingCard.changeAffiliation((ST1EGame) cardGame, selectedAffiliation);
+        saveResult(new ChangeAffiliationActionResult(cardGame, _performingPlayerId, this, _performingCard,
+                selectedAffiliation), cardGame);
         setAsSuccessful();
     }
 

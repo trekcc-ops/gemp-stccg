@@ -233,7 +233,9 @@ public class GameTestBuilder {
     }
 
     private void executeAction(Action action) throws InvalidGameOperationException {
-        action.setAsInitiated();
+        if (!action.wasCompleted()) {
+            action.setAsInitiated();
+        }
         action.executeNextSubAction(_game.getActionsEnvironment(), _game);
     }
 

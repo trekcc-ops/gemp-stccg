@@ -2,6 +2,9 @@ package com.gempukku.stccg.actions;
 
 public enum ActionResultType {
     ACTIVATE_TRIBBLE_POWER,
+    ADD_CARDS_TO_PRESEED_STACK,
+    BEAM_CARDS,
+    CHANGE_AFFILIATION,
     DRAW_CARD,
     END_OF_TURN,
     FOR_EACH_DISCARDED_FROM_HAND,
@@ -13,5 +16,6 @@ public enum ActionResultType {
     SOLVE_MISSION,
     START_OF_MISSION_ATTEMPT,
     START_OF_PHASE,
-    ADD_CARDS_TO_PRESEED_STACK, BEAM_CARDS, WALK_CARDS, START_OF_TURN
+    START_OF_TURN,
+    WALK_CARDS
 }

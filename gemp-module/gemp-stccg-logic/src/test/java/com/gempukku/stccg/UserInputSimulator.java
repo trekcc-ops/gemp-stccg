@@ -36,7 +36,7 @@ public interface UserInputSimulator {
 
     DefaultGame getGame();
 
-    default void performAction(String playerId, Class<? extends Action> actionClass, PhysicalCard performingCard)
+    default Action performAction(String playerId, Class<? extends Action> actionClass, PhysicalCard performingCard)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
@@ -59,6 +59,8 @@ public interface UserInputSimulator {
         }
         if (choice == null) {
             throw new DecisionResultInvalidException("Could not find game text action");
+        } else {
+            return choice;
         }
     }
 
