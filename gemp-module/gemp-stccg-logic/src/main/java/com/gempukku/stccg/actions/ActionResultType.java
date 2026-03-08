@@ -9,6 +9,7 @@ public enum ActionResultType {
     DOCK_SHIP,
     DRAW_CARD,
     END_OF_TURN,
+    FLY_SHIP,
     JUST_PLAYED,
     KILL,
     NULLIFY,
