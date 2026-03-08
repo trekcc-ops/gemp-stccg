@@ -6,6 +6,7 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
+import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToPreseedStackAction;
 import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
 import com.gempukku.stccg.actions.playcard.*;
@@ -382,6 +383,21 @@ public interface UserInputSimulator {
             }
         }
         throw new DecisionResultInvalidException("No valid action to download " + cardToPlay.getTitle());
+    }
+
+    default Action walkCards(String playerId, PhysicalCard origin,
+                             Collection<? extends ReportableCard> cardsToWalk, PhysicalCard destination)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        List<WalkCardsAction> actions = getSelectableActionsOfClass(playerId, WalkCardsAction.class);
+        for (WalkCardsAction action : actions) {
+            if (action.getPerformingCard() == origin) {
+                action.setCardsToMove(cardsToWalk);
+                action.setDestination(destination);
+                selectAction(playerId, action);
+                return action;
+            }
+        }
+        throw new DecisionResultInvalidException("No valid action to beam specified cards");
     }
 
 

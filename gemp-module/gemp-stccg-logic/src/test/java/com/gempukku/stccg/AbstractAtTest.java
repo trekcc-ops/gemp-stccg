@@ -18,9 +18,7 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @SuppressWarnings("MethodWithMultipleReturnPoints")
 public abstract class AbstractAtTest implements UserInputSimulator {
@@ -143,4 +141,29 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         return card.getZone() == Zone.REMOVED;
     }
 
+    protected boolean jsonListHasCardIds(JsonNode node, Collection<? extends PhysicalCard> cards) {
+        Collection<Integer> cardIds = new ArrayList<>();
+        if (!node.isArray()) {
+            return false;
+        } else {
+            for (JsonNode childNode : node) {
+                if (!childNode.isInt()) {
+                    return false;
+                } else {
+                    cardIds.add(childNode.intValue());
+                }
+            }
+        }
+
+        if (cardIds.size() != cards.size()) {
+            return false;
+        } else {
+            for (PhysicalCard card : cards) {
+                if (!cardIds.contains(card.getCardId())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
