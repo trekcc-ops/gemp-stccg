@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.discard.KillAction;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.discard.KillCardResult;
 import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
@@ -18,7 +19,10 @@ import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.ST1EGameState;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("MethodWithMultipleReturnPoints")
 public abstract class AbstractAtTest implements UserInputSimulator {
@@ -88,14 +92,19 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         return actionFound;
     }
 
-    protected boolean personnelWasKilled(PersonnelCard personnel) {
-        if (personnel.getZone() != Zone.DISCARD) {
+    protected boolean personnelWasKilledAndDiscarded(PersonnelCard personnel) {
+        if (!personnel.isInDiscard(_game)) {
             return false;
+        } else {
+            return personnelWasKilled(personnel);
         }
+    }
+
+    protected boolean personnelWasKilled(PersonnelCard personnel) {
         boolean actionFound = false;
-        for (Action action : _game.getActionsEnvironment().getPerformedActions()) {
-            if (action instanceof KillAction killAction &&
-                    killAction.getKilledCards().contains(personnel)) {
+        for (ActionResult actionResult : _game.getActionsEnvironment().getActionResults()) {
+            if (actionResult instanceof KillCardResult killAction &&
+                    killAction.getKilledCard().equals(personnel)) {
                 actionFound = true;
                 break;
             }

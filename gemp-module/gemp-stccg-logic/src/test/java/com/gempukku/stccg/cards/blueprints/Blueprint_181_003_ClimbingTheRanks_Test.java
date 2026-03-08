@@ -72,7 +72,7 @@ public class Blueprint_181_003_ClimbingTheRanks_Test extends AbstractAtTest {
         PersonnelCard target = targetPersonnel.getFirst();
         selectCard(P2, target);
 
-        assertTrue(personnelWasKilled(target));
+        assertTrue(personnelWasKilledAndDiscarded(target));
         assertEquals(Zone.REMOVED, climbing.getZone());
     }
 
@@ -87,7 +87,7 @@ public class Blueprint_181_003_ClimbingTheRanks_Test extends AbstractAtTest {
 
         for (PersonnelCard personnel : attemptingPersonnel) {
             if (personnel == target) {
-                assertTrue(personnelWasKilled(personnel));
+                assertTrue(personnelWasKilledAndDiscarded(personnel));
             } else {
                 assertTrue(personnel.isStopped());
             }
@@ -102,7 +102,7 @@ public class Blueprint_181_003_ClimbingTheRanks_Test extends AbstractAtTest {
         attemptMission(P1, mission);
 
         for (PersonnelCard personnel : attemptingPersonnel) {
-            assertFalse(personnelWasKilled(personnel));
+            assertFalse(personnelWasKilledAndDiscarded(personnel));
             assertFalse(personnel.isStopped());
         }
 
@@ -115,7 +115,7 @@ public class Blueprint_181_003_ClimbingTheRanks_Test extends AbstractAtTest {
         attemptMission(P1, mission);
 
         for (PersonnelCard personnel : attemptingPersonnel) {
-            assertFalse(personnelWasKilled(personnel));
+            assertFalse(personnelWasKilledAndDiscarded(personnel));
             assertTrue(personnel.isStopped());
         }
 

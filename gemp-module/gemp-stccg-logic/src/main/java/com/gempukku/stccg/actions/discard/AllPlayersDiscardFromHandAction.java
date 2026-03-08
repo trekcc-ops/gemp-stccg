@@ -71,7 +71,6 @@ public class AllPlayersDiscardFromHandAction extends ActionyAction implements Di
             gameState.removeCardsFromZoneWithoutSendingToClient(game, discardedCards);
             for (PhysicalCard card : discardedCards) {
                 game.addCardToTopOfDiscardPile(card);
-                saveResult(new DiscardCardFromHandResult(card, this, game), game);
             }
         }
     }

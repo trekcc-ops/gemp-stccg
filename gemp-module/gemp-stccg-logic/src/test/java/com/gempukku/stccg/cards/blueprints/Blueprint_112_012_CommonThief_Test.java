@@ -92,7 +92,7 @@ public class Blueprint_112_012_CommonThief_Test extends AbstractAtTest {
 
         PersonnelCard cardToKill = targetPersonnel.getFirst();
         selectCard(P2, cardToKill);
-        assertTrue(personnelWasKilled(cardToKill));
+        assertTrue(personnelWasKilledAndDiscarded(cardToKill));
 
         for (PhysicalCard card : attemptingCards) {
             assertFalse(((StoppableCard) card).isStopped());

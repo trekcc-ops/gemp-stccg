@@ -46,7 +46,7 @@ public class DiscardCardToPointAreaAction extends ActionyAction implements Disca
             stCard.unstop();
         }
         cardGame.getGameState().addCardToZone(cardGame, _discardedCard, Zone.POINT_AREA, _actionContext);
-        saveResult(new DiscardCardFromPlayResult(cardGame, _discardedCard, this), cardGame);
+        saveResult(new DiscardCardResult(cardGame, _discardedCard, this, Zone.POINT_AREA), cardGame);
         setAsSuccessful();
     }
 

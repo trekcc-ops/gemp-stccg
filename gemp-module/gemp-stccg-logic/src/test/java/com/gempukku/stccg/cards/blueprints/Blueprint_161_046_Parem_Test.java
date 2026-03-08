@@ -44,7 +44,7 @@ public class Blueprint_161_046_Parem_Test extends AbstractAtTest {
         assertEquals(18, parem.getIntegrity(_game) + parem.getCunning(_game) + parem.getStrength(_game));
         assertEquals(20, karina.getIntegrity(_game) + karina.getCunning(_game) + karina.getStrength(_game));
         attemptMission(P1, mission);
-        assertTrue(personnelWasKilled(parem));
+        assertTrue(personnelWasKilledAndDiscarded(parem));
     }
 
     @Test

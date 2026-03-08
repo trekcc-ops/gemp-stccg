@@ -68,7 +68,7 @@ public class Blueprint_155_008_MagneticFieldDisruptions_Test extends AbstractAtT
             if (personnel.isStopped()) {
                 stoppedCount++;
             }
-            if (personnelWasKilled(personnel)) {
+            if (personnelWasKilledAndDiscarded(personnel)) {
                 killedCount++;
             }
         }
@@ -91,7 +91,7 @@ public class Blueprint_155_008_MagneticFieldDisruptions_Test extends AbstractAtT
             if (personnel.isStopped()) {
                 stoppedCount++;
             }
-            if (personnelWasKilled(personnel)) {
+            if (personnelWasKilledAndDiscarded(personnel)) {
                 killedCount++;
             }
         }
@@ -114,7 +114,7 @@ public class Blueprint_155_008_MagneticFieldDisruptions_Test extends AbstractAtT
             if (personnel.isStopped()) {
                 stoppedCount++;
             }
-            if (personnelWasKilled(personnel)) {
+            if (personnelWasKilledAndDiscarded(personnel)) {
                 killedCount++;
             }
         }

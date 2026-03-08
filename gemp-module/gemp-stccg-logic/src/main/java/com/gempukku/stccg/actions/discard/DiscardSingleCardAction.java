@@ -54,7 +54,7 @@ public class DiscardSingleCardAction extends ActionyAction implements DiscardAct
         if (cardTargets.size() == 1) {
             _discardedCard = Iterables.getOnlyElement(cardTargets);
             discardCard(_discardedCard, cardGame);
-            saveResult(new DiscardCardFromPlayResult(cardGame, _discardedCard, this), cardGame);
+            saveResult(new DiscardCardResult(cardGame, _discardedCard, this, Zone.DISCARD), cardGame);
             setAsSuccessful();
         } else {
             cardGame.sendErrorMessage("Too many cards received for discard action");

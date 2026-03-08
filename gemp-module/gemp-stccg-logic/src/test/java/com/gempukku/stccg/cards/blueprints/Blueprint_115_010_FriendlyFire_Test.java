@@ -70,7 +70,7 @@ public class Blueprint_115_010_FriendlyFire_Test extends AbstractAtTest {
             if (personnel.isStopped()) {
                 stoppedPersonnel++;
             }
-            if (personnelWasKilled(personnel)) {
+            if (personnelWasKilledAndDiscarded(personnel)) {
                 killedPersonnel++;
             }
         }

@@ -1,14 +1,13 @@
 package com.gempukku.stccg.cards.blueprints;
 
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
+import com.gempukku.stccg.game.GameTestBuilder;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.player.Player;
 import org.junit.jupiter.api.Test;
@@ -40,7 +39,7 @@ public class Blueprint_101_108_Amanda_Test extends AbstractAtTest {
     private void playDeathYell() throws InvalidGameOperationException, DecisionResultInvalidException {
         // Attempt mission and verify that Worf was killed
         attemptMission(P1, mission);
-        assertEquals(Zone.DISCARD, worf.getZone());
+        assertTrue(personnelWasKilled(worf));
 
         // Play Klingon Death Yell as response
         assertFalse(deathYell.isInPlay());

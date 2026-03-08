@@ -61,7 +61,7 @@ public class CardsInGameSerializerTest extends AbstractAtTest {
             This should not impact P2's visibleCardsInGame size, but P1's will add P2's Armus.
          */
         attemptMission(P1, romulus);
-        assertTrue(personnelWasKilled((PersonnelCard) gowron));
+        assertTrue(personnelWasKilledAndDiscarded((PersonnelCard) gowron));
         assertEquals(Zone.REMOVED, armus2.getZone());
 
         assertTrue(armus2.isKnownToPlayer(P1));

@@ -20,6 +20,7 @@ public class KillAction extends ActionyAction implements DiscardAction, TopLevel
     private final ActionCardResolver _cardTarget;
     private List<PhysicalCard> _cardsToKill;
     private List<PhysicalCard> _cardsKilled = new ArrayList<>();
+    private boolean _killResultSent;
 
     public KillAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard performingCard,
                       ActionCardResolver targetResolver) {
@@ -45,10 +46,16 @@ public class KillAction extends ActionyAction implements DiscardAction, TopLevel
             _cardsToKill = new ArrayList<>(_cardTarget.getCards().stream().toList());
         } else if (!_cardsToKill.isEmpty()) {
             PhysicalCard nextVictim = _cardsToKill.getFirst();
-            _cardsToKill.remove(nextVictim);
-            _cardsKilled.add(nextVictim);
-            discardCard(nextVictim, cardGame);
-            saveResult(new KillCardResult(cardGame, this, nextVictim), cardGame);
+            if (!_killResultSent) {
+                saveResult(new KillCardResult(cardGame, this, nextVictim), cardGame);
+                _killResultSent = true;
+            } else {
+                _cardsToKill.remove(nextVictim);
+                _cardsKilled.add(nextVictim);
+                discardCard(nextVictim, cardGame);
+                saveResult(new DiscardCardResult(cardGame, nextVictim, this, Zone.DISCARD), cardGame);
+                _killResultSent = false;
+            }
         } else if (_cardsKilled.isEmpty()) {
             setAsFailed();
         } else {
