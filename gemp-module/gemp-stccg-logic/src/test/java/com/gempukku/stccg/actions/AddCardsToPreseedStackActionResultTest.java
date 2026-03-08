@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AddCardsToPreseedStackActionTest extends AbstractAtTest {
+public class AddCardsToPreseedStackActionResultTest extends AbstractAtTest {
 
     private MissionCard mission;
     private List<PhysicalCard> cardsToSeed;

@@ -24,17 +24,17 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
 
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
-    private final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
+    protected final Collection<PhysicalCard> _cardsToMove = new LinkedList<>();
 
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
     final CardWithCrew _cardSource;
 
     @JsonProperty("originCardId")
-    private PhysicalCard _origin;
+    protected PhysicalCard _origin;
 
     @JsonProperty("destinationCardId")
-    private PhysicalCard _destination;
+    protected PhysicalCard _destination;
     private boolean _fromCardChosen, _toCardChosen, _cardsToMoveChosen;
     final Collection<PhysicalCard> _destinationOptions;
     private SelectVisibleCardAction _selectOriginAction;
@@ -123,6 +123,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
                 ((ST1EGame) cardGame).getGameState().addCardToEligibleAwayTeam((ST1EGame) cardGame, (ReportableCard) card, mission);
             }
         }
+        saveResult(cardGame);
         setAsSuccessful();
     }
 
@@ -141,5 +142,7 @@ public abstract class BeamOrWalkAction extends ActionyAction implements TopLevel
         _origin = origin;
         _fromCardChosen = true;
     }
+
+    protected abstract void saveResult(DefaultGame cardGame);
 
 }

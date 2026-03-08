@@ -53,7 +53,7 @@ public class GameStateSerializerTest extends AbstractAtTest {
         builder.startGame();
 
         JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeForPlayer(P1));
-        assertEquals(14, gameStateJson.size());
+        assertEquals(15, gameStateJson.size());
         assertTrue(gameStateJson.has("requestingPlayer"));
         assertTrue(gameStateJson.has("currentPhase"));
         assertTrue(gameStateJson.has("phasesInOrder"));
@@ -68,6 +68,7 @@ public class GameStateSerializerTest extends AbstractAtTest {
         assertTrue(gameStateJson.has("gameLocations"));
         assertTrue(gameStateJson.has("spacelineElements"));
         assertTrue(gameStateJson.has("versionNumber"));
+        assertTrue(gameStateJson.has("actionResults"));
 
         // Stuff that shouldn't be there
         Assertions.assertFalse(gameStateJson.has("currentProcess"));
