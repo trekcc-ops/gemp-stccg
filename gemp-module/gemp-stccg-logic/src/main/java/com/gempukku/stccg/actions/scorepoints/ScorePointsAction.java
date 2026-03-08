@@ -52,6 +52,7 @@ public class ScorePointsAction extends ActionWithSubActions {
         try {
             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
             performingPlayer.scorePoints(_points);
+            saveResult(new ScorePointsActionResult(cardGame, this, _performingCard, _points), cardGame);
             setAsSuccessful();
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
