@@ -1,9 +1,8 @@
 package com.gempukku.stccg.actions.draw;
 
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -27,9 +26,13 @@ public class DrawSingleCardAction extends ActionyAction {
 
     public void processEffect(DefaultGame cardGame) {
         try {
-            cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
-            setAsSuccessful();
-            saveResult(new ActionResult(cardGame, ActionResultType.DRAW_CARD, _performingPlayerId, this), cardGame);
+            PhysicalCard card = cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
+            if (card != null) {
+                setAsSuccessful();
+                saveResult(new DrawCardsResult(cardGame, this, card), cardGame);
+            } else {
+                setAsFailed();
+            }
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             setAsFailed();

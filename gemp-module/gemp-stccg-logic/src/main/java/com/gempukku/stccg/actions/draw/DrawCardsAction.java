@@ -52,9 +52,13 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     @Override
     protected void processEffect(DefaultGame cardGame) {
         if (_minCardsToDraw == 1 && _maxCardsToDraw == 1) {
-            cardGame.getGameState().playerDrawsCard(_performingPlayerId);
-            setAsSuccessful();
-            saveResult(new ActionResult(cardGame, ActionResultType.DRAW_CARD, _performingPlayerId, this), cardGame);
+            PhysicalCard cardDrawn = cardGame.getGameState().playerDrawsCard(_performingPlayerId);
+            if (cardDrawn != null) {
+                setAsSuccessful();
+                saveResult(new DrawCardsResult(cardGame, this, cardDrawn), cardGame);
+            } else {
+                setAsFailed();
+            }
         } else if (_minCardsToDraw == _maxCardsToDraw && _cardCountLastSelected == null) {
             _cardCountLastSelected = _maxCardsToDraw;
         } else if ((_cardCountLastSelected != null && _cardCountLastSelected == 0) ||

@@ -33,10 +33,21 @@ public class ActionResult {
     private int _passCount;
     protected final Action _action;
 
-    private final ZonedDateTime _timestamp;
+    protected final ZonedDateTime _timestamp;
 
     @JsonProperty("resultId")
-    private final int _resultId;
+    protected final int _resultId;
+
+    protected ActionResult(int resultId, ActionResultType type, String performingPlayerId, Action action,
+                        ZonedDateTime timestamp) {
+        // This is only used to create action results that have already been logged in the game
+        _type = type;
+        _performingPlayerId = performingPlayerId;
+        _action = action;
+        _passCount = 0;
+        _timestamp = timestamp;
+        _resultId = resultId;
+    }
 
     public ActionResult(DefaultGame cardGame, ActionResultType type, String performingPlayerId, Action action) {
         _type = type;
@@ -51,6 +62,7 @@ public class ActionResult {
     public ActionResult(DefaultGame cardGame, ActionResultType type, Action action) {
         this(cardGame, type, action.getPerformingPlayerId(), action);
     }
+
 
     public void initialize(DefaultGame cardGame) {
         if (!_initialized) {
@@ -189,8 +201,8 @@ public class ActionResult {
         return _timestamp.toString();
     }
 
-    public boolean isKnownToPlayer(String playerName) {
-        return true;
+    public ActionResult getResultForPlayer(String playerName) {
+        return this;
     }
 
 }

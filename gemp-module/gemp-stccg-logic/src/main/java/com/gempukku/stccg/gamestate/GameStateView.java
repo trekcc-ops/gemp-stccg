@@ -107,8 +107,11 @@ public class GameStateView {
 
     @JsonProperty("actionResults")
     private List<ActionResult> actionResults() {
-        return _gameState.getActionsEnvironment().getActionResults().stream().filter(actionResult ->
-                actionResult.isKnownToPlayer(_requestingPlayerId)).toList();
+        List<ActionResult> results = new ArrayList<>();
+        for (ActionResult actionResult : _gameState.getActionsEnvironment().getActionResults()) {
+            results.add(actionResult.getResultForPlayer(_requestingPlayerId));
+        }
+        return results;
     }
 
     @JsonProperty("playerMap")

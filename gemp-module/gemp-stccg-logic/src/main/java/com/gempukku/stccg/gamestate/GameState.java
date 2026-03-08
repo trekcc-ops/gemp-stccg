@@ -255,7 +255,7 @@ public abstract class GameState {
         return _currentPhase;
     }
 
-    public void playerDrawsCard(Player player) {
+    public PhysicalCard playerDrawsCard(Player player) {
         DrawDeck drawDeck = player.getDrawDeck();
         if (!drawDeck.isEmpty()) {
             PhysicalCard card = drawDeck.getTopCard();
@@ -263,13 +263,18 @@ public abstract class GameState {
             List<PhysicalCard> zoneCardList = getZoneCards(player, Zone.HAND);
             zoneCardList.add(card);
             card.setZone(Zone.HAND);
+            return card;
+        } else {
+            return null;
         }
     }
 
-    public void playerDrawsCard(String playerName) {
+    public PhysicalCard playerDrawsCard(String playerName) {
         Player player = getPlayerMap().get(playerName);
         if (player != null) {
-            playerDrawsCard(player);
+            return playerDrawsCard(player);
+        } else {
+            return null;
         }
     }
 

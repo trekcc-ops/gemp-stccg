@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ProxyAnonymousCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -13,7 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AddCardsToPreseedStackActionResultTest extends AbstractAtTest {
 
@@ -60,8 +62,19 @@ public class AddCardsToPreseedStackActionResultTest extends AbstractAtTest {
 
         JsonNode json = _game.serializeGameStateForPlayer(P2);
         JsonNode resultsNode = json.get("actionResults");
-        assertEquals(1, resultsNode.size());
-        assertNotEquals("ADD_CARDS_TO_PRESEED_STACK", resultsNode.get(0).get("type"));
+        JsonNode preSeedNode = resultsNode.get(1);
+        assertEquals(5, preSeedNode.size());
+
+        assertTrue(preSeedNode.has("timestamp"));
+        assertTrue(preSeedNode.has("targetCardIds"));
+        assertTrue(preSeedNode.has("resultId"));
+        assertTrue(preSeedNode.has("type"));
+        assertTrue(preSeedNode.has("performingPlayerId"));
+
+        assertEquals("ADD_CARDS_TO_PRESEED_STACK", preSeedNode.get("type").textValue());
+        assertEquals(P1, preSeedNode.get("performingPlayerId").textValue());
+        assertEquals(1, preSeedNode.get("targetCardIds").size());
+        assertEquals(new ProxyAnonymousCard(P1).getCardId(), preSeedNode.get("targetCardIds").get(0).asInt());
     }
 
 }
