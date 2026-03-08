@@ -63,6 +63,7 @@ public class RemoveCardFromGameAction extends ActionyAction {
                 stCard.unstop();
             }
         }
+        saveResult(new RemoveCardFromGameActionResult(cardGame, this, removedCards), cardGame);
         setAsSuccessful();
     }
 }
