@@ -7,6 +7,7 @@ import java.util.Locale;
 
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum Species implements Filterable {
+    AENAR,
     ANDROID("android"),
     BAJORAN, BENZITE, BETAZOID, BOLIAN, BORG, BOSLIC,
     CAIRN, CARDASSIAN, DOPTERIAN, DOSI,
