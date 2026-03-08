@@ -117,7 +117,7 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
         GameState gameState = cardGame.getGameState();
         cardGame.removeCardsFromZone(List.of(_cardEnteringPlay));
         gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
-        saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
+        saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay), cardGame);
         _played = true;
     }
 

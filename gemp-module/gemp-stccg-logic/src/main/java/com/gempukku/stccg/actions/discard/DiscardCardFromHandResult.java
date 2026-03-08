@@ -9,7 +9,7 @@ public class DiscardCardFromHandResult extends ActionResult {
     private final PhysicalCard _card;
 
     public DiscardCardFromHandResult(PhysicalCard card, Action action, DefaultGame cardGame) {
-        super(Type.FOR_EACH_DISCARDED_FROM_HAND, action.getPerformingPlayerId(), action);
+        super(cardGame, Type.FOR_EACH_DISCARDED_FROM_HAND, action.getPerformingPlayerId(), action);
         _card = card;
     }
 

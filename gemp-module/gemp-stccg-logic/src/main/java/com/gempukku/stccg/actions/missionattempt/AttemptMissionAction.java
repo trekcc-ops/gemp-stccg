@@ -97,7 +97,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
 
     @Override
     public void saveInitiationResult(DefaultGame cardGame) {
-        saveResult(new ActionResult(ActionResult.Type.START_OF_MISSION_ATTEMPT, this), cardGame);
+        saveResult(new ActionResult(cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT, this), cardGame);
     }
 
     protected void processEffect(DefaultGame cardGame) {
@@ -168,7 +168,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                         setAsFailed();
                     }
                 } else if (!wasFailed()) {
-                    saveResult(new MissionSolvedActionResult(_performingPlayerId, this, _performingCard, _missionSpecHelped), cardGame);
+                    saveResult(new MissionSolvedActionResult(cardGame, _performingPlayerId, this, _performingCard, _missionSpecHelped), cardGame);
                     setAsSuccessful();
                 }
             } else {

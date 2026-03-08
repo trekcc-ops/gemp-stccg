@@ -133,7 +133,7 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
 
     @Override
     public void saveInitiationResult(DefaultGame cardGame) {
-        saveResult(new RandomSelectionInitiatedResult(this, getSelectableCards(cardGame)), cardGame);
+        saveResult(new RandomSelectionInitiatedResult(cardGame, this, getSelectableCards(cardGame)), cardGame);
     }
 
     public void setCardToRequired(PhysicalCard volunteeringCard) {

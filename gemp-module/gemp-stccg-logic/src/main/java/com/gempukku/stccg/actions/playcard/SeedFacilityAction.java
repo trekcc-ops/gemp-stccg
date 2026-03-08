@@ -40,7 +40,7 @@ public class SeedFacilityAction extends SeedCardAction {
                 MissionCard destinationCard = _targetResolver.getDestinationMission();
                 stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
                 facility.setParentCardRelationship(destinationCard, ChildCardRelationshipType.IN_SPACE);
-                saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
+                saveResult(new PlayCardResult(stGame, this, _cardEnteringPlay), cardGame);
                 setAsSuccessful();
             } else {
                 cardGame.sendErrorMessage("Unable to process seed outpost action in a non-1E game");

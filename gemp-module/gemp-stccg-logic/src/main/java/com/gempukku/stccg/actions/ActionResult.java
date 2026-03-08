@@ -11,13 +11,14 @@ import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class ActionResult {
 
     public enum Type {
         ACTIVATE_TRIBBLE_POWER,
-        DRAW_CARD_OR_PUT_INTO_HAND,
         END_OF_TURN,
         FOR_EACH_DISCARDED_FROM_HAND,
         FOR_EACH_DISCARDED_FROM_PLAY_PILE,
@@ -40,32 +41,36 @@ public class ActionResult {
     // Actions that can be initiated as optional responses. The key of this map is player name.
     private final Map<String, List<Action>> _optionalAfterTriggerActions = new HashMap<>();
 
-    // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
     private boolean _initialized;
     private ActionOrder _optionalResponsePlayerOrder;
     private final List<Action> _requiredResponses = new ArrayList<>();
     private int _passCount;
     protected final Action _action;
+    private final ZonedDateTime _timestamp;
+    private final int _resultId;
 
-    public ActionResult(List<Type> types, String performingPlayerId, Action action) {
+    public ActionResult(DefaultGame cardGame, List<Type> types, String performingPlayerId, Action action) {
         _types = types;
         _performingPlayerId = performingPlayerId;
         _action = action;
         _passCount = 0;
+        _timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
+        _resultId = cardGame.getActionsEnvironment().getNextResultIdAndIncrement();
+        cardGame.getActionsEnvironment().logActionResult(this);
     }
 
 
-    public ActionResult(Type type, String performingPlayerId, Action action) {
-        this(List.of(type), performingPlayerId, action);
+    public ActionResult(DefaultGame cardGame, Type type, String performingPlayerId, Action action) {
+        this(cardGame, List.of(type), performingPlayerId, action);
     }
 
-    public ActionResult(List<Type> types, Action action) {
-        this(types, action.getPerformingPlayerId(), action);
+    public ActionResult(DefaultGame cardGame, List<Type> types, Action action) {
+        this(cardGame, types, action.getPerformingPlayerId(), action);
     }
 
-    public ActionResult(Type type, Action action) {
-        this(List.of(type), action.getPerformingPlayerId(), action);
+    public ActionResult(DefaultGame cardGame, Type type, Action action) {
+        this(cardGame, List.of(type), action.getPerformingPlayerId(), action);
     }
 
     public void initialize(DefaultGame cardGame) {

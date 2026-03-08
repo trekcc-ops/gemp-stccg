@@ -13,8 +13,9 @@ public class RandomSelectionInitiatedResult extends ActionResult {
 
     private final Collection<? extends PhysicalCard> _selectableCards;
 
-    public RandomSelectionInitiatedResult(Action action, Collection<? extends PhysicalCard> selectableCards) {
-        super(Type.RANDOM_SELECTION_INITIATED, action.getPerformingPlayerId(), action);
+    public RandomSelectionInitiatedResult(DefaultGame cardGame, Action action,
+                                          Collection<? extends PhysicalCard> selectableCards) {
+        super(cardGame, Type.RANDOM_SELECTION_INITIATED, action.getPerformingPlayerId(), action);
         _selectableCards = selectableCards;
     }
 

@@ -48,7 +48,7 @@ public class KillAction extends ActionyAction implements DiscardAction, TopLevel
             _cardsToKill.remove(nextVictim);
             _cardsKilled.add(nextVictim);
             discardCard(nextVictim, cardGame);
-            saveResult(new KillCardResult(this, nextVictim), cardGame);
+            saveResult(new KillCardResult(cardGame, this, nextVictim), cardGame);
         } else if (_cardsKilled.isEmpty()) {
             setAsFailed();
         } else {

@@ -94,7 +94,7 @@ public class ReportCardAction extends PlayCardAction {
                     }
                 }
 
-                saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
+                saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay), cardGame);
             } else {
                 throw new InvalidGameLogicException("Tried to report a non-reportable card");
             }

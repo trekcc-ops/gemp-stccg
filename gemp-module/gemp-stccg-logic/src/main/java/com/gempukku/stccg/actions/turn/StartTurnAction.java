@@ -21,7 +21,7 @@ public class StartTurnAction extends ActionyAction {
     protected void processEffect(DefaultGame cardGame) {
         GameState gameState = cardGame.getGameState();
         gameState.signalStartOfTurn(cardGame, cardGame.getCurrentPlayerId());
-        saveResult(new ActionResult(ActionResult.Type.START_OF_TURN, _performingPlayerId, this), cardGame);
+        saveResult(new ActionResult(cardGame, ActionResult.Type.START_OF_TURN, _performingPlayerId, this), cardGame);
         setAsSuccessful();
     }
 }

@@ -50,7 +50,7 @@ public abstract class ActivateTribblePowerAction extends ActionWithSubActions {
         Action action = getNextAction();
         if (action == null) {
             ActionResult result =
-                    new ActionResult(ActionResult.Type.ACTIVATE_TRIBBLE_POWER, this);
+                    new ActionResult(cardGame, ActionResult.Type.ACTIVATE_TRIBBLE_POWER, this);
             saveResult(result, cardGame);
         }
         return action;
