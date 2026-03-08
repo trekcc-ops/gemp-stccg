@@ -31,6 +31,7 @@ public class UndockAction extends ActionyAction implements TopLevelSelectableAct
         } else if (dockedAtCard != null && dockedAtCard.getCardType() == CardType.SITE) {
             _performingCard.setParentCardRelationship(dockedAtCard.getParentCard().getParentCard(), ChildCardRelationshipType.IN_SPACE);
         }
+        saveResult(new UndockShipActionResult(cardGame, this, _performingCard, dockedAtCard), cardGame);
         setAsSuccessful();
     }
 

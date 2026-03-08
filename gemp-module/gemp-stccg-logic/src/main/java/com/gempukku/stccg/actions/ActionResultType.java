@@ -6,6 +6,7 @@ public enum ActionResultType {
     BEAM_CARDS,
     CHANGE_AFFILIATION,
     DISCARD,
+    DOCK_SHIP,
     DRAW_CARD,
     END_OF_TURN,
     JUST_PLAYED,
@@ -17,5 +18,6 @@ public enum ActionResultType {
     SOLVE_MISSION,
     START_OF_MISSION_ATTEMPT,
     START_OF_TURN,
+    UNDOCK_SHIP,
     WALK_CARDS
 }
