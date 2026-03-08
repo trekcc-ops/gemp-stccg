@@ -41,6 +41,8 @@ export default class GameTableUI {
 
     discardPileDialogs;
     discardPileGroups;
+    pointAreaDialogs;
+    pointAreaGroups;
     adventureDeckDialogs;
     adventureDeckGroups;
     removedPileDialogs;
@@ -135,6 +137,8 @@ export default class GameTableUI {
 
         this.discardPileDialogs = {};
         this.discardPileGroups = {};
+        this.pointAreaDialogs = {};
+        this.pointAreaGroups = {};
         this.adventureDeckDialogs = {};
         this.adventureDeckGroups = {};
         this.removedPileDialogs = {};
@@ -284,6 +288,18 @@ export default class GameTableUI {
                         };
                     })(i));
             }
+
+            $("#score" + i).addClass("clicakble").click(
+                (function (index) {
+                    return function () {
+                        var dialog = that.pointAreaDialogs[that.allPlayerIds[index]];
+                        var group = that.pointAreaGroups[that.allPlayerIds[index]];
+                        openSizeDialog(dialog);
+                        that.dialogResize(dialog, group);
+                        group.layoutCards();
+                    };
+                })(i)
+            );
         }
 
         this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
@@ -307,6 +323,17 @@ export default class GameTableUI {
                         };
                     })(that.bottomPlayerId));
             }
+            $("#score" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
+                    (function (index) {
+                        return function () {
+                            var dialog = that.pointAreaDialogs[index];
+                            var group = that.pointAreaGroups[index];
+                            openSizeDialog(dialog);
+                            that.dialogResize(dialog, group);
+                            group.layoutCards();
+                        };
+                    })(that.bottomPlayerId));
+
             $("#adventureDeck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
                 (function (index) {
                     return function () {
@@ -1338,6 +1365,7 @@ export default class GameTableUI {
             this.allPlayerIds.push(playerId);
             this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
             this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
+            this.createPile(playerId, "Point Area", "pointAreaDialogs", "pointAreaGroups");
         }
 
         var index = this.getPlayerIndex(this.bottomPlayerId);
@@ -1956,6 +1984,12 @@ export class ST1EGameTableUI extends GameTableUI {
         for (let playerId in this.discardPileGroups) {
             if (Object.hasOwn(this.discardPileGroups, playerId)) {
                 this.discardPileGroups[playerId].layoutCards();
+            }
+        }
+
+        for (let playerId in this.pointAreaGroups) {
+            if (Object.hasOwn(this.pointAreaGroups, playerId)) {
+                this.pointAreaGroups[playerId].layoutCards();
             }
         }
 
