@@ -2,26 +2,19 @@ package com.gempukku.stccg.actions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.AbstractAtTest;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.cards.physicalcard.ShipCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.GameTestBuilder;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DiscardActionResultTest extends AbstractAtTest {
 
     private MissionCard mission;
-    private List<PersonnelCard> cardsToWalk;
-    private FacilityCard outpost;
-    private ShipCard runabout;
     private PersonnelCard worf;
 
     private void initializeGame() throws Exception {
@@ -64,7 +57,7 @@ public class DiscardActionResultTest extends AbstractAtTest {
         assertTrue(discardWorfNode.has("destination"));
 
         assertEquals("DISCARD", discardWorfNode.get("type").textValue());
-        assertEquals(P2, discardWorfNode.get("performingPlayerId").textValue());
+        assertEquals(P1, discardWorfNode.get("performingPlayerId").textValue());
         assertEquals(worf.getCardId(), discardWorfNode.get("targetCardId").intValue());
         assertEquals("DISCARD", discardWorfNode.get("destination").textValue());
     }
@@ -99,7 +92,7 @@ public class DiscardActionResultTest extends AbstractAtTest {
         assertTrue(discardWorfNode.has("destination"));
 
         assertEquals("DISCARD", discardWorfNode.get("type").textValue());
-        assertEquals(P2, discardWorfNode.get("performingPlayerId").textValue());
+        assertEquals(P1, discardWorfNode.get("performingPlayerId").textValue());
         assertEquals(worf.getCardId(), discardWorfNode.get("targetCardId").intValue());
         assertEquals("DISCARD", discardWorfNode.get("destination").textValue());
     }

@@ -17,7 +17,7 @@ public class DiscardCardResult extends ActionResult {
     private final Zone _destination;
 
     public DiscardCardResult(DefaultGame cardGame, PhysicalCard card, Action action, Zone destination) {
-        super(cardGame, ActionResultType.DISCARD, action);
+        super(cardGame, ActionResultType.DISCARD, card.getOwnerName(), action);
         _discardedCard = card;
         _destination = destination;
     }
