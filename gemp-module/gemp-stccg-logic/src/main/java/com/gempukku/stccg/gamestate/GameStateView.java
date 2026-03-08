@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -18,10 +19,10 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame",
-        "versionNumber",
+        "versionNumber", "actionResults",
         "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations"})
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "versionNumber",
+        "versionNumber", "actionResults",
         "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations" })
 public class GameStateView {
 
@@ -102,6 +103,11 @@ public class GameStateView {
             return result;
         }
         else return null;
+    }
+
+    @JsonProperty("actionResults")
+    private List<ActionResult> actionResults() {
+        return _gameState.getActionsEnvironment().getActionResults();
     }
 
     @JsonProperty("playerMap")

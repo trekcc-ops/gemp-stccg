@@ -6,18 +6,16 @@ import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.List;
-
 public class DiscardCardFromPlayResult extends ActionResult {
     protected final PhysicalCard _discardedCard;
 
-    public DiscardCardFromPlayResult(DefaultGame cardGame, PhysicalCard card, List<ActionResultType> types, Action action) {
-        super(cardGame, types, action);
+    public DiscardCardFromPlayResult(DefaultGame cardGame, PhysicalCard card, ActionResultType type, Action action) {
+        super(cardGame, type, action);
         _discardedCard = card;
     }
 
     public DiscardCardFromPlayResult(DefaultGame cardGame, PhysicalCard card, Action action) {
-        this(cardGame, card, List.of(ActionResultType.JUST_DISCARDED_FROM_PLAY), action);
+        this(cardGame, card, ActionResultType.JUST_DISCARDED_FROM_PLAY, action);
     }
 
 

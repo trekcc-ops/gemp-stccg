@@ -2,9 +2,7 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -21,7 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class AddCardsToSeedCardStackAction extends ActionyAction implements TopLevelSelectableAction {
+public class AddCardsToPreseedStackAction extends ActionyAction implements TopLevelSelectableAction {
 
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
@@ -31,7 +29,7 @@ public class AddCardsToSeedCardStackAction extends ActionyAction implements TopL
 
     private final PhysicalCard _performingCard; // mission or Empok Nor that cards are seeding under
 
-    public AddCardsToSeedCardStackAction(DefaultGame cardGame, Player performingPlayer, MissionLocation location) {
+    public AddCardsToPreseedStackAction(DefaultGame cardGame, Player performingPlayer, MissionLocation location) {
         super(cardGame, performingPlayer, ActionType.ADD_CARDS_TO_PRESEED_STACK);
         _locationId = location.getLocationId();
         _performingCard = location.getTopMissionCard();
@@ -61,6 +59,7 @@ public class AddCardsToSeedCardStackAction extends ActionyAction implements TopL
                     throw new InvalidGameLogicException("Unable to seed cards under a mission in a non-1E game");
                 }
             }
+            saveResult(new AddCardsToPreseedStackActionResult(cardGame, _performingPlayerId, this, _cardsBeingSeeded), cardGame);
             setAsSuccessful();
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);

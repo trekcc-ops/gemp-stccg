@@ -2,7 +2,7 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.placecard.AddCardsToSeedCardStackAction;
+import com.gempukku.stccg.actions.placecard.AddCardsToPreseedStackAction;
 import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -56,7 +56,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             List<MissionLocation> availableMissions = getAvailableMissions(cardGame, playerId);
             for (MissionLocation mission : availableMissions) {
                 if (!player.getCardsInGroup(Zone.SEED_DECK).isEmpty()) {
-                    TopLevelSelectableAction seedCardsAction = new AddCardsToSeedCardStackAction(cardGame, player, mission);
+                    TopLevelSelectableAction seedCardsAction = new AddCardsToPreseedStackAction(cardGame, player, mission);
                     seedActions.add(seedCardsAction);
                 }
                 if (mission.hasCardsPreSeededByPlayer(player)) {
@@ -74,7 +74,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                             if (action == null) {
                                 _playersParticipating.remove(playerId);
                             } else {
-                                if (action instanceof AddCardsToSeedCardStackAction seedCardsAction) {
+                                if (action instanceof AddCardsToPreseedStackAction seedCardsAction) {
                                     try {
                                         selectCardsToSeed(player, cardGame, seedCardsAction);
                                     } catch(InvalidGameLogicException exp) {
@@ -91,7 +91,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
         }
     }
 
-    private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToSeedCardStackAction seedCardsAction)
+    private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToPreseedStackAction seedCardsAction)
             throws InvalidGameLogicException {
         Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK);
         cardGame.sendAwaitingDecision(

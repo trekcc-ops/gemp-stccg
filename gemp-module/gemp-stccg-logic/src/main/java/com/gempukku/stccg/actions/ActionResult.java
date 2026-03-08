@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -17,7 +19,8 @@ import java.util.*;
 
 public class ActionResult {
 
-    private final List<ActionResultType> _types;
+    @JsonProperty("type")
+    private final ActionResultType _type;
     private final Set<Integer> _triggerActionIdsUsed = new HashSet<>();
 
     // Actions that can be initiated as optional responses. The key of this map is player name.
@@ -29,11 +32,14 @@ public class ActionResult {
     private final List<Action> _requiredResponses = new ArrayList<>();
     private int _passCount;
     protected final Action _action;
+
     private final ZonedDateTime _timestamp;
+
+    @JsonProperty("resultId")
     private final int _resultId;
 
-    public ActionResult(DefaultGame cardGame, List<ActionResultType> types, String performingPlayerId, Action action) {
-        _types = types;
+    public ActionResult(DefaultGame cardGame, ActionResultType type, String performingPlayerId, Action action) {
+        _type = type;
         _performingPlayerId = performingPlayerId;
         _action = action;
         _passCount = 0;
@@ -42,17 +48,8 @@ public class ActionResult {
         cardGame.getActionsEnvironment().logActionResult(this);
     }
 
-
-    public ActionResult(DefaultGame cardGame, ActionResultType type, String performingPlayerId, Action action) {
-        this(cardGame, List.of(type), performingPlayerId, action);
-    }
-
-    public ActionResult(DefaultGame cardGame, List<ActionResultType> types, Action action) {
-        this(cardGame, types, action.getPerformingPlayerId(), action);
-    }
-
     public ActionResult(DefaultGame cardGame, ActionResultType type, Action action) {
-        this(cardGame, List.of(type), action.getPerformingPlayerId(), action);
+        this(cardGame, type, action.getPerformingPlayerId(), action);
     }
 
     public void initialize(DefaultGame cardGame) {
@@ -65,15 +62,10 @@ public class ActionResult {
     }
 
     public boolean hasType(ActionResultType type) {
-        return _types.contains(type);
+        return _type == type;
     }
     public boolean hasAnyType(List<ActionResultType> types) {
-        for (ActionResultType type : types) {
-            if (_types.contains(type)) {
-                return true;
-            }
-        }
-        return false;
+        return types.contains(_type);
     }
 
     public void createOptionalAfterTriggerActions(DefaultGame game) {
@@ -91,6 +83,7 @@ public class ActionResult {
     }
 
 
+    @JsonProperty("performingPlayerId")
     public String getPerformingPlayerId() { return _performingPlayerId; }
 
     public List<Action> getRequiredResponseActions(DefaultGame cardGame) {
@@ -104,6 +97,7 @@ public class ActionResult {
         return gatheredActions;
     }
 
+    @JsonIgnore
     public boolean canBeRespondedTo() {
         return !_requiredResponses.isEmpty() || _passCount < _optionalResponsePlayerOrder.getPlayerCount();
     }
@@ -185,8 +179,14 @@ public class ActionResult {
         }
     }
 
+    @JsonIgnore
     public Action getAction() {
         return _action;
+    }
+
+    @JsonProperty("timestamp")
+    public String getTimestamp() {
+        return _timestamp.toString();
     }
 
 }

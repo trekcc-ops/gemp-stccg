@@ -153,4 +153,8 @@ public class ActionsEnvironment {
     public void logActionResult(ActionResult actionResult) {
         _actionResults.add(actionResult);
     }
+
+    public List<ActionResult> getActionResults() {
+        return _actionResults;
+    }
 }

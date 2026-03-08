@@ -1,6 +1,7 @@
 package com.gempukku.stccg.game;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -388,6 +389,10 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public String serializeCompleteGameState() throws JsonProcessingException {
         return getGameState().serializeComplete();
+    }
+
+    public JsonNode serializeGameStateForPlayer(String playerName) throws JsonProcessingException {
+        return getGameState().serializeForPlayerIntoNode(playerName);
     }
 
     public boolean isCancelled() {

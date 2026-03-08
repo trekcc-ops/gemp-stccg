@@ -2,10 +2,13 @@ package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
@@ -326,9 +329,15 @@ public abstract class GameState {
         return new GameStateMapper().writer(true).writeValueAsString(this);
     }
 
+    public JsonNode serializeForPlayerIntoNode(String playerName) throws JsonProcessingException {
+        String jsonString = serializeForPlayer(playerName);
+        return new ObjectMapper().readTree(jsonString);
+    }
+
     public String serializeForPlayer(String playerId) throws JsonProcessingException {
-        return new GameStateMapper()
-                .writer(false)
+        GameStateMapper mapper = new GameStateMapper();
+        mapper.registerModule(new JavaTimeModule());
+        return mapper.writer(false)
                 .writeValueAsString(new GameStateView(playerId, this));
     }
 
