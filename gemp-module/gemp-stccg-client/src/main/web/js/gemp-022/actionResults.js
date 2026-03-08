@@ -144,7 +144,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "KILL": // only the kill part of the action; typically this will result in a separate discard action
         case "NULLIFY": // only the kill part of the action; typically this will result in a separate discard action
         case "SCORE_POINTS":
-        case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
         case "USE_GAME_TEXT":
             break;
@@ -316,7 +315,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
                 gameChat.appendMessage(message, "gameMessage");
             }
             break;
-        case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "UNDOCK_SHIP":
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
         case "USE_GAME_TEXT":

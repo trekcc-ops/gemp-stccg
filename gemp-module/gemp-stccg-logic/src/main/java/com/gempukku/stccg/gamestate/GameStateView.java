@@ -1,8 +1,10 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
@@ -122,13 +124,7 @@ public class GameStateView {
 
     @JsonProperty("performedActions")
     private List<Action> performedActions() {
-        List<Action> result = new ArrayList<>();
-        for (Action action : _gameState.getActionsEnvironment().getPerformedActions()) {
-            if (action.getActionType() != ActionType.SYSTEM_QUEUE) {
-                result.add(action);
-            }
-        }
-        return result;
+        return _gameState.getActionsEnvironment().getPerformedActions();
     }
 
     @JsonProperty("playerClocks")

@@ -39,10 +39,10 @@ public enum ActionType {
     SELECT_SKILL,
     SHUFFLE_CARDS_INTO_DRAW_DECK,
     STOP_CARDS,
-    SYSTEM_QUEUE, // Automated Gemp actions, like asking players if they want to perform optional responses to other actions
+    // Automated Gemp actions, like asking players if they want to perform optional responses to other actions
     UNDOCK_SHIP,
     USAGE_LIMIT, // Using a cost like normal card play or a "once per turn" limit
     USE_GAME_TEXT, // Compound game text action that consists of several sub-actions
     VOLUNTEER_FOR_SELECTION,
-    PLACE_CARD_IN_POINT_AREA, REVEAL_HAND_CARD, WALK_CARDS
+    PLACE_CARD_IN_POINT_AREA, REVEAL_HAND_CARD, END_TURN, START_TURN, WALK_CARDS
 }

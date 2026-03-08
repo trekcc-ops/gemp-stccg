@@ -200,11 +200,6 @@
             "performingPlayerId": "player1",
             "status": "completed_success" // See \logic\actions\ActionStatus.java for descriptions
         },
-        2: {
-            "actionId": 2,
-            "actionType": "SYSTEM_QUEUE", // Automated system actions do not have a performing player
-            "status": "completed_success"
-        },
         // etc.
     },
         /* performedActions only includes actionIds for actions that were finished,
