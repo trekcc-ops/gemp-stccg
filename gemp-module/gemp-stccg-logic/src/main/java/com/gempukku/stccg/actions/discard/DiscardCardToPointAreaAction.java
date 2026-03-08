@@ -42,6 +42,7 @@ public class DiscardCardToPointAreaAction extends ActionyAction implements Disca
     @Override
     protected void processEffect(DefaultGame cardGame) {
         cardGame.removeCardsFromZone(List.of(_discardedCard));
+        _discardedCard.reveal();
         if (_discardedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
             stCard.unstop();
         }
