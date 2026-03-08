@@ -16,8 +16,10 @@ public class DiscardCardResult extends ActionResult {
     @JsonProperty("destination")
     private final Zone _destination;
 
-    public DiscardCardResult(DefaultGame cardGame, PhysicalCard card, Action action, Zone destination) {
-        super(cardGame, ActionResultType.DISCARD, card.getOwnerName(), action);
+    public DiscardCardResult(DefaultGame cardGame, PhysicalCard card, Action parentAction, Zone destination) {
+        /*  In 1E, discarding a card should always be performed by the owner of that card. This may not always
+               be the performing player of the parent action.  */
+        super(cardGame, ActionResultType.DISCARD, card.getOwnerName(), parentAction);
         _discardedCard = card;
         _destination = destination;
     }
