@@ -1,5 +1,6 @@
 package com.gempukku.stccg.actions.discard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
@@ -11,6 +12,7 @@ import com.gempukku.stccg.game.DefaultGame;
 public class DiscardCardResult extends ActionResult {
 
     @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     protected final PhysicalCard _discardedCard;
 
     @JsonProperty("destination")

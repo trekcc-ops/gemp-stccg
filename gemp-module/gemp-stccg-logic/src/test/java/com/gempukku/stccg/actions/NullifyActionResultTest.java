@@ -52,7 +52,7 @@ public class NullifyActionResultTest extends AbstractAtTest {
         assertEquals(Zone.REMOVED, negotiations.getZone());
         assertTrue(cardWasNullified(negotiations));
 
-        JsonNode json = _game.serializeGameStateForPlayer(P1);
+        JsonNode json = _game.serializeGameStateForPlayer(P2);
         JsonNode resultsNode = json.get("actionResults");
 
         JsonNode nullifyNode = null;

@@ -58,7 +58,7 @@ public class ChangeAffiliationActionResultTest extends AbstractAtTest {
         Action action = performAction(P1, ChangeAffiliationAction.class, gareb);
         assertTrue(gareb.hasAffiliation(_game, Affiliation.NON_ALIGNED, P2));
 
-        JsonNode json = _game.serializeGameStateForPlayer(P1);
+        JsonNode json = _game.serializeGameStateForPlayer(P2);
         JsonNode resultsNode = json.get("actionResults");
         JsonNode changeNode = resultsNode.get(resultsNode.size() - 1);
         assertEquals(6, changeNode.size());

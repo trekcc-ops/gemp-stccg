@@ -150,7 +150,7 @@ public abstract class AbstractAtTest implements UserInputSimulator {
         return card.getZone() == Zone.REMOVED;
     }
 
-    protected boolean jsonListHasCardIds(JsonNode node, Collection<? extends PhysicalCard> cards) {
+    protected boolean jsonListIsCardIds(JsonNode node, Collection<? extends PhysicalCard> cards) {
         Collection<Integer> cardIds = new ArrayList<>();
         if (!node.isArray()) {
             return false;

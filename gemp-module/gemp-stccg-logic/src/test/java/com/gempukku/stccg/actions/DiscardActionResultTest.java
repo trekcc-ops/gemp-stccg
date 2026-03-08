@@ -67,7 +67,7 @@ public class DiscardActionResultTest extends AbstractAtTest {
         initializeGame();
         attemptMission(P1, mission);
 
-        JsonNode json = _game.serializeGameStateForPlayer(P1);
+        JsonNode json = _game.serializeGameStateForPlayer(P2);
         JsonNode resultsNode = json.get("actionResults");
 
         JsonNode discardWorfNode = null;
