@@ -593,8 +593,10 @@ export default class GameAnimations {
             $("#main").queue(
                 function (next) {
                     that.game.layoutGroupWithCard(that.cardId);
-                    that.cardData.oldGroup.layoutCards();
-                    that.cardData.oldGroup = null;
+                    if (that.cardData.oldGroup != null) {
+                        that.cardData.layoutCards();
+                        that.cardData.oldGroup = null;
+                    }
                     next();
                 });
     }
