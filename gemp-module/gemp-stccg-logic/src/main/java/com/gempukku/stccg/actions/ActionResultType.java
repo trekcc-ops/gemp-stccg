@@ -16,7 +16,6 @@ public enum ActionResultType {
     REMOVE_CARD_FROM_GAME,
     SOLVE_MISSION,
     START_OF_MISSION_ATTEMPT,
-    START_OF_PHASE,
     START_OF_TURN,
     WALK_CARDS
 }
