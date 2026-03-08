@@ -3,7 +3,7 @@ package com.gempukku.stccg.actions.missionattempt;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -52,7 +52,7 @@ public class RevealSeedCardAction extends ActionyAction {
                                         new PlayerCannotSolveMissionModifier(_locationId, _performingPlayerId);
                                 cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
                             }
-                            cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, revealedCard));
+                            cardGame.addActionToStack(new RemoveCardFromGameAction(cardGame, _performingPlayerId, revealedCard));
                         }
                     } else {
                         throw new InvalidGameLogicException("Unable to reveal seed card from location id " + _locationId);

@@ -264,4 +264,6 @@ public interface PhysicalCard {
     PhysicalCard getAboardCard();
 
     boolean isAtop(PhysicalCard physicalCard);
+
+    void clearLocation();
 }

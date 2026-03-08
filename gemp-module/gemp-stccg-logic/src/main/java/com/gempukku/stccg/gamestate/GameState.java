@@ -185,6 +185,7 @@ public abstract class GameState {
         List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), Zone.REMOVED);
         zoneCardList.add(card);
         card.setZone(Zone.REMOVED);
+        card.clearLocation();
     }
 
     public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone, GameTextContext context) {
@@ -195,6 +196,9 @@ public abstract class GameState {
         }else {
             if (zone.isInPlay()) {
                 addCardToInPlay(cardGame, card, context);
+            } else if (zone != Zone.VOID) {
+                // Kind of weird to call out VOID, but this may still be used for dilemma seeding
+                card.clearLocation();
             }
 
             if (zone.hasList()) {

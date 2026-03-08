@@ -33,6 +33,8 @@ import static com.gempukku.stccg.gamestate.ChildCardRelationshipType.*;
 
 public abstract class AbstractPhysicalCard implements PhysicalCard {
 
+    private final static int NULL_LOCATION_ID = -999;
+
     protected final CardBlueprint _blueprint;
     protected final String _ownerName;
 
@@ -61,16 +63,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _cardId = cardId;
         _ownerName = ownerName;
         _blueprint = blueprint;
-        _currentLocationId = -999;
+        _currentLocationId = NULL_LOCATION_ID;
     }
 
-
-    public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
-        _cardId = cardId;
-        _ownerName = owner.getPlayerId();
-        _blueprint = blueprint;
-        _currentLocationId = -999;
-    }
 
     public Zone getZone() {
         return _zone;
@@ -518,6 +513,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         } else {
             return false;
         }
+    }
+
+    public void clearLocation() {
+        _currentLocationId = NULL_LOCATION_ID;
     }
 
 }

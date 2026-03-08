@@ -9,23 +9,24 @@ import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.GameLocation;
+import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.gamestate.ST1EGameState;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public class RemoveCardFromPlayAction extends ActionyAction {
+public class RemoveCardFromGameAction extends ActionyAction {
 
     private final ActionCardResolver _cardTarget;
 
-    public RemoveCardFromPlayAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver resolver) {
+    public RemoveCardFromGameAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver resolver) {
         super(cardGame, performingPlayerName, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = resolver;
         _cardTargets.add(_cardTarget);
     }
 
-    public RemoveCardFromPlayAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardToRemove) {
+    public RemoveCardFromGameAction(DefaultGame cardGame, String performingPlayerName, PhysicalCard cardToRemove) {
         super(cardGame, performingPlayerName, ActionType.REMOVE_CARD_FROM_GAME);
         _cardTarget = new FixedCardResolver(cardToRemove);
         _cardTargets.add(_cardTarget);
@@ -44,8 +45,18 @@ public class RemoveCardFromPlayAction extends ActionyAction {
 
     public void processEffect(DefaultGame cardGame) {
         Collection<PhysicalCard> removedCards = new ArrayList<>(_cardTarget.getCards());
-        Set<PhysicalCard> toRemoveFromZone = new HashSet<>(removedCards);
-        cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, toRemoveFromZone);
+        if (cardGame instanceof ST1EGame stGame) {
+            ST1EGameState gameState = stGame.getGameState();
+
+            for (PhysicalCard card : removedCards) {
+                for (GameLocation location : gameState.getOrderedSpacelineLocations()) {
+                    if (location instanceof MissionLocation mission && mission.getSeedCards().contains(card)) {
+                        mission.removeSeedCard(card);
+                    }
+                }
+            }
+        }
+        cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, new ArrayList<>(removedCards));
         for (PhysicalCard removedCard : removedCards) {
             cardGame.getGameState().addCardToRemovedPile(removedCard);
             if (removedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {

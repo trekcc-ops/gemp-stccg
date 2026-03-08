@@ -7,7 +7,7 @@ import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.discard.NullifyCardAction;
-import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
 import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -88,7 +88,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
                     encounteredCard.getGameLocation(stGame) instanceof MissionLocation missionLocation &&
                     missionLocation.hasCardSeededUnderneath(encounteredCard)
             ) {
-                cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, encounteredCard));
+                cardGame.addActionToStack(new RemoveCardFromGameAction(cardGame, _performingPlayerId, encounteredCard));
             }
         }
     }

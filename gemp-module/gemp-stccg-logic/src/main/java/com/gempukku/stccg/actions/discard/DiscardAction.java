@@ -15,7 +15,6 @@ public interface DiscardAction extends Action {
     Zone getDestination();
 
     default void discardCard(PhysicalCard discardedCard, DefaultGame cardGame) {
-        discardedCard.reveal();
         cardGame.removeCardsFromZone(List.of(discardedCard));
         if (discardedCard instanceof ST1EPhysicalCard stCard && stCard.isStopped()) {
             stCard.unstop();

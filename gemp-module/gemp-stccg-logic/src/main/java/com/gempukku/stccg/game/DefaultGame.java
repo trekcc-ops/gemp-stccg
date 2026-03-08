@@ -23,7 +23,6 @@ import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.modifiers.Modifier;
 import com.gempukku.stccg.modifiers.ModifierEffect;
-import com.gempukku.stccg.modifiers.ModifierFlag;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
@@ -349,10 +348,11 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public void addCardToTopOfDiscardPile(PhysicalCard card) {
         String cardOwnerName = card.getOwnerName();
-        Zone zone = hasFlagActive(ModifierFlag.REMOVE_CARDS_GOING_TO_DISCARD) ? Zone.REMOVED : Zone.DISCARD;
-        List<PhysicalCard> zoneCardList = getGameState().getZoneCards(cardOwnerName, zone);
+        List<PhysicalCard> zoneCardList = getGameState().getZoneCards(cardOwnerName, Zone.DISCARD);
         zoneCardList.addFirst(card);
-        card.setZone(zone);
+        card.setZone(Zone.DISCARD);
+        card.reveal();
+        card.clearLocation();
     }
 
 

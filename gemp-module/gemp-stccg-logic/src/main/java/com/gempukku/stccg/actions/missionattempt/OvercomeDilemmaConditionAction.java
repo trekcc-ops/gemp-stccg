@@ -6,7 +6,7 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
-import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -98,7 +98,7 @@ public class OvercomeDilemmaConditionAction extends ActionWithSubActions {
             @Override
             public Action createAction(DefaultGame cardGame, GameTextContext context) {
                 if (_discardDilemma && _dilemma.getParentCard() == null) {
-                    return new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _dilemma);
+                    return new RemoveCardFromGameAction(cardGame, _performingPlayerId, _dilemma);
                 } else {
                     return null;
                 }

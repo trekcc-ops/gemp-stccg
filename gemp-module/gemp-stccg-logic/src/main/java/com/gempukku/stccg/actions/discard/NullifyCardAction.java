@@ -66,7 +66,7 @@ public class NullifyCardAction extends ActionyAction implements DiscardAction, T
                 _nullifyResultSent = true;
             } else {
                 if (_cardToNullify.getCardType() == CardType.DILEMMA) {
-                    cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardToNullify));
+                    cardGame.addActionToStack(new RemoveCardFromGameAction(cardGame, _performingPlayerId, _cardToNullify));
                 } else {
                     cardGame.addActionToStack(new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId,
                             _cardToNullify));

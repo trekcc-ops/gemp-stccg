@@ -2,7 +2,7 @@ package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.discard.RemoveCardFromPlayAction;
+import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
 import com.gempukku.stccg.actions.draw.DrawMultipleCardsUnrespondableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
@@ -69,8 +69,8 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             for (Player player : players) {
                 Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
                 for (PhysicalCard card : remainingSeedCards) {
-                    RemoveCardFromPlayAction removeAction =
-                            new RemoveCardFromPlayAction(cardGame, card.getOwnerName(), card);
+                    RemoveCardFromGameAction removeAction =
+                            new RemoveCardFromGameAction(cardGame, card.getOwnerName(), card);
                     removeAction.processEffect(cardGame);
                     cardGame.getActionsEnvironment().logCompletedActionNotInStack(removeAction);
                     cardGame.sendActionResultToClient();
