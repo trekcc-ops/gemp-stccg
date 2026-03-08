@@ -1,5 +1,6 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
@@ -25,8 +26,8 @@ public class AndMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
-        return _requirements.stream().allMatch(requirement -> requirement.canBeMetBy(personnel, cardGame));
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context) {
+        return _requirements.stream().allMatch(requirement -> requirement.canBeMetBy(personnel, cardGame, context));
     }
 
     public String toString() {
@@ -42,9 +43,9 @@ public class AndMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean requiresSkill(SkillName skillName) {
+    public boolean requiresSkill(SkillName skillName, DefaultGame cardGame, GameTextContext context) {
         for (MissionRequirement requirement : _requirements) {
-            if (requirement.requiresSkill(skillName)) {
+            if (requirement.requiresSkill(skillName, cardGame, context)) {
                 return true;
             }
         }

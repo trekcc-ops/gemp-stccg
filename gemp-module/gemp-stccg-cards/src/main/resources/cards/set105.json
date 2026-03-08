@@ -18,6 +18,16 @@
             "image-url" : "https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg"
         },
         {
+            "blueprintId" : "105_018",
+            "title" : "Barber Pole",
+            "type" : "event",
+            "playThisCardAction": {
+                "type": "playThis"
+            },
+            "property-logo" : "tng-logo",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/qc/barberpole.gif"
+        },
+        {
             "blueprintId" : "105_085",
             "title" : "Taris",
             "type" : "personnel",

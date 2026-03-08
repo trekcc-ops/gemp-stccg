@@ -21,7 +21,7 @@
                         "discardDilemma": true,
                         "failEffect": {
                             "type": "discard",
-                            "cards": {
+                            "target": {
                                 "type": "select",
                                 "selectingPlayer": "opponent",
                                 "filter": "highestTotalAttributes(personnel + female + encounteringThisCard)",
@@ -143,6 +143,25 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR32.jpg
             rarity: C
         } */
+        {
+            blueprintId: 101_033
+            "title": "Matriarchal Society",
+            type: dilemma
+            mission-type: planet
+            lore: "The planet Angel One was dominated by its women who were intolerant of dealing with men.",
+            property-logo: tng-logo
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR33.jpg
+            rarity: U
+            actions: [
+                {
+                    type: encounter
+                    effect: {
+                        type: overcomeCondition
+                        requires: personnelWith(female) x2
+                    }
+                }
+            ]
+        }
     /*    {
             blueprintId: 101_036
             title: Microvirus
@@ -273,7 +292,7 @@
         }
         {
             blueprintId: 101_060
-            title: Medical Kit
+            "title": "Medical Kit",
             type: equipment
             property-logo: tng-logo
             lore: Representative of specialized medical equipment. Such equipment has been developed by many races.
@@ -1132,7 +1151,7 @@
         }
         {
             blueprintId: 101_204
-            title: Data
+            "title": "Data",
             type: personnel
             affiliation: federation
             property-logo: tng-logo

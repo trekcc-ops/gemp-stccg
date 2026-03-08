@@ -63,6 +63,27 @@
             ]
         },
         {
+            "blueprintId" : "109_013",
+            "title" : "Primitive Culture",
+            "type" : "dilemma",
+            "mission-type" : "planet",
+            "property-logo" : "first-contact-logo",
+            "icons" : "first-contact-icon",
+            "lore" : "First contact requires caution, subterfuge, or force. Solkar's historic visit to Earth was peaceful, but Federation/Klingon contact in 2218 would ignite a century of hostilities.",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/fc/primitiveculture.gif",
+            "actions" : [
+                {
+                    "type" : "encounter",
+                    "effect" : [
+                        {
+                            "type" : "overcomeCondition",
+                            "requires" : "personnelWith(vulcan) x3 OR (Anthropology + CIVILIAN) OR personnelWith(Vorta) + personnelWith(JemHadar) x4 OR Tal Shiar x2 OR Obsidian Order x2 OR Acquisition + Greed x2 OR personnelWith(Klingon) x6 OR personnelWith(defense-subcommand) x4"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId" : "109_063",
             "title" : "Assign Mission Specialists",
             "type" : "objective",
@@ -244,6 +265,23 @@
             "cunning" : 7,
             "strength" : 5,
             "image-url" : "https://www.trekcc.org/1e/cardimages/fc/richardwilkins.gif"
+        },
+        {
+            "blueprintId" : "109_115",
+            "title" : "Kathleen Tonell",
+            "type" : "personnel",
+            "affiliation" : "non-aligned",
+            "property-logo" : "first-contact-logo",
+            "icons" : "au-icon,first-contact-icon",
+            "classification" : "CIVILIAN",
+            "lore" : "Inspired in 2063 with a new view of humanity's place in the cosmos, her work helped end post-atomic horror and led to world government in 2113.",
+            "species" : "human",
+            "gender" : "female",
+            "skill-box" : "[*] Anthropology",
+            "integrity" : 7,
+            "cunning" : 6,
+            "strength" : 3,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/27.jpg"
         }
     ]
 }

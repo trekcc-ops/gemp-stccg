@@ -25,7 +25,8 @@
                                     "type": "select",
                                     "selectingPlayer": "you",
                                     "filter": "personnel + (Astrophysics OR Navigation) + encounteringThisCard",
-                                    "count": 1
+                                    "count": 1,
+                                    "isCost": true
                                 }
                             },
                             "failEffect": {
@@ -97,7 +98,8 @@
                                     "type": "select",
                                     "filter": "personnel + encounteringThisCard",
                                     "count": 2,
-                                    "random": true
+                                    "random": true,
+                                    "isCost": true
                                 }
                             },
                             "successAction": {
@@ -112,6 +114,40 @@
                                     "type": "cardInPlay",
                                     "filter": "q-icon"
                                 }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "155_011",
+            "title": "Temptation",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "lore": "Despite overtures of friendship from the House of Duras, the Arbiter of Succession was unswayed, noting they had manipulated the circumstances with the skill of a Romulan.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/11V.jpg",
+            "rarity": "V",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "costAction": {
+                                "type": "randomSelection",
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 3,
+                                "saveToMemoryId": "selectedPersonnel",
+                                "isCost": true
+                            }
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "selectAll",
+                                "filter": "memoryId=selectedPersonnel + not(Honor) + not(Treachery)"
                             }
                         }
                     ]
@@ -140,7 +176,8 @@
                                     "type": "select",
                                     "selectingPlayer": "opponent",
                                     "filter": "personnel + (Diplomacy OR Leadership) + encounteringThisCard",
-                                    "count": 1
+                                    "count": 1,
+                                    "isCost": true
                                 }
                             }
                         }
@@ -352,7 +389,7 @@
                         },
                         {
                             "type": "discard",
-                            "cards": {
+                            "target": {
                                 "type": "select",
                                 "filter": "thisCard OR (inYourHand + tng-icon)",
                                 "count": 1

@@ -81,6 +81,44 @@
             ]
         },
         {
+            "blueprintId": "161_009",
+            "title": "Shall We Begin Again?",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "tng-logo",
+            "lore": "In 2369, the Cardassians expended considerable resources to capture and interrogate Jean-Luc Picard. They failed to extract the Federation's defense plans for Minos Korva.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/9.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "drawCards",
+                            "player": "opponent",
+                            "count": 3
+                        },
+                        {
+                            "type": "revealHand",
+                            "handPlayer": "opponent",
+                            "saveToMemoryId": "handCards"
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "random": true,
+                                "filter": "personnel + presentWithThisCard",
+                                "count": {
+                                    "type": "personnelCount",
+                                    "filter": "command + memoryId=handCards"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId": "161_015",
             "title": "Illegitimate Leader of the Empire",
             "type": "incident",

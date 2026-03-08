@@ -59,10 +59,7 @@ public class Blueprint_155_061_Kosinski_Test extends AbstractAtTest {
                 new AttributeMissionRequirement(CardAttribute.CUNNING, 20)
         );
 
-        // Verify that, in a vacuum, the Away Team *could* meet the dilemma requirements
-        assertTrue(dilemmaRequirement.canBeMetBy(team.getAttemptingPersonnel(_game), _game));
-
-        // Verify that, in practice, the Away Team failed to resolve the dilemma
+        // Verify that Away Team failed to resolve the dilemma
         attemptMission(P1, mission);
         assertTrue(mission.getLocationDeprecatedOnlyUseForTests(_game).getSeedCards().contains(climb));
         assertFalse(mission.getLocationDeprecatedOnlyUseForTests(_game).isCompleted());

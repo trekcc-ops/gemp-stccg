@@ -62,8 +62,11 @@ public interface FilterBlueprintMethods {
         appendSimpleFilter("federation", (cardGame, actionContext) -> Filters.changeToFilter(Affiliation.FEDERATION));
         appendSimpleFilter("female", (cardGame, actionContext) -> Filters.female);
         appendSimpleFilter("hologram", (cardGame, actionContext) -> Filters.hologram);
+        appendSimpleFilter("jemHadar", (cardGame, actionContext) -> Filters.changeToFilter(Species.JEM_HADAR));
         appendSimpleFilter("klingon", (cardGame, actionContext) -> Filters.Klingon);
         appendSimpleFilter("romulan", (cardGame, actionContext) -> Filters.Romulan);
+        appendSimpleFilter("vulcan", (cardGame, actionContext) -> Filters.Vulcan);
+        appendSimpleFilter("vorta", (cardGame, actionContext) -> Filters.changeToFilter(Species.VORTA));
 
         // More complicated game state checks
         appendSimpleFilter("atNonHomeworldMission", (cardGame, actionContext) -> (game, physicalCard) ->

@@ -4,6 +4,47 @@
     "gameType" : "First Edition",
     "cards" : [
         {
+            "blueprintId" : "112_012",
+            "title" : "Common Thief",
+            "type" : "dilemma",
+            "property-logo" : "ds9-logo",
+            "mission-type" : "dual",
+            "lore" : "When Odo confronted a minor thief on the Deep Space 9 promenade, the cutthroat attempted to kill the constable.",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/ds9/commonthief.gif",
+            "actions" : [
+                {
+                    "type" : "encounter",
+                    "effect" : [
+                        {
+                            "type": "if",
+                            "ifCondition": {
+                                "type": "cardInPlay",
+                                "filter": "equipment + presentWithThisCard"
+                            },
+                            "actionIfTrue": {
+                                "type": "discard",
+                                "target": {
+                                    "type": "select",
+                                    "random": true,
+                                    "filter": "equipment + presentWithThisCard",
+                                    "count": 1
+                                }
+                            },
+                            "actionIfFalse": {
+                                "type": "kill",
+                                "target": {
+                                    "type": "select",
+                                    "selectingPlayer": "opponent",
+                                    "filter": "personnel + presentWithThisCard + [CUNNING+STRENGTH]<15",
+                                    "count": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "blueprintId" : "112_031",
             "title" : "Punishment Box",
             "type" : "dilemma",
@@ -27,7 +68,8 @@
                                     "type" : "select",
                                     "selectingPlayer" : "you",
                                     "filter" : "personnel + OFFICER + encounteringThisCard",
-                                    "count" : 1
+                                    "count" : 1,
+                                    "isCost": true
                                 }
                             }
                         }

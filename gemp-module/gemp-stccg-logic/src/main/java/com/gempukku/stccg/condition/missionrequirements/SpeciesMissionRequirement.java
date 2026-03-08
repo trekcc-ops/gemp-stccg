@@ -1,7 +1,7 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
-import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.common.filterable.Species;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -16,7 +16,7 @@ public class SpeciesMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context) {
         for (PersonnelCard personnelCard : personnel) {
             if (personnelCard.isSpecies(_species)) {
                 return true;
@@ -30,8 +30,4 @@ public class SpeciesMissionRequirement implements MissionRequirement {
         return _species.getHumanReadable();
     }
 
-    @Override
-    public boolean requiresSkill(SkillName skillName) {
-        return false;
-    }
 }

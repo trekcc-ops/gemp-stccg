@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -60,4 +61,8 @@ import com.gempukku.stccg.game.DefaultGame;
 })
 public interface CardFilter extends Filterable {
     boolean accepts(DefaultGame game, PhysicalCard physicalCard);
+
+    default boolean requiresSkill(SkillName skillName) {
+        return false;
+    }
 }

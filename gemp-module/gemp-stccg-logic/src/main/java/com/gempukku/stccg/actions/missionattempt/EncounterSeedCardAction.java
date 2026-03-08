@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -53,25 +54,25 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
             _nullifyAttempted = true;
             if (getEncounteredCard().getNullifyRequirement() != null &&
                     getEncounteredCard().getNullifyRequirement()
-                            .canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame)) {
+                            .canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame, _actionContext)) {
                 cardGame.getActionsEnvironment().addActionToStack(new NullifyCardAction(cardGame, getEncounteredCard(),
                         _performingPlayerId, new FixedCardResolver(getEncounteredCard())));
                 setAsSuccessful();
                 _nullified = true;
             }
         } else if (_currentSubAction != null) {
-            if (!_failedToOvercomeCondition && _currentSubAction.wasFailed() &&
-                    !(_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
-                setAsSuccessful();
-            } else if (_currentSubAction.wasFailed() && (_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
+            if (_currentSubAction.wasFailed() && (_currentSubAction instanceof OvercomeDilemmaConditionAction)) {
                 _failedToOvercomeCondition = true;
             }
             _processedSubActions.add(_currentSubAction);
             _currentSubAction = null;
         } else if (!_queuedSubActions.isEmpty()) {
-            _currentSubAction = _queuedSubActions.getFirst().createAction(cardGame, _actionContext);
+            Action nextAction = _queuedSubActions.getFirst().createAction(cardGame, _actionContext);
+            if (nextAction != null) {
+                _currentSubAction = nextAction;
+                cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
+            }
             _queuedSubActions.removeFirst();
-            cardGame.getActionsEnvironment().addActionToStack(_currentSubAction);
         } else {
             if (_failedToOvercomeCondition) {
                 setAsFailed();

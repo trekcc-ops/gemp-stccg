@@ -7,6 +7,7 @@ import java.util.Locale;
 
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public enum Species implements Filterable {
+    AENAR,
     ANDROID("android"),
     BAJORAN, BENZITE, BETAZOID, BOLIAN, BORG, BOSLIC,
     CAIRN, CARDASSIAN, DOPTERIAN, DOSI,
@@ -15,7 +16,8 @@ public enum Species implements Filterable {
     HOLOGRAM("hologram"),
     HUMAN("human"),
     HUMANOID("humanoid"),
-    KELLERUN, KLINGON, LETHEAN, MARKALIAN, NAPEAN, ROMULAN, RUTIAN,
+    JEM_HADAR ("Jem'Hadar"),
+    KELLERUN, KLINGON, LETHEAN, MARKALIAN, NAPEAN, REMAN, ROMULAN, RUTIAN,
     TAKARAN, TAMARIAN, TILONIAN, TRILL, VORTA, VULCAN, YRIDIAN, ZALKONIAN, ZAKDORN;
     private final String _humanReadable;
 

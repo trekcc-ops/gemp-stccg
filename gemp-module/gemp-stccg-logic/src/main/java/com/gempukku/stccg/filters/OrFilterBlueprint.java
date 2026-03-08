@@ -22,4 +22,8 @@ public class OrFilterBlueprint implements FilterBlueprint {
         return new OrCardFilter(filterables);
     }
 
+    public Collection<FilterBlueprint> getOptions() {
+        return _filterBlueprints;
+    }
+
 }

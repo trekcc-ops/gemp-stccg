@@ -1,7 +1,11 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.filters.CardFilter;
+import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.filters.OrFilterBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.ArrayList;
@@ -9,24 +13,24 @@ import java.util.Collection;
 import java.util.List;
 
 public class FromOnePersonnelMissionRequirement implements MissionRequirement {
-
-    private final MissionRequirement _requirement;
+    private final FilterBlueprint _requirement;
     private final int _numberOfPersonnelRequired;
-    public FromOnePersonnelMissionRequirement(MissionRequirement requirement, int numberOfPersonnelRequired) {
+    public FromOnePersonnelMissionRequirement(FilterBlueprint requirement, int numberOfPersonnelRequired) {
         _requirement = requirement;
         _numberOfPersonnelRequired = numberOfPersonnelRequired;
     }
 
-    public FromOnePersonnelMissionRequirement(MissionRequirement requirement) {
+    public FromOnePersonnelMissionRequirement(FilterBlueprint requirement) {
         _requirement = requirement;
         _numberOfPersonnelRequired = 1;
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context) {
         int numberWithRequirement = 0;
+        CardFilter filter = _requirement.getFilterable(cardGame, context);
         for (PersonnelCard card : personnel) {
-            if (_requirement.canBeMetBy(List.of(card), cardGame)) {
+            if (filter.accepts(cardGame, card)) {
                 numberWithRequirement++;
             }
         }
@@ -42,15 +46,20 @@ public class FromOnePersonnelMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean requiresSkill(SkillName skillName) {
-        return _requirement.requiresSkill(skillName);
+    public boolean requiresSkill(SkillName skillName, DefaultGame cardGame, GameTextContext context) {
+        CardFilter filter = _requirement.getFilterable(cardGame, context);
+        return filter.requiresSkill(skillName);
     }
 
     @Override
     public List<MissionRequirement> getRequirementOptionsWithoutOr() {
         List<MissionRequirement> result = new ArrayList<>();
-        for (MissionRequirement req : _requirement.getRequirementOptionsWithoutOr()) {
-            result.add(new FromOnePersonnelMissionRequirement(req));
+        if (_requirement instanceof OrFilterBlueprint orBlueprint) {
+            for (FilterBlueprint individualFilter : orBlueprint.getOptions()) {
+                result.add(new FromOnePersonnelMissionRequirement(individualFilter));
+            }
+        } else {
+            result.add(this);
         }
         return result;
     }

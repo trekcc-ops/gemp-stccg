@@ -1,6 +1,7 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.blueprints.MissionRequirementDeserializer;
@@ -17,17 +18,21 @@ import java.util.Map;
 @JsonDeserialize(using = MissionRequirementDeserializer.class)
 public interface MissionRequirement {
 
-    boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame);
+    boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context);
 
     String toString();
 
-    boolean requiresSkill(SkillName skillName);
+    default boolean requiresSkill(SkillName skillName, DefaultGame cardGame, GameTextContext context) {
+        return false;
+    }
+
 
     default List<MissionRequirement> getRequirementOptionsWithoutOr() {
         return List.of(this);
     }
 
-    default boolean canBeMetWithMissionSpecialistHelping(Collection<PersonnelCard> allPersonnel, DefaultGame cardGame) {
+    default boolean canBeMetWithMissionSpecialistHelping(Collection<PersonnelCard> allPersonnel, DefaultGame cardGame,
+                                                         GameTextContext context) {
         Map<SkillName, PersonnelCard> missionSpecMap = new HashMap<>();
         for (PersonnelCard personnel : allPersonnel) {
             if (Filters.missionSpecialist.accepts(cardGame, personnel)) {
@@ -43,9 +48,9 @@ public interface MissionRequirement {
 
         List<MissionRequirement> requirementsWithoutOr = getRequirementOptionsWithoutOr();
         for (MissionRequirement req : requirementsWithoutOr) {
-            if (req.canBeMetBy(allPersonnel, cardGame)) {
+            if (req.canBeMetBy(allPersonnel, cardGame, context)) {
                 for (SkillName skillName : missionSpecMap.keySet()) {
-                    if (req.requiresSkill(skillName)) {
+                    if (req.requiresSkill(skillName, cardGame, context)) {
                         return true;
                     }
                 }

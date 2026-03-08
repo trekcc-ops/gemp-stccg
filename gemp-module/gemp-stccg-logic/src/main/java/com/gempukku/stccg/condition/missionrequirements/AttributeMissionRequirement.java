@@ -1,8 +1,8 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.SkillName;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
@@ -17,7 +17,7 @@ public class AttributeMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context) {
         int totalAttribute = 0;
         for (PersonnelCard card : personnel) {
             totalAttribute += card.getAttribute(_attribute, cardGame);
@@ -29,9 +29,5 @@ public class AttributeMissionRequirement implements MissionRequirement {
         return _attribute.name() + ">" + _value;
     }
 
-    @Override
-    public boolean requiresSkill(SkillName skillName) {
-        return false;
-    }
 
 }

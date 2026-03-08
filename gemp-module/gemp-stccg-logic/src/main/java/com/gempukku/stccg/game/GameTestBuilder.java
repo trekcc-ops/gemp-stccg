@@ -124,17 +124,33 @@ public class GameTestBuilder {
     }
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
+                           List<String> playerNames, List<Integer> drawDeckSizes) throws InvalidGameOperationException {
+        this(cardBlueprintLibrary, formatLibrary, playerNames, new GameRandomizer(), drawDeckSizes);
+    }
+
+    public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
                            List<String> playerNames, GameRandomizer randomizer) throws InvalidGameOperationException {
+        this(cardBlueprintLibrary, formatLibrary, playerNames, randomizer, List.of(30, 30));
+    }
+
+
+    public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
+                           List<String> playerNames, GameRandomizer randomizer, List<Integer> drawDeckSizes)
+            throws InvalidGameOperationException {
         _gameName = "Test";
         GameFormat format = formatLibrary.get("st1emoderncomplete");
-        CardDeck testDeck = new CardDeck("Test", format);
-        for (int i = 0; i < 30; i++) {
-            testDeck.addCard(SubDeck.DRAW_DECK, "991_001"); // dummy 1E dilemma
+        CardDeck testDeck1 = new CardDeck("Test", format);
+        for (int i = 0; i < drawDeckSizes.get(0); i++) {
+            testDeck1.addCard(SubDeck.DRAW_DECK, "991_001"); // dummy 1E dilemma
         }
+        _decks.put(playerNames.get(0), testDeck1);
 
-        for (String player : playerNames) {
-            _decks.put(player, testDeck);
+        CardDeck testDeck2 = new CardDeck("Test", format);
+        for (int i = 0; i < drawDeckSizes.get(1); i++) {
+            testDeck2.addCard(SubDeck.DRAW_DECK, "991_001"); // dummy 1E dilemma
         }
+        _decks.put(playerNames.get(1), testDeck2);
+
         _game = new ST1EGame(format, _decks, cardBlueprintLibrary, GameTimer.GLACIAL_TIMER, randomizer);
         _startingPhase = Phase.SEED_DOORWAY;
         _players = playerNames;

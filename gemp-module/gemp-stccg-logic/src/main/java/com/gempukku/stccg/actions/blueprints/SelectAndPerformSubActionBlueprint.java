@@ -35,11 +35,17 @@ public class SelectAndPerformSubActionBlueprint implements SubActionBlueprint {
         for (int i = 0; i < _subActions.size(); i++) {
             SubActionBlueprint blueprint = _subActions.get(i);
             Action subAction = blueprint.createAction(cardGame, context);
-            actionsToSelect.add(subAction);
-            messageMap.put(subAction, _actionDescriptions.get(i));
+            if (subAction != null) {
+                actionsToSelect.add(subAction);
+                messageMap.put(subAction, _actionDescriptions.get(i));
+            }
         }
 
-        return new SelectAndInsertAction(cardGame, context.yourName(), actionsToSelect, messageMap);
+        if (!messageMap.isEmpty()) {
+            return new SelectAndInsertAction(cardGame, context.yourName(), actionsToSelect, messageMap);
+        } else {
+            return null;
+        }
     }
 
     @Override
