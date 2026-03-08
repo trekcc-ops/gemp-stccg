@@ -265,6 +265,23 @@
             "cunning" : 7,
             "strength" : 5,
             "image-url" : "https://www.trekcc.org/1e/cardimages/fc/richardwilkins.gif"
+        },
+        {
+            "blueprintId" : "109_115",
+            "title" : "Kathleen Tonell",
+            "type" : "personnel",
+            "affiliation" : "non-aligned",
+            "property-logo" : "first-contact-logo",
+            "icons" : "au-icon,first-contact-icon",
+            "classification" : "CIVILIAN",
+            "lore" : "Inspired in 2063 with a new view of humanity's place in the cosmos, her work helped end post-atomic horror and led to world government in 2113.",
+            "species" : "human",
+            "gender" : "female",
+            "skill-box" : "[*] Anthropology",
+            "integrity" : 7,
+            "cunning" : 6,
+            "strength" : 3,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/27.jpg"
         }
     ]
 }
