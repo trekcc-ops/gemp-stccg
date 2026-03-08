@@ -93,7 +93,7 @@ public class PreseedStackActionResultTest extends AbstractAtTest {
         assertEquals("ADD_CARDS_TO_PRESEED_STACK", addNode.get("type").textValue());
         assertEquals(P1, addNode.get("performingPlayerId").textValue());
         assertEquals(1, addNode.get("targetCardIds").size());
-        assertEquals(cardsToSeed.getFirst().getCardId(), addNode.get("targetCardIds").get(0).asInt());
+        assertEquals(new ProxyAnonymousCard(P1).getCardId(), addNode.get("targetCardIds").get(0).asInt());
 
         assertTrue(removeNode.has("timestamp"));
         assertTrue(removeNode.has("targetCardIds"));

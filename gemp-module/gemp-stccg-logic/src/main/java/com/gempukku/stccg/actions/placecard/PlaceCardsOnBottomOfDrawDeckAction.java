@@ -20,30 +20,32 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
 
     private final ActionCardResolver _resolver;
     private Collection<PhysicalCard> _cardsToPlace;
+    private final boolean _showOpponent;
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
-                                              ActionCardResolver resolver) {
+                                              ActionCardResolver resolver, boolean showOpponent) {
         super(cardGame, performingPlayerName, ActionType.PLACE_CARDS_BENEATH_DRAW_DECK);
         _resolver = resolver;
         _cardTargets.add(_resolver);
+        _showOpponent = showOpponent;
     }
 
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
-                                              SelectCardsAction selectionAction) {
-        this(cardGame, performingPlayerName, new SelectCardsResolver(selectionAction));
+                                              SelectCardsAction selectionAction, boolean showOpponent) {
+        this(cardGame, performingPlayerName, new SelectCardsResolver(selectionAction), showOpponent);
     }
-
 
 
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, Player performingPlayer,
-                                              SelectCardsAction selectionAction) {
-        this(cardGame, performingPlayer.getPlayerId(), new SelectCardsResolver(selectionAction));
+                                              SelectCardsAction selectionAction, boolean showOpponent) {
+        this(cardGame, performingPlayer.getPlayerId(), new SelectCardsResolver(selectionAction), showOpponent);
     }
 
+
     public PlaceCardsOnBottomOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName,
-                                              Collection<PhysicalCard> cardsToPlace) {
-        this(cardGame, performingPlayerName, new FixedCardsResolver(cardsToPlace));
+                                              Collection<PhysicalCard> cardsToPlace, boolean showOpponent) {
+        this(cardGame, performingPlayerName, new FixedCardsResolver(cardsToPlace), showOpponent);
     }
 
 
@@ -64,8 +66,13 @@ public class PlaceCardsOnBottomOfDrawDeckAction extends ActionyAction {
                 DrawDeck drawDeck = cardOwner.getDrawDeck();
                 drawDeck.addCardToBottom(card);
                 card.setZone(Zone.DRAW_DECK);
-                setAsSuccessful();
+                if (_showOpponent) {
+                    card.reveal();
+                }
             }
+            saveResult(new PlaceCardInDrawDeckResult(cardGame, this, PlaceCardInDrawDeckResult.Placement.BOTTOM,
+                _cardsToPlace, _showOpponent), cardGame);
+            setAsSuccessful();
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             setAsFailed();

@@ -24,9 +24,13 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
     @JsonIdentityReference(alwaysAsId=true)
     private Collection<PhysicalCard> _targetCards;
 
+    private final boolean _showOpponent;
+
     public ShuffleCardsIntoDrawDeckAction(DefaultGame cardGame, PhysicalCard performingCard,
-                                          String performingPlayerName, ActionCardResolver cardTarget) {
+                                          String performingPlayerName, ActionCardResolver cardTarget,
+                                          boolean showOpponent) {
         super(cardGame, performingPlayerName, ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
+        _showOpponent = showOpponent;
         _cardTarget = cardTarget;
         _performingCard = performingCard;
         _cardTargets.add(_cardTarget);
@@ -34,7 +38,12 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
 
     public ShuffleCardsIntoDrawDeckAction(DefaultGame cardGame, PhysicalCard performingCard,
                                           String performingPlayerName, CardFilter cardFilter) {
-        this(cardGame, performingCard, performingPlayerName, new AllCardsMatchingFilterResolver(cardFilter));
+        // Only used for Tribbles actions
+        super(cardGame, performingPlayerName, ActionType.SHUFFLE_CARDS_INTO_DRAW_DECK);
+        _showOpponent = false;
+        _cardTarget = new AllCardsMatchingFilterResolver(cardFilter);
+        _performingCard = performingCard;
+        _cardTargets.add(_cardTarget);
     }
 
     @Override
@@ -51,6 +60,9 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
         _targetCards = _cardTarget.getCards(cardGame);
         cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, _targetCards);
         for (PhysicalCard card : _targetCards) {
+            if (_showOpponent) {
+                card.reveal();
+            }
             cardGame.getGameState().addCardToTopOfDrawDeck(card);
         }
         try {
@@ -58,6 +70,8 @@ public class ShuffleCardsIntoDrawDeckAction extends ActionyAction implements Top
             CardPile<PhysicalCard> drawDeck = performingPlayer.getDrawDeck();
             cardGame.shuffleCardPile(drawDeck);
             setAsSuccessful();
+            saveResult(new PlaceCardInDrawDeckResult(cardGame, this, PlaceCardInDrawDeckResult.Placement.SHUFFLE,
+                    _targetCards, _showOpponent), cardGame);
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             setAsFailed();

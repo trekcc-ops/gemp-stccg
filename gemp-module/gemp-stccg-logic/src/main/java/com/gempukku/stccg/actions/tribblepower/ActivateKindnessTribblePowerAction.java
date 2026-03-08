@@ -36,7 +36,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
         SelectVisibleCardsAction selectionAction = new SelectVisibleCardsAction(cardGame, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 1, 1);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayer, selectionAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayer, selectionAction, false));
     }
 
     @Override

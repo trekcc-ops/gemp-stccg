@@ -20,10 +20,14 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
     @JsonProperty("cardTarget")
     private final ActionCardResolver _cardTarget;
 
-    public PlaceCardOnTopOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardTarget) {
+    private final boolean _showOpponent;
+
+    public PlaceCardOnTopOfDrawDeckAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardTarget,
+                                          boolean showOpponent) {
         super(cardGame, performingPlayerName, ActionType.PLACE_CARD_ON_TOP_OF_DRAW_DECK);
         _cardTarget = cardTarget;
         _cardTargets.add(_cardTarget);
+        _showOpponent = showOpponent;
     }
 
 
@@ -43,8 +47,13 @@ public class PlaceCardOnTopOfDrawDeckAction extends ActionyAction {
                 Player cardOwner = cardGame.getPlayer(card.getOwnerName());
                 DrawDeck drawDeck = cardOwner.getDrawDeck();
                 drawDeck.addCardToTop(card);
+                if (_showOpponent) {
+                    card.reveal();
+                }
             }
 
+            saveResult(new PlaceCardInDrawDeckResult(cardGame, this, PlaceCardInDrawDeckResult.Placement.TOP,
+                cardBeingPlaced, _showOpponent), cardGame);
             setAsSuccessful();
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);

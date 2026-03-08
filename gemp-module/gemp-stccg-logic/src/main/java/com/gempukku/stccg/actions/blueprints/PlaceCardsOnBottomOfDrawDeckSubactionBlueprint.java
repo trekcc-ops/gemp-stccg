@@ -16,22 +16,25 @@ public class PlaceCardsOnBottomOfDrawDeckSubactionBlueprint implements SubAction
 
     private final PlayerSource _performingPlayerSource;
     private final TargetResolverBlueprint _cardTarget;
+    private final boolean _showOpponent;
 
     public PlaceCardsOnBottomOfDrawDeckSubactionBlueprint(
             @JsonProperty(value = "cards")
             TargetResolverBlueprint cardTarget,
                                                           @JsonProperty(value = "player")
-                                    String playerText) throws InvalidCardDefinitionException {
+                                    String playerText,
+            @JsonProperty(value = "showOpponent", required = true) boolean showOpponent) throws InvalidCardDefinitionException {
         _cardTarget = cardTarget;
         _performingPlayerSource = (playerText == null) ?
                 new YouPlayerSource() : PlayerResolver.resolvePlayer(playerText);
+        _showOpponent = showOpponent;
     }
 
     @Override
     public Action createAction(DefaultGame cardGame, GameTextContext context) {
         final String performingPlayerId = _performingPlayerSource.getPlayerName(cardGame, context);
         ActionCardResolver cardTarget = _cardTarget.getTargetResolver(cardGame, context);
-        return new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayerId, cardTarget);
+        return new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayerId, cardTarget, _showOpponent);
     }
 
     @Override

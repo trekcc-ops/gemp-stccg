@@ -339,7 +339,8 @@
                             "filter": "inYourHand + tng-icon",
                             "count": 2
                         },
-                        "player": "you"
+                        "player": "you",
+                        "showOpponent": true
                     },
                     "effect": [
                         {
@@ -383,7 +384,8 @@
                                         "filter": "bottomCardsOfYourDiscardPile(3, tng-icon + (ship OR personnel))",
                                         "count": 3
                                     },
-                                    "player": "you"
+                                    "player": "you",
+                                    "showOpponent": true
                                 }
                             ]
                         },

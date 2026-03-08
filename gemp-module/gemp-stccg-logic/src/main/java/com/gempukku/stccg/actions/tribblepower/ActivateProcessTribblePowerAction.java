@@ -16,7 +16,7 @@ public class ActivateProcessTribblePowerAction extends ActivateTribblePowerActio
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(game, _performingPlayerId,
                 "Choose a card to put beneath draw deck", Filters.yourHand(_performingPlayerId),
                 2, 2);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(game, _performingPlayerId, selectAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(game, _performingPlayerId, selectAction, false));
     }
 
 }

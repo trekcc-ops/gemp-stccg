@@ -19,7 +19,7 @@ public class ActivateCycleTribblePowerAction extends ActivateTribblePowerAction 
         SelectVisibleCardsAction selectAction = new SelectVisibleCardsAction(cardGame, performingPlayer,
                 "Choose a card to put beneath draw deck", Filters.yourHand(performingPlayer),
                 1, 1);
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayer, selectAction));
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, performingPlayer, selectAction, false));
         appendEffect(new DrawSingleCardAction(cardGame, _performingPlayerId));
     }
 
