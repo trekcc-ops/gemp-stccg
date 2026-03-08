@@ -10,6 +10,7 @@ public enum ActionResultType {
     END_OF_TURN,
     JUST_PLAYED,
     KILL,
+    NULLIFY,
     PLAYER_WENT_OUT,
     RANDOM_SELECTION_INITIATED,
     SOLVE_MISSION,

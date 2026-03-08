@@ -28,6 +28,7 @@ public class NullifyCardAction extends ActionyAction implements DiscardAction, T
     private PhysicalCard _cardToNullify;
 
     private final ActionCardResolver _nullifiedCardResolver;
+    private boolean _nullifyResultSent;
 
     public NullifyCardAction(DefaultGame cardGame, PhysicalCard performingCard, String performingPlayerName,
                              ActionCardResolver nullifiedCardResolver) {
@@ -53,19 +54,25 @@ public class NullifyCardAction extends ActionyAction implements DiscardAction, T
         Collection<PhysicalCard> cardsToNullify = _nullifiedCardResolver.getCards(cardGame);
         if (cardsToNullify.size() == 1) {
             _cardToNullify = Iterables.getOnlyElement(cardsToNullify);
-            for (Action action : cardGame.getActionsEnvironment().getActionStack()) {
-                if (action.getResult() instanceof PlayCardResult playResult &&
-                        playResult.getPlayedCard() == _cardToNullify) {
-                    action.setAsFailed();
+            if (!_nullifyResultSent) {
+                for (Action action : cardGame.getActionsEnvironment().getActionStack()) {
+                    if (action.getResult() instanceof PlayCardResult playResult &&
+                            playResult.getPlayedCard() == _cardToNullify) {
+                        action.setAsFailed();
+                        break;
+                    }
                 }
-            }
-            if (_cardToNullify.getCardType() == CardType.DILEMMA) {
-                cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardToNullify));
+                saveResult(new NullifyCardResult(cardGame, this), cardGame);
+                _nullifyResultSent = true;
             } else {
-                cardGame.addActionToStack(new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId,
-                        _cardToNullify));
+                if (_cardToNullify.getCardType() == CardType.DILEMMA) {
+                    cardGame.addActionToStack(new RemoveDilemmaFromGameAction(cardGame, _performingPlayerId, _cardToNullify));
+                } else {
+                    cardGame.addActionToStack(new DiscardSingleCardAction(cardGame, _performingCard, _performingPlayerId,
+                            _cardToNullify));
+                }
+                setAsSuccessful();
             }
-            setAsSuccessful();
         } else {
             cardGame.sendErrorMessage("Tried to nullify too many cards at once");
             setAsFailed();
