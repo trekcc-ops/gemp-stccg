@@ -8,7 +8,7 @@ import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToPreseedStackAction;
-import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
+import com.gempukku.stccg.actions.placecard.RemoveCardsFromPreseedCardStackAction;
 import com.gempukku.stccg.actions.playcard.*;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -21,7 +21,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -277,15 +276,16 @@ public interface UserInputSimulator {
         }
     }
 
-    default void removeDilemma(PhysicalCard seedCard, MissionLocation mission) throws DecisionResultInvalidException,
+
+    default void removeDilemma(PhysicalCard seedCard, MissionCard mission) throws DecisionResultInvalidException,
             InvalidGameOperationException {
         String playerName = seedCard.getOwnerName();
         AwaitingDecision missionSelection = getGame().getAwaitingDecision(playerName);
         if (missionSelection instanceof ActionSelectionDecision actionDecision) {
             String actionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
-                if (actionDecision.getActions().get(i) instanceof RemoveCardsFromSeedCardStackAction seedAction &&
-                        seedAction.getLocation() == mission) {
+                if (actionDecision.getActions().get(i) instanceof RemoveCardsFromPreseedCardStackAction seedAction &&
+                        seedAction.getPerformingCard() == mission) {
                     actionId = String.valueOf(seedAction.getActionId());
                 }
             }

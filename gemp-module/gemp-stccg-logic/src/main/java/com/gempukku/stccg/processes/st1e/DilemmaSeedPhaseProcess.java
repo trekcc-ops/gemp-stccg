@@ -3,7 +3,7 @@ package com.gempukku.stccg.processes.st1e;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.placecard.AddCardsToPreseedStackAction;
-import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
+import com.gempukku.stccg.actions.placecard.RemoveCardsFromPreseedCardStackAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -60,7 +60,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                     seedActions.add(seedCardsAction);
                 }
                 if (mission.hasCardsPreSeededByPlayer(player)) {
-                    TopLevelSelectableAction removeSeedCardsAction = new RemoveCardsFromSeedCardStackAction(cardGame, player, mission);
+                    TopLevelSelectableAction removeSeedCardsAction = new RemoveCardsFromPreseedCardStackAction(cardGame, player, mission);
                     seedActions.add(removeSeedCardsAction);
                 }
             }
@@ -80,7 +80,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                                     } catch(InvalidGameLogicException exp) {
                                         throw new DecisionResultInvalidException(exp.getMessage());
                                     }
-                                } else if (action instanceof RemoveCardsFromSeedCardStackAction seedCardsAction) {
+                                } else if (action instanceof RemoveCardsFromPreseedCardStackAction seedCardsAction) {
                                     selectCardsToRemove(player, cardGame, seedCardsAction);
                                 } else {
                                     throw new DecisionResultInvalidException("Game error - invalid action selected");
@@ -114,7 +114,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
     }
 
 
-    private void selectCardsToRemove(Player player, ST1EGame cardGame, RemoveCardsFromSeedCardStackAction removeAction) {
+    private void selectCardsToRemove(Player player, ST1EGame cardGame, RemoveCardsFromPreseedCardStackAction removeAction) {
         Collection<PhysicalCard> availableCards;
         MissionLocation mission = removeAction.getLocation();
         availableCards = mission.getPreSeedCardsForPlayer(player);

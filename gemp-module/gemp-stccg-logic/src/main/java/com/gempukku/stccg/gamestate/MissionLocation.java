@@ -213,8 +213,8 @@ public class MissionLocation implements GameLocation {
     }
 
     public Set<Affiliation> getAffiliationIcons(DefaultGame cardGame, String playerId) {
-        MissionCard topMission = getTopMissionCard();
-        return new HashSet<>(topMission.getAffiliationIcons(cardGame, playerId));
+        MissionCard missionCard = getBottomMissionCard();
+        return new HashSet<>(missionCard.getAffiliationIcons(cardGame, playerId));
     }
 
     public MissionType getMissionType() {
@@ -338,7 +338,7 @@ public class MissionLocation implements GameLocation {
     public boolean isPlanet() { return getMissionType() == MissionType.PLANET || getMissionType() == MissionType.DUAL; }
     public boolean isSpace() { return getMissionType() == MissionType.SPACE || getMissionType() == MissionType.DUAL; }
 
-    public MissionCard getTopMissionCard() { return getMissionCards().getLast(); }
+    public MissionCard getBottomMissionCard() { return getMissionCards().getLast().getBottomMission(); }
 
     public void addMission(DefaultGame cardGame, MissionCard newMission) {
         newMission.stackOn(_missionCards.getCards().getFirst());

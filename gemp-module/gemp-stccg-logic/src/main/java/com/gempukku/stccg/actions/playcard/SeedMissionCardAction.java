@@ -79,7 +79,7 @@ public class SeedMissionCardAction extends PlayCardAction {
                             throw new InvalidGameLogicException("Cannot seed " + mission.getTitle() + " because " +
                                     mission.getOwnerName() + " already has a mission at " +
                                     mission.getBlueprint().getLocation());
-                        mission.setParentCardRelationship(location.getTopMissionCard(), ChildCardRelationshipType.TOP_SHARED_MISSION);
+                        mission.setParentCardRelationship(location.getBottomMissionCard(), ChildCardRelationshipType.TOP_SHARED_MISSION);
                         location.addMission(game, mission);
                         gameState.addCardToZone(game, mission, Zone.SPACELINE, _actionContext);
                     }

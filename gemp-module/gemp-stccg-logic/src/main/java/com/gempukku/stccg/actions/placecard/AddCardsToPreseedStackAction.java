@@ -32,7 +32,7 @@ public class AddCardsToPreseedStackAction extends ActionyAction implements TopLe
     public AddCardsToPreseedStackAction(DefaultGame cardGame, Player performingPlayer, MissionLocation location) {
         super(cardGame, performingPlayer, ActionType.ADD_CARDS_TO_PRESEED_STACK);
         _locationId = location.getLocationId();
-        _performingCard = location.getTopMissionCard();
+        _performingCard = location.getBottomMissionCard();
     }
 
 

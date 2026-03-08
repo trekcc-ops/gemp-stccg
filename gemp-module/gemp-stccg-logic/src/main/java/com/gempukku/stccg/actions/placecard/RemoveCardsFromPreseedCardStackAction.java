@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class RemoveCardsFromSeedCardStackAction extends ActionyAction implements TopLevelSelectableAction {
+public class RemoveCardsFromPreseedCardStackAction extends ActionyAction implements TopLevelSelectableAction {
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private final List<PhysicalCard> _cardsBeingRemoved = new ArrayList<>();
@@ -26,10 +26,10 @@ public class RemoveCardsFromSeedCardStackAction extends ActionyAction implements
     private final MissionLocation _location;
     private final PhysicalCard _performingCard;
 
-    public RemoveCardsFromSeedCardStackAction(DefaultGame cardGame, Player performingPlayer,MissionLocation location) {
+    public RemoveCardsFromPreseedCardStackAction(DefaultGame cardGame, Player performingPlayer, MissionLocation location) {
         super(cardGame, performingPlayer, ActionType.REMOVE_CARDS_FROM_PRESEED_STACK);
         _location = location;
-        _performingCard = location.getTopMissionCard();
+        _performingCard = location.getBottomMissionCard();
     }
 
 
@@ -48,6 +48,7 @@ public class RemoveCardsFromSeedCardStackAction extends ActionyAction implements
                 zoneCards.add(card);
                 card.setZone(Zone.SEED_DECK);
             }
+            saveResult(new RemoveCardsFromPreseedStackActionResult(cardGame, _performingPlayerId, this, _cardsBeingRemoved), cardGame);
             setAsSuccessful();
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
