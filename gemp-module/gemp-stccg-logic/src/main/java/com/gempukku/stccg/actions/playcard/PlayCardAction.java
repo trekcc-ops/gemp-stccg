@@ -18,7 +18,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.Collection;
 import java.util.List;
 
-public class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
+public abstract class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
     private final PhysicalCard _performingCard;
     protected PhysicalCard _cardEnteringPlay;
     private final EnterPlayActionType _type;

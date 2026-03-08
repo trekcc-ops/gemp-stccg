@@ -69,7 +69,10 @@ public class PlayCardToDestinationAction extends PlayCardAction {
             } else if (!(destination instanceof ProxyCoreCard)) {
                 _cardEnteringPlay.setAsAtop(destination);
             }
-            saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay, destination, ActionType.PLAY_CARD), cardGame);
+
+            ActionType actionType = _isDownload ? ActionType.DOWNLOAD_CARD : ActionType.PLAY_CARD;
+
+            saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay, destination, actionType), cardGame);
             _played = true;
         } else {
             super.processEffect(cardGame);
