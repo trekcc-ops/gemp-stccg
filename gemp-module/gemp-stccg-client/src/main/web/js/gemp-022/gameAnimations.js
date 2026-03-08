@@ -253,14 +253,22 @@ export default class GameAnimations {
                 let card = new Card(blueprintId, zone, cardId, controllerId, cardTitle, imageUrl, locationIndex, upsideDown);
                 let cardDiv = that.game.createCardDivWithData(card);
 
-                if (zone == "DISCARD")
+                if (zone === "DISCARD") {
                     that.game.discardPileDialogs[controllerId].append(cardDiv);
-                else if (zone == "DRAW_DECK")
+                }
+                else if (zone === "DRAW_DECK") {
                     that.game.miscPileDialogs[controllerId].append(cardDiv);
-                else if (zone == "REMOVED")
+                }
+                else if (zone === "REMOVED") {
                     that.game.removedPileDialogs[controllerId].append(cardDiv);
-                else
+                }
+                else if (zone === "POINT_AREA") {
+                    that.game.pointAreaDialogs[controllerId].append(cardDiv);
+                }
+                else {
+                    console.warn(`addCardToHiddenZone: Unknown zone ${zone}, appending to main.`);
                     $("#main").append(cardDiv);
+                }
                 next();
             });
 
