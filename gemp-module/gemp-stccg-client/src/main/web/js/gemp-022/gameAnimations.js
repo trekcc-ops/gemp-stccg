@@ -1014,9 +1014,11 @@ export default class GameAnimations {
     }
 
     attachCardDivToTargetCardId(cardDiv, targetCardId) {
-        let targetCardData = getCardDivFromId(targetCardId).data("card");
-        targetCardData.attachedCards.push(cardDiv);
-        cardDiv.data("card").attachedToCard = targetCardData;
+        if ((cardDiv != null) && (targetCardId != null)) {
+            let targetCardData = getCardDivFromId(targetCardId).data("card");
+            targetCardData.attachedCards.push(cardDiv);
+            cardDiv.data("card").attachedToCard = targetCardData;
+        }
     }
 
 }
