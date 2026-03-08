@@ -43,24 +43,22 @@ public class BeamCardsActionResultTest extends AbstractAtTest {
         JsonNode json = _game.serializeGameStateForPlayer(P1);
         JsonNode resultsNode = json.get("actionResults");
         JsonNode beamNode = resultsNode.get(resultsNode.size() - 1);
-        assertEquals(8, beamNode.size());
+        assertEquals(7, beamNode.size());
 
         assertTrue(beamNode.has("timestamp"));
         assertTrue(beamNode.has("targetCardIds"));
         assertTrue(beamNode.has("resultId"));
         assertTrue(beamNode.has("type"));
         assertTrue(beamNode.has("performingPlayerId"));
-        assertTrue(beamNode.has("destinationId"));
-        assertTrue(beamNode.has("originId"));
-        assertTrue(beamNode.has("originLocationId"));
+        assertTrue(beamNode.has("destinationCardId"));
+        assertTrue(beamNode.has("originCardId"));
 
         assertEquals("BEAM_CARDS", beamNode.get("type").textValue());
         assertEquals(P1, beamNode.get("performingPlayerId").textValue());
         assertEquals(cardsToBeam.size(), beamNode.get("targetCardIds").size());
         assertEquals(cardsToBeam.getFirst().getCardId(), beamNode.get("targetCardIds").get(0).asInt());
-        assertEquals(outpost.getCardId(), beamNode.get("originId").intValue());
-        assertEquals(outpost.getLocationId(), beamNode.get("originLocationId").intValue());
-        assertEquals(mission.getCardId(), beamNode.get("destinationId").intValue());
+        assertEquals(outpost.getCardId(), beamNode.get("originCardId").intValue());
+        assertEquals(mission.getCardId(), beamNode.get("destinationCardId").intValue());
     }
 
     @Test
@@ -71,24 +69,22 @@ public class BeamCardsActionResultTest extends AbstractAtTest {
         JsonNode json = _game.serializeGameStateForPlayer(P2);
         JsonNode resultsNode = json.get("actionResults");
         JsonNode beamNode = resultsNode.get(resultsNode.size() - 1);
-        assertEquals(8, beamNode.size());
+        assertEquals(7, beamNode.size());
 
         assertTrue(beamNode.has("timestamp"));
         assertTrue(beamNode.has("targetCardIds"));
         assertTrue(beamNode.has("resultId"));
         assertTrue(beamNode.has("type"));
         assertTrue(beamNode.has("performingPlayerId"));
-        assertTrue(beamNode.has("destinationId"));
-        assertTrue(beamNode.has("originId"));
-        assertTrue(beamNode.has("originLocationId"));
+        assertTrue(beamNode.has("destinationCardId"));
+        assertTrue(beamNode.has("originCardId"));
 
         assertEquals("BEAM_CARDS", beamNode.get("type").textValue());
         assertEquals(P1, beamNode.get("performingPlayerId").textValue());
         assertEquals(cardsToBeam.size(), beamNode.get("targetCardIds").size());
         assertEquals(cardsToBeam.getFirst().getCardId(), beamNode.get("targetCardIds").get(0).asInt());
-        assertEquals(outpost.getCardId(), beamNode.get("originId").intValue());
-        assertEquals(outpost.getLocationId(), beamNode.get("originLocationId").intValue());
-        assertEquals(mission.getCardId(), beamNode.get("destinationId").intValue());
+        assertEquals(outpost.getCardId(), beamNode.get("originCardId").intValue());
+        assertEquals(mission.getCardId(), beamNode.get("destinationCardId").intValue());
     }
 
 }

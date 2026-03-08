@@ -16,16 +16,13 @@ public class WalkCardsResult extends ActionResult {
     @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalCard> _cardsWalked;
 
-    @JsonProperty("originId")
+    @JsonProperty("originCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _origin;
 
-    @JsonProperty("destinationId")
+    @JsonProperty("destinationCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _destination;
-
-    @JsonProperty("originLocationId")
-    private final int _originLocationId;
 
 
     public WalkCardsResult(DefaultGame cardGame, String performingPlayerId, Action action,
@@ -34,6 +31,5 @@ public class WalkCardsResult extends ActionResult {
         _cardsWalked = cardsWalked;
         _origin = origin;
         _destination = destination;
-        _originLocationId = origin.getLocationId();
     }
 }

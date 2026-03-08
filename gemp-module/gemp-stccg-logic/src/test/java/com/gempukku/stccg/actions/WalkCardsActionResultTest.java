@@ -47,23 +47,21 @@ public class WalkCardsActionResultTest extends AbstractAtTest {
         JsonNode json = _game.serializeGameStateForPlayer(P1);
         JsonNode resultsNode = json.get("actionResults");
         JsonNode walkNode = resultsNode.get(resultsNode.size() - 1);
-        assertEquals(8, walkNode.size());
+        assertEquals(7, walkNode.size());
 
         assertTrue(walkNode.has("timestamp"));
         assertTrue(walkNode.has("targetCardIds"));
         assertTrue(walkNode.has("resultId"));
         assertTrue(walkNode.has("type"));
         assertTrue(walkNode.has("performingPlayerId"));
-        assertTrue(walkNode.has("destinationId"));
-        assertTrue(walkNode.has("originId"));
-        assertTrue(walkNode.has("originLocationId"));
+        assertTrue(walkNode.has("destinationCardId"));
+        assertTrue(walkNode.has("originCardId"));
 
         assertEquals("WALK_CARDS", walkNode.get("type").textValue());
         assertEquals(P1, walkNode.get("performingPlayerId").textValue());
         assertTrue(jsonListHasCardIds(walkNode.get("targetCardIds"), cardsToWalk));
-        assertEquals(outpost.getCardId(), walkNode.get("originId").intValue());
-        assertEquals(outpost.getLocationId(), walkNode.get("originLocationId").intValue());
-        assertEquals(runabout.getCardId(), walkNode.get("destinationId").intValue());
+        assertEquals(outpost.getCardId(), walkNode.get("originCardId").intValue());
+        assertEquals(runabout.getCardId(), walkNode.get("destinationCardId").intValue());
     }
 
     @Test
@@ -74,24 +72,22 @@ public class WalkCardsActionResultTest extends AbstractAtTest {
         JsonNode json = _game.serializeGameStateForPlayer(P2);
         JsonNode resultsNode = json.get("actionResults");
         JsonNode walkNode = resultsNode.get(resultsNode.size() - 1);
-        assertEquals(8, walkNode.size());
+        assertEquals(7, walkNode.size());
 
         assertTrue(walkNode.has("timestamp"));
         assertTrue(walkNode.has("targetCardIds"));
         assertTrue(walkNode.has("resultId"));
         assertTrue(walkNode.has("type"));
         assertTrue(walkNode.has("performingPlayerId"));
-        assertTrue(walkNode.has("destinationId"));
-        assertTrue(walkNode.has("originId"));
-        assertTrue(walkNode.has("originLocationId"));
+        assertTrue(walkNode.has("destinationCardId"));
+        assertTrue(walkNode.has("originCardId"));
 
         assertEquals("WALK_CARDS", walkNode.get("type").textValue());
         assertEquals(P1, walkNode.get("performingPlayerId").textValue());
         assertTrue(jsonListHasCardIds(walkNode.get("targetCardIds"), cardsToWalk));
         assertEquals(cardsToWalk.getFirst().getCardId(), walkNode.get("targetCardIds").get(0).asInt());
-        assertEquals(outpost.getCardId(), walkNode.get("originId").intValue());
-        assertEquals(outpost.getLocationId(), walkNode.get("originLocationId").intValue());
-        assertEquals(runabout.getCardId(), walkNode.get("destinationId").intValue());
+        assertEquals(outpost.getCardId(), walkNode.get("originCardId").intValue());
+        assertEquals(runabout.getCardId(), walkNode.get("destinationCardId").intValue());
     }
 
 }

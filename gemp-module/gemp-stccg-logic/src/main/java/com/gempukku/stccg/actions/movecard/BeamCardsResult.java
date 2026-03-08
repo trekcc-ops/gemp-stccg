@@ -16,16 +16,13 @@ public class BeamCardsResult extends ActionResult {
     @JsonIdentityReference(alwaysAsId=true)
     private final Collection<PhysicalCard> _cardsBeamed;
 
-    @JsonProperty("originId")
+    @JsonProperty("originCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _origin;
 
-    @JsonProperty("destinationId")
+    @JsonProperty("destinationCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _destination;
-
-    @JsonProperty("originLocationId")
-    private final int _originLocationId;
 
 
     public BeamCardsResult(DefaultGame cardGame, String performingPlayerId, Action action,
@@ -34,6 +31,5 @@ public class BeamCardsResult extends ActionResult {
         _cardsBeamed = cardsBeamed;
         _origin = origin;
         _destination = destination;
-        _originLocationId = origin.getLocationId();
     }
 }
