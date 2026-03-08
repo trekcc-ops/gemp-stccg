@@ -3,7 +3,6 @@ package com.gempukku.stccg.actions;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.AbstractAtTest;
 import com.gempukku.stccg.actions.modifiers.ChangeAffiliationAction;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
@@ -12,22 +11,18 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.GameTestBuilder;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChangeAffiliationActionResultTest extends AbstractAtTest {
 
-    private MissionCard mission;
-    private List<PersonnelCard> cardsToBeam;
-    private FacilityCard outpost;
     private PersonnelCard gareb;
 
     private void initializeGame() throws Exception {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
-        mission = builder.addMission(MissionType.PLANET, Affiliation.FEDERATION, P2);
-        gareb = builder.addCardOnPlanetSurface("141_037", "Gareb", P1, mission, PersonnelCard.class);
+        MissionCard mission = builder.addMission(MissionType.PLANET, Affiliation.FEDERATION, P2);
+        gareb = builder.addCardOnPlanetSurface("141_037", "Gareb", P1, mission, PersonnelCard.class,
+                Affiliation.ROMULAN);
         builder.setPhase(Phase.EXECUTE_ORDERS);
         _game = builder.startGame();
     }
@@ -35,6 +30,7 @@ public class ChangeAffiliationActionResultTest extends AbstractAtTest {
     @Test
     public void serializeResultForYouTest() throws Exception {
         initializeGame();
+        assertTrue(gareb.hasAffiliation(_game, Affiliation.ROMULAN, P1));
         Action action = performAction(P1, ChangeAffiliationAction.class, gareb);
         assertTrue(gareb.hasAffiliation(_game, Affiliation.NON_ALIGNED, P1));
 
