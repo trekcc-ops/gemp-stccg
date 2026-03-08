@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.game.DefaultGame;
@@ -21,7 +22,7 @@ public class StartTurnAction extends ActionyAction {
     protected void processEffect(DefaultGame cardGame) {
         GameState gameState = cardGame.getGameState();
         gameState.signalStartOfTurn(cardGame, cardGame.getCurrentPlayerId());
-        saveResult(new ActionResult(cardGame, ActionResult.Type.START_OF_TURN, _performingPlayerId, this), cardGame);
+        saveResult(new ActionResult(cardGame, ActionResultType.START_OF_TURN, _performingPlayerId, this), cardGame);
         setAsSuccessful();
     }
 }

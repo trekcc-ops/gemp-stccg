@@ -2,6 +2,7 @@ package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.Skill;
@@ -24,9 +25,9 @@ public class SpecialDownloadRule extends ST1ERule {
     public List<Action> getOptionalAfterActions(DefaultGame cardGame, String playerId,
                                                                   ActionResult actionResult) {
         if (actionResult.hasAnyType(List.of(
-                ActionResult.Type.JUST_PLAYED,
-                ActionResult.Type.START_OF_MISSION_ATTEMPT,
-                ActionResult.Type.SOLVE_MISSION
+                ActionResultType.JUST_PLAYED,
+                ActionResultType.START_OF_MISSION_ATTEMPT,
+                ActionResultType.SOLVE_MISSION
         ))) {
             return getSpecialDownloadsThatPlayerCanInitiate(cardGame, playerId);
         } else {

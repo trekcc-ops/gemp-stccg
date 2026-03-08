@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.draw;
 
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.game.DefaultGame;
@@ -28,7 +29,7 @@ public class DrawSingleCardAction extends ActionyAction {
         try {
             cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
             setAsSuccessful();
-            saveResult(new ActionResult(cardGame, ActionResult.Type.DRAW_CARD, _performingPlayerId, this), cardGame);
+            saveResult(new ActionResult(cardGame, ActionResultType.DRAW_CARD, _performingPlayerId, this), cardGame);
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);
             setAsFailed();

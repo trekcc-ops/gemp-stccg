@@ -1,7 +1,7 @@
 package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
@@ -17,7 +17,7 @@ public class StartOfPhaseTriggerChecker implements TriggerChecker {
     }
 
     public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
-        return cardGame.isCurrentActionResultType(ActionResult.Type.START_OF_PHASE) &&
+        return cardGame.isCurrentActionResultType(ActionResultType.START_OF_PHASE) &&
                 cardGame.getGameState().getCurrentPhase() == _phase;
     }
 

@@ -2,6 +2,7 @@ package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -43,7 +44,7 @@ public class StartOfMissionAttemptTriggerChecker implements TriggerChecker {
 
     public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
         ActionResult currentResult = cardGame.getCurrentActionResult();
-        if (currentResult != null && currentResult.hasType(ActionResult.Type.START_OF_MISSION_ATTEMPT) &&
+        if (currentResult != null && currentResult.hasType(ActionResultType.START_OF_MISSION_ATTEMPT) &&
                 cardGame.getCurrentAction() instanceof AttemptMissionAction missionAction
         ) {
             if (!_anyPlayer) {

@@ -97,7 +97,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
 
     @Override
     public void saveInitiationResult(DefaultGame cardGame) {
-        saveResult(new ActionResult(cardGame, ActionResult.Type.START_OF_MISSION_ATTEMPT, this), cardGame);
+        saveResult(new ActionResult(cardGame, ActionResultType.START_OF_MISSION_ATTEMPT, this), cardGame);
     }
 
     protected void processEffect(DefaultGame cardGame) {

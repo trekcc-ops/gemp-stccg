@@ -2,6 +2,7 @@ package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.choose.RandomSelectionInitiatedResult;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.filters.CardFilter;
@@ -20,7 +21,7 @@ public class RandomSelectionInitiationTriggerChecker implements TriggerChecker {
     @Override
     public boolean accepts(GameTextContext context, DefaultGame cardGame) {
         ActionResult currentResult = cardGame.getCurrentActionResult();
-        if (currentResult != null && currentResult.hasType(ActionResult.Type.RANDOM_SELECTION_INITIATED) &&
+        if (currentResult != null && currentResult.hasType(ActionResultType.RANDOM_SELECTION_INITIATED) &&
                 currentResult instanceof RandomSelectionInitiatedResult randomResult) {
             CardFilter eligibleCardFilter = _includedCardFilter.getFilterable(cardGame, context);
             return randomResult.includesCardMatchingFilter(cardGame, eligibleCardFilter);

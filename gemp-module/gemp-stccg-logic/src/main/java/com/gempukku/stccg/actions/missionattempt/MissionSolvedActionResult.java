@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -13,7 +14,7 @@ public class MissionSolvedActionResult extends ActionResult {
 
     public MissionSolvedActionResult(DefaultGame cardGame, String performingPlayerId, Action action,
                                      MissionCard mission, boolean missionSpecialistHelped) {
-        super(cardGame, Type.SOLVE_MISSION, performingPlayerId, action);
+        super(cardGame, ActionResultType.SOLVE_MISSION, performingPlayerId, action);
         _missionSpecialistHelped = missionSpecialistHelped;
         _mission = mission;
     }

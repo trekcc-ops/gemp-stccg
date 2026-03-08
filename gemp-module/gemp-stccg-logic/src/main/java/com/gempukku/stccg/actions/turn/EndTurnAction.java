@@ -1,6 +1,7 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.game.DefaultGame;
@@ -12,7 +13,7 @@ public class EndTurnAction extends ActionyAction {
 
     public EndTurnAction(DefaultGame cardGame, Player currentPlayer) {
         super(cardGame, currentPlayer.getPlayerId(), ActionType.END_TURN);
-        saveResult(new ActionResult(cardGame, ActionResult.Type.END_OF_TURN, currentPlayer.getPlayerId(), this), cardGame);
+        saveResult(new ActionResult(cardGame, ActionResultType.END_OF_TURN, currentPlayer.getPlayerId(), this), cardGame);
     }
 
     @Override

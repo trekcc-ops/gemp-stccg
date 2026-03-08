@@ -2,6 +2,7 @@ package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -60,7 +61,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
 
     private static boolean playedOn(DefaultGame game, ActionResult actionResult,
                                    Filterable targetFilter, Filterable... filters) {
-        if (actionResult.hasType(ActionResult.Type.JUST_PLAYED)) {
+        if (actionResult.hasType(ActionResultType.JUST_PLAYED)) {
             final PlayCardResult playResult = (PlayCardResult) actionResult;
             final PhysicalCard attachedTo = playResult.getAttachedTo();
             if (attachedTo == null)
@@ -73,7 +74,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
     }
 
     private boolean played(DefaultGame game, ActionResult actionResult, GameTextContext context, Filterable... filters) {
-        if (actionResult.hasType(ActionResult.Type.JUST_PLAYED)) {
+        if (actionResult.hasType(ActionResultType.JUST_PLAYED)) {
             if (_playingPlayer == null ||
                     actionResult.getPerformingPlayerId().equals(_playingPlayer.getPlayerName(game, context))) {
                 PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();

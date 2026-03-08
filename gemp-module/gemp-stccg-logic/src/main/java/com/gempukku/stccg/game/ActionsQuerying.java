@@ -2,6 +2,7 @@ package com.gempukku.stccg.game;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.gamestate.ActionProxy;
 
 import java.util.Collection;
@@ -15,7 +16,7 @@ public interface ActionsQuerying {
         return (currentAction == null) ? null : currentAction.getResult();
     }
 
-    default boolean isCurrentActionResultType(ActionResult.Type type) {
+    default boolean isCurrentActionResultType(ActionResultType type) {
         return getCurrentActionResult() != null && getCurrentActionResult().hasType(type);
     }
 

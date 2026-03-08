@@ -17,20 +17,7 @@ import java.util.*;
 
 public class ActionResult {
 
-    public enum Type {
-        ACTIVATE_TRIBBLE_POWER,
-        END_OF_TURN,
-        FOR_EACH_DISCARDED_FROM_HAND,
-        JUST_DISCARDED_FROM_PLAY,
-        JUST_PLAYED,
-        PLAYER_WENT_OUT,
-        START_OF_MISSION_ATTEMPT,
-        START_OF_PHASE,
-        START_OF_TURN,
-        DRAW_CARD, RANDOM_SELECTION_INITIATED, SOLVE_MISSION, KILL_CARD
-    }
-
-    private final List<Type> _types;
+    private final List<ActionResultType> _types;
     private final Set<Integer> _triggerActionIdsUsed = new HashSet<>();
 
     // Actions that can be initiated as optional responses. The key of this map is player name.
@@ -45,7 +32,7 @@ public class ActionResult {
     private final ZonedDateTime _timestamp;
     private final int _resultId;
 
-    public ActionResult(DefaultGame cardGame, List<Type> types, String performingPlayerId, Action action) {
+    public ActionResult(DefaultGame cardGame, List<ActionResultType> types, String performingPlayerId, Action action) {
         _types = types;
         _performingPlayerId = performingPlayerId;
         _action = action;
@@ -56,15 +43,15 @@ public class ActionResult {
     }
 
 
-    public ActionResult(DefaultGame cardGame, Type type, String performingPlayerId, Action action) {
+    public ActionResult(DefaultGame cardGame, ActionResultType type, String performingPlayerId, Action action) {
         this(cardGame, List.of(type), performingPlayerId, action);
     }
 
-    public ActionResult(DefaultGame cardGame, List<Type> types, Action action) {
+    public ActionResult(DefaultGame cardGame, List<ActionResultType> types, Action action) {
         this(cardGame, types, action.getPerformingPlayerId(), action);
     }
 
-    public ActionResult(DefaultGame cardGame, Type type, Action action) {
+    public ActionResult(DefaultGame cardGame, ActionResultType type, Action action) {
         this(cardGame, List.of(type), action.getPerformingPlayerId(), action);
     }
 
@@ -77,11 +64,11 @@ public class ActionResult {
         }
     }
 
-    public boolean hasType(Type type) {
+    public boolean hasType(ActionResultType type) {
         return _types.contains(type);
     }
-    public boolean hasAnyType(List<Type> types) {
-        for (Type type : types) {
+    public boolean hasAnyType(List<ActionResultType> types) {
+        for (ActionResultType type : types) {
             if (_types.contains(type)) {
                 return true;
             }

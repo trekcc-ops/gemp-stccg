@@ -1,9 +1,6 @@
 package com.gempukku.stccg.actions.draw;
 
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -57,7 +54,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         if (_minCardsToDraw == 1 && _maxCardsToDraw == 1) {
             cardGame.getGameState().playerDrawsCard(_performingPlayerId);
             setAsSuccessful();
-            saveResult(new ActionResult(cardGame, ActionResult.Type.DRAW_CARD, _performingPlayerId, this), cardGame);
+            saveResult(new ActionResult(cardGame, ActionResultType.DRAW_CARD, _performingPlayerId, this), cardGame);
         } else if (_minCardsToDraw == _maxCardsToDraw && _cardCountLastSelected == null) {
             _cardCountLastSelected = _maxCardsToDraw;
         } else if ((_cardCountLastSelected != null && _cardCountLastSelected == 0) ||

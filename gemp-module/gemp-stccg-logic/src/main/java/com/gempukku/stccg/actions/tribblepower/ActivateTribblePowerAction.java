@@ -1,9 +1,6 @@
 package com.gempukku.stccg.actions.tribblepower;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionWithSubActions;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -50,7 +47,7 @@ public abstract class ActivateTribblePowerAction extends ActionWithSubActions {
         Action action = getNextAction();
         if (action == null) {
             ActionResult result =
-                    new ActionResult(cardGame, ActionResult.Type.ACTIVATE_TRIBBLE_POWER, this);
+                    new ActionResult(cardGame, ActionResultType.ACTIVATE_TRIBBLE_POWER, this);
             saveResult(result, cardGame);
         }
         return action;
