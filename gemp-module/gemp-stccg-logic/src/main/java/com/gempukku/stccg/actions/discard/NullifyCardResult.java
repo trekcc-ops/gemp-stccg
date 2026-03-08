@@ -11,8 +11,12 @@ public class NullifyCardResult extends NoResponseActionResult {
     @JsonProperty("targetCardId")
     private final PhysicalCard _cardNullified;
 
+    @JsonProperty("performingCardId")
+    private final PhysicalCard _nullifyingCard;
+
     public NullifyCardResult(DefaultGame cardGame, NullifyCardAction action) {
         super(cardGame, ActionResultType.NULLIFY, action.getPerformingPlayerId(), action);
         _cardNullified = action.getNullifiedCard();
+        _nullifyingCard = action.getPerformingCard();
     }
 }
