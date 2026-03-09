@@ -62,7 +62,8 @@ public class DownloadCardAction extends ActionWithSubActions implements Download
             } else {
                 cardEnteringPlay.setAsAtop(destinationCard);
             }
-            saveResult(new PlayCardResult(cardGame, this, cardEnteringPlay, destinationCard, ActionType.DOWNLOAD_CARD), cardGame);
+            saveResult(new PlayCardResult(cardGame, this, cardEnteringPlay, destinationCard, ActionType.DOWNLOAD_CARD,
+                    _performingCard), cardGame);
             setAsSuccessful();
         }
     }

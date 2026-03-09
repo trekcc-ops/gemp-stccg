@@ -40,7 +40,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setNextTribbleInSequence(nextTribble);
 
         gameState.setChainBroken(false);
-        saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay), cardGame);
+        saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay, _performingCard), cardGame);
         setAsSuccessful();
     }
 }

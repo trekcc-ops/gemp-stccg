@@ -39,7 +39,8 @@ public class PlayFacilityAction extends PlayCardAction {
                 stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION);
                 facility.setParentCardRelationship(destinationCard, ChildCardRelationshipType.IN_SPACE);
                 ActionType actionType = _isDownload ? ActionType.DOWNLOAD_CARD : ActionType.PLAY_CARD;
-                saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay, destinationCard, actionType), cardGame);
+                saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay, destinationCard, actionType,
+                        _performingCard), cardGame);
                 setAsSuccessful();
             } else {
                 cardGame.sendErrorMessage("Unable to process play outpost action in a non-1E game");

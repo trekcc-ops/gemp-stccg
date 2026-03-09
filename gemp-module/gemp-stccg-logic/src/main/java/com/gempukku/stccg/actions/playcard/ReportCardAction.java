@@ -105,7 +105,7 @@ public class ReportCardAction extends PlayCardAction {
                     }
                 }
                 ActionType actionType = _isDownload ? ActionType.DOWNLOAD_CARD : ActionType.PLAY_CARD;
-                saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay, destination, actionType), cardGame);
+                saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay, destination, actionType, _performingCard), cardGame);
             } else {
                 throw new InvalidGameLogicException("Tried to report a non-reportable card");
             }

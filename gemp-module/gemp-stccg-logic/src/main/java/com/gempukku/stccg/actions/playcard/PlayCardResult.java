@@ -10,6 +10,7 @@ import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PlayCardResult extends ActionResult {
@@ -29,18 +30,25 @@ public class PlayCardResult extends ActionResult {
     @JsonProperty("isDownload")
     private final boolean _isDownload;
 
-    public PlayCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard) {
+    @JsonProperty("performingCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private final PhysicalCard _performingCard;
+
+
+    public PlayCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard, PhysicalCard performingCard) {
         super(cardGame, ActionResultType.PLAYED_CARD, action);
         _playedCard = playedCard;
         _toCore = false;
         _isDownload = false;
+        _performingCard = performingCard;
         _destinationCard = null;
     }
 
     public PlayCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard, PhysicalCard destinationCard,
-                          ActionType actionType) {
+                          ActionType actionType, PhysicalCard performingCard) {
         super(cardGame, ActionResultType.PLAYED_CARD, action);
         _isDownload = actionType == ActionType.DOWNLOAD_CARD;
+        _performingCard = performingCard;
         _playedCard = playedCard;
         if (destinationCard instanceof ProxyCoreCard) {
             _destinationCard = null;
@@ -51,10 +59,14 @@ public class PlayCardResult extends ActionResult {
         }
     }
 
-
     @JsonIgnore
     public PhysicalCard getPlayedCard() {
         return _playedCard;
+    }
+
+    @JsonProperty("isReport")
+    public boolean isReport() {
+        return _playedCard instanceof ReportableCard;
     }
 
 }
