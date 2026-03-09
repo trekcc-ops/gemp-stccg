@@ -10,7 +10,6 @@ import com.gempukku.stccg.actions.targetresolver.FixedCardsResolver;
 import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.StoppableCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -54,18 +53,21 @@ public class StopCardsAction extends ActionyAction {
     protected void processEffect(DefaultGame cardGame) {
         try {
             _stoppedCards = _cardTarget.getCards(cardGame);
-            for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
-                if (card instanceof ST1EPhysicalCard stCard) {
+            for (PhysicalCard card : _stoppedCards) {
+                if (card instanceof StoppableCard stCard) {
                     stCard.stop();
                 } else {
                     setAsFailed();
                     throw new InvalidGameLogicException("Tried to \"stop\" a card from a game with no \"stop\" action");
                 }
             }
-            if (_actionContext != null && _saveToMemoryId != null) {
-                _actionContext.setCardMemory(_saveToMemoryId, _stoppedCards);
+            if (!wasFailed()) {
+                if (_actionContext != null && _saveToMemoryId != null) {
+                    _actionContext.setCardMemory(_saveToMemoryId, _stoppedCards);
+                }
+                saveResult(new StopCardsActionResult(cardGame, _performingPlayerId, this, _stoppedCards), cardGame);
+                setAsSuccessful();
             }
-            setAsSuccessful();
         } catch(InvalidGameLogicException exp) {
             cardGame.sendErrorMessage(exp);
             setAsFailed();
