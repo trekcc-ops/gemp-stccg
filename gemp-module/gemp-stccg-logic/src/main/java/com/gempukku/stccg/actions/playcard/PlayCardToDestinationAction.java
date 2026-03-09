@@ -63,7 +63,7 @@ public class PlayCardToDestinationAction extends PlayCardAction {
                 }
             }
 
-            gameState.addCardToZone(cardGame, _cardEnteringPlay, destination.getZone(), _actionContext);
+            gameState.addCardToZone(cardGame, _cardEnteringPlay, destination.getZone());
             if (_onPlanet) {
                 _cardEnteringPlay.setAsOnPlanet(destination);
             } else if (!(destination instanceof ProxyCoreCard)) {

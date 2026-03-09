@@ -188,14 +188,14 @@ public abstract class GameState {
         card.clearLocation();
     }
 
-    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone, GameTextContext context) {
+    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone) {
         if (zone == Zone.DISCARD) {
             cardGame.addCardToTopOfDiscardPile(card);
         } else if (zone == Zone.REMOVED) {
             addCardToRemovedPile(card);
         }else {
             if (zone.isInPlay()) {
-                addCardToInPlay(cardGame, card, context);
+                addCardToInPlay(cardGame, card);
             } else if (zone != Zone.VOID) {
                 // Kind of weird to call out VOID, but this may still be used for dilemma seeding
                 card.clearLocation();
@@ -382,7 +382,7 @@ public abstract class GameState {
         return _playerClocks.values();
     }
 
-    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card, GameTextContext context) {
+    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card) {
         if (!_inPlay.contains(card)) {
             _inPlay.add(card);
 

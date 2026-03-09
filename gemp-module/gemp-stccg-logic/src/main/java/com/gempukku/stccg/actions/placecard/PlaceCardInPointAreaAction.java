@@ -46,7 +46,7 @@ public class PlaceCardInPointAreaAction extends ActionyAction {
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, cardBeingPlaced);
 
         for (PhysicalCard card : cardBeingPlaced) {
-            gameState.addCardToZone(cardGame, card, Zone.POINT_AREA, _actionContext);
+            gameState.addCardToZone(cardGame, card, Zone.POINT_AREA);
         }
 
         int pointsToScore = _pointValue.evaluateExpression(cardGame, _actionContext);

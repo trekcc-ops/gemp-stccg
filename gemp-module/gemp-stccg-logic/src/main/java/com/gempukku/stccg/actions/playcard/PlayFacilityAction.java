@@ -36,9 +36,10 @@ public class PlayFacilityAction extends PlayCardAction {
                 stGame.getGameState().removeCardsFromZoneWithoutSendingToClient(stGame, List.of(_cardEnteringPlay));
                 performingPlayer.addPlayedAffiliation(selectedAffiliation);
                 MissionCard destinationCard = _targetResolver.getDestinationMission();
-                stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION, _actionContext);
+                stGame.getGameState().addCardToZone(stGame, facility, Zone.AT_LOCATION);
                 facility.setParentCardRelationship(destinationCard, ChildCardRelationshipType.IN_SPACE);
-                saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay), cardGame);
+                ActionType actionType = _isDownload ? ActionType.DOWNLOAD_CARD : ActionType.PLAY_CARD;
+                saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay, destinationCard, actionType), cardGame);
                 setAsSuccessful();
             } else {
                 cardGame.sendErrorMessage("Unable to process play outpost action in a non-1E game");

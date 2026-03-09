@@ -82,7 +82,7 @@ public class ReportCardAction extends PlayCardAction {
                 GameState gameState = cardGame.getGameState();
 
                 cardGame.removeCardsFromZone(Collections.singleton(reportable));
-                gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
+                gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION);
 
                 if (destination instanceof CardWithCrew cardWithCrew) {
                     // if reporting to a ship or facility
@@ -104,8 +104,8 @@ public class ReportCardAction extends PlayCardAction {
                         stGame.getGameState().addCardToEligibleAwayTeam(stGame, reportable, missionLocation);
                     }
                 }
-
-                saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay), cardGame);
+                ActionType actionType = _isDownload ? ActionType.DOWNLOAD_CARD : ActionType.PLAY_CARD;
+                saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay, destination, actionType), cardGame);
             } else {
                 throw new InvalidGameLogicException("Tried to report a non-reportable card");
             }

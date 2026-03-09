@@ -53,8 +53,8 @@ public class SeedCardToDestinationAction extends SeedCardAction {
             GameState gameState = stGame.getGameState();
             PhysicalCard destination = _targetResolver.getDestination();
             cardGame.removeCardsFromZone(List.of(cardEnteringPlay));
-            gameState.addCardToZone(cardGame, cardEnteringPlay, Zone.AT_LOCATION, _actionContext);
-            if (destination instanceof CardWithCrew cardWithCrew && cardEnteringPlay instanceof ReportableCard reportable) {
+            gameState.addCardToZone(cardGame, cardEnteringPlay, Zone.AT_LOCATION);
+            if (destination instanceof CardWithCrew && cardEnteringPlay instanceof ReportableCard reportable) {
                 // if reporting to a ship or facility
                 if (reportable.getCardType() != CardType.SHIP) {
                     reportable.setAsAboard(destination);
@@ -79,6 +79,7 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                     cardEnteringPlay.setAsAtop(destination);
                 }
             }
+            saveResult(new PlayCardResult(cardGame, this, cardEnteringPlay), cardGame);
             setAsSuccessful();
         } else {
             cardGame.sendErrorMessage("Unable to process seed card action");

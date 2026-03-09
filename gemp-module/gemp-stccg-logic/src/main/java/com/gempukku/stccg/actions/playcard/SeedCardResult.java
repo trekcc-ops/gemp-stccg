@@ -3,29 +3,17 @@ package com.gempukku.stccg.actions.playcard;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionResultType;
-import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class PlayCardResult extends ActionResult {
+public class SeedCardResult extends ActionResult {
     private final PhysicalCard _playedCard;
     private final PhysicalCard _destinationCard;
     private final boolean _toCore;
-    private final ActionType _actionType;
 
-    public PlayCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard) {
-        super(cardGame, ActionResultType.PLAYED_CARD, action);
-        _playedCard = playedCard;
-        _toCore = false;
-        _actionType = null;
-        _destinationCard = null;
-    }
-
-    public PlayCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard, PhysicalCard destinationCard,
-                          ActionType actionType) {
-        super(cardGame, ActionResultType.PLAYED_CARD, action);
-        _actionType = actionType;
+    public SeedCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard, PhysicalCard destinationCard) {
+        super(cardGame, ActionResultType.SEEDED_CARD, action);
         _playedCard = playedCard;
         if (destinationCard instanceof ProxyCoreCard) {
             _destinationCard = null;

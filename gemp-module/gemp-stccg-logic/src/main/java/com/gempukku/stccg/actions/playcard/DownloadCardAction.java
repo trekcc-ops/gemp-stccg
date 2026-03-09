@@ -58,7 +58,7 @@ public class DownloadCardAction extends ActionWithSubActions implements Download
             }
             if (destinationCard instanceof ProxyCoreCard) {
                 cardGame.getGameState()
-                        .addCardToZone(cardGame, cardEnteringPlay, destinationCard.getZone(), _actionContext);
+                        .addCardToZone(cardGame, cardEnteringPlay, destinationCard.getZone());
             } else {
                 cardEnteringPlay.setAsAtop(destinationCard);
             }

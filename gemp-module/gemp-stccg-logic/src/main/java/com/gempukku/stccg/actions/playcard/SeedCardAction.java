@@ -5,13 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.gamestate.GameState;
-
-import java.util.List;
 
 public class SeedCardAction extends PlayCardAction {
 
@@ -31,22 +27,8 @@ public class SeedCardAction extends PlayCardAction {
                 status);
     }
 
-    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone) {
+    protected SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone) {
         super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
-    }
-
-    public SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone, GameTextContext context) {
-        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD, context);
-    }
-
-
-    public void processEffect(DefaultGame cardGame) {
-        GameState gameState = cardGame.getGameState();
-        cardGame.removeCardsFromZone(List.of(_cardEnteringPlay));
-        gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
-        setAsSuccessful();
-        saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay), cardGame);
-        setAsSuccessful();
     }
 
     @JsonProperty("seededCardId")

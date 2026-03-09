@@ -25,7 +25,7 @@ public class SpecialDownloadRule extends ST1ERule {
     public List<Action> getOptionalAfterActions(DefaultGame cardGame, String playerId,
                                                                   ActionResult actionResult) {
         if (actionResult.hasAnyType(List.of(
-                ActionResultType.JUST_PLAYED,
+                ActionResultType.PLAYED_CARD,
                 ActionResultType.START_OF_MISSION_ATTEMPT,
                 ActionResultType.SOLVE_MISSION
         ))) {

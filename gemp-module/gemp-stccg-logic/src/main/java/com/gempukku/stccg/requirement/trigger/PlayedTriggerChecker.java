@@ -59,7 +59,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
     }
 
     private boolean played(DefaultGame game, ActionResult actionResult, GameTextContext context, Filterable... filters) {
-        if (actionResult.hasType(ActionResultType.JUST_PLAYED)) {
+        if (actionResult.hasType(ActionResultType.PLAYED_CARD)) {
             if (_playingPlayer == null ||
                     actionResult.getPerformingPlayerId().equals(_playingPlayer.getPlayerName(game, context))) {
                 PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();

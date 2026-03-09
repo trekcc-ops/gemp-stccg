@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
-import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
-import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
+import com.gempukku.stccg.actions.playcard.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -384,14 +381,14 @@ public class GameTestBuilder {
     public PhysicalCard addCardInHand(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND);
         return cardToAdd;
     }
 
     public PhysicalCard addCardInDiscard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DISCARD, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DISCARD);
         return cardToAdd;
     }
 
@@ -400,7 +397,7 @@ public class GameTestBuilder {
     public <T extends PhysicalCard> T addCardInHand(String blueprintId, String cardTitle, String ownerName,
                                                     Class<T> clazz) throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND);
         return cardToAdd;
     }
 
@@ -462,14 +459,14 @@ public class GameTestBuilder {
     public PhysicalCard addSeedDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
         return cardToAdd;
     }
 
     public <T extends PhysicalCard> T addSeedDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
             throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
         return cardToAdd;
     }
 
@@ -477,14 +474,14 @@ public class GameTestBuilder {
     public PhysicalCard addDrawDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK);
         return cardToAdd;
     }
 
     public <T extends PhysicalCard> T addDrawDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
             throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK);
         return cardToAdd;
     }
 
@@ -492,7 +489,7 @@ public class GameTestBuilder {
     public MissionCard addMissionToDeck(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         MissionCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, MissionCard.class);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.MISSIONS_PILE, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.MISSIONS_PILE);
         return cardToAdd;
     }
 
@@ -500,7 +497,9 @@ public class GameTestBuilder {
             throws CardNotFoundException, InvalidGameOperationException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
 
-        SeedCardAction seedAction = new SeedCardAction(_game, cardToAdd, Zone.CORE);
+        SeedCardAction seedAction =
+                new SeedCardToDestinationAction(_game, ownerName, List.of(cardToAdd), List.of(new ProxyCoreCard(ownerName)), cardToAdd);
+
         executeAction(seedAction);
 
         return cardToAdd;

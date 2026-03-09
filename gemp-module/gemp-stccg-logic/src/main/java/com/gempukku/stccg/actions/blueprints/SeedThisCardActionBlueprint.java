@@ -8,8 +8,8 @@ import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.common.filterable.Affiliation;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.*;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -68,7 +68,8 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
                 appendSubActions(action);
                 return action;
             } else if (_toCore) {
-                action = new SeedCardAction(cardGame, thisCard, Zone.CORE, context);
+                action = new SeedCardToDestinationAction(cardGame, performingPlayerName, List.of(thisCard),
+                        List.of(new ProxyCoreCard(performingPlayerName)), context.card());
                 appendSubActions(action);
                 return action;
             } else if (_destinationFilter != null) {
