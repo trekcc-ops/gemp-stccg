@@ -9,7 +9,7 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class SeedCardAction extends PlayCardAction {
+public abstract class SeedCardAction extends PlayCardAction {
 
     @JsonCreator
     private SeedCardAction(@JsonProperty("actionId") int actionId,
