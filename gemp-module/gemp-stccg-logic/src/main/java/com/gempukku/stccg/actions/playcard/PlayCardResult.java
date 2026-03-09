@@ -1,5 +1,9 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionResultType;
@@ -9,8 +13,17 @@ import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.game.DefaultGame;
 
 public class PlayCardResult extends ActionResult {
+
+    @JsonProperty("playedCardId")
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _playedCard;
+
+    @JsonProperty("destinationCardId")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _destinationCard;
+
+    @JsonProperty("toCore")
     private final boolean _toCore;
     private final ActionType _actionType;
 
@@ -36,11 +49,18 @@ public class PlayCardResult extends ActionResult {
         }
     }
 
+    @JsonProperty("isDownload")
+    private boolean isDownload() {
+        return _actionType == ActionType.DOWNLOAD_CARD;
+    }
 
+
+    @JsonIgnore
     public PhysicalCard getPlayedCard() {
         return _playedCard;
     }
 
+    @JsonIgnore
     public Action getAction() { return _action; }
 
 }
