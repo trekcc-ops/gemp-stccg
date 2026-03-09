@@ -141,8 +141,4 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableC
         setParentCardRelationship(destination, ChildCardRelationshipType.ON_PLANET);
     }
 
-    public void setAsInSpaceAtLocation(PhysicalCard destination) {
-        setParentCardRelationship(destination, ChildCardRelationshipType.IN_SPACE);
-    }
-
 }

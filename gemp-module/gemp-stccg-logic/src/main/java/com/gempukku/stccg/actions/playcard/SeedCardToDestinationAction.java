@@ -62,9 +62,9 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                 if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
                     ship.setAsDockedAt(facility);
                 }
-            } else if (cardEnteringPlay instanceof ShipCard shipCard) {
-                // if reporting a ship in space at a location
-                shipCard.setAsInSpaceAtLocation(destination);
+            } else if (cardEnteringPlay instanceof CardWithCrew cardWithCrew && !_onPlanet) {
+                // if reporting a ship or facility in space at a location
+                cardWithCrew.setAsInSpaceAtLocation(destination);
             } else if (cardEnteringPlay instanceof ReportableCard reportable) {
                 // if reporting another reportable to a location
                 reportable.setAsOnPlanet(destination);
