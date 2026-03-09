@@ -1,7 +1,9 @@
-package com.gempukku.stccg.actions.blueprints;
+package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.blueprints.DefaultActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.UsageLimitBlueprint;
 import com.gempukku.stccg.actions.choose.SelectCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
@@ -35,7 +37,7 @@ public class PlayCardForFreeActionBlueprint extends DefaultActionBlueprint {
     public PlayCardForFreeActionBlueprint(@JsonProperty(value = "destination", required = true)
                                        DestinationBlueprint destinationBlueprint,
                                           @JsonProperty(value = "limit")
-                                       UsageLimitBlueprint usageLimit,
+                                          UsageLimitBlueprint usageLimit,
                                           @JsonProperty(value = "filter")
                                           FilterBlueprint filterBlueprint,
                                           @JsonProperty("requires")

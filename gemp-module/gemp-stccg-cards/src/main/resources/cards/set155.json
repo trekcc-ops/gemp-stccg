@@ -263,18 +263,11 @@
                 {
                     "type": "seedThis",
                     "limit": 1,
-                    "toCore": true
-                },
-                {
-                    "type": "optionalTrigger",
-                    "trigger": {
-                        "type": "played",
-                        "filter": "self"
-                    },
-                    "triggerDuringSeed": true,
-                    "effect": {
+                    "toCore": true,
+                    "immediateEffect": {
                         "type": "download",
-                        "filter": "warp-core"
+                        "filter": "warp-core",
+                        "optional": true
                     }
                 },
                 {

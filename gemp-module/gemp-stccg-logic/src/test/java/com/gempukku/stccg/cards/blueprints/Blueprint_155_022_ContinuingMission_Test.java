@@ -80,7 +80,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
     public void downloadCardTest() throws Exception {
         _game = initializeGame(true, false, false);
         seedCard(P1, continuing);
-        useGameText(P1, continuing);
+        playerSaysYes(P1);
 
         // Verify that both copies of Attention All Hands are in selectable cards, but can't select both
         assertTrue(selectableCardsAre(P1, List.of(attention, attention2)));
@@ -126,7 +126,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         _game = initializeGame(true, false, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
-        useGameText(P1, continuing);
+        playerSaysYes(P1);
         selectCard(P1, attention);
         int initialHandSize = hand.size();
 
@@ -153,7 +153,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         int initialHandSize = hand.size();
         seedCard(P1, continuing);
         seedCard(P1, ams);
-        useGameText(P1, ams);
+        playerSaysYes(P1);
         selectCards(P1, List.of(tarses, wallace));
         assertEquals(Phase.START_OF_TURN, _game.getCurrentPhase());
 
@@ -166,7 +166,7 @@ public class Blueprint_155_022_ContinuingMission_Test extends AbstractAtTest {
         _game = initializeGame(true, false, false);
         PhysicalCardGroup<PhysicalCard> hand = _game.getPlayer(P1).getCardGroup(Zone.HAND);
         seedCard(P1, continuing);
-        useGameText(P1, continuing);
+        playerSaysYes(P1);
         selectCard(P1, attention);
         int initialHandSize = hand.size();
 

@@ -1,11 +1,8 @@
-package com.gempukku.stccg.actions.blueprints;
+package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
-import com.gempukku.stccg.actions.playcard.PlayCardAction;
-import com.gempukku.stccg.actions.playcard.PlayCardToDestinationAction;
-import com.gempukku.stccg.actions.playcard.PlayFacilityAction;
+import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.targetresolver.PlayFacilityResolver;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;

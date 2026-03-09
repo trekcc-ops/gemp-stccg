@@ -88,7 +88,7 @@ public class Blueprint_161_015_IllegitimateLeader_Test extends AbstractAtTest {
 
         assertThrows(DecisionResultInvalidException.class, () -> seedCard(P1, leaderToSeed));
         seedCard(P1, continuing);
-        useGameText(P1, continuing);
+        playerSaysYes(P1);
 
         // leaderToDownload should be automatically selected since it's the only downloadable card
         assertTrue(leaderToDownload.isInPlay());

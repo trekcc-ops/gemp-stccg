@@ -81,9 +81,9 @@ public class SeedCardToDestinationAction extends SeedCardAction {
             }
             saveResult(new SeedCardResult(cardGame, this, cardEnteringPlay, destination), cardGame);
             _seeded = true;
-            setAsSuccessful();
         } else {
             super.processEffect(cardGame);
+            setAsSuccessful();
         }
     }
 

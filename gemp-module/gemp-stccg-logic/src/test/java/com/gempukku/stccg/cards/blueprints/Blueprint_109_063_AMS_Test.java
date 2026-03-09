@@ -69,7 +69,7 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
 
         seedCard(P1, ams);
         assertTrue(ams.isInPlay());
-        useGameText(P1, ams);
+        playerSaysYes(P1); // use optional download action
         assertNotNull(_game.getAwaitingDecision(P1));
 
 

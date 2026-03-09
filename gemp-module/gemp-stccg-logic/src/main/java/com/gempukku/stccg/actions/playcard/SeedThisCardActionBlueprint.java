@@ -1,10 +1,9 @@
-package com.gempukku.stccg.actions.blueprints;
+package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
-import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.actions.playcard.SeedCardToDestinationAction;
-import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
+import com.gempukku.stccg.actions.blueprints.DefaultActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
+import com.gempukku.stccg.actions.blueprints.UsePerGameLimitActionBlueprint;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -32,6 +31,8 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
                                        FilterBlueprint destinationFilter,
                                        @JsonProperty(value = "limit")
                                    Integer limit,
+                                       @JsonProperty("immediateEffect")
+                                       SubActionBlueprint immediateEffect,
                                        @JsonProperty(value = "onPlanet") boolean onPlanet,
                                        @JsonProperty(value = "toCore") boolean toCore
     ) {
@@ -42,6 +43,9 @@ public class SeedThisCardActionBlueprint extends DefaultActionBlueprint {
         _destinationFilter = destinationFilter;
         if (limit != null) {
             costs.add(new UsePerGameLimitActionBlueprint(this, limit));
+        }
+        if (immediateEffect != null) {
+            _effects.add(immediateEffect);
         }
     }
 
