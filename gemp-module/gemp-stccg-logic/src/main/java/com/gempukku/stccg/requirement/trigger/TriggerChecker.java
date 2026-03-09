@@ -17,8 +17,7 @@ import com.gempukku.stccg.requirement.Requirement;
         @JsonSubTypes.Type(value = PlayerGoesOutTriggerChecker.class, name = "playerGoesOut"),
         @JsonSubTypes.Type(value = RandomSelectionInitiationTriggerChecker.class, name = "randomSelectionInitiated"),
         @JsonSubTypes.Type(value = StartOfMissionAttemptTriggerChecker.class, name = "startOfMissionAttempt"),
-        @JsonSubTypes.Type(value = StartOfTurnTriggerChecker.class, name = "startOfTurn"),
-        @JsonSubTypes.Type(value = WhenThisCardPlayedTriggerChecker.class, name = "thisCardPlayed")
+        @JsonSubTypes.Type(value = StartOfTurnTriggerChecker.class, name = "startOfTurn")
 })
 public interface TriggerChecker extends Requirement {
 }
