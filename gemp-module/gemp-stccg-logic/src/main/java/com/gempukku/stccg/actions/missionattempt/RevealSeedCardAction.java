@@ -39,29 +39,26 @@ public class RevealSeedCardAction extends ActionyAction {
     @Override
     protected void processEffect(DefaultGame cardGame) {
         try {
-            if (!_misSeedResolved) {
-                if (cardGame.getCardFromCardId(_revealedCardId) instanceof ST1EPhysicalCard revealedCard &&
-                        cardGame instanceof ST1EGame stGame) {
-                    revealedCard.reveal();
-                    _misSeedResolved = true;
-                    if (stGame.getGameState().getLocationById(_locationId) instanceof MissionLocation missionLocation) {
-                        if (revealedCard.isMisSeed(cardGame, missionLocation)) {
-                            if (_performingPlayerId.equals(revealedCard.getOwnerName())) {
-                                // TODO - Player also cannot solve objectives targeting the mission
-                                Modifier modifier =
-                                        new PlayerCannotSolveMissionModifier(_locationId, _performingPlayerId);
-                                cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
-                            }
-                            cardGame.addActionToStack(new RemoveCardFromGameAction(cardGame, _performingPlayerId, revealedCard));
+            if (cardGame.getCardFromCardId(_revealedCardId) instanceof ST1EPhysicalCard revealedCard &&
+                    cardGame instanceof ST1EGame stGame) {
+                revealedCard.reveal();
+                if (stGame.getGameState().getLocationById(_locationId) instanceof MissionLocation missionLocation) {
+                    if (revealedCard.isMisSeed(cardGame, missionLocation)) {
+                        if (_performingPlayerId.equals(revealedCard.getOwnerName())) {
+                            // TODO - Player also cannot solve objectives targeting the mission
+                            Modifier modifier =
+                                    new PlayerCannotSolveMissionModifier(_locationId, _performingPlayerId);
+                            cardGame.getModifiersEnvironment().addAlwaysOnModifier(modifier);
                         }
-                    } else {
-                        throw new InvalidGameLogicException("Unable to reveal seed card from location id " + _locationId);
+                        cardGame.addActionToStack(new RemoveCardFromGameAction(cardGame, _performingPlayerId, revealedCard));
                     }
+                    setAsSuccessful();
+                    saveResult(new RevealSeedCardActionResult(cardGame, this, revealedCard), cardGame);
                 } else {
-                    throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
+                    throw new InvalidGameLogicException("Unable to reveal seed card from location id " + _locationId);
                 }
             } else {
-                setAsSuccessful();
+                throw new InvalidGameLogicException("Tried to reveal a seed card in a non-1E game");
             }
         } catch(Exception exp) {
             cardGame.sendErrorMessage(exp);
