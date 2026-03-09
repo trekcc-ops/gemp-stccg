@@ -28,6 +28,7 @@ import SourceIcon from '@mui/icons-material/Source';
 import Tooltip from '@mui/material/Tooltip';
 import ChangeDataSourceDialog from './change-data-source-dialog.jsx';
 import PlayerScorePane from './player-score-pane.jsx';
+import PileDetailsDialog from './pile-details-dialog.jsx';
 import MainLayoutGrid from './main-layout-grid.jsx';
 import player_state from '../../player_state.json?url';
 import { get_your_player_id, get_opponent_player_id } from './common.jsx';
@@ -146,6 +147,28 @@ export default function MiniDrawer() {
         setOpen(false);
     };
 
+    // Card Details Dialog
+    const [cardDetailsDialogBoxIsOpen, setCardDetailsDialogBoxIsOpen] = useState(false);
+    const [cardDetailsCardId, setCardDetailsCardId] = useState(null);
+    function openCardDetails(card_id) {
+        setCardDetailsCardId(card_id);
+        setCardDetailsDialogBoxIsOpen(true);
+    }
+    function closeCardDetails() {
+        setCardDetailsDialogBoxIsOpen(false);
+    }
+
+    // Pile Details Dialog
+    const [pileDetailsDialogBoxIsOpen, setPileDetailsDialogBoxIsOpen] = useState(false);
+    const [pileDetailsPlayerIdAndPileName, setPileDetailsPlayerIdAndPileName] = useState(null);
+    function openPileDetails(playerAndPile) {
+        setPileDetailsPlayerIdAndPileName(playerAndPile);
+        setPileDetailsDialogBoxIsOpen(true);
+    }
+    function closePileDetails() {
+        setPileDetailsDialogBoxIsOpen(false);
+    }
+
     // Don't render unless we have something
     if (loadedGameState){
         return (
@@ -175,14 +198,14 @@ export default function MiniDrawer() {
                                 flexGrow: 1
                             }}>
 
-                            <PlayerScorePane id="opponent-player-score-pane" gamestate={loadedGameState} player_id={get_opponent_player_id(loadedGameState)}/>
+                            <PlayerScorePane id="opponent-player-score-pane" gamestate={loadedGameState} player_id={get_opponent_player_id(loadedGameState)} openPileDetailsFunc={openPileDetails} />
                             <Tooltip title="Data Source">
                                 <IconButton aria-label="Data Source" onClick={() => {setChangeDataSourceDialogOpen(true)}}>
                                     <SourceIcon />
                                 </IconButton>
                                 <ChangeDataSourceDialog open={changeDataSourceDialogOpen} onCloseFunc={setChangeDataSourceDialogOpen} dataSource={dataSource} setDataSource={setDataSource} />
                             </Tooltip>
-                            <PlayerScorePane id="your-player-score-pane" gamestate={loadedGameState} player_id={get_your_player_id(loadedGameState)}/>
+                            <PlayerScorePane id="your-player-score-pane" gamestate={loadedGameState} player_id={get_your_player_id(loadedGameState)} openPileDetailsFunc={openPileDetails} />
                                 
                         </Stack>
                         <Divider orientation="vertical" flexItem sx={{padding: "10px"}} />
@@ -411,7 +434,8 @@ export default function MiniDrawer() {
                 {/* content */}
                 <Box component="main" sx={{ flexGrow: 1 }}>
                     <DrawerHeader />{/* Required for padding to make sure content doesn't slip below AppBar */}
-                    <MainLayoutGrid gamestate={loadedGameState} />
+                    <MainLayoutGrid gamestate={loadedGameState} cardDetailsDialogBoxIsOpen={cardDetailsDialogBoxIsOpen} cardDetailsCardIdFunc={cardDetailsCardId} setCardIdFunc={setCardDetailsCardId} openCardDetailsFunc={openCardDetails} closeCardDetailsFunc={closeCardDetails}  />
+                    <PileDetailsDialog gamestate={loadedGameState} pileDetailsPlayerIdAndPileName={pileDetailsPlayerIdAndPileName} isOpen={pileDetailsDialogBoxIsOpen} onCloseFunc={closePileDetails} openCardDetailsFunc={openCardDetails} />
                 </Box>
             </Box>
         );

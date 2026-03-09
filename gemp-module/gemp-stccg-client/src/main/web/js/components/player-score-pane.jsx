@@ -1,6 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
 import decipher_card_deck from '../../images/decipher_card_deck.svg?no-inline';
 import decipher_card_discard from '../../images/decipher_card_discard.svg?no-inline';
 import decipher_card_hand from '../../images/decipher_card_hand.svg?no-inline';
@@ -51,8 +52,7 @@ function get_player_data(player_id, gamestate) {
     }
 }
 
-export default function PlayerScorePane ( {gamestate, player_id} ) {
-    let badge_color = 'secondary';
+export default function PlayerScorePane ( {gamestate, player_id, openPileDetailsFunc} ) {
     let player_data = get_player_data(player_id, gamestate);
 
     return(
@@ -77,17 +77,26 @@ export default function PlayerScorePane ( {gamestate, player_id} ) {
             </Box>
             <Box className="DiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Discard size">
-                    <Typography align='center'>{player_data.discardsize}</Typography>
+                    <Button color="white" sx={{padding: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "DISCARD"})}>
+                        <Typography align='center'>{player_data.discardsize}</Typography>
+                    </Button>
                 </Tooltip>
             </Box>
             <Box className="RemovedSize" sx={{backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Removed from game">
-                    <Typography align='center'>{player_data.removedsize}</Typography>
+                    <Button color="white" sx={{padding: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "REMOVED"})}>
+                        <Typography align='center'>{player_data.removedsize}</Typography>
+                    </Button>
                 </Tooltip>
             </Box>
             <Box className="Score">
-                <Typography align='center'>SCORE: {player_data.score}</Typography>
+                <Button color="white" sx={{padding: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "POINT_AREA"})}>
+                    <Typography align='center'>
+                        SCORE: {player_data.score}
+                    </Typography>
+                </Button>
             </Box>
+            
         </Box>
     );
 }

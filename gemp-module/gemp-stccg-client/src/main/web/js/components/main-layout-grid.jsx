@@ -4,20 +4,9 @@ import TableLayout from './table-layout.jsx';
 import Hand from './hand.jsx';
 import ActionReactionPane from './action-reaction-pane.jsx';
 import PhaseIndicator from './phase-indicator.jsx';
-import { useState } from "react";
 import CardDetailsDialog from "./card-details-dialog.jsx";
 
-export default function MainLayoutGrid( {gamestate, sx} ) {
-    const [cardDetailsDialogBoxIsOpen, setCardDetailsDialogBoxIsOpen] = useState(false);
-    const [cardDetailsCardId, setCardDetailsCardId] = useState(null);
-    function openCardDetails(card_id) {
-        setCardDetailsCardId(card_id);
-        setCardDetailsDialogBoxIsOpen(true);
-    }
-    function closeCardDetails() {
-        setCardDetailsDialogBoxIsOpen(false);
-    }
-    
+export default function MainLayoutGrid( {gamestate, sx, cardDetailsDialogBoxIsOpen, cardDetailsCardIdFunc, setCardIdFunc, openCardDetailsFunc, closeCardDetailsFunc} ) {
     return(
         <Stack id="main-layout-grid"
             direction={"column"}
@@ -29,7 +18,7 @@ export default function MainLayoutGrid( {gamestate, sx} ) {
                 ...sx //also use incoming styles from parent
             }}
         >
-            <TableLayout gamestate={gamestate} openCardDetailsFunc={openCardDetails} closeCardDetailsFunc={closeCardDetails} />
+            <TableLayout gamestate={gamestate} openCardDetailsFunc={openCardDetailsFunc} closeCardDetailsFunc={closeCardDetailsFunc} />
             
             <Box sx={{
                 display: "grid",
@@ -43,7 +32,7 @@ export default function MainLayoutGrid( {gamestate, sx} ) {
                     borderLeft: "1px solid #fff",
                     borderBottom: "1px solid #fff",
                 }}>
-                    <Hand gamestate={gamestate} openCardDetailsFunc={openCardDetails} closeCardDetailsFunc={closeCardDetails} />
+                    <Hand gamestate={gamestate} openCardDetailsFunc={openCardDetailsFunc} closeCardDetailsFunc={closeCardDetailsFunc} />
                 </Box>
 
                 <Box id="action-reaction-pane" sx={{
@@ -53,7 +42,7 @@ export default function MainLayoutGrid( {gamestate, sx} ) {
                     borderTop: "1px solid #fff",
                     borderRight: "1px solid #fff"
                 }}>
-                    <ActionReactionPane gamestate={gamestate} openCardDetailsFunc={openCardDetails} closeCardDetailsFunc={closeCardDetails} />
+                    <ActionReactionPane gamestate={gamestate} openCardDetailsFunc={openCardDetailsFunc} closeCardDetailsFunc={closeCardDetailsFunc} />
                 </Box>
                 
                 <Box id="phase-pane" sx={{
@@ -61,11 +50,11 @@ export default function MainLayoutGrid( {gamestate, sx} ) {
                     gridRow: "mid-aligned",
                     border: "1px solid #fff"
                 }}>
-                    <PhaseIndicator gamestate={gamestate} openCardDetailsFunc={openCardDetails} closeCardDetailsFunc={closeCardDetails} />
+                    <PhaseIndicator gamestate={gamestate} openCardDetailsFunc={openCardDetailsFunc} closeCardDetailsFunc={closeCardDetailsFunc} />
                 </Box>
             </Box>
 
-            <CardDetailsDialog gamestate={gamestate} cardId={cardDetailsCardId} setCardIdFunc={setCardDetailsCardId} isOpen={cardDetailsDialogBoxIsOpen} onCloseFunc={closeCardDetails}></CardDetailsDialog>
+            <CardDetailsDialog gamestate={gamestate} cardId={cardDetailsCardIdFunc} setCardIdFunc={setCardIdFunc} isOpen={cardDetailsDialogBoxIsOpen} onCloseFunc={closeCardDetailsFunc}></CardDetailsDialog>
             
         </Stack>
     )
