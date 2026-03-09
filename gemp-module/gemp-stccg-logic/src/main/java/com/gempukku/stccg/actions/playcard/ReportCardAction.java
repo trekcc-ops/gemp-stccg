@@ -92,8 +92,8 @@ public class ReportCardAction extends PlayCardAction {
                     if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
                         ship.setAsDockedAt(facility);
                     }
-                } else if (reportable.getCardType() == CardType.SHIP) {
-                    reportable.setAsInSpaceAtLocation(destination);
+                } else if (reportable instanceof ShipCard ship) {
+                    ship.setAsInSpaceAtLocation(destination);
                     // if reporting a ship in space at a location
                 } else {
                     // if reporting another reportable to a location

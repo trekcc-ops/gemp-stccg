@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -17,6 +16,7 @@ import java.util.Map;
 public class SeedCardToDestinationAction extends SeedCardAction {
     private final EnterPlayAtDestinationResolver _targetResolver;
     private final boolean _onPlanet;
+    private boolean _seeded;
 
     public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
                                        Collection<PhysicalCard> seedableCards,
@@ -48,12 +48,11 @@ public class SeedCardToDestinationAction extends SeedCardAction {
 
 
     public void processEffect(DefaultGame cardGame) {
-        if (cardGame instanceof ST1EGame stGame) {
+        if (!_seeded) {
             PhysicalCard cardEnteringPlay = _targetResolver.getCardEnteringPlay();
-            GameState gameState = stGame.getGameState();
             PhysicalCard destination = _targetResolver.getDestination();
             cardGame.removeCardsFromZone(List.of(cardEnteringPlay));
-            gameState.addCardToZone(cardGame, cardEnteringPlay, Zone.AT_LOCATION);
+            cardGame.getGameState().addCardToZone(cardGame, cardEnteringPlay, Zone.AT_LOCATION);
             if (destination instanceof CardWithCrew && cardEnteringPlay instanceof ReportableCard reportable) {
                 // if reporting to a ship or facility
                 if (reportable.getCardType() != CardType.SHIP) {
@@ -69,6 +68,7 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                 // if reporting another reportable to a location
                 reportable.setAsOnPlanet(destination);
                 if (destination instanceof MissionCard missionDestination &&
+                        cardGame instanceof ST1EGame stGame &&
                         missionDestination.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
                     stGame.getGameState().addCardToEligibleAwayTeam(stGame, reportable, missionLocation);
                 }
@@ -79,11 +79,11 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                     cardEnteringPlay.setAsAtop(destination);
                 }
             }
-            saveResult(new PlayCardResult(cardGame, this, cardEnteringPlay), cardGame);
+            saveResult(new SeedCardResult(cardGame, this, cardEnteringPlay, destination), cardGame);
+            _seeded = true;
             setAsSuccessful();
         } else {
-            cardGame.sendErrorMessage("Unable to process seed card action");
-            setAsFailed();
+            super.processEffect(cardGame);
         }
     }
 

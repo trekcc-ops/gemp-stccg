@@ -15,8 +15,5 @@ public interface ReportableCard extends CardWithCompatibility {
     void setAsOnPlanet(PhysicalCard destination);
 
     @JsonIgnore
-    void setAsInSpaceAtLocation(PhysicalCard destination);
-
-    @JsonIgnore
     boolean isAboard(PhysicalCard card);
 }
