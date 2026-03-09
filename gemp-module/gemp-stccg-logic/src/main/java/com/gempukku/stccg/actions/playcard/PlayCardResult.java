@@ -25,20 +25,22 @@ public class PlayCardResult extends ActionResult {
 
     @JsonProperty("toCore")
     private final boolean _toCore;
-    private final ActionType _actionType;
+
+    @JsonProperty("isDownload")
+    private final boolean _isDownload;
 
     public PlayCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard) {
         super(cardGame, ActionResultType.PLAYED_CARD, action);
         _playedCard = playedCard;
         _toCore = false;
-        _actionType = null;
+        _isDownload = false;
         _destinationCard = null;
     }
 
     public PlayCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard, PhysicalCard destinationCard,
                           ActionType actionType) {
         super(cardGame, ActionResultType.PLAYED_CARD, action);
-        _actionType = actionType;
+        _isDownload = actionType == ActionType.DOWNLOAD_CARD;
         _playedCard = playedCard;
         if (destinationCard instanceof ProxyCoreCard) {
             _destinationCard = null;
@@ -49,18 +51,10 @@ public class PlayCardResult extends ActionResult {
         }
     }
 
-    @JsonProperty("isDownload")
-    private boolean isDownload() {
-        return _actionType == ActionType.DOWNLOAD_CARD;
-    }
-
 
     @JsonIgnore
     public PhysicalCard getPlayedCard() {
         return _playedCard;
     }
-
-    @JsonIgnore
-    public Action getAction() { return _action; }
 
 }
