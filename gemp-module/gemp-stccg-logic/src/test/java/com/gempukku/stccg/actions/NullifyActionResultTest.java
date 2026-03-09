@@ -58,7 +58,7 @@ public class NullifyActionResultTest extends AbstractAtTest {
         JsonNode nullifyNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("NULLIFY")) {
+            if (resultsNode.get(i).get("type").textValue().equals("NULLIFIED")) {
                 nullifyNode = resultsNode.get(i);
                 break;
             }
@@ -75,7 +75,7 @@ public class NullifyActionResultTest extends AbstractAtTest {
         assertTrue(nullifyNode.has("targetCardId"));
         assertTrue(nullifyNode.has("performingCardId"));
 
-        assertEquals("NULLIFY", nullifyNode.get("type").textValue());
+        assertEquals("NULLIFIED", nullifyNode.get("type").textValue());
         assertEquals(P1, nullifyNode.get("performingPlayerId").textValue());
         assertEquals(negotiations.getCardId(), nullifyNode.get("targetCardId").intValue());
         assertEquals(negotiations.getCardId(), nullifyNode.get("performingCardId").intValue());
@@ -97,7 +97,7 @@ public class NullifyActionResultTest extends AbstractAtTest {
         JsonNode nullifyNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("NULLIFY")) {
+            if (resultsNode.get(i).get("type").textValue().equals("NULLIFIED")) {
                 nullifyNode = resultsNode.get(i);
                 break;
             }
@@ -114,7 +114,7 @@ public class NullifyActionResultTest extends AbstractAtTest {
         assertTrue(nullifyNode.has("targetCardId"));
         assertTrue(nullifyNode.has("performingCardId"));
 
-        assertEquals("NULLIFY", nullifyNode.get("type").textValue());
+        assertEquals("NULLIFIED", nullifyNode.get("type").textValue());
         assertEquals(P1, nullifyNode.get("performingPlayerId").textValue());
         assertEquals(negotiations.getCardId(), nullifyNode.get("targetCardId").intValue());
         assertEquals(negotiations.getCardId(), nullifyNode.get("performingCardId").intValue());

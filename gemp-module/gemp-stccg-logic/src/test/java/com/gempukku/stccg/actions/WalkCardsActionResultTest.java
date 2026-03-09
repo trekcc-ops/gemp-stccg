@@ -57,7 +57,7 @@ public class WalkCardsActionResultTest extends AbstractAtTest {
         assertTrue(walkNode.has("destinationCardId"));
         assertTrue(walkNode.has("originCardId"));
 
-        assertEquals("WALK_CARDS", walkNode.get("type").textValue());
+        assertEquals("WALKED", walkNode.get("type").textValue());
         assertEquals(P1, walkNode.get("performingPlayerId").textValue());
         assertTrue(jsonListIsCardIds(walkNode.get("targetCardIds"), cardsToWalk));
         assertEquals(outpost.getCardId(), walkNode.get("originCardId").intValue());
@@ -82,7 +82,7 @@ public class WalkCardsActionResultTest extends AbstractAtTest {
         assertTrue(walkNode.has("destinationCardId"));
         assertTrue(walkNode.has("originCardId"));
 
-        assertEquals("WALK_CARDS", walkNode.get("type").textValue());
+        assertEquals("WALKED", walkNode.get("type").textValue());
         assertEquals(P1, walkNode.get("performingPlayerId").textValue());
         assertTrue(jsonListIsCardIds(walkNode.get("targetCardIds"), cardsToWalk));
         assertEquals(cardsToWalk.getFirst().getCardId(), walkNode.get("targetCardIds").get(0).asInt());

@@ -13,7 +13,7 @@ public class EndTurnAction extends ActionyAction {
 
     public EndTurnAction(DefaultGame cardGame, Player currentPlayer) {
         super(cardGame, currentPlayer.getPlayerId(), ActionType.END_TURN);
-        saveResult(new ActionResult(cardGame, ActionResultType.END_OF_TURN, currentPlayer.getPlayerId(), this), cardGame);
+        saveResult(new ActionResult(cardGame, ActionResultType.ENDED_TURN, currentPlayer.getPlayerId(), this), cardGame);
     }
 
     @Override

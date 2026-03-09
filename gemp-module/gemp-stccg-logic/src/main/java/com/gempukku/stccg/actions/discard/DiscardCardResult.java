@@ -21,7 +21,7 @@ public class DiscardCardResult extends ActionResult {
     public DiscardCardResult(DefaultGame cardGame, PhysicalCard card, Action parentAction, Zone destination) {
         /*  In 1E, discarding a card should always be performed by the owner of that card. This may not always
                be the performing player of the parent action.  */
-        super(cardGame, ActionResultType.DISCARD, card.getOwnerName(), parentAction);
+        super(cardGame, ActionResultType.DISCARDED, card.getOwnerName(), parentAction);
         _discardedCard = card;
         _destination = destination;
     }

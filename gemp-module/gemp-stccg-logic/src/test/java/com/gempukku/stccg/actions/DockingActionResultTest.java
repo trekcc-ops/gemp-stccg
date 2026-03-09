@@ -44,14 +44,14 @@ public class DockingActionResultTest extends AbstractAtTest {
         JsonNode undockNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("DOCK_SHIP")) {
+            if (resultsNode.get(i).get("type").textValue().equals("DOCKED")) {
                 dockNode = resultsNode.get(i);
                 break;
             }
         }
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("UNDOCK_SHIP")) {
+            if (resultsNode.get(i).get("type").textValue().equals("UNDOCKED")) {
                 undockNode = resultsNode.get(i);
                 break;
             }
@@ -96,14 +96,14 @@ public class DockingActionResultTest extends AbstractAtTest {
         JsonNode undockNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("DOCK_SHIP")) {
+            if (resultsNode.get(i).get("type").textValue().equals("DOCKED")) {
                 dockNode = resultsNode.get(i);
                 break;
             }
         }
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("UNDOCK_SHIP")) {
+            if (resultsNode.get(i).get("type").textValue().equals("UNDOCKED")) {
                 undockNode = resultsNode.get(i);
                 break;
             }

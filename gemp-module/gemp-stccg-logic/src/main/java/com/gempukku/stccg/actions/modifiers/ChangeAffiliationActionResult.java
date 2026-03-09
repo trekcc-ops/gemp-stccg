@@ -18,7 +18,7 @@ public class ChangeAffiliationActionResult extends NoResponseActionResult {
     public ChangeAffiliationActionResult(DefaultGame cardGame, String performingPlayerId,
                                          ChangeAffiliationAction action, AffiliatedCard affiliatedCard,
                                          Affiliation newAffiliation) {
-        super(cardGame, ActionResultType.CHANGE_AFFILIATION, performingPlayerId, action);
+        super(cardGame, ActionResultType.CHANGED_AFFILIATION, performingPlayerId, action);
         _affiliatedCard = affiliatedCard;
         _newAffiliation = newAffiliation;
     }

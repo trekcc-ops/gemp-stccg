@@ -20,18 +20,18 @@ public class DrawCardsResult extends ActionResult {
     private final Collection<PhysicalCard> _cardsDrawn = new ArrayList<>();
 
     public DrawCardsResult(DefaultGame cardGame, Action action, PhysicalCard cardDrawn) {
-        super(cardGame, ActionResultType.DRAW_CARD, action);
+        super(cardGame, ActionResultType.DREW_CARDS, action);
         _cardsDrawn.add(cardDrawn);
     }
 
     public DrawCardsResult(DefaultGame cardGame, Action action, Collection<PhysicalCard> cardsDrawn) {
-        super(cardGame, ActionResultType.DRAW_CARD, action);
+        super(cardGame, ActionResultType.DREW_CARDS, action);
         _cardsDrawn.addAll(cardsDrawn);
     }
 
     private DrawCardsResult(int resultId, Action action, Collection<PhysicalCard> cardsDrawn,
                             ZonedDateTime timestamp) {
-        super(resultId, ActionResultType.DRAW_CARD, action.getPerformingPlayerId(), action, timestamp);
+        super(resultId, ActionResultType.DREW_CARDS, action.getPerformingPlayerId(), action, timestamp);
         _cardsDrawn.addAll(cardsDrawn);
     }
 

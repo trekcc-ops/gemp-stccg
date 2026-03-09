@@ -17,7 +17,7 @@ public class StopCardsActionResult extends NoResponseActionResult {
 
     public StopCardsActionResult(DefaultGame cardGame, String performingPlayerId,
                                  StopCardsAction action, Collection<PhysicalCard> stoppedCards) {
-        super(cardGame, ActionResultType.CHANGE_AFFILIATION, performingPlayerId, action);
+        super(cardGame, ActionResultType.CHANGED_AFFILIATION, performingPlayerId, action);
         _stoppedCards.addAll(stoppedCards);
     }
 }

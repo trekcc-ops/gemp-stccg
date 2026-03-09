@@ -18,14 +18,14 @@ public class AddCardsToPreseedStackActionResult extends NoResponseActionResult {
     private final Collection<PhysicalCard> _cardsAdded;
     public AddCardsToPreseedStackActionResult(DefaultGame cardGame, String performingPlayerId, Action action,
                                               Collection<PhysicalCard> cardsBeingSeeded) {
-        super(cardGame, ActionResultType.ADD_CARDS_TO_PRESEED_STACK, performingPlayerId, action);
+        super(cardGame, ActionResultType.ADDED_PRESEEDS, performingPlayerId, action);
         _cardsAdded = cardsBeingSeeded;
     }
 
     private AddCardsToPreseedStackActionResult(int resultId, String performingPlayerId, Action action,
                                                Collection<PhysicalCard> cardsBeingSeeded,
                                                ZonedDateTime timestamp) {
-        super(resultId, ActionResultType.ADD_CARDS_TO_PRESEED_STACK, performingPlayerId, action, timestamp);
+        super(resultId, ActionResultType.ADDED_PRESEEDS, performingPlayerId, action, timestamp);
         _cardsAdded = cardsBeingSeeded;
     }
 

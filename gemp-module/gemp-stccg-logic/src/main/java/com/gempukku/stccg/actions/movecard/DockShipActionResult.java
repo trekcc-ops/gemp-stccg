@@ -19,7 +19,7 @@ public class DockShipActionResult extends ActionResult {
     private final FacilityCard _dockedAtFacility;
 
     public DockShipActionResult(DefaultGame cardGame, DockAction action, ShipCard shipDocking, FacilityCard destination) {
-        super(cardGame, ActionResultType.DOCK_SHIP, action);
+        super(cardGame, ActionResultType.DOCKED, action);
         _shipDocking = shipDocking;
         _dockedAtFacility = destination;
     }

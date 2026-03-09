@@ -18,7 +18,7 @@ public class ScorePointsActionResult extends ActionResult {
 
     public ScorePointsActionResult(DefaultGame cardGame, ScorePointsAction action, PhysicalCard performingCard,
                                    int pointsScored) {
-        super(cardGame, ActionResultType.SCORE_POINTS, action.getPerformingPlayerId(), action);
+        super(cardGame, ActionResultType.SCORED_POINTS, action.getPerformingPlayerId(), action);
         _performingCard = performingCard;
         _pointsScored = pointsScored;
     }

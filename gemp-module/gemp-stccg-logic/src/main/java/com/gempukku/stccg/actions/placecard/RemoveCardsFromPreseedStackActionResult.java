@@ -18,14 +18,14 @@ public class RemoveCardsFromPreseedStackActionResult extends NoResponseActionRes
     private final Collection<PhysicalCard> _cardsRemoved;
     public RemoveCardsFromPreseedStackActionResult(DefaultGame cardGame, String performingPlayerId, Action action,
                                                    Collection<PhysicalCard> cardsBeingSeeded) {
-        super(cardGame, ActionResultType.REMOVE_CARDS_FROM_PRESEED_STACK, performingPlayerId, action);
+        super(cardGame, ActionResultType.REMOVED_PRESEEDS, performingPlayerId, action);
         _cardsRemoved = cardsBeingSeeded;
     }
 
     private RemoveCardsFromPreseedStackActionResult(int resultId, String performingPlayerId, Action action,
                                                     Collection<PhysicalCard> cardsBeingSeeded,
                                                     ZonedDateTime timestamp) {
-        super(resultId, ActionResultType.REMOVE_CARDS_FROM_PRESEED_STACK, performingPlayerId, action, timestamp);
+        super(resultId, ActionResultType.REMOVED_PRESEEDS, performingPlayerId, action, timestamp);
         _cardsRemoved = cardsBeingSeeded;
     }
 

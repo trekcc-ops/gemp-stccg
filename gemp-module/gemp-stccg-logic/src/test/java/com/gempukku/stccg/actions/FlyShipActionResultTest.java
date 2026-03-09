@@ -43,7 +43,7 @@ public class FlyShipActionResultTest extends AbstractAtTest {
         JsonNode flyNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("FLY_SHIP")) {
+            if (resultsNode.get(i).get("type").textValue().equals("FLEW_SHIP")) {
                 flyNode = resultsNode.get(i);
                 break;
             }
@@ -80,7 +80,7 @@ public class FlyShipActionResultTest extends AbstractAtTest {
         JsonNode flyNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("FLY_SHIP")) {
+            if (resultsNode.get(i).get("type").textValue().equals("FLEW_SHIP")) {
                 flyNode = resultsNode.get(i);
                 break;
             }

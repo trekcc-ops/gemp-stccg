@@ -21,7 +21,7 @@ public class FlyShipActionResult extends ActionResult {
 
     public FlyShipActionResult(DefaultGame cardGame, FlyShipAction action, ShipCard shipFlying, int fromLocationId,
                                int toLocationId) {
-        super(cardGame, ActionResultType.FLY_SHIP, action);
+        super(cardGame, ActionResultType.FLEW_SHIP, action);
         _shipFlying = shipFlying;
         _fromLocationId = fromLocationId;
         _toLocationId = toLocationId;

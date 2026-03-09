@@ -27,7 +27,7 @@ public class BeamCardsResult extends ActionResult {
 
     public BeamCardsResult(DefaultGame cardGame, String performingPlayerId, Action action,
                            Collection<PhysicalCard> cardsBeamed, PhysicalCard origin, PhysicalCard destination) {
-        super(cardGame, ActionResultType.BEAM_CARDS, performingPlayerId, action);
+        super(cardGame, ActionResultType.BEAMED, performingPlayerId, action);
         _cardsBeamed = cardsBeamed;
         _origin = origin;
         _destination = destination;

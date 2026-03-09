@@ -53,7 +53,7 @@ public class BeamCardsActionResultTest extends AbstractAtTest {
         assertTrue(beamNode.has("destinationCardId"));
         assertTrue(beamNode.has("originCardId"));
 
-        assertEquals("BEAM_CARDS", beamNode.get("type").textValue());
+        assertEquals("BEAMED", beamNode.get("type").textValue());
         assertEquals(P1, beamNode.get("performingPlayerId").textValue());
         assertEquals(cardsToBeam.size(), beamNode.get("targetCardIds").size());
         assertEquals(cardsToBeam.getFirst().getCardId(), beamNode.get("targetCardIds").get(0).asInt());
@@ -79,7 +79,7 @@ public class BeamCardsActionResultTest extends AbstractAtTest {
         assertTrue(beamNode.has("destinationCardId"));
         assertTrue(beamNode.has("originCardId"));
 
-        assertEquals("BEAM_CARDS", beamNode.get("type").textValue());
+        assertEquals("BEAMED", beamNode.get("type").textValue());
         assertEquals(P1, beamNode.get("performingPlayerId").textValue());
         assertEquals(cardsToBeam.size(), beamNode.get("targetCardIds").size());
         assertEquals(cardsToBeam.getFirst().getCardId(), beamNode.get("targetCardIds").get(0).asInt());

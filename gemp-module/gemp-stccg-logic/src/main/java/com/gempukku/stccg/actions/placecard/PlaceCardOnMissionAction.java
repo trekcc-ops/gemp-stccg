@@ -78,6 +78,8 @@ public class PlaceCardOnMissionAction extends ActionyAction {
                         missionLoc.removeSeedCard(_cardBeingPlaced);
                     }
                 }
+                _cardBeingPlaced.reveal();
+                saveResult(new DilemmaPlacedOnCardResult(cardGame, _cardBeingPlaced, this, _cardBeingPlaced.getParentCard()), cardGame);
                 setAsSuccessful();
             } else {
                 setAsFailed();

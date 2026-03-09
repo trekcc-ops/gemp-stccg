@@ -53,7 +53,7 @@ public class PreseedStackActionResultTest extends AbstractAtTest {
         assertTrue(addNode.has("type"));
         assertTrue(addNode.has("performingPlayerId"));
 
-        assertEquals("ADD_CARDS_TO_PRESEED_STACK", addNode.get("type").textValue());
+        assertEquals("ADDED_PRESEEDS", addNode.get("type").textValue());
         assertEquals(P1, addNode.get("performingPlayerId").textValue());
         assertEquals(1, addNode.get("targetCardIds").size());
         assertEquals(cardsToSeed.getFirst().getCardId(), addNode.get("targetCardIds").get(0).asInt());
@@ -64,7 +64,7 @@ public class PreseedStackActionResultTest extends AbstractAtTest {
         assertTrue(removeNode.has("type"));
         assertTrue(removeNode.has("performingPlayerId"));
 
-        assertEquals("REMOVE_CARDS_FROM_PRESEED_STACK", removeNode.get("type").textValue());
+        assertEquals("REMOVED_PRESEEDS", removeNode.get("type").textValue());
         assertEquals(P1, removeNode.get("performingPlayerId").textValue());
         assertEquals(1, removeNode.get("targetCardIds").size());
         assertEquals(cardsToSeed.getFirst().getCardId(), removeNode.get("targetCardIds").get(0).asInt());
@@ -90,7 +90,7 @@ public class PreseedStackActionResultTest extends AbstractAtTest {
         assertTrue(addNode.has("type"));
         assertTrue(addNode.has("performingPlayerId"));
 
-        assertEquals("ADD_CARDS_TO_PRESEED_STACK", addNode.get("type").textValue());
+        assertEquals("ADDED_PRESEEDS", addNode.get("type").textValue());
         assertEquals(P1, addNode.get("performingPlayerId").textValue());
         assertEquals(1, addNode.get("targetCardIds").size());
         assertEquals(new ProxyAnonymousCard(P1).getCardId(), addNode.get("targetCardIds").get(0).asInt());
@@ -101,7 +101,7 @@ public class PreseedStackActionResultTest extends AbstractAtTest {
         assertTrue(removeNode.has("type"));
         assertTrue(removeNode.has("performingPlayerId"));
 
-        assertEquals("REMOVE_CARDS_FROM_PRESEED_STACK", removeNode.get("type").textValue());
+        assertEquals("REMOVED_PRESEEDS", removeNode.get("type").textValue());
         assertEquals(P1, removeNode.get("performingPlayerId").textValue());
         assertEquals(1, removeNode.get("targetCardIds").size());
         assertEquals(new ProxyAnonymousCard(P1).getCardId(), removeNode.get("targetCardIds").get(0).asInt());

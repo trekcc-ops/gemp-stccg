@@ -17,7 +17,7 @@ public class RemoveCardFromGameActionResult extends NoResponseActionResult {
 
     public RemoveCardFromGameActionResult(DefaultGame cardGame, RemoveCardFromGameAction action,
                                           Collection<PhysicalCard> cardsRemoved) {
-        super(cardGame, ActionResultType.REMOVE_CARD_FROM_GAME, action.getPerformingPlayerId(), action);
+        super(cardGame, ActionResultType.REMOVED_CARD_FROM_GAME, action.getPerformingPlayerId(), action);
         _cardsRemoved = cardsRemoved;
     }
 }

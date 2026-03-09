@@ -19,7 +19,7 @@ public class StartOfTurnTriggerChecker implements TriggerChecker {
         _player = (playerText == null) ? null : PlayerResolver.resolvePlayer(playerText);
     }
     public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
-        if (!cardGame.isCurrentActionResultType(ActionResultType.START_OF_TURN)) {
+        if (!cardGame.isCurrentActionResultType(ActionResultType.STARTED_TURN)) {
             return false;
         } else if (_player == null) {
             return true;

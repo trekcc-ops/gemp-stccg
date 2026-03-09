@@ -27,7 +27,7 @@ public class WalkCardsResult extends ActionResult {
 
     public WalkCardsResult(DefaultGame cardGame, String performingPlayerId, Action action,
                            Collection<PhysicalCard> cardsWalked, PhysicalCard origin, PhysicalCard destination) {
-        super(cardGame, ActionResultType.WALK_CARDS, performingPlayerId, action);
+        super(cardGame, ActionResultType.WALKED, performingPlayerId, action);
         _cardsWalked = cardsWalked;
         _origin = origin;
         _destination = destination;

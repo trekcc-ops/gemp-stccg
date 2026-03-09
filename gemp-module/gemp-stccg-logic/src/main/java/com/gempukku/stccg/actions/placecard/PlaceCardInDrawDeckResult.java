@@ -26,7 +26,7 @@ public class PlaceCardInDrawDeckResult extends NoResponseActionResult {
 
     public PlaceCardInDrawDeckResult(DefaultGame cardGame, Action action, Placement placement,
                                      Collection<PhysicalCard> cardsPlaced, boolean showOpponent) {
-        super(cardGame, ActionResultType.PLACE_CARDS_IN_DRAW_DECK, action.getPerformingPlayerId(), action);
+        super(cardGame, ActionResultType.PLACED_CARDS_IN_DRAW_DECK, action.getPerformingPlayerId(), action);
         _placement = placement;
         _cardsPlaced.addAll(cardsPlaced);
         _showOpponent = showOpponent;

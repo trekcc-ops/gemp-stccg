@@ -38,9 +38,9 @@ public class DiscardActionResultTest extends AbstractAtTest {
         JsonNode discardWorfNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("DISCARD")) {
+            if (resultsNode.get(i).get("type").textValue().equals("DISCARDED")) {
                 discardWorfNode = resultsNode.get(i);
-                assertEquals("KILL", resultsNode.get(i - 1).get("type").textValue());
+                assertEquals("KILLED", resultsNode.get(i - 1).get("type").textValue());
                 break;
             }
         }
@@ -56,7 +56,7 @@ public class DiscardActionResultTest extends AbstractAtTest {
         assertTrue(discardWorfNode.has("targetCardId"));
         assertTrue(discardWorfNode.has("destination"));
 
-        assertEquals("DISCARD", discardWorfNode.get("type").textValue());
+        assertEquals("DISCARDED", discardWorfNode.get("type").textValue());
         assertEquals(P1, discardWorfNode.get("performingPlayerId").textValue());
         assertEquals(worf.getCardId(), discardWorfNode.get("targetCardId").intValue());
         assertEquals("DISCARD", discardWorfNode.get("destination").textValue());
@@ -73,9 +73,9 @@ public class DiscardActionResultTest extends AbstractAtTest {
         JsonNode discardWorfNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("DISCARD")) {
+            if (resultsNode.get(i).get("type").textValue().equals("DISCARDED")) {
                 discardWorfNode = resultsNode.get(i);
-                assertEquals("KILL", resultsNode.get(i - 1).get("type").textValue());
+                assertEquals("KILLED", resultsNode.get(i - 1).get("type").textValue());
                 break;
             }
         }
@@ -91,7 +91,7 @@ public class DiscardActionResultTest extends AbstractAtTest {
         assertTrue(discardWorfNode.has("targetCardId"));
         assertTrue(discardWorfNode.has("destination"));
 
-        assertEquals("DISCARD", discardWorfNode.get("type").textValue());
+        assertEquals("DISCARDED", discardWorfNode.get("type").textValue());
         assertEquals(P1, discardWorfNode.get("performingPlayerId").textValue());
         assertEquals(worf.getCardId(), discardWorfNode.get("targetCardId").intValue());
         assertEquals("DISCARD", discardWorfNode.get("destination").textValue());

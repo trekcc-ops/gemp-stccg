@@ -23,7 +23,7 @@ public class DrawCardsResultTest extends AbstractAtTest {
         JsonNode opponentDrawNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("DRAW_CARD") &&
+            if (resultsNode.get(i).get("type").textValue().equals("DREW_CARDS") &&
                     resultsNode.get(i).get("performingPlayerId").textValue().equals(P1)
             ) {
                 yourDrawNode = resultsNode.get(i);
@@ -32,7 +32,7 @@ public class DrawCardsResultTest extends AbstractAtTest {
         }
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("DRAW_CARD") &&
+            if (resultsNode.get(i).get("type").textValue().equals("DREW_CARDS") &&
                     resultsNode.get(i).get("performingPlayerId").textValue().equals(P2)
             ) {
                 opponentDrawNode = resultsNode.get(i);

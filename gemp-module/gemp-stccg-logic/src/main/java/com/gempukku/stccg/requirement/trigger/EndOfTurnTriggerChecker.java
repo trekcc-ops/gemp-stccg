@@ -7,7 +7,7 @@ import com.gempukku.stccg.game.DefaultGame;
 public class EndOfTurnTriggerChecker implements TriggerChecker {
 
         public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
-            return cardGame.isCurrentActionResultType(ActionResultType.END_OF_TURN);
+            return cardGame.isCurrentActionResultType(ActionResultType.ENDED_TURN);
         }
 
 }

@@ -26,7 +26,7 @@ public class SeedCardResult extends ActionResult {
     private final boolean _toCore;
 
     public SeedCardResult(DefaultGame cardGame, Action action, PhysicalCard playedCard, PhysicalCard destinationCard) {
-        super(cardGame, ActionResultType.SEEDED_CARD, action);
+        super(cardGame, ActionResultType.SEEDED_INTO_PLAY, action);
         _playedCard = playedCard;
         if (destinationCard instanceof ProxyCoreCard) {
             _destinationCard = null;

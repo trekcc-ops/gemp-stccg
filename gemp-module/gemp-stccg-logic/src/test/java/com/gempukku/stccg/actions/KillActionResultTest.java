@@ -42,9 +42,9 @@ public class KillActionResultTest extends AbstractAtTest {
         JsonNode killWorfNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("KILL")) {
+            if (resultsNode.get(i).get("type").textValue().equals("KILLED")) {
                 killWorfNode = resultsNode.get(i);
-                assertEquals("DISCARD", resultsNode.get(i + 1).get("type").textValue());
+                assertEquals("DISCARDED", resultsNode.get(i + 1).get("type").textValue());
                 break;
             }
         }
@@ -60,7 +60,7 @@ public class KillActionResultTest extends AbstractAtTest {
         assertTrue(killWorfNode.has("killedCardIds"));
         assertTrue(killWorfNode.has("performingCardId"));
 
-        assertEquals("KILL", killWorfNode.get("type").textValue());
+        assertEquals("KILLED", killWorfNode.get("type").textValue());
         assertEquals(P2, killWorfNode.get("performingPlayerId").textValue());
         assertTrue(jsonListIsCardIds(killWorfNode.get("killedCardIds"), List.of(worf)));
         assertEquals(armus.getCardId(), killWorfNode.get("performingCardId").intValue());
@@ -77,9 +77,9 @@ public class KillActionResultTest extends AbstractAtTest {
         JsonNode killWorfNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("KILL")) {
+            if (resultsNode.get(i).get("type").textValue().equals("KILLED")) {
                 killWorfNode = resultsNode.get(i);
-                assertEquals("DISCARD", resultsNode.get(i + 1).get("type").textValue());
+                assertEquals("DISCARDED", resultsNode.get(i + 1).get("type").textValue());
                 break;
             }
         }
@@ -95,7 +95,7 @@ public class KillActionResultTest extends AbstractAtTest {
         assertTrue(killWorfNode.has("killedCardIds"));
         assertTrue(killWorfNode.has("performingCardId"));
 
-        assertEquals("KILL", killWorfNode.get("type").textValue());
+        assertEquals("KILLED", killWorfNode.get("type").textValue());
         assertEquals(P2, killWorfNode.get("performingPlayerId").textValue());
         assertTrue(jsonListIsCardIds(killWorfNode.get("killedCardIds"), List.of(worf)));
         assertEquals(armus.getCardId(), killWorfNode.get("performingCardId").intValue());

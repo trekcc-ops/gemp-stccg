@@ -46,7 +46,7 @@ public class ChangeAffiliationActionResultTest extends AbstractAtTest {
         assertTrue(changeNode.has("performingPlayerId"));
         assertTrue(changeNode.has("newAffiliation"));
 
-        assertEquals("CHANGE_AFFILIATION", changeNode.get("type").textValue());
+        assertEquals("CHANGED_AFFILIATION", changeNode.get("type").textValue());
         assertEquals(P1, changeNode.get("performingPlayerId").textValue());
         assertEquals(gareb.getCardId(), changeNode.get("targetCardId").intValue());
         assertEquals("NON_ALIGNED", changeNode.get("newAffiliation").textValue());
@@ -70,7 +70,7 @@ public class ChangeAffiliationActionResultTest extends AbstractAtTest {
         assertTrue(changeNode.has("performingPlayerId"));
         assertTrue(changeNode.has("newAffiliation"));
 
-        assertEquals("CHANGE_AFFILIATION", changeNode.get("type").textValue());
+        assertEquals("CHANGED_AFFILIATION", changeNode.get("type").textValue());
         assertEquals(P1, changeNode.get("performingPlayerId").textValue());
         assertEquals(gareb.getCardId(), changeNode.get("targetCardId").intValue());
         assertEquals("NON_ALIGNED", changeNode.get("newAffiliation").textValue());

@@ -20,7 +20,7 @@ public class UndockShipActionResult extends ActionResult {
 
     public UndockShipActionResult(DefaultGame cardGame, UndockAction action, ShipCard shipDocking,
                                   PhysicalCard undockingFrom) {
-        super(cardGame, ActionResultType.UNDOCK_SHIP, action);
+        super(cardGame, ActionResultType.UNDOCKED, action);
         _shipUndocking = shipDocking;
         _undockingFrom = undockingFrom;
     }

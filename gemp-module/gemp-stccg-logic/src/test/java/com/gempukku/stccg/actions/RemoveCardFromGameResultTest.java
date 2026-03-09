@@ -59,9 +59,9 @@ public class RemoveCardFromGameResultTest extends AbstractAtTest {
         JsonNode removeNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("REMOVE_CARD_FROM_GAME")) {
+            if (resultsNode.get(i).get("type").textValue().equals("REMOVED_CARD_FROM_GAME")) {
                 removeNode = resultsNode.get(i);
-                assertEquals("NULLIFY", resultsNode.get(i-1).get("type").textValue());
+                assertEquals("NULLIFIED", resultsNode.get(i-1).get("type").textValue());
                 break;
             }
         }
@@ -76,7 +76,7 @@ public class RemoveCardFromGameResultTest extends AbstractAtTest {
         assertTrue(removeNode.has("performingPlayerId"));
         assertTrue(removeNode.has("targetCardIds"));
 
-        assertEquals("REMOVE_CARD_FROM_GAME", removeNode.get("type").textValue());
+        assertEquals("REMOVED_CARD_FROM_GAME", removeNode.get("type").textValue());
         assertEquals(P1, removeNode.get("performingPlayerId").textValue());
         assertTrue(jsonListIsCardIds(removeNode.get("targetCardIds"), List.of(negotiations)));
     }
@@ -97,9 +97,9 @@ public class RemoveCardFromGameResultTest extends AbstractAtTest {
         JsonNode removeNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
-            if (resultsNode.get(i).get("type").textValue().equals("REMOVE_CARD_FROM_GAME")) {
+            if (resultsNode.get(i).get("type").textValue().equals("REMOVED_CARD_FROM_GAME")) {
                 removeNode = resultsNode.get(i);
-                assertEquals("NULLIFY", resultsNode.get(i-1).get("type").textValue());
+                assertEquals("NULLIFIED", resultsNode.get(i-1).get("type").textValue());
                 break;
             }
         }
@@ -114,7 +114,7 @@ public class RemoveCardFromGameResultTest extends AbstractAtTest {
         assertTrue(removeNode.has("performingPlayerId"));
         assertTrue(removeNode.has("targetCardIds"));
 
-        assertEquals("REMOVE_CARD_FROM_GAME", removeNode.get("type").textValue());
+        assertEquals("REMOVED_CARD_FROM_GAME", removeNode.get("type").textValue());
         assertEquals(P1, removeNode.get("performingPlayerId").textValue());
         assertTrue(jsonListIsCardIds(removeNode.get("targetCardIds"), List.of(negotiations)));
     }
