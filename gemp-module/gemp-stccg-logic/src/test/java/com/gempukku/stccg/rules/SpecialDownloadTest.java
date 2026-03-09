@@ -48,6 +48,7 @@ public class SpecialDownloadTest extends AbstractAtTest {
         Action attemptAction = attemptMission(P1, _mission);
         skipAction(P1, DownloadAction.class);
         assertTrue(attemptAction.wasFailed());
+        skipAction(P1, DownloadAction.class);
 
         // Download Lursa during the second attempt; she joins the crew, and it now has enough INTEGRITY to solve
         Action attemptAction2 = attemptMission(P1, _mission);

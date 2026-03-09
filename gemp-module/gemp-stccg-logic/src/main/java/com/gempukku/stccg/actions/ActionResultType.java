@@ -11,6 +11,8 @@ public enum ActionResultType {
     END_OF_TURN,
     FLY_SHIP,
     KILL,
+    MISSION_ATTEMPT_ENDED,
+    MISSION_ATTEMPT_STARTED,
     NULLIFY,
     PLACE_CARDS_IN_DRAW_DECK,
     PLAYED_CARD,
@@ -21,8 +23,6 @@ public enum ActionResultType {
     REVEALED_SEED_CARD,
     SCORE_POINTS,
     SEEDED_CARD,
-    SOLVE_MISSION,
-    START_OF_MISSION_ATTEMPT,
     START_OF_TURN,
     UNDOCK_SHIP,
     WALK_CARDS

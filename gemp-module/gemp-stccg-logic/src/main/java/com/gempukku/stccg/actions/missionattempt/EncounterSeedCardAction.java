@@ -76,7 +76,7 @@ public class EncounterSeedCardAction extends ActionWithSubActions implements Top
         } else {
             if (_failedToOvercomeCondition) {
                 setAsFailed();
-                _parentAction.setAsFailed();
+                _parentAction.setAsFailed(cardGame);
             } else {
                 setAsSuccessful();
             }

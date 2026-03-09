@@ -97,7 +97,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
 
     @Override
     public void saveInitiationResult(DefaultGame cardGame) {
-        saveResult(new ActionResult(cardGame, ActionResultType.START_OF_MISSION_ATTEMPT, this), cardGame);
+        saveResult(new MissionAttemptStartedResult(cardGame, _performingPlayerId, this, getMission()), cardGame);
     }
 
     protected void processEffect(DefaultGame cardGame) {
@@ -111,7 +111,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                     _queuedSubActions.removeFirst();
                     cardGame.addActionToStack(_currentSubAction);
                 } else {
-                    setAsFailed();
+                    setAsFailed(cardGame);
                 }
             } else if (cardGame instanceof ST1EGame stGame) {
                 AttemptingUnit attemptingUnit = _attemptingUnitTarget.getAttemptingUnit();
@@ -123,7 +123,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                     throw new InvalidGameLogicException("Unable to locate mission with location id " + _locationId);
                 }
                 if (attemptingUnit.getAttemptingPersonnel(cardGame).isEmpty()) {
-                    setAsFailed();
+                    setAsFailed(cardGame);
                 }
 
                 List<PhysicalCard> seedCards = missionLocation.getSeedCards();
@@ -162,13 +162,13 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                             cardGame.addActionToStack(
                                     new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints(), _actionContext));
                         } else {
-                            setAsFailed();
+                            setAsFailed(cardGame);
                         }
                     } else {
-                        setAsFailed();
+                        setAsFailed(cardGame);
                     }
                 } else if (!wasFailed()) {
-                    saveResult(new MissionSolvedActionResult(cardGame, _performingPlayerId, this, _performingCard, _missionSpecHelped), cardGame);
+                    saveResult(new MissionAttemptEndedResult(cardGame, true, this, _performingCard, _missionSpecHelped), cardGame);
                     setAsSuccessful();
                 }
             } else {
@@ -211,5 +211,10 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
 
     public void setAsConditionFailed() {
         _failedToOvercomeCondition = true;
+    }
+
+    public void setAsFailed(DefaultGame cardGame) {
+        saveResult(new MissionAttemptEndedResult(cardGame, false, this, getMission(), false), cardGame);
+        super.setAsFailed();
     }
 }
