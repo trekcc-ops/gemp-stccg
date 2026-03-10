@@ -10,6 +10,7 @@ import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.game.EndGameResult;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerOrder;
@@ -145,6 +146,11 @@ public class GameStateView {
     @JsonProperty("pendingDecision")
     private AwaitingDecision decision() {
         return _gameState.getDecision(_requestingPlayerId);
+    }
+
+    @JsonProperty("endGameResult")
+    private EndGameResult getEndGameResult() {
+        return _gameState.getEndGameResult();
     }
 
 }

@@ -482,4 +482,8 @@ public abstract class GameState {
     public void saveGameResult(EndGameResult result) {
         _endGameResult = result;
     }
+
+    public EndGameResult getEndGameResult() {
+        return _endGameResult;
+    }
 }
