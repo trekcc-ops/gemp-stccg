@@ -140,7 +140,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
     let actionType = jsonAction.type;
     let performingPlayerId = jsonAction.performingPlayerId;
     let performingPlayerText;
-    if (performingPlayerId === gameAnimations.game.bottomPlayerId) {
+    if (performingPlayerId === gameUi.bottomPlayerId) {
         performingPlayerText = "You";
     } else {
         performingPlayerText = performingPlayerId;
