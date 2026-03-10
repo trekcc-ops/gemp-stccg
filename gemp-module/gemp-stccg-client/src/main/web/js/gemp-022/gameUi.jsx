@@ -32,7 +32,7 @@ export default class GameTableUI {
     gameUiInitialized = false
     cardActionDialog;
     smallDialog;
-    gameStateElem;
+    gameStatsUIElem;
     alertBox;
     alertText;
     alertButtons;
@@ -80,7 +80,7 @@ export default class GameTableUI {
         this.alertBox = $("#alertBox");
         this.alertText = $("#alertText");
         this.alertButtons = $("#alertButtons");
-        this.gameStateElem = $("#gameStateElem");
+        this.gameStatsUIElem = $("#gameStatsUIElem");
         this.statsDiv = $("#statsDiv");
 
         this.animations = new GameAnimations(this);
@@ -236,13 +236,13 @@ export default class GameTableUI {
         reactWrapper.id = "reactWrapper";
         this.reactRoot = createRoot(reactWrapper);
         this.reRenderReactRoot();
-        this.gameStateElem.append(reactWrapper);
+        this.gameStatsUIElem.append(reactWrapper);
 
 
 
         for (var i = 0; i < this.allPlayerIds.length; i++) {
             /*
-            this.gameStateElem.append(
+            this.gameStatsUIElem.append(
                 "<div class='playerStats'>" +
                     `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
                     `<div id='clock${i}' class='clock'></div>` +
@@ -1587,7 +1587,7 @@ export class TribblesGameTableUI extends GameTableUI {
         this.chatBox.setBounds(BORDER_PADDING + TAB_PANE_WIDTH_PADDING, TAB_PANE_HEIGHT,
             CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
 
-        this.gameStateElem.css({
+        this.gameStatsUIElem.css({
             position: "absolute",
             left: BORDER_PADDING,
             top: BORDER_PADDING,
@@ -1865,7 +1865,7 @@ export class ST1EGameTableUI extends GameTableUI {
             scaleTotal += heightScales[i];
         }
 
-        let specialUiWidth = 150;
+        let gameStatsUiWidth = "430px";
 
         if (!this.gameUiInitialized) {
             return;
@@ -1878,11 +1878,11 @@ export class ST1EGameTableUI extends GameTableUI {
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
             height: 40
         });
-        this.gameStateElem.css({
+        this.gameStatsUIElem.css({
             position: "absolute",
             left: padding * 2,
             top: padding,
-            width: specialUiWidth - padding + 75,
+            width: gameStatsUiWidth,
             //height: TABLE_AREA_TOP - padding * 2
             height: 117
         });
