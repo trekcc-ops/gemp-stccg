@@ -32,8 +32,6 @@ public class Player {
     private final Collection<Affiliation> _playedAffiliations = EnumSet.noneOf(Affiliation.class);
     @JsonProperty("cardGroups")
     Map<Zone, PhysicalCardGroup<PhysicalCard>> _cardGroups = new HashMap<>();
-    @JsonProperty("score")
-    private int _currentScore;
     @JsonProperty("drawDeck")
     DrawDeck _drawDeck;
     @JsonProperty("discardPile")
@@ -47,7 +45,10 @@ public class Player {
 
     Map<MissionCard, List<MissionType>> _missionsSolved = new HashMap<>();
 
-    @JsonCreator
+    int _bonusPoints;
+    int _nonBonusPoints;
+
+/*    @JsonCreator
     public Player(
             @JsonProperty("playerId")
             String playerId,
@@ -61,7 +62,7 @@ public class Player {
         _decked = decked;
         _currentScore = score;
         _cardGroups.putAll(cardGroups);
-    }
+    } */
 
 
     public Player(String playerId) {
@@ -80,8 +81,12 @@ public class Player {
         _decked = decked;
     }
 
-    public void scorePoints(int points) {
-        _currentScore = _currentScore + points;
+    public void scorePoints(int points, boolean pointsAreBonus) {
+        if (pointsAreBonus) {
+            _bonusPoints = _bonusPoints + points;
+        } else {
+            _nonBonusPoints = _nonBonusPoints + points;
+        }
     }
 
     public boolean isPlayingAffiliation(Affiliation affiliation) {
@@ -101,9 +106,21 @@ public class Player {
             return false;
     }
 
+    private int getBonusPoints() {
+        return _bonusPoints;
+    }
 
+    private int getNonBonusPoints() {
+        return _nonBonusPoints;
+    }
+
+    @JsonProperty("score")
     public int getScore() {
-        return _currentScore;
+        return _bonusPoints + _nonBonusPoints;
+    }
+
+    private int getPointsThatCountTowardWinning() {
+        return _nonBonusPoints + Math.min(_bonusPoints, _nonBonusPoints);
     }
 
     public List<PhysicalCard> getCardsInHand() {
@@ -120,10 +137,6 @@ public class Player {
 
     public Collection<PhysicalCard> getRemovedPile() {
         return getCardsInGroup(Zone.REMOVED);
-    }
-
-    public void setScore(int score) {
-        _currentScore = score;
     }
 
     public void addCardGroup(Zone zone) throws InvalidGameOperationException {
@@ -213,6 +226,14 @@ public class Player {
 
     public void recordSolvedMission(MissionCard missionCard) {
         _missionsSolved.put(missionCard, missionCard.getMissionTypes());
+    }
+
+    public boolean hasMetVictoryConditions() {
+        int pointsRequired = 100;
+        if (!hasSolvedMission(MissionType.PLANET) || !hasSolvedMission(MissionType.SPACE)) {
+            pointsRequired += 40;
+        }
+        return getPointsThatCountTowardWinning() >= pointsRequired;
     }
 
 }

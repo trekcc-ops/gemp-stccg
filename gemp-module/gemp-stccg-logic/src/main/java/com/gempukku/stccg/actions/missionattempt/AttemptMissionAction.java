@@ -160,7 +160,7 @@ public class AttemptMissionAction extends ActionWithSubActions implements TopLev
                             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
                             performingPlayer.recordSolvedMission(getMission());
                             cardGame.addActionToStack(
-                                    new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints(), _actionContext));
+                                    new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints(), _actionContext, false));
                         } else {
                             setAsFailed(cardGame);
                         }

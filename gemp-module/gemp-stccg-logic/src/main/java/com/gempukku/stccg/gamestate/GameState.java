@@ -20,6 +20,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.EndGameResult;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.LimitCounter;
@@ -64,6 +65,9 @@ public abstract class GameState {
 
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
     private int nextDecisionId = 1;
+
+    @JsonProperty("endGameResult")
+    private EndGameResult _endGameResult;
 
 
     protected GameState(Iterable<String> playerIds, GameTimer gameTimer)
@@ -475,4 +479,7 @@ public abstract class GameState {
         return result;
     }
 
+    public void saveGameResult(EndGameResult result) {
+        _endGameResult = result;
+    }
 }

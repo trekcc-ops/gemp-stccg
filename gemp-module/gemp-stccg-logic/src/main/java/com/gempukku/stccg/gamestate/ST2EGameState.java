@@ -1,5 +1,6 @@
 package com.gempukku.stccg.gamestate;
 
+import com.gempukku.stccg.actions.turn.EndGameActionType;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameOperationException;
@@ -23,7 +24,7 @@ public class ST2EGameState extends GameState {
         for (Player player : getPlayers()) {
             int score = player.getScore();
             if (score >= 100)
-                cardGame.playerWon(player.getPlayerId(), score + " points");
+                cardGame.playerWon(player.getPlayerId(), EndGameActionType.WINNING_SCORE);
         }
     }
 

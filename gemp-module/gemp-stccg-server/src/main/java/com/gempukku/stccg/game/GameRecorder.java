@@ -83,12 +83,8 @@ public class GameRecorder {
                 var gameInfo = new MyGameHistory(game, winner, loser, winReason, loseReason, startDate, endDate,
                         format, decks, tournamentName, time, clocks);
 
-                Map<String, String> playerRecordingId = saveRecordedChannels(recordingChannels, gameInfo, decks);
                 gameInfo.id = _gameHistoryService.addGameHistory(gameInfo);
 
-                if (format.isPlaytest()) {
-                    game.sendMessageToPlayers(getPlayTestMessage(playerRecordingId, winnerName, loserName));
-                }
             } catch(UserNotFoundException exp) {
                 LOGGER.error(exp.getMessage());
             }

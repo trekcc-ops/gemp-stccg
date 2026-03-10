@@ -3,6 +3,7 @@ package com.gempukku.stccg.game;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.turn.EndGameActionType;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -107,12 +108,13 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         return _finished;
     }
 
-    public void setCancelled(boolean cancelled) {
-        _cancelled = cancelled;
+    public void setCancelled() {
+        _cancelled = true;
     }
 
-    public void setFinished(boolean finished) {
-        _finished = finished;
+
+    public void setFinished() {
+        _finished = true;
     }
 
 
@@ -122,8 +124,17 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     }
 
 
+    public void endInTie() {
+        if (!_finished) {
+            saveGameResult(new EndGameResult(this, EndGameActionType.TIE));
 
-    public void playerWon(String playerId, String reason) {
+            for (GameResultListener gameResultListener : _gameResultListeners) {
+                gameResultListener.gameFinished(_winnerPlayerId, "TIE", _losers);
+            }
+        }
+    }
+
+    public void playerWon(String playerId, EndGameActionType endGameType) {
         if (!_finished) {
             // Any remaining players have lost
             Set<String> losers = new HashSet<>(_allPlayerIds);
@@ -133,33 +144,50 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
             for (String loser : losers)
                 _losers.put(loser, "Other player won");
 
-            gameWon(playerId, reason);
+            gameWon(playerId, endGameType);
         }
     }
 
-    protected void gameWon(String winner, String reason) {
-        _winnerPlayerId = winner;
-        if (getGameState() != null)
-            sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
+    public void saveGameResult(EndGameResult result) {
+        getGameState().saveGameResult(result);
+    }
 
-        assert getGameState() != null;
+    protected void gameWon(String winner, EndGameActionType endGameType) {
+        _winnerPlayerId = winner;
+        saveGameResult(new EndGameResult(this, endGameType));
 
         for (GameResultListener gameResultListener : _gameResultListeners) {
-            gameResultListener.gameFinished(_winnerPlayerId, reason, _losers);
+            gameResultListener.gameFinished(_winnerPlayerId, endGameType.name(), _losers);
         }
 
         _finished = true;
+    }
+
+    public void playerLost(String playerId, EndGameActionType endGameType) {
+        if (!_finished) {
+            if (_losers.get(playerId) == null) {
+                _losers.put(playerId, endGameType.name());
+                if (_losers.size() + 1 == _allPlayerIds.size()) {
+                    List<String> allPlayers = new LinkedList<>(_allPlayerIds);
+                    allPlayers.removeAll(_losers.keySet());
+                    if (_allPlayerIds.size() > 2) {
+                        gameWon(allPlayers.getFirst(), EndGameActionType.LAST_PLAYER_REMAINING);
+                    } else {
+                        gameWon(allPlayers.getFirst(), endGameType);
+                    }
+                }
+            }
+        }
     }
 
     public void playerLost(String playerId, String reason) {
         if (!_finished) {
             if (_losers.get(playerId) == null) {
                 _losers.put(playerId, reason);
-                sendMessage(playerId + " lost due to: " + reason);
                 if (_losers.size() + 1 == _allPlayerIds.size()) {
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
-                    gameWon(allPlayers.getFirst(), "Last remaining player in game");
+                    gameWon(allPlayers.getFirst(), EndGameActionType.LAST_PLAYER_REMAINING);
                 }
             }
         }
@@ -289,12 +317,9 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     }
 
     public void sendErrorMessage(String message) {
-        sendMessage("ERROR: " + message);
-    }
-
-    public Action getActionById(int actionId) {
-        ActionsEnvironment environment = getActionsEnvironment();
-        return environment.getActionById(actionId);
+        addMessage("ERROR: " + message);
+        for (GameStateListener listener : _gameStateListeners)
+            listener.sendMessageEvent("ERROR: " + message);
     }
 
 
@@ -423,5 +448,9 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public void addGameResultListener(GameResultListener listener) {
         _gameResultListeners.add(listener);
+    }
+
+    public Collection<String> getLosingPlayers() {
+        return _losers.keySet();
     }
 }

@@ -9,6 +9,7 @@ public enum ActionResultType {
     DISCARDED,
     DOCKED,
     DREW_CARDS,
+    ENDED_GAME,
     ENDED_TURN,
     FLEW_SHIP,
     KILLED,

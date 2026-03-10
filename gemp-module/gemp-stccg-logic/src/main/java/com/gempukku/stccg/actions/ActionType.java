@@ -15,6 +15,7 @@ public enum ActionType {
     DOCK_SHIP,
     DOWNLOAD_CARD,
     DRAW_CARD,
+    END_GAME,
     END_TURN,
     ENCOUNTER_SEED_CARD,
     FLY_SHIP,
