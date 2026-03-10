@@ -83,6 +83,10 @@
         "owner": "asdf",
         "IN_SPACE": [
           {
+            "blueprintId": "101_104",
+            "owner": "asdf"
+          },
+          {
             "blueprintId": "101_331",
             "owner": "asdf",
             "ABOARD": [

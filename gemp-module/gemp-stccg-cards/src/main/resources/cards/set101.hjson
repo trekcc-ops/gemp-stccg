@@ -428,7 +428,7 @@
         },
         {
             blueprintId: 101_104
-            title: Federation Outpost
+            "title": "Federation Outpost",
             type: facility
             property-logo: tng-logo
             facility-type: outpost
