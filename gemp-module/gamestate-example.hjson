@@ -73,7 +73,11 @@
         "firstPlayer": "player2", // Player ID for player with first turn of the game
         "isReversed": false, // Flag for play order being reversed (only used in Tribbles)
         "turnOrder": ["player2", "player1"], // Player order (only used in Tribbles)
-        "currentPlayer": "player2" // Player ID for the player whose current turn it is
+        "currentPlayer": "player2", // Player ID for the player whose current turn it is
+        "diceResults": { // Showing the results of the final dice roll that decided who would go first
+            "player1": 5,
+            "player2": 3
+        }
     },
     "cardsInGame": {
         /* Information for every card in GameState._allCards

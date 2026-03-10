@@ -20,10 +20,10 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame",
-        "versionNumber", "actionResults",
+        "versionNumber", "actionResults", "endGameResult",
         "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations"})
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "versionNumber", "actionResults",
+        "versionNumber", "actionResults", "endGameResult",
         "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations" })
 public class GameStateView {
 

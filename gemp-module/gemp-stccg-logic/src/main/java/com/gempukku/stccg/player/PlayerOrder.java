@@ -1,19 +1,21 @@
 package com.gempukku.stccg.player;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.game.ActionOrder;
 
 import java.beans.ConstructorProperties;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-@JsonIncludeProperties({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
-@JsonPropertyOrder({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
+@JsonIncludeProperties({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed", "diceResults" })
+@JsonPropertyOrder({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed", "diceResults" })
 public class PlayerOrder {
     private boolean _isReversed;
     private final List<String> _turnOrder = new LinkedList<>();
+    @JsonProperty("diceResults")
+    private Map<String, Integer> _diceResults = new HashMap<>();
     @JsonProperty("firstPlayer")
     private final String _firstPlayer;
     @JsonProperty("currentPlayer")
@@ -24,6 +26,11 @@ public class PlayerOrder {
         _firstPlayer = turnOrder.getFirst();
         _currentPlayerId = currentPlayer;
         _turnOrder.addAll(turnOrder);
+    }
+
+    public PlayerOrder(List<String> turnOrder, Map<String, Integer> diceResults) {
+        this(false, turnOrder.getFirst(), turnOrder);
+        _diceResults = diceResults;
     }
 
     public PlayerOrder(List<String> turnOrder) {

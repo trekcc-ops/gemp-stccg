@@ -268,12 +268,6 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
     }
 
-    public void sendMessage(String message) {
-        addMessage(message);
-        for (GameStateListener listener : _gameStateListeners)
-            listener.sendMessageEvent(message);
-    }
-
     public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
 
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }

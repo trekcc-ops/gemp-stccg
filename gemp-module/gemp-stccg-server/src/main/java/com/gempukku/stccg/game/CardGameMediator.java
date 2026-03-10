@@ -140,27 +140,6 @@ public class CardGameMediator {
         return chatRoom;
     }
 
-    private GameChatRoomMediator createGameChat(boolean isCompetitive, GameParticipant[] participants) {
-        String chatRoomName = "Game " + _gameId;
-        Set<String> allowedUsers = new HashSet<>();
-
-        if (isCompetitive) {
-            for (GameParticipant participant : participants)
-                allowedUsers.add(participant.getPlayerId());
-        }
-
-        String welcomeMessage = isCompetitive ? "Welcome to private room" : "Welcome to room";
-        GameChatRoomMediator chatRoom = new GameChatRoomMediator(false, allowedUsers,
-                false, chatRoomName);
-        try {
-            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID,
-                    welcomeMessage + ": " + chatRoomName, true);
-        } catch (PrivateInformationException | ChatCommandErrorException exp) {
-            // Ignore, sent as admin
-        }
-        return chatRoom;
-    }
-
 
     public final boolean isDestroyed() {
         return _destroyed;
@@ -276,6 +255,7 @@ public class CardGameMediator {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             if (_playersPlaying.contains(userName)) {
                 _requestedCancel.add(userName);
+                _game.getGameState().addCancelRequest(userName);
                 if (_requestedCancel.size() == _playersPlaying.size() && !isFinished()) {
                     _game.setCancelled();
                     _game.saveGameResult(new EndGameResult(_game, EndGameResultType.ALL_PLAYERS_CANCELLED));
