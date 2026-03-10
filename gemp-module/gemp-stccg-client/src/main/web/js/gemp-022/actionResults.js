@@ -69,14 +69,15 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
             }
             break;
-        case "PLAYED_CARD":
-            cardList.push(jsonAction.targetCardId);
+        case "PLAYED_CARD": {
+            cardList.push(jsonAction.playedCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
-            gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
+            let playedCard = jsonGameState.visibleCardsInGame[jsonAction.playedCardId];
+            spacelineIndex = getSpacelineIndexFromLocationId(playedCard.locationId, jsonGameState);
+            gameAnimations.putNonMissionIntoPlay(playedCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             break;
-        case "REMOVED_CARD_FROM_GAME":
+        }
+        case "REMOVED_CARD_FROM_GAME": {
             for (const cardId of jsonAction.targetCardIds) {
                 cardList.push(cardId);
             }
@@ -84,6 +85,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.addCardToHiddenZone(targetCard, "REMOVED", targetCard.owner);
             break;
+        }
         case "REMOVED_PRESEEDS": // preparing for dilemma seeds; returns card to seed deck pile
             if (jsonAction.performingPlayerId === gameAnimations.game.bottomPlayerId) {
                 gameAnimations.removeCardFromPlay(jsonAction.targetCardIds, jsonAction.performingPlayerId, true);
@@ -201,13 +203,15 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         }
         case "DREW_CARDS": {
-            if (jsonAction.drawnCardIds.length > 1) {
-                message = performingPlayerText + " drew " + drawnCards.length + " cards";
-            } else if (jsonAction.drawnCardIds[0] < 0) {
+            let drawnCardIds = jsonAction.drawnCardIds;
+
+            if (drawnCardIds.length > 1) {
+                message = performingPlayerText + " drew " + drawnCardIds.length + " cards";
+            } else if (drawnCardIds[0] < 0) {
                 // card id will be negative if the card is unknown to this player
                 message = performingPlayerText + " drew a card";
             } else {
-                let drawnCard = jsonGameState.visibleCardsInGame[jsonAction.drawnCardIds[0]];
+                let drawnCard = jsonGameState.visibleCardsInGame[drawnCardIds[0]];
                 message = performingPlayerText + " drew " + showLinkableCardTitle(drawnCard);
             }
             gameChat.appendMessage(message, "gameMessage");
@@ -295,7 +299,6 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         }
         case "PLAYED_CARD": {
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
             if (jsonAction.isDownload === true) {
                 message = performingPlayerText + " downloaded ";
             } else if (jsonAction.isReport === true) {
@@ -303,7 +306,8 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             } else {
                 message = performingPlayerText + " played ";
             }
-            message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.playedCardId]);
+            let playedCard = jsonGameState.visibleCardsInGame[jsonAction.playedCardId];
+            message = message + showLinkableCardTitle(playedCard);
             if (jsonAction.destinationCardId != null && typeof jsonAction.destinationCardId != "undefined") {
                 message = message + " to " + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.destinationCardId]);
             }
@@ -335,12 +339,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             break;
         }
         case "SCORED_POINTS": {
-            // Update points for both players because why not
-            for (const playerData of Object.values(jsonGameState.playerMap)) {
-                let playerId = playerData.playerId;
-                let playerIndex = gameUi.getPlayerIndex(playerId);
-                gameUi.playerScores[playerIndex] = playerData.score;
-            }
+            gameUi.updateGameStats(jsonGameState);
             message = performingPlayerText + " scored " + jsonAction.pointsScored;
             if (jsonAction.pointsAreBonus === true) {
                 message = message + " bonus";

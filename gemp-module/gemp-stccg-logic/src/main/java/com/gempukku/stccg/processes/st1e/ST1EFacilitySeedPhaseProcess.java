@@ -3,7 +3,7 @@ package com.gempukku.stccg.processes.st1e;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
-import com.gempukku.stccg.actions.draw.DrawMultipleCardsUnrespondableAction;
+import com.gempukku.stccg.actions.draw.DrawStartingHandAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -80,8 +80,8 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             for (Player player : players) {
                 player.shuffleDrawDeck(cardGame);
                 int cardsToDraw = cardGame.getFormat().getHandSize();
-                DrawMultipleCardsUnrespondableAction drawAction =
-                        new DrawMultipleCardsUnrespondableAction(cardGame, player, cardsToDraw);
+                DrawStartingHandAction drawAction =
+                        new DrawStartingHandAction(cardGame, player, cardsToDraw);
                 drawAction.processEffect(cardGame);
                 cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
                 cardGame.sendActionResultToClient();

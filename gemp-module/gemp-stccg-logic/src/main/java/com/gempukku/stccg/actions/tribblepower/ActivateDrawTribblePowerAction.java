@@ -40,7 +40,7 @@ public class ActivateDrawTribblePowerAction extends ActivateTribblePowerAction {
     }
 
     private void playerChosen(String playerId, DefaultGame game) {
-        appendEffect(new DrawSingleCardAction(game, playerId));
+        appendEffect(new DrawSingleCardAction(game, playerId, _actionContext.card()));
     }
 
 }

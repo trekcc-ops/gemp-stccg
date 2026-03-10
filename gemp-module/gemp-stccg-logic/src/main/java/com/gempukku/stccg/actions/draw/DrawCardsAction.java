@@ -1,6 +1,8 @@
 package com.gempukku.stccg.actions.draw;
 
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -9,6 +11,8 @@ import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+
+import java.util.List;
 
 public class DrawCardsAction extends ActionyAction implements TopLevelSelectableAction {
 
@@ -55,7 +59,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
             PhysicalCard cardDrawn = cardGame.getGameState().playerDrawsCard(_performingPlayerId);
             if (cardDrawn != null) {
                 setAsSuccessful();
-                saveResult(new DrawCardsResult(cardGame, this, cardDrawn), cardGame);
+                saveResult(new DrawCardsResult(cardGame, this, List.of(cardDrawn), false, _performingCard), cardGame);
             } else {
                 setAsFailed();
             }
@@ -88,7 +92,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         } else if (_cardsDrawnSinceLastSelection < _cardCountLastSelected) {
             _cardsAlreadyDrawnCount++;
             _cardsDrawnSinceLastSelection++;
-            cardGame.addActionToStack(new DrawSingleCardAction(cardGame, _performingPlayerId));
+            cardGame.addActionToStack(new DrawSingleCardAction(cardGame, _performingPlayerId, _performingCard));
         }
     }
 

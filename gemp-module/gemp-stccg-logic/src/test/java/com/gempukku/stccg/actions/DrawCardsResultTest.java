@@ -43,9 +43,11 @@ public class DrawCardsResultTest extends AbstractAtTest {
         assertNotNull(yourDrawNode);
         assertNotNull(opponentDrawNode);
         assertEquals(opponentDrawNode.get("resultId").intValue(), yourDrawNode.get("resultId").intValue() + 1);
+        assertTrue(yourDrawNode.get("isStartingHand").booleanValue());
+        assertTrue(opponentDrawNode.get("isStartingHand").booleanValue());
 
-        assertEquals(5, yourDrawNode.size());
-        assertEquals(5, opponentDrawNode.size());
+        assertEquals(6, yourDrawNode.size());
+        assertEquals(6, opponentDrawNode.size());
 
         assertTrue(jsonListIsCardIds(yourDrawNode.get("drawnCardIds"), _game.getPlayer(P1).getCardsInHand()));
         assertEquals("[-999,-999,-999,-999,-999,-999,-999]", opponentDrawNode.get("drawnCardIds").toString());

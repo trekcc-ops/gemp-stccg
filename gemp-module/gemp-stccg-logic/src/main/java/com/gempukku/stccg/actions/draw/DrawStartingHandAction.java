@@ -10,11 +10,11 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DrawMultipleCardsUnrespondableAction extends ActionyAction {
+public class DrawStartingHandAction extends ActionyAction {
 
     private final int _cardsToDraw;
 
-    public DrawMultipleCardsUnrespondableAction(DefaultGame cardGame, Player performingPlayer, int cardsToDraw) {
+    public DrawStartingHandAction(DefaultGame cardGame, Player performingPlayer, int cardsToDraw) {
         super(cardGame, performingPlayer.getPlayerId(), ActionType.DRAW_CARD);
         _cardsToDraw = cardsToDraw;
     }
@@ -38,7 +38,7 @@ public class DrawMultipleCardsUnrespondableAction extends ActionyAction {
                 PhysicalCard cardDrawn = cardGame.getGameState().playerDrawsCard(cardGame.getPlayer(_performingPlayerId));
                 cardsDrawn.add(cardDrawn);
             }
-            saveResult(new DrawCardsResult(cardGame, this, cardsDrawn), cardGame);
+            saveResult(new DrawCardsResult(cardGame, this, cardsDrawn, true), cardGame);
             setAsSuccessful();
         } catch(PlayerNotFoundException exp) {
             cardGame.sendErrorMessage(exp);

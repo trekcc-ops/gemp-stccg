@@ -21,7 +21,7 @@ public class ActivateKindnessTribblePowerAction extends ActivateTribblePowerActi
     public ActivateKindnessTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard,
                                               GameTextContext actionContext) throws PlayerNotFoundException {
         super(cardGame, actionContext, performingCard);
-        appendEffect(new DrawSingleCardAction(cardGame, _performingPlayerId));
+        appendEffect(new DrawSingleCardAction(cardGame, _performingPlayerId, performingCard));
         // TODO: Does this work correctly if you only have 4 cards in hand after the draw?
         for (Player player : cardGame.getPlayers()) {
             if (player.getCardsInHand().size() >= 4) {
