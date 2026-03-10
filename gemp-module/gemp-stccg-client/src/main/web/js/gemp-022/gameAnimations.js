@@ -236,6 +236,19 @@ export default class GameAnimations {
     }
 
     addCardToHiddenZone(cardJson, zone, zoneOwner) {
+        if (cardJson == null) {
+            console.warn(`addCardToHiddenZone: cardJson parameter was null or undefined.`);
+            return;
+        }
+        if (zone == null) {
+            console.warn(`addCardToHiddenZone: zone parameter was null or undefined.`);
+            return;
+        }
+        if (zoneOwner == null) {
+            console.warn(`addCardToHiddenZone: zoneOwner parameter was null or undefined.`);
+            return;
+        }
+
         // Adding card to discard, hand, removed, or draw deck
         // console.log("calling addCardToHiddenZone");
         var that = this;

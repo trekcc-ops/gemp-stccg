@@ -78,7 +78,9 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             for (const cardId of cardList) {
                 targetCard = jsonGameState.visibleCardsInGame[cardId];
-                gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
+                if (targetCard != null) {
+                    gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
+                }
             }
             break;
         }
