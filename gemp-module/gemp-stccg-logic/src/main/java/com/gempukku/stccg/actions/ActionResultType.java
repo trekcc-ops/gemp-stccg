@@ -26,6 +26,7 @@ public enum ActionResultType {
     SCORED_POINTS,
     SEEDED_INTO_PLAY,
     STARTED_TURN,
+    STOPPED_CARDS,
     UNDOCKED,
     WALKED
 }

@@ -10,7 +10,7 @@ import com.gempukku.stccg.game.DefaultGame;
 
 public class DilemmaPlacedOnCardResult extends NoResponseActionResult {
 
-    @JsonProperty("cardPlacedId")
+    @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _cardPlaced;
 

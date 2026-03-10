@@ -1061,15 +1061,10 @@ export default class GameTableUI {
                 this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
                 this.animations.turnChange(gameState, true);
                 let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
-                for (let i = firstActionToReceive; i < gameState.performedActions.length; i++) {
-                    let action = gameState.performedActions[i];
-                    if (action.status === "completed_success") {
-                        animateActionResult(action, gameState, this.animations);
-                        communicateActionResult(action, gameState, this);
-                    } else if (action.status === "completed_failure" && (action.actionType === "ATTEMPT_MISSION" || action.actionType === "ENCOUNTER_SEED_CARD")) {
-                        // Pass a message to the play history if a mission attempt or seed card encounter was failed
-                        communicateActionResult(action, gameState, this);
-                    }
+                for (let i = firstActionToReceive; i < gameState.actionResults.length; i++) {
+                    let action = gameState.actionResults[i];
+                    animateActionResult(action, gameState, this.animations);
+                    communicateActionResult(action, gameState, this);
                     this.lastActionIndex = i;
                 }
                 break;
@@ -1184,11 +1179,11 @@ export default class GameTableUI {
 
             this.setupClocks(jsonNode.gameState);
 
-            for (const action of gameState.performedActions) {
-                communicateActionResult(action, gameState, this);
+            for (const actionResult of gameState.actionResults) {
+                communicateActionResult(actionResult, gameState, this);
             }
 
-            this.lastActionIndex = jsonNode.gameState.performedActions.length - 1;
+            this.lastActionIndex = jsonNode.gameState.actionResults.length - 1;
 
             let pendingDecision = gameState.pendingDecision;
             if (pendingDecision != null) {

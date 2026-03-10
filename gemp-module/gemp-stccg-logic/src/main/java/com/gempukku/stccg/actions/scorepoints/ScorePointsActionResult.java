@@ -16,11 +16,15 @@ public class ScorePointsActionResult extends ActionResult {
     @JsonProperty("pointsScored")
     private final int _pointsScored;
 
+    @JsonProperty("pointsAreBonus")
+    private boolean _pointsAreBonus;
+
     public ScorePointsActionResult(DefaultGame cardGame, ScorePointsAction action, PhysicalCard performingCard,
-                                   int pointsScored) {
+                                   int pointsScored, boolean pointsAreBonus) {
         super(cardGame, ActionResultType.SCORED_POINTS, action.getPerformingPlayerId(), action);
         _performingCard = performingCard;
         _pointsScored = pointsScored;
+        _pointsAreBonus = pointsAreBonus;
     }
 
 }
