@@ -76,32 +76,32 @@ export default function PlayerScorePane ( {gamestate, player_id, openPileDetails
                     <Typography>{player_data.clock}</Typography>
                 </Tooltip>
             </Box>
-            <Box className="DrawDeckSize" sx={{backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="DrawDeckSize" sx={{minWidth: '42px', backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Draw deck size">
                     <Typography align='center'>{player_data.drawsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box className="HandSize" sx={{backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="HandSize" sx={{minWidth: '42px', backgroundImage: `url(${decipher_card_hand})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Hand size">
                     <Typography align='center'>{player_data.handsize}</Typography>
                 </Tooltip>
             </Box>
-            <Box className="DiscardSize" sx={{backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="DiscardSize" sx={{minWidth: '42px', backgroundImage: `url(${decipher_card_discard})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Discard size">
-                    <Button color="white" sx={{padding: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "DISCARD"})}>
+                    <Button color="white" sx={{padding: 0, minWidth: '42px', width: "100%"}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "DISCARD"})}>
                         <Typography align='center'>{player_data.discardsize}</Typography>
                     </Button>
                 </Tooltip>
             </Box>
-            <Box className="RemovedSize" sx={{backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
+            <Box className="RemovedSize" sx={{minWidth: '42px', backgroundImage: `url(${decipher_card_removed})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Removed from game">
-                    <Button color="white" sx={{padding: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "REMOVED"})}>
+                    <Button color="white" sx={{padding: 0, minWidth: '42px', width: "100%"}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "REMOVED"})}>
                         <Typography align='center'>{player_data.removedsize}</Typography>
                     </Button>
                 </Tooltip>
             </Box>
             <Box className="Score">
-                <Button color="white" sx={{padding: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "POINT_AREA"})}>
+                <Button color="white" sx={{padding: 0, minWidth: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "POINT_AREA"})}>
                     <Typography align='center'>
                         SCORE: {player_data.score}
                     </Typography>
