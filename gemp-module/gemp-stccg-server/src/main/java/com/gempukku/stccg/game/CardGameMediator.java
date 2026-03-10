@@ -255,7 +255,6 @@ public class CardGameMediator {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             if (_playersPlaying.contains(userName)) {
                 _requestedCancel.add(userName);
-                _game.getGameState().addCancelRequest(userName);
                 if (_requestedCancel.size() == _playersPlaying.size() && !isFinished()) {
                     _game.setCancelled();
                     _game.saveGameResult(new EndGameResult(_game, EndGameResultType.ALL_PLAYERS_CANCELLED));
