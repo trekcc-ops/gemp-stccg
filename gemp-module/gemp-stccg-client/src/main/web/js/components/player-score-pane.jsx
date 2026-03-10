@@ -9,46 +9,56 @@ import decipher_card_removed from '../../images/decipher_card_removed.svg?no-inl
 import '../../css/player-score-pane.css';
 
 function get_player_data(player_id, gamestate) {
-    let player_data = gamestate.playerMap[player_id];
-    if (player_data == null) {
-        console.error(`player with id ${player_id} not found`);
-        // 0 here hides the number badges
-        return {
-            "username": "",
-            "drawsize": 0,
-            "handsize": 0,
-            "discardsize": 0,
-            "removedsize": 0,
-            "score": 0,
-            "clock": "0:00"
-        };
+    let failure_case = {
+        "username": "",
+        "drawsize": 0,
+        "handsize": 0,
+        "discardsize": 0,
+        "removedsize": 0,
+        "score": 0,
+        "clock": "0:00"
+    };
+
+    if (Object.hasOwn(gamestate, "playerMap")) {
+        let player_data = gamestate.playerMap[player_id];
+        if (player_data != null) {
+            let username = player_data["playerId"];
+            let drawsize = player_data["cardGroups"]["DRAW_DECK"]["cardCount"];
+            let handsize = player_data["cardGroups"]["HAND"]["cardCount"];
+            let discardsize = player_data["cardGroups"]["DISCARD"]["cardCount"];
+            let removedsize = player_data["cardGroups"]["REMOVED"]["cardCount"];
+            let thescore = player_data["score"];
+
+            let player_clock;
+            for (const clockObj of gamestate["playerClocks"]) {
+                if (clockObj.playerId === player_id) {
+                    let date = new Date(0);
+                    date.setSeconds(parseInt(clockObj.timeRemaining));
+                    player_clock = date.toISOString().substring(11, 19);
+                }
+            }
+            
+            return {
+                "username": username,
+                "clock": player_clock,
+                "drawsize": drawsize,
+                "handsize": handsize,
+                "discardsize": discardsize,
+                "removedsize": removedsize,
+                "score": thescore,
+            };
+        }
+        // Playermap but no ID
+        else {
+            console.error(`player with id ${player_id} not found`);
+            // 0 here hides the number badges
+            return failure_case;
+        }
     }
     else {
-        let username = player_data["playerId"];
-        let drawsize = player_data["cardGroups"]["DRAW_DECK"]["cardCount"];
-        let handsize = player_data["cardGroups"]["HAND"]["cardCount"];
-        let discardsize = player_data["cardGroups"]["DISCARD"]["cardCount"];
-        let removedsize = player_data["cardGroups"]["REMOVED"]["cardCount"];
-        let thescore = player_data["score"];
-
-        let player_clock;
-        for (const clockObj of gamestate["playerClocks"]) {
-            if (clockObj.playerId === player_id) {
-                let date = new Date(0);
-                date.setSeconds(parseInt(clockObj.timeRemaining));
-                player_clock = date.toISOString().substring(11, 19);
-            }
-        }
-        
-        return {
-            "username": username,
-            "clock": player_clock,
-            "drawsize": drawsize,
-            "handsize": handsize,
-            "discardsize": discardsize,
-            "removedsize": removedsize,
-            "score": thescore,
-        };
+        console.error(`gamestate.playerMap not found`);
+        // 0 here hides the number badges
+        return failure_case;    
     }
 }
 
