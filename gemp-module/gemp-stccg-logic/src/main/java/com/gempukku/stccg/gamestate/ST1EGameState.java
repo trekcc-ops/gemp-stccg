@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.turn.EndGameActionType;
+import com.gempukku.stccg.game.EndGameResultType;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -237,7 +237,7 @@ public class ST1EGameState extends GameState {
         }
         if (playersThatMetVictoryConditions.size() == 1) {
             String winningPlayerName = Iterables.getOnlyElement(playersThatMetVictoryConditions).getPlayerId();
-            cardGame.playerWon(winningPlayerName, EndGameActionType.WINNING_SCORE);
+            cardGame.playerWon(winningPlayerName, EndGameResultType.WINNING_SCORE);
         } else if (playersThatMetVictoryConditions.size() == 2) {
             resolveDeckedOrSimultaneousVictoryConditions(cardGame);
         } else if (_players.getFirst().getDrawDeck().isEmpty() && _players.getLast().getDrawDeck().isEmpty()) {
@@ -253,9 +253,9 @@ public class ST1EGameState extends GameState {
         int score2 = player2.getScore();
 
         if (score1 > score2) {
-            cardGame.playerWon(player1.getPlayerId(), EndGameActionType.WINNING_SCORE);
+            cardGame.playerWon(player1.getPlayerId(), EndGameResultType.WINNING_SCORE);
         } else if (score2 > score1) {
-            cardGame.playerWon(player2.getPlayerId(), EndGameActionType.WINNING_SCORE);
+            cardGame.playerWon(player2.getPlayerId(), EndGameResultType.WINNING_SCORE);
         } else {
             cardGame.endInTie();
         }

@@ -1,6 +1,6 @@
-package com.gempukku.stccg.actions.turn;
+package com.gempukku.stccg.game;
 
-public enum EndGameActionType {
+public enum EndGameResultType {
 
     // If adding options to this, let the client know!
 

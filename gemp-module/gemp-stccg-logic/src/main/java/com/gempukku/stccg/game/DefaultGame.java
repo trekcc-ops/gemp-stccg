@@ -3,7 +3,6 @@ package com.gempukku.stccg.game;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.turn.EndGameActionType;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -126,7 +125,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
 
     public void endInTie() {
         if (!_finished) {
-            saveGameResult(new EndGameResult(this, EndGameActionType.TIE));
+            saveGameResult(new EndGameResult(this, EndGameResultType.TIE));
 
             for (GameResultListener gameResultListener : _gameResultListeners) {
                 gameResultListener.gameFinished(_winnerPlayerId, "TIE", _losers);
@@ -134,7 +133,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         }
     }
 
-    public void playerWon(String playerId, EndGameActionType endGameType) {
+    public void playerWon(String playerId, EndGameResultType endGameType) {
         if (!_finished) {
             // Any remaining players have lost
             Set<String> losers = new HashSet<>(_allPlayerIds);
@@ -152,7 +151,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         getGameState().saveGameResult(result);
     }
 
-    protected void gameWon(String winner, EndGameActionType endGameType) {
+    protected void gameWon(String winner, EndGameResultType endGameType) {
         _winnerPlayerId = winner;
         saveGameResult(new EndGameResult(this, endGameType));
 
@@ -163,7 +162,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
         _finished = true;
     }
 
-    public void playerLost(String playerId, EndGameActionType endGameType) {
+    public void playerLost(String playerId, EndGameResultType endGameType) {
         if (!_finished) {
             if (_losers.get(playerId) == null) {
                 _losers.put(playerId, endGameType.name());
@@ -171,7 +170,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
                     if (_allPlayerIds.size() > 2) {
-                        gameWon(allPlayers.getFirst(), EndGameActionType.LAST_PLAYER_REMAINING);
+                        gameWon(allPlayers.getFirst(), EndGameResultType.LAST_PLAYER_REMAINING);
                     } else {
                         gameWon(allPlayers.getFirst(), endGameType);
                     }
@@ -187,7 +186,7 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
                 if (_losers.size() + 1 == _allPlayerIds.size()) {
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
-                    gameWon(allPlayers.getFirst(), EndGameActionType.LAST_PLAYER_REMAINING);
+                    gameWon(allPlayers.getFirst(), EndGameResultType.LAST_PLAYER_REMAINING);
                 }
             }
         }

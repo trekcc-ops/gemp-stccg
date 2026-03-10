@@ -2,7 +2,7 @@ package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
-import com.gempukku.stccg.actions.turn.EndGameActionType;
+import com.gempukku.stccg.game.EndGameResultType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.InCardListFilter;
@@ -66,7 +66,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                  */
             List<String> winningPlayerList = new ArrayList<>(finalPoints.keySet());
             String winningPlayer = winningPlayerList.get(new Random().nextInt(winningPlayerList.size()));
-            _game.playerWon(winningPlayer, EndGameActionType.WINNING_SCORE);
+            _game.playerWon(winningPlayer, EndGameResultType.WINNING_SCORE);
         } else {
             /* The player who "went out" this round will take the first turn in the next round.
                 If multiple players "went out" in the previous round, the player who "went out" with the

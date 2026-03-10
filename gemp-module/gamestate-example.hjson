@@ -274,7 +274,7 @@
     },
     "endGameResult": {
             // This item will only be populated in the game state if the game has ended
-        "reason": "WINNING_SCORE", // see EndGameActionType.java for all options
+        "reason": "WINNING_SCORE", // see EndGameResultType.java for all options
         "winnerName": "player1", // will not be populated if game ended with no winner
         "loserNames": ["player2"] // will be an empty list if game ended with no loser
     }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
-import com.gempukku.stccg.actions.turn.EndGameActionType;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -247,7 +246,7 @@ public class CardGameMediator {
                         if (ZonedDateTime.now()
                                 .isAfter(decisionSent.plusSeconds(_timeSettings.maxSecondsPerDecision()))) {
                             addTimeSpentOnDecisionToUserClock(player);
-                            _game.playerLost(player, EndGameActionType.DECISION_TIMEOUT);
+                            _game.playerLost(player, EndGameResultType.DECISION_TIMEOUT);
                         }
                     }
 
@@ -256,7 +255,7 @@ public class CardGameMediator {
                         if (_timeSettings.maxSecondsPerPlayer() -
                                 playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
                             addTimeSpentOnDecisionToUserClock(player);
-                            _game.playerLost(player, EndGameActionType.PLAYER_TIMEOUT);
+                            _game.playerLost(player, EndGameResultType.PLAYER_TIMEOUT);
                         }
                     }
                 }
@@ -268,7 +267,7 @@ public class CardGameMediator {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             if (getGame().getWinnerPlayerId() == null && _playersPlaying.contains(userName)) {
                 addTimeSpentOnDecisionToUserClock(userName);
-                getGame().playerLost(userName, EndGameActionType.CONCEDED);
+                getGame().playerLost(userName, EndGameResultType.CONCEDED);
             }
         }
     }
@@ -279,7 +278,7 @@ public class CardGameMediator {
                 _requestedCancel.add(userName);
                 if (_requestedCancel.size() == _playersPlaying.size() && !isFinished()) {
                     _game.setCancelled();
-                    _game.saveGameResult(new EndGameResult(_game, EndGameActionType.ALL_PLAYERS_CANCELLED));
+                    _game.saveGameResult(new EndGameResult(_game, EndGameResultType.ALL_PLAYERS_CANCELLED));
                     for (GameResultListener gameResultListener : _gameResultListeners)
                         gameResultListener.gameCancelled();
                 }
@@ -290,7 +289,7 @@ public class CardGameMediator {
     public void cancelGameDueToError() {
         if (!isFinished()) {
             _game.setCancelled();
-            _game.saveGameResult(new EndGameResult(_game, EndGameActionType.ERROR));
+            _game.saveGameResult(new EndGameResult(_game, EndGameResultType.ERROR));
         }
         for (GameResultListener gameResultListener : _gameResultListeners)
             gameResultListener.gameCancelled();
