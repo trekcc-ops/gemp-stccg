@@ -15,6 +15,10 @@ import strengthIconImg from "../../images/o_icon_strength.png";
 import vitalityIconImg from "../../images/o_icon_strength.png";
 import compassIconImg from "../../images/o_icon_strength.png";
 import resistanceIconImg from "../../images/o_icon_strength.png";
+import { createRoot } from 'react-dom/client';
+import Stack from '@mui/material/Stack';
+import PlayerScorePane from '../components/player-score-pane.jsx';
+import { get_your_player_id, get_opponent_player_id } from '../components/common.jsx';
 
 
 export default class GameTableUI {
@@ -135,6 +139,8 @@ export default class GameTableUI {
             $("#replay").remove();
         }
 
+        this.reactRoot;
+        this.reactGameState = {};
         this.discardPileDialogs = {};
         this.discardPileGroups = {};
         this.pointAreaDialogs = {};
@@ -210,11 +216,32 @@ export default class GameTableUI {
         this.layoutUI(false);
     }
 
+    reRenderReactRoot() {
+        function openPileDetails() {
+        };
+        this.reactRoot.render(
+            <Stack>
+                <PlayerScorePane id="opponent-player-score-pane" gamestate={this.reactGameState} player_id={get_opponent_player_id(this.reactGameState)} openPileDetailsFunc={openPileDetails} />
+                <PlayerScorePane id="your-player-score-pane" gamestate={this.reactGameState} player_id={get_your_player_id(this.reactGameState)} openPileDetailsFunc={openPileDetails} />
+            </Stack>
+        );
+    }
+
     initializeGameUI(discardPublic) {
+        
         var that = this;
 
-        for (var i = 0; i < this.allPlayerIds.length; i++) {
+        // Use new player stats pane.
+        let reactWrapper = document.createElement("div");
+        reactWrapper.id = "reactWrapper";
+        this.reactRoot = createRoot(reactWrapper);
+        this.reRenderReactRoot();
+        this.gameStateElem.append(reactWrapper);
 
+
+
+        for (var i = 0; i < this.allPlayerIds.length; i++) {
+            /*
             this.gameStateElem.append(
                 "<div class='playerStats'>" +
                     `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
@@ -224,7 +251,7 @@ export default class GameTableUI {
                     `<div id='discard${i}' class='discardSize' title='Discard size'>0</div>` +
                     `<div id='score${i}' class='playerScore'>SCORE 0</div>` +
                 "</div>");
-
+            */
             var showBut = $("<div class='slimButton'>+</div>").button().click(
                 (function (playerIndex) {
                     return function () {
@@ -1272,6 +1299,7 @@ export default class GameTableUI {
     processGameEvents(jsonNode, animate) {
         try {
             this.channelNumber = jsonNode.channelNumber;
+            
 
             // Go through all the events
             for (let i = 0; i < jsonNode.gameEvents.length; i++) {
@@ -1281,6 +1309,9 @@ export default class GameTableUI {
                     let gameState;
                     if (gameEvent.gameState) {
                         gameState = typeof(gameEvent.gameState) === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                        // push gamestate to embedded React nodes
+                        this.reactGameState = gameState;
+                        this.reRenderReactRoot();
                     }
                     else {
                         continue;
