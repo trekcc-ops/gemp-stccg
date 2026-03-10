@@ -57,6 +57,7 @@ function get_player_data(player_id, gamestate) {
     }
     else {
         console.error(`gamestate.playerMap not found`);
+        console.error(gamestate);
         // 0 here hides the number badges
         return failure_case;    
     }
