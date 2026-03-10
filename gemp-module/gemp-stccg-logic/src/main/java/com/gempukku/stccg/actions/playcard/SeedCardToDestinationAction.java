@@ -75,7 +75,7 @@ public class SeedCardToDestinationAction extends SeedCardAction {
             } else {
                 if (_onPlanet) {
                     cardEnteringPlay.setAsOnPlanet(destination);
-                } else {
+                } else if (!(destination instanceof ProxyCoreCard)) {
                     cardEnteringPlay.setAsAtop(destination);
                 }
             }
