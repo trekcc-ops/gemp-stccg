@@ -74,7 +74,7 @@
     ]
   },
   {
-    "gameName": "Shall We Begin Again?",
+    "gameName": "Action Testing",
     "players": ["asdf", "qwer"],
     "phase": "EXECUTE_ORDERS",
     "missions": [
@@ -97,6 +97,10 @@
               {
                 "blueprintId": "112_215",
                 "owner": "asdf"
+              },
+              {
+                "blueprintId": "123_120",
+                "owner": "asdf"
               }
             ]
           }
@@ -105,9 +109,19 @@
           {
             "blueprintId": "161_009",
             "owner": "qwer"
+          },
+          {
+            "blueprintId": "101_015",
+            "owner": "qwer"
           }
         ]
       }
+    ],
+    "hand": [
+      ["101_083"]
+    ],
+    "drawDeck": [
+      [], []
     ]
   }
 

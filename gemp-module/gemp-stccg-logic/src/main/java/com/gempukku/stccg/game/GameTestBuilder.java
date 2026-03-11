@@ -55,7 +55,7 @@ public class GameTestBuilder {
         GameFormat format = formatLibrary.get("st1emoderncomplete");
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
-            testDeck.addCard(SubDeck.DRAW_DECK, "991_001");
+            testDeck.addCard(SubDeck.DRAW_DECK, "105_018");
         }
 
         for (String player : players) {

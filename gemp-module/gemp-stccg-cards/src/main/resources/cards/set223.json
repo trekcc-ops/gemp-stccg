@@ -1,0 +1,28 @@
+{
+    "setId" : "223",
+    "setName" : "Private Little War",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "223_030",
+            "title" : "Lt. McGivers",
+            "type": "personnel",
+            "affiliation": ["federation","non-aligned"],
+            "property-logo": "tos-logo",
+            "classification": "OFFICER",
+            "icons": ["staff","au-icon","tos-icon"],
+            "lore" : "Historian and artist. Human who betrayed her crew when she became romantically involved with Khan Noonien Singh. Later exiled with her beloved Khan.",
+            "species": "human",
+            "gender": "female",
+            "skill-box": "[*] SCIENCE [*] Archaeology [*] Treachery",
+            "integrity": 3,
+            "cunning": 7,
+            "strength": 5,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/plw/30.jpg",
+            "image-options": {
+                "federation": "https://www.trekcc.org/1e/cardimages/plw/30.jpg",
+                "non-aligned": "https://www.trekcc.org/1e/cardimages/plw/30ALT.jpg"
+            }
+        }
+    ]
+}
