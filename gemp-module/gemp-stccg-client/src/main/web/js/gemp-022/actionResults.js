@@ -34,34 +34,40 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 gameAnimations.beamOrWalkCard(targetCard, spacelineIndex);
             }
             break;
-        case "CHANGED_AFFILIATION":
+        case "CHANGED_AFFILIATION": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.updateCardImage(targetCard);
             break;
-        case "DILEMMA_PLACED_ON_CARD":
+        }
+        case "DILEMMA_PLACED_ON_CARD": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
             gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             break;
-        case "DISCARDED":
+        }
+        case "DISCARDED": {
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.addCardToHiddenZone(targetCard, jsonAction.destination, targetCard.owner);
             break;
-        case "DOCKED":
+        }
+        case "DOCKED": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.dockShip(targetCard);
             break;
-        case "DREW_CARDS":
+        }
+        case "DREW_CARDS": {
             gameAnimations.drawCard(jsonAction.performingPlayerId, jsonGameState);
             break;
-        case "FLEW_SHIP":
+        }
+        case "FLEW_SHIP": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             spacelineIndex = getSpacelineIndexFromLocationId(targetCard.locationId, jsonGameState);
             gameAnimations.flyShip(targetCard, spacelineIndex);
             break;
-        case "PLACED_CARDS_IN_DRAW_DECK":
+        }
+        case "PLACED_CARDS_IN_DRAW_DECK": {
             cardList = jsonAction.targetCardIds;
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             for (const cardId of cardList) {
@@ -69,6 +75,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 gameAnimations.addCardToHiddenZone(targetCard, "DRAW_DECK", targetCard.owner);
             }
             break;
+        }
         case "PLAYED_CARD": {
             cardList.push(jsonAction.playedCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
@@ -95,10 +102,11 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 }
             }
             break;
-        case "REVEALED_SEED_CARD":
+        case "REVEALED_SEED_CARD": {
             gameAnimations.revealCard(jsonAction.targetCardId, jsonGameState).then(() => {return});
             break;
-        case "SEEDED_INTO_PLAY":
+        }
+        case "SEEDED_INTO_PLAY": {
             // This action type covers seeding cards in core or at a location, but not under a mission
             cardList.push(jsonAction.seededCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
@@ -113,13 +121,16 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             }
             break;
-        case "STOPPED_CARDS":
+        }
+        case "STOPPED_CARDS": {
             gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState).then(() => {return});
             break;
-        case "UNDOCKED":
+        }
+        case "UNDOCKED": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.undockShip(targetCard);
             break;
+        }
 
         // Actions with no specific animations in a 1E game
         case "ACTIVATED_TRIBBLE_POWER":

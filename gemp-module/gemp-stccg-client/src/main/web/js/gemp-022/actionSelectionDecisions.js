@@ -293,7 +293,7 @@ export function getActionInitiationCardActionMap(action, gameState) {
             }
             return cardActionMap;
         case "VOLUNTEER_FOR_SELECTION": {
-            cardActionMap.set(action.volunteeringCardId, "Volunteer for selection");
+            cardActionMap.set(performingCardId, "Volunteer for selection");
             return cardActionMap;
         }
         case "WALK_CARDS":
