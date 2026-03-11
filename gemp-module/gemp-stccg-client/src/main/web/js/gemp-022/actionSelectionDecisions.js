@@ -292,6 +292,10 @@ export function getActionInitiationCardActionMap(action, gameState) {
                 cardActionMap.set(performingCardId, "Use game text");
             }
             return cardActionMap;
+        case "VOLUNTEER_FOR_SELECTION": {
+            cardActionMap.set(action.volunteeringCardId, "Volunteer for selection");
+            return cardActionMap;
+        }
         case "WALK_CARDS":
             // performingCardId for this action represents the origin (ship, location, or facility cards are walking from)
             cardActionMap.set(performingCardId, "Walk cards"); // TODO (Beam/walk cards to/from X)

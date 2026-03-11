@@ -132,6 +132,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         case "RANDOM_SELECTION_INITIATED":
         case "SCORED_POINTS":
         case "STARTED_TURN":
+        case "VOLUNTEERED_FOR_SELECTION":
             break;
         default:
             console.error("Unknown game action type: '" + actionType + "'.");
@@ -387,6 +388,17 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.targetCardId]);
             message = message + " undocked from ";
             message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.dockedAtCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        }
+        case "VOLUNTEERED_FOR_SELECTION": {
+            message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.volunteeringCardId]);
+            if (jsonAction.selectingCardId != null && typeof jsonAction.selectingCardId != "undefined") {
+                message = message + " volunteered for selection by ";
+                message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.volunteeringCardId]);
+            } else {
+                message = message + " volunteered for random selection";
+            }
             gameChat.appendMessage(message, "gameMessage");
             break;
         }

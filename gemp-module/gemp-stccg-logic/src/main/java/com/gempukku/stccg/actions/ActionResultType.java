@@ -28,5 +28,6 @@ public enum ActionResultType {
     STARTED_TURN,
     STOPPED_CARDS,
     UNDOCKED,
+    VOLUNTEERED_FOR_SELECTION,
     WALKED
 }
