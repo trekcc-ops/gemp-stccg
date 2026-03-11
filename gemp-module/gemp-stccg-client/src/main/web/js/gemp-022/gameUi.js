@@ -154,8 +154,13 @@ export default class GameTableUI {
     }
 
     getReorganizableCardGroupForCardData(cardData) {
-        if (cardData.zone == "ATTACHED") {
-            return this.getReorganizableCardGroupForCardData(cardData.attachedToCard);
+        if (cardData === null) {
+            return null;
+        }
+        if (Object.hasOwn(cardData, "zone")) {
+            if (cardData.zone === "ATTACHED") {
+                return this.getReorganizableCardGroupForCardData(cardData.attachedToCard);
+            }
         }
         for (let i=0; i < this.missionCardGroups.length; i++) {
             if (this.missionCardGroups[i].cardBelongs(cardData)) {

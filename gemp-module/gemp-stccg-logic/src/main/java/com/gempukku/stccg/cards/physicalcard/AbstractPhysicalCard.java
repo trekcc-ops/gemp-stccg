@@ -123,7 +123,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         if (_parentCard == null || _parentCardRelationship == null) {
             return null;
         } else {
-            List<ChildCardRelationshipType> attachedRelationships = List.of(ABOARD, ATOP, ON_PLANET);
+            List<ChildCardRelationshipType> attachedRelationships = List.of(ABOARD, ATOP, ChildCardRelationshipType.DOCKED, ON_PLANET);
             if (attachedRelationships.contains(_parentCardRelationship) && !isPlacedOnMission()) {
                 return _parentCard.getCardId();
             } else {

@@ -401,7 +401,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         case "UNDOCKED": {
             message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.targetCardId]);
             message = message + " undocked from ";
-            message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.dockedAtCardId]);
+            message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.undockingFromCardId]);
             gameChat.appendMessage(message, "gameMessage");
             break;
         }
