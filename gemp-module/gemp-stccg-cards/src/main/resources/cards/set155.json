@@ -1374,7 +1374,7 @@
             "species": "klingon",
             "gender": "male",
             "skill-box": {
-                "skill-dots": 3,
+                "skill-dots": 4,
                 "skills": [
                     {
                         "type": "regular",
