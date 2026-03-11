@@ -89,8 +89,10 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 cardList.push(cardId);
             }
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
-            targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            gameAnimations.addCardToHiddenZone(targetCard, "REMOVED", targetCard.owner);
+            for (const cardId of cardList) {
+                let cardToRemove = jsonGameState.visibleCardsInGame[cardId];
+                gameAnimations.addCardToHiddenZone(cardToRemove, "REMOVED", cardToRemove.owner);
+            }
             break;
         }
         case "REMOVED_PRESEEDS": // preparing for dilemma seeds; returns card to seed deck pile
@@ -243,6 +245,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
                 }
             }
             message = showLinkableCardTitle(targetCard) + " flew from " + oldLocationName + " to " + newLocationName;
+            gameChat.appendMessage(message, "gameMessage");
             break;
         }
         case "KILLED": {
