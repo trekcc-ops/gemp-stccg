@@ -65,6 +65,7 @@ public abstract class GameState {
 
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
     private int nextDecisionId = 1;
+    private final Map<String, Integer> _playerTurnNumbers = new HashMap<>();
 
     @JsonProperty("endGameResult")
     private EndGameResult _endGameResult;
@@ -244,13 +245,13 @@ public abstract class GameState {
     }
 
     public void startPlayerTurn(Player player) {
-        _playerOrder.setCurrentPlayer(player.getPlayerId());
-        _currentTurnNumber++;
+        startPlayerTurn(player.getPlayerId());
     }
 
     public void startPlayerTurn(String playerName) {
         _playerOrder.setCurrentPlayer(playerName);
         _currentTurnNumber++;
+        _playerTurnNumbers.merge(playerName, 1, Integer::sum);
     }
 
 
@@ -485,5 +486,9 @@ public abstract class GameState {
 
     public EndGameResult getEndGameResult() {
         return _endGameResult;
+    }
+
+    public int getCurrentPlayerTurnNumber() {
+        return Objects.requireNonNullElse(_playerTurnNumbers.get(getCurrentPlayerId()), 0);
     }
 }

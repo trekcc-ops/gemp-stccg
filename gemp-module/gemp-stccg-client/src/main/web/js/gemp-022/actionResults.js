@@ -378,14 +378,14 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
                 message = message + performingPlayerText + "'s ";
             }
 
-            if (jsonAction.turnNumber === 1) {
+            if (jsonAction.playerTurnNumber === 1) {
                 message = message + "1st turn";
-            } else if (jsonAction.turnNumber === 2) {
+            } else if (jsonAction.playerTurnNumber === 2) {
                 message = message + "2nd turn";
-            } else if (jsonAction.turnNumber === 3) {
+            } else if (jsonAction.playerTurnNumber === 3) {
                 message = message + "3rd turn";
             } else {
-                message = message + jsonAction.turnNumber + "th turn";
+                message = message + jsonAction.playerTurnNumber + "th turn";
             }
             gameChat.appendMessage(message, "gameMessage");
             break;
