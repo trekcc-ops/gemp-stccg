@@ -170,7 +170,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             let targetCardId = jsonAction.targetCardId;
             let card = jsonGameState.visibleCardsInGame[targetCardId];
             message = performingPlayerText + " changed " + showLinkableCardTitle(card) + "'s affiliation to " +
-                getAffiliationHtml(jsonAction.newAffiliation);
+                getAffiliationHtml(jsonAction.newAffiliation).outerHTML;
             gameChat.appendMessage(message, "gameMessage");
             break;
         }
