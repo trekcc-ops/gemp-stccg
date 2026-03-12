@@ -16,9 +16,7 @@ import vitalityIconImg from "../../images/o_icon_strength.png";
 import compassIconImg from "../../images/o_icon_strength.png";
 import resistanceIconImg from "../../images/o_icon_strength.png";
 import { createRoot } from 'react-dom/client';
-import Stack from '@mui/material/Stack';
-import PlayerScorePane from '../components/player-score-pane.jsx';
-import { get_your_player_id, get_opponent_player_id } from '../components/common.jsx';
+import JQGameStateWrapper from './jqGameStateWrapper.jsx';
 
 
 export default class GameTableUI {
@@ -217,13 +215,8 @@ export default class GameTableUI {
     }
 
     reRenderReactRoot() {
-        function openPileDetails() {
-        };
         this.reactRoot.render(
-            <Stack>
-                <PlayerScorePane id="opponent-player-score-pane" gamestate={this.reactGameState} player_id={get_opponent_player_id(this.reactGameState)} openPileDetailsFunc={openPileDetails} />
-                <PlayerScorePane id="your-player-score-pane" gamestate={this.reactGameState} player_id={get_your_player_id(this.reactGameState)} openPileDetailsFunc={openPileDetails} />
-            </Stack>
+            <JQGameStateWrapper gamestate={this.reactGameState} />
         );
     }
 
