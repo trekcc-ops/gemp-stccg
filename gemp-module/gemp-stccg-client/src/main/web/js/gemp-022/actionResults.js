@@ -49,7 +49,13 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            gameAnimations.addCardToHiddenZone(targetCard, jsonAction.destination, targetCard.owner);
+            if (jsonAction.destination === "POINT_AREA") {
+                // TODO - Implement point area
+                let message = "ERROR: You don't have a a point area. Try again later when the devs have added one.";
+                gameAnimations.game.chatBox.appendMessage(message, "gameMessage");
+            } else {
+                gameAnimations.addCardToHiddenZone(targetCard, jsonAction.destination, targetCard.owner);
+            }
             break;
         }
         case "DOCKED": {
