@@ -86,6 +86,9 @@ Typically when cards are nullified, they are also discarded. That discard action
 * <b>performingCardId</b> (integer) - cardId number for the card whose gametext caused the nullify action.
 It may not always make sense to include this in the UI. For example, if you nullify a dilemma using its
 gametext, the dilemma will be both the target and performing card in this result.
+### PLACED_CARD_IN_POINT_AREA ###
+Typically when cards are placed in a player's point area, the player scores points. Scoring those points has a separate result.
+* <b>targetCardId</b> (integer) - cardId number for card placed in point area
 ### PLACED_CARDS_IN_DRAW_DECK ###
 * <b>targetCardIds</b> (integer array) - cardId numbers for cards placed in deck; these will be
 anonymous to players who couldn't see the cards before this action (for example, the result of Masaka Transformations)
@@ -96,7 +99,7 @@ anonymous to players who couldn't see the cards before this action (for example,
 when playing a card "on the table" aka to a player's core. In those cases, this property will not be included.
 When included, this represents the played card's "parent card". Examples:
   * When playing a personnel aboard a ship, the ship is the destination.
-  * When playing Venus Drug on a location, the destination is either the bottom mission of that location (or the card representing a non-mission, like Bajoran Wormhole).
+  * When playing Venus Drug on a location, the destination is the card representing that location (like Bajoran Wormhole or the bottom mission card at a mission).
   * When downloading Equipment to a site, the site is the destination.
 * <b>toCore</b> (boolean) - TRUE if the card is played to a player's core; FALSE otherwise
 * <b>isDownload</b> (boolean) - TRUE if the card was downloaded; FALSE otherwise

@@ -82,6 +82,15 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             }
             break;
         }
+        case "PLACED_CARD_IN_POINT_AREA": {
+            cardList.push(jsonAction.targetCardId);
+            gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            // TODO - Implement point area
+            let message = "ERROR: You don't have a a point area. Try again later when the devs have added one.";
+            gameAnimations.game.chatBox.appendMessage(message, "gameMessage");
+            break;
+        }
         case "PLAYED_CARD": {
             cardList.push(jsonAction.playedCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
@@ -286,6 +295,13 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             message = performingPlayerText + " nullified ";
             message = message + showLinkableCardTitle(targetCard) + " using ";
             message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
+            gameChat.appendMessage(message, "gameMessage");
+            break;
+        }
+        case "PLACED_CARD_IN_POINT_AREA": {
+            targetCard = getActionTargetCard(jsonAction, jsonGameState);
+            message = performingPlayerText + " placed ";
+            message = message + showLinkableCardTitle(targetCard) + " in their point area";
             gameChat.appendMessage(message, "gameMessage");
             break;
         }
