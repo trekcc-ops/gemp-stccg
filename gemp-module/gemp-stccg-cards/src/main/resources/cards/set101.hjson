@@ -367,7 +367,7 @@
         }
         {
             blueprintId: 101_064
-            title: Starfleet Type II Phaser
+            "title": "Starfleet Type II Phaser",
             type: equipment
             property-logo: tng-logo
             lore: Handheld weapon can be set for stun, heat and disruption. PHASER is an acronym for PHASed Energy Rectification.
