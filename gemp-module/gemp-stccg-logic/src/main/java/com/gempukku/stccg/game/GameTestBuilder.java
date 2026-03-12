@@ -14,6 +14,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
@@ -265,6 +266,13 @@ public class GameTestBuilder {
     public MissionCard addMission(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
         MissionCard mission = addCardToGame(blueprintId, cardTitle, ownerName, MissionCard.class);
+        for (PhysicalCard missionInPlay : Filters.filterCardsInPlay(_game, CardType.MISSION)) {
+            if (missionInPlay instanceof MissionCard missionCard && missionCard.isCopyOf(mission)) {
+                SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission);
+                executeAction(seedAction);
+                return mission;
+            }
+        }
         _missions.add(mission);
         SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, _missions.indexOf(mission));
         executeAction(seedAction);
@@ -532,6 +540,9 @@ public class GameTestBuilder {
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             if (blueprint.getCardType() == CardType.MISSION) {
                 MissionCard mission = addMission(blueprintId, blueprint.getTitle(), ownerName);
+                if (node.has("isShared") && node.get("isShared").booleanValue()) {
+                    MissionCard missionOnTop = addMission(blueprintId, blueprint.getTitle(), _game.getOpponent(ownerName));
+                }
                 if (node.has("IN_SPACE")) {
                     addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
                 }

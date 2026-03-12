@@ -137,7 +137,8 @@ Assuming no players are skipped, the next one will be game=3, player=2; next one
 ### VOLUNTEERED_FOR_SELECTION ###
 Card "volunteered" to be selected by a random selection. Created by cards like Harry Kim and Korris.
 * <b>volunteeringCardId</b> (integer) - cardId for card that volunteered
-* <b>selectingCardId</b> (integer) - cardId for the card that is requiring the selection
+* <b>[optional] selectingCardId</b> (integer) - cardId for the card that is requiring the selection; will not be included
+if the selection was not caused by a card (for example, casualties at the end of personnel battle)
 ### WALKED ###
 Same concepts as the "BEAMED" result.
 * <b>targetCardIds</b> (integer array)

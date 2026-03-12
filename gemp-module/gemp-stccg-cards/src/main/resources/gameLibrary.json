@@ -81,6 +81,7 @@
       {
         "blueprintId": "101_154",
         "owner": "asdf",
+        "isShared": true,
         "IN_SPACE": [
           {
             "blueprintId": "101_104",
