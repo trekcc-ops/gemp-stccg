@@ -191,7 +191,7 @@
             "type": "event",
             "property-logo": "tng-logo",
             "lore": "Spock undertook a personal mission to reconcile ancient enemies Romulus and Vulcan. Starfleet took a dim view of his brash actions.",
-            "image-url": "https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/16V.jpg",
             "playThisCardAction": {
                 "type": "playThis",
                 "perGameLimit": 1,
