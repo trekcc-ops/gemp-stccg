@@ -60,9 +60,11 @@ public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliation
         if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             try {
                 if (cardGame instanceof ST1EGame stGame &&
-                        stGame.getGameState().getLocationById(_currentLocationId) instanceof MissionLocation mission) {
+                        stGame.getGameState().getLocationById(_currentLocationId) instanceof MissionLocation mission &&
+                            this == mission.getMissionForPlayer(player.getPlayerId())
+                ) {
                     actions.add(new AttemptMissionAction(
-                            cardGame, player, mission.getCardForActionSelection(player), mission));
+                            cardGame, player, mission.getMissionForPlayer(player.getPlayerId()), mission));
                 }
             } catch (InvalidGameLogicException exp) {
                 cardGame.sendErrorMessage(exp);

@@ -118,10 +118,6 @@ public class MissionLocation implements GameLocation {
     public String getLocationName() { return _locationName; }
     public Region getRegion() { return _region; }
 
-    public MissionCard getCardForActionSelection(Player performingPlayer) throws InvalidGameLogicException {
-        return getMissionForPlayer(performingPlayer.getPlayerId());
-    }
-
     public MissionCard getMissionForPlayer(String playerId) throws InvalidGameLogicException {
         PhysicalCard result = null;
         Collection<? extends PhysicalCard> missionCards = getMissionCards();
