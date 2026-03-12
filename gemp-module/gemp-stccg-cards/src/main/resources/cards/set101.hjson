@@ -1540,7 +1540,7 @@
         }
         {
             blueprintId: 101_233
-            title: Sarek
+            "title": "Sarek",
             type: personnel
             affiliation: federation
             property-logo: tng-logo

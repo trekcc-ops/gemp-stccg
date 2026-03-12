@@ -113,7 +113,13 @@ public class GameTestBuilder {
                 }
             }
         }
-        addJsonCards(cardLibrary, missions);
+        try {
+            addJsonCards(cardLibrary, missions);
+        } catch(CardNotFoundException exp) {
+            throw exp;
+        } catch(Exception ignored) {
+            throw new CardNotFoundException("Unable to create cards for sample game");
+        }
     }
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
@@ -268,7 +274,8 @@ public class GameTestBuilder {
         MissionCard mission = addCardToGame(blueprintId, cardTitle, ownerName, MissionCard.class);
         for (PhysicalCard missionInPlay : Filters.filterCardsInPlay(_game, CardType.MISSION)) {
             if (missionInPlay instanceof MissionCard missionCard && missionCard.isCopyOf(mission)) {
-                SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission);
+                int locationZoneIndex = _game.getGameState().indexOfLocation(mission.getBlueprint().getLocation(), mission.getBlueprint().getQuadrant());
+                SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, locationZoneIndex);
                 executeAction(seedAction);
                 return mission;
             }
@@ -541,10 +548,17 @@ public class GameTestBuilder {
             if (blueprint.getCardType() == CardType.MISSION) {
                 MissionCard mission = addMission(blueprintId, blueprint.getTitle(), ownerName);
                 if (node.has("isShared") && node.get("isShared").booleanValue()) {
-                    MissionCard missionOnTop = addMission(blueprintId, blueprint.getTitle(), _game.getOpponent(ownerName));
+                    try {
+                        MissionCard missionOnTop = addMission(blueprintId, blueprint.getTitle(), _game.getOpponent(ownerName));
+                    } catch(Exception exp) {
+                        throw new CardNotFoundException("Unable to create shared mission for sample game");
+                    }
                 }
                 if (node.has("IN_SPACE")) {
                     addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
+                }
+                if (node.has("ON_PLANET")) {
+                    addJsonCards(library, node.get("ON_PLANET"), ChildCardRelationshipType.ON_PLANET, mission);
                 }
                 if (node.has("SEEDED_UNDERNEATH")) {
                     for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
@@ -574,6 +588,8 @@ public class GameTestBuilder {
                 case ABOARD -> addCardAboardShipOrFacility(
                         blueprintId, blueprint.getTitle(), ownerName, (CardWithCrew) parentCard, ReportableCard.class);
                 case IN_SPACE -> addCardInSpace(blueprint, ownerName, parentCard);
+                case ON_PLANET -> addCardOnPlanetSurface(blueprintId, blueprint.getTitle(), ownerName,
+                        (MissionCard) parentCard, ReportableCard.class);
                 default -> throw new InvalidGameOperationException(
                         "GameTestBuilder is not yet equipped to handle ChildCardRelationshipType '" + childType + "'");
             };

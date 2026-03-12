@@ -76,12 +76,18 @@
   {
     "gameName": "Action Testing",
     "players": ["asdf", "qwer"],
-    "phase": "EXECUTE_ORDERS",
+    "phase": "CARD_PLAY",
     "missions": [
       {
         "blueprintId": "101_154",
         "owner": "asdf",
         "isShared": true,
+        "ON_PLANET": [
+          {
+            "blueprintId": "101_233",
+            "owner": "asdf"
+          }
+        ],
         "IN_SPACE": [
           {
             "blueprintId": "101_104",
@@ -118,6 +124,10 @@
           {
             "blueprintId": "101_015",
             "owner": "qwer"
+          },
+          {
+            "blueprintId": "155_009",
+            "owner": "qwer"
           }
         ]
       },
@@ -127,7 +137,7 @@
       }
     ],
     "hand": [
-      ["101_083"]
+      ["101_083","155_016"]
     ],
     "drawDeck": [
       [], []
