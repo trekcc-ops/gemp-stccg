@@ -86,6 +86,10 @@
           {
             "blueprintId": "101_233",
             "owner": "asdf"
+          },
+          {
+            "blueprintId": "101_213",
+            "owner": "asdf"
           }
         ],
         "IN_SPACE": [
@@ -98,6 +102,10 @@
                 "owner": "asdf"
               }
             ]
+          },
+          {
+            "blueprintId": "163_054",
+            "owner": "asdf"
           },
           {
             "blueprintId": "101_331",
@@ -133,6 +141,10 @@
           },
           {
             "blueprintId": "155_012",
+            "owner": "qwer"
+          },
+          {
+            "blueprintId": "112_031",
             "owner": "qwer"
           }
         ]
