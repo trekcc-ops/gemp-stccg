@@ -360,6 +360,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     baseCardDiv.classList.add("card");
     if (cardId != null) {
         baseCardDiv.id = cardId.toString(); // coerce to string just in case
+        baseCardDiv.title = (text) ? text : "";
     }
 
     let threeDScene = document.createElement("div");
@@ -493,7 +494,6 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     borderDiv.appendChild(borderImageTag);
     front_face.appendChild(borderDiv);
 
-    //threeDScene.appendChild(baseCardDiv);
     threeDCardObject.appendChild(front_face);
     threeDScene.appendChild(threeDCardObject);
     baseCardDiv.appendChild(threeDScene);
