@@ -234,39 +234,6 @@ export default class GameTableUI {
 
 
         for (var i = 0; i < this.allPlayerIds.length; i++) {
-            /*
-            this.gameStatsUIElem.append(
-                "<div class='playerStats'>" +
-                    `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
-                    `<div id='clock${i}' class='clock'></div>` +
-                    `<div id='deck${i}' class='deckSize' title='Draw deck size'>0</div>` +
-                    `<div id='hand${i}' class='handSize' title='Hand size'>0</div>` +
-                    `<div id='discard${i}' class='discardSize' title='Discard size'>0</div>` +
-                    `<div id='score${i}' class='playerScore'>SCORE 0</div>` +
-                "</div>");
-            */
-            var showBut = $("<div class='slimButton'>+</div>").button().click(
-                (function (playerIndex) {
-                    return function () {
-                        $(".player").each(
-                            function (index) {
-                                if (index == playerIndex) {
-                                    if ($(this).hasClass("opened")) {
-                                        $(this).removeClass("opened").css({width: 150 - that.padding});
-                                        $("#adventureDeck" + playerIndex).css({display: "none"});
-                                        $("#removedPile" + playerIndex).css({display: "none"});
-                                    } else {
-                                        $(this).addClass("opened").css({width: 150 - that.padding + 168});
-                                        $("#adventureDeck" + playerIndex).css({display: "table-cell"});
-                                        $("#removedPile" + playerIndex).css({display: "table-cell"});
-                                    }
-                                }
-                            });
-                    };
-                })(i));
-
-            $("#showStats" + i).append(showBut);
-
             this.playPiles[this.allPlayerIds[i]] = new PlayPileCardGroup(
                 $("#main"),
                 this.allPlayerIds[i],
@@ -284,42 +251,6 @@ export default class GameTableUI {
                 },
                 "tableAreaDiv_" + this.allPlayerIds[i]
             );
-
-            $("#removedPile" + i).addClass("clickable").click(
-                (function (index) {
-                    return function () {
-                        var dialog = that.removedPileDialogs[that.allPlayerIds[index]];
-                        var group = that.removedPileGroups[that.allPlayerIds[index]];
-                        openSizeDialog(dialog);
-                        that.dialogResize(dialog, group);
-                        group.layoutCards();
-                    };
-                })(i));
-
-            if(discardPublic) {
-                $("#discard" + i).addClass("clickable").click(
-                    (function (index) {
-                        return function () {
-                            var dialog = that.discardPileDialogs[that.allPlayerIds[index]];
-                            var group = that.discardPileGroups[that.allPlayerIds[index]];
-                            openSizeDialog(dialog);
-                            that.dialogResize(dialog, group);
-                            group.layoutCards();
-                        };
-                    })(i));
-            }
-
-            $("#score" + i).addClass("clicakble").click(
-                (function (index) {
-                    return function () {
-                        var dialog = that.pointAreaDialogs[that.allPlayerIds[index]];
-                        var group = that.pointAreaGroups[that.allPlayerIds[index]];
-                        openSizeDialog(dialog);
-                        that.dialogResize(dialog, group);
-                        group.layoutCards();
-                    };
-                })(i)
-            );
         }
 
         this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
@@ -331,39 +262,6 @@ export default class GameTableUI {
             this.hand = new NormalCardGroup($("#main"), function (card) {
                 return (card.zone === "HAND" || card.zone === "EXTRA" || card.zone === "MISSIONS_PILE" || card.zone === "SEED_DECK");
             });
-            if(!discardPublic) {
-                $("#discard" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-                    (function (index) {
-                        return function () {
-                            var dialog = that.discardPileDialogs[index];
-                            var group = that.discardPileGroups[index];
-                            openSizeDialog(dialog);
-                            that.dialogResize(dialog, group);
-                            group.layoutCards();
-                        };
-                    })(that.bottomPlayerId));
-            }
-            $("#score" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-                    (function (index) {
-                        return function () {
-                            var dialog = that.pointAreaDialogs[index];
-                            var group = that.pointAreaGroups[index];
-                            openSizeDialog(dialog);
-                            that.dialogResize(dialog, group);
-                            group.layoutCards();
-                        };
-                    })(that.bottomPlayerId));
-
-            $("#adventureDeck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-                (function (index) {
-                    return function () {
-                        var dialog = that.adventureDeckDialogs[index];
-                        var group = that.adventureDeckGroups[index];
-                        openSizeDialog(dialog);
-                        that.dialogResize(dialog, group);
-                        group.layoutCards();
-                    };
-                })(that.bottomPlayerId));
         }
 
         var dragFunc = function (event) {
@@ -406,17 +304,6 @@ export default class GameTableUI {
         if(this.allPlayerIds == null) {
             return;
         }
-
-        $("#deck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-            (function (index) {
-                return function () {
-                    var dialog = that.miscPileDialogs[index];
-                    var group = that.miscPileGroups[index];
-                    openSizeDialog(dialog);
-                    that.dialogResize(dialog, group);
-                    group.layoutCards();
-                };
-            })(that.bottomPlayerId));
     }
 
     addBottomLeftTabPane() {
@@ -1584,14 +1471,6 @@ export class TribblesGameTableUI extends GameTableUI {
         this.tabPane.css({position: "absolute", left:LEFT_SIDE, top: PLAYER_AREA_TOP, width: CHAT_WIDTH, height: CHAT_HEIGHT});
         this.chatBox.setBounds(BORDER_PADDING + TAB_PANE_WIDTH_PADDING, TAB_PANE_HEIGHT,
             CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
-
-        this.gameStatsUIElem.css({
-            position: "absolute",
-            left: BORDER_PADDING,
-            top: BORDER_PADDING,
-            width: CHAT_WIDTH,
-            height: STATS_TOP - BORDER_PADDING * 2
-        });
 
         this.statsDiv.css({
             position: "absolute",
