@@ -2108,25 +2108,7 @@ export class ST1EGameTableUI extends GameTableUI {
     }
 
     updateGameStats(gameState) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                for (const player of Object.values(gameState.playerMap)) {
-                    let playerId = player.playerId;
-                    let drawDeckSize = player.cardGroups["DRAW_DECK"].cardCount;
-                    let handSize = player.cardGroups["HAND"].cardCount;
-                    let discardSize = player.cardGroups["DISCARD"].cardCount;
-                    let removedSize = player.cardGroups["REMOVED"].cardCount;
-                    let score = player.score;
-
-                    $("#deck" + that.getPlayerIndex(playerId)).text(drawDeckSize);
-                    $("#hand" + that.getPlayerIndex(playerId)).text(handSize);
-                    $("#discard" + that.getPlayerIndex(playerId)).text(discardSize);
-                    $("#removedPile" + that.getPlayerIndex(playerId)).text(removedSize);
-                    $("#score" + that.getPlayerIndex(playerId)).text(`SCORE ${score}`);
-                }
-                next();
-            });
+        this.reRenderReactRoot();
     }
 
     addNonMissionInPlayToClientRecursively(card, gameState) {
