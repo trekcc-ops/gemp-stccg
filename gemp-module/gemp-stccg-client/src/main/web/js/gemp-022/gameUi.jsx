@@ -1246,6 +1246,11 @@ export default class GameTableUI {
                 this.animations.updateGameState(false);
             }
 
+            // push gamestate to embedded React nodes
+            this.reactGameState = gameState;
+            this.reRenderReactRoot();
+
+
         } catch (e) {
             console.error(e);
             this.showErrorDialog(
