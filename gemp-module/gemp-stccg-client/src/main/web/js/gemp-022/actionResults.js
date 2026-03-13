@@ -265,7 +265,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
         }
         case "KILLED": {
             for (const cardId of jsonAction.killedCardIds) {
-                message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.killedCardIds[0]]);
+                message = showLinkableCardTitle(jsonGameState.visibleCardsInGame[cardId]);
                 message = message + " was killed by ";
                 message = message + showLinkableCardTitle(jsonGameState.visibleCardsInGame[jsonAction.performingCardId]);
                 gameChat.appendMessage(message, "gameMessage");
