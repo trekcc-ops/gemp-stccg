@@ -360,8 +360,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     baseCardDiv.classList.add("card");
     if (cardId != null) {
         baseCardDiv.id = cardId.toString(); // coerce to string just in case
-        baseCardDiv.title = (text) ? text : "";
     }
+    baseCardDiv.title = (text) ? text : "";
 
     let threeDScene = document.createElement("div");
     threeDScene.classList.add("three-d-card-scene");
