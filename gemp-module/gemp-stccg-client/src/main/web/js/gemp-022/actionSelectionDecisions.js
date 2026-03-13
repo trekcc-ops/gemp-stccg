@@ -118,12 +118,14 @@ export default class ActionSelectionDecision {
             let cardActionMap = getActionInitiationCardActionMap(action, this.gameState);
             for (const [cardId, actionText] of cardActionMap) {
                 let cardIdElem = getCardDivFromId(cardId);
-                if (cardIdElem.data("action") == null) {
-                    cardIdElem.data("action", new Array());
+                if (cardIdElem != null) {
+                    if (cardIdElem.data("action") == null) {
+                        cardIdElem.data("action", new Array());
+                    }
+                    let cardActions = cardIdElem.data("action");
+                    cardActions.push({actionId: action.actionId, actionText: actionText, actionType: action.actionType});
+                    cardIdElem.addClass("selectableCard");
                 }
-                let cardActions = cardIdElem.data("action");
-                cardActions.push({actionId: action.actionId, actionText: actionText, actionType: action.actionType});
-                cardIdElem.addClass("selectableCard");
             }
         }
     }
