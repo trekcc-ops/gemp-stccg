@@ -154,7 +154,7 @@ export default class GameTableUI {
     }
 
     getReorganizableCardGroupForCardData(cardData) {
-        if (cardData === null) {
+        if (cardData == null) {
             return null;
         }
         if (Object.hasOwn(cardData, "zone")) {
