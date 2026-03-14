@@ -47,8 +47,6 @@ export default class GameTableUI {
     pointAreaGroups;
     adventureDeckDialogs;
     adventureDeckGroups;
-    removedPileDialogs;
-    removedPileGroups;
     miscPileDialogs;
     miscPileGroups;
 
@@ -145,8 +143,6 @@ export default class GameTableUI {
         this.pointAreaGroups = {};
         this.adventureDeckDialogs = {};
         this.adventureDeckGroups = {};
-        this.removedPileDialogs = {};
-        this.removedPileGroups = {};
         this.miscPileDialogs = {};
         this.miscPileGroups = {};
         this.playPiles = {};
@@ -1279,7 +1275,6 @@ export default class GameTableUI {
 
         for (const playerId of Object.keys(gameState.playerMap)) {
             this.allPlayerIds.push(playerId);
-            this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
             this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
             this.createPile(playerId, "Point Area", "pointAreaDialogs", "pointAreaGroups");
         }
@@ -1904,12 +1899,6 @@ export class ST1EGameTableUI extends GameTableUI {
         for (let playerId in this.adventureDeckGroups) {
             if (Object.hasOwn(this.adventureDeckGroups, playerId)) {
                 this.adventureDeckGroups[playerId].layoutCards();
-            }
-        }
-
-        for (let playerId in this.removedPileGroups) {
-            if (Object.hasOwn(this.removedPileGroups, playerId)) {
-                this.removedPileGroups[playerId].layoutCards();
             }
         }
 

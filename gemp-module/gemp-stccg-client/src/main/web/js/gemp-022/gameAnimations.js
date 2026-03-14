@@ -272,9 +272,6 @@ export default class GameAnimations {
                 else if (zone === "DRAW_DECK") {
                     that.game.miscPileDialogs[controllerId].append(cardDiv);
                 }
-                else if (zone === "REMOVED") {
-                    that.game.removedPileDialogs[controllerId].append(cardDiv);
-                }
                 else if (zone === "POINT_AREA") {
                     that.game.pointAreaDialogs[controllerId].append(cardDiv);
                 }
