@@ -23,6 +23,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
 
     FilterBlueprint _destinationBlueprint;
     boolean _forFree;
+    boolean _toCore;
     boolean _onPlanet;
 
     @JsonCreator
@@ -32,6 +33,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
                                        Integer perGameLimit,
                                        @JsonProperty(value = "forFree")
                                        boolean forFree,
+                                       @JsonProperty(value = "toCore") boolean toCore,
                                        @JsonProperty(value = "onPlanet") boolean onPlanet,
                                        @JsonProperty(value = "requirement")
                                        Requirement requirement,
@@ -56,6 +58,7 @@ public class PlayThisCardActionBlueprint extends DefaultActionBlueprint {
             _effects.add(new DiscardThisCardSubActionBlueprint());
         }
         _onPlanet = onPlanet;
+        _toCore = toCore;
     }
 
     public PlayCardAction createAction(DefaultGame cardGame, GameTextContext context) {
