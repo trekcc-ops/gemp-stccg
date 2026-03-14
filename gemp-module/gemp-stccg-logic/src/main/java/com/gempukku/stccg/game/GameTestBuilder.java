@@ -50,6 +50,7 @@ public class GameTestBuilder {
                             @JsonProperty("missionsPile") List<List<String>> missionsPiles,
                             @JsonProperty("core") List<List<String>> cores,
                             @JsonProperty("hand") List<List<String>> hands,
+                            @JsonProperty("discard") List<List<String>> discards,
                             @JacksonInject FormatLibrary formatLibrary,
                             @JacksonInject CardBlueprintLibrary cardLibrary
                             ) throws InvalidGameOperationException, CardNotFoundException {
@@ -121,6 +122,17 @@ public class GameTestBuilder {
                     CardBlueprint blueprint = cardLibrary.get(blueprintId);
                     if (blueprint != null) {
                         addCardInHand(blueprintId, blueprint.getTitle(), _players.get(i));
+                    }
+                }
+            }
+        }
+        if (discards != null) {
+            for (int i = 0; i < discards.size(); i++) {
+                List<String> discardList = discards.get(i);
+                for (String blueprintId : discardList) {
+                    CardBlueprint blueprint = cardLibrary.get(blueprintId);
+                    if (blueprint != null) {
+                        addCardInDiscard(blueprintId, blueprint.getTitle(), _players.get(i));
                     }
                 }
             }
