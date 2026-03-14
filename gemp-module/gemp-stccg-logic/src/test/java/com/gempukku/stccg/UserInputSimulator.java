@@ -2,7 +2,6 @@ package com.gempukku.stccg;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.CardPerformedAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
@@ -41,7 +40,7 @@ public interface UserInputSimulator {
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof ActionSelectionDecision actionDecision) {
             for (Action action : actionDecision.getActions()) {
-                if (action instanceof TopLevelSelectableAction topLevelAction &&
+                if (action instanceof CardPerformedAction topLevelAction &&
                         topLevelAction.getPerformingCard() == performingCard &&
                         actionClass.isAssignableFrom(action.getClass())) {
                     choice = action;

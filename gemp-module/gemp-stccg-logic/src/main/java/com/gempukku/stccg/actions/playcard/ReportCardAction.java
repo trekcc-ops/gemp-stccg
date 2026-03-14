@@ -41,6 +41,18 @@ public class ReportCardAction extends PlayCardAction {
         _isDownload = isDownload;
     }
 
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree, boolean isDownload,
+                            PhysicalCard performingCard) {
+        super(cardGame, performingCard, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
+        if (!forFree) {
+            appendCost(new UseNormalCardPlayBlueprint());
+        }
+        _targetResolver = new ReportCardResolver(cardGame, cardToPlay);
+        _cardTargets.add(_targetResolver);
+        _isDownload = isDownload;
+    }
+
+
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
                             Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap, boolean isDownload) {
         super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
@@ -84,7 +96,7 @@ public class ReportCardAction extends PlayCardAction {
                 cardGame.removeCardsFromZone(Collections.singleton(reportable));
                 gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION);
 
-                if (destination instanceof CardWithCrew cardWithCrew) {
+                if (destination instanceof CardWithCrew) {
                     // if reporting to a ship or facility
                     if (reportable.getCardType() != CardType.SHIP) {
                         reportable.setAsAboard(destination);

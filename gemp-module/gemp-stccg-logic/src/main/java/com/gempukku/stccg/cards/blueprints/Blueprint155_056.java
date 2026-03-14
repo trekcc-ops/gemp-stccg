@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.blueprints;
 
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.SelectSkillAction;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
@@ -31,11 +31,11 @@ public class Blueprint155_056 extends CardBlueprint {
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(DefaultGame cardGame,
-                                                                         ActionResult actionResult,
-                                                                         PhysicalCard thisCard) {
+    public List<? extends Action> getRequiredAfterTriggerActions(DefaultGame cardGame,
+                                                                 ActionResult actionResult,
+                                                                 PhysicalCard thisCard) {
             // TODO - Need some additional work here to be check skill for usability
-        List<TopLevelSelectableAction> actions = new LinkedList<>();
+        List<Action> actions = new LinkedList<>();
         if (actionResult instanceof PlayCardResult playResult && playResult.getPlayedCard() == thisCard) {
             for (Skill skill : getSkills(cardGame, thisCard))
                 if (skill instanceof ActionSkill actionSkill)
@@ -47,7 +47,7 @@ public class Blueprint155_056 extends CardBlueprint {
     private ActionSkill specialSkill() {
         return new ActionSkill("When reported, selects Anthropology, Physics, or Navigation.") {
             @Override
-            public TopLevelSelectableAction getAction(DefaultGame cardGame, PhysicalCard thisCard) {
+            public UseGameTextAction getAction(DefaultGame cardGame, PhysicalCard thisCard) {
                 UseGameTextAction action = new UseGameTextAction(cardGame, thisCard,
                         new GameTextContext(thisCard, thisCard.getOwnerName()));
                 List<SkillName> skillOptions = new LinkedList<>();

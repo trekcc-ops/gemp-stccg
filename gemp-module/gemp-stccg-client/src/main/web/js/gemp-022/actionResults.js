@@ -312,7 +312,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
 
             if (jsonAction.targetCardIds.length > 1) {
                 cardDescription = jsonAction.targetCardIds.length + "cards";
-            } else if (jsonAction.drawnCardIds[0] < 0) {
+            } else if (jsonAction.targetCardIds[0] < 0) {
                 // card id will be negative if the card is unknown to this player
                 cardDescription = "a card";
             } else {
@@ -397,7 +397,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             gameChat.appendMessage("--------------------", "gameMessage");
             message = "Start of ";
             if (performingPlayerText === "You") {
-                message = message = "Your turn";
+                message = message + "your turn";
             } else {
                 message = message + performingPlayerText + "'s turn";
             }

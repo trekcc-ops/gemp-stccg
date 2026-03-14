@@ -2,7 +2,6 @@ package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
@@ -44,7 +43,7 @@ public abstract class ActionSelectionDecision extends AbstractAwaitingDecision {
     public List<? extends Action> getActions() { return _actions; }
 
     public void decisionMade(Action action) throws DecisionResultInvalidException {
-        if (action instanceof TopLevelSelectableAction && _actions.contains(action))
+        if (_actions.contains(action))
             decisionMade(String.valueOf(action.getActionId()));
         else {
             throw new DecisionResultInvalidException("Action not found in ActionDecision");

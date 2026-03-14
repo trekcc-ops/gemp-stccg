@@ -1,7 +1,6 @@
 package com.gempukku.stccg.rules.tribbles;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
@@ -16,7 +15,7 @@ public class TribblesPlayCardRule extends TribblesRule {
             List<Action> result = new LinkedList<>();
             for (PhysicalCard card : player.getCardsInHand()) {
                 if (cardGame.getRules().cardCanEnterPlay(cardGame, card, EnterPlayActionType.PLAY)) {
-                    TopLevelSelectableAction action = card.getNormalPlayCardAction(cardGame);
+                    Action action = card.getNormalPlayCardAction(cardGame);
                     if (action.canBeInitiated(cardGame))
                         result.add(action);
                 }

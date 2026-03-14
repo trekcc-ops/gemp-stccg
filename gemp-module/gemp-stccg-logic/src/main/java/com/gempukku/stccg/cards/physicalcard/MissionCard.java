@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -55,8 +55,8 @@ public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliation
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
-        List<TopLevelSelectableAction> actions = new LinkedList<>();
+    public List<? extends Action> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
+        List<Action> actions = new LinkedList<>();
         if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             try {
                 if (cardGame instanceof ST1EGame stGame &&

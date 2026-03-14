@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
 import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -14,7 +14,7 @@ import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 
-public class DiscardSingleCardAction extends ActionyAction implements DiscardAction, TopLevelSelectableAction {
+public class DiscardSingleCardAction extends ActionyAction implements DiscardAction, CardPerformedAction {
     @JsonProperty("performingCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final PhysicalCard _performingCard;

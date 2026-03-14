@@ -16,7 +16,7 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.Collection;
 
-public class TribblesMultiDiscardActionBroken extends ActionyAction implements TopLevelSelectableAction {
+public class TribblesMultiDiscardActionBroken extends ActionyAction implements CardPerformedAction {
 
     /* TODO - There is a bug in this class, because each individual discard action is not created as a
         separate action. */

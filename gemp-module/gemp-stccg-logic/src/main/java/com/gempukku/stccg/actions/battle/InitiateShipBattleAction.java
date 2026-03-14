@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.battle;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.targetresolver.BattleInitiationResolver;
 import com.gempukku.stccg.cards.physicalcard.CardWithHullIntegrity;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -11,7 +11,7 @@ import com.gempukku.stccg.player.Player;
 
 import java.util.*;
 
-public class InitiateShipBattleAction extends ActionyAction implements TopLevelSelectableAction {
+public class InitiateShipBattleAction extends ActionyAction implements CardPerformedAction {
         // TODO - For now, ignores affiliation attack restrictions, as well as tactics, as well as leadership requirements
         // TODO - Very much not complete
                 // i.e. it is just an action to compare numbers

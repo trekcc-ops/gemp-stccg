@@ -5,12 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.actions.playcard.SeedThisCardActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
+import com.gempukku.stccg.actions.playcard.SeedThisCardActionBlueprint;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.GameTextContext;
@@ -229,7 +228,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public String getFullName() { return _blueprint.getFullName(); }
 
-    public TopLevelSelectableAction getNormalPlayCardAction(DefaultGame cardGame) {
+    public Action getNormalPlayCardAction(DefaultGame cardGame) {
         return getPlayCardAction(cardGame, false, false);
     }
 
@@ -252,7 +251,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public CardType getCardType() { return _blueprint.getCardType(); }
 
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
+    public List<? extends Action> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
         return new LinkedList<>();
     }
 
@@ -276,7 +275,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
     }
 
 
-    public List<TopLevelSelectableAction> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult) {
+    public List<? extends Action> getRequiredResponseActions(DefaultGame cardGame, ActionResult actionResult) {
         return _blueprint.getRequiredAfterTriggerActions(cardGame, actionResult, this);
     }
 

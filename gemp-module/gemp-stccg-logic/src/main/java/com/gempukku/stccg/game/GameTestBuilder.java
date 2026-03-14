@@ -41,18 +41,23 @@ public class GameTestBuilder {
     private final String _gameName;
 
     @JsonCreator
-    private GameTestBuilder(@JsonProperty("gameName") String gameName,
+    private GameTestBuilder(@JsonProperty(value = "gameName", required = true) String gameName,
                             @JsonProperty("players") List<String> players,
                             @JsonProperty("phase") Phase startingPhase,
                             @JsonProperty("missions") List<JsonNode> missions,
                             @JsonProperty("seedDeck") List<List<String>> seedDecks,
                             @JsonProperty("drawDeck") List<List<String>> drawDecks,
+                            @JsonProperty("missionsPile") List<List<String>> missionsPiles,
                             @JsonProperty("core") List<List<String>> cores,
                             @JsonProperty("hand") List<List<String>> hands,
+                            @JsonProperty("discard") List<List<String>> discards,
                             @JacksonInject FormatLibrary formatLibrary,
                             @JacksonInject CardBlueprintLibrary cardLibrary
                             ) throws InvalidGameOperationException, CardNotFoundException {
-        _gameName = gameName;
+        _gameName = Objects.requireNonNullElse(gameName, "Testing Game");
+        if (players == null || players.size() < 2) {
+            throw new InvalidGameOperationException("Cannot build game with less than two players specified");
+        }
         GameFormat format = formatLibrary.get("st1emoderncomplete");
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
@@ -63,12 +68,9 @@ public class GameTestBuilder {
             _decks.put(player, testDeck);
         }
         _game = new ST1EGame(format, _decks, cardLibrary, GameTimer.GLACIAL_TIMER, new GameRandomizer());
-        _startingPhase = Phase.SEED_DOORWAY;
+        _startingPhase = Objects.requireNonNullElse(startingPhase, Phase.SEED_DOORWAY);
         _players = players;
         _firstPlayerName = players.getFirst();
-        if (startingPhase != null) {
-            setPhase(startingPhase);
-        }
         if (seedDecks != null) {
             for (int i = 0; i < seedDecks.size(); i++) {
                 List<String> seedDeckList = seedDecks.get(i);
@@ -76,6 +78,17 @@ public class GameTestBuilder {
                     CardBlueprint blueprint = cardLibrary.get(blueprintId);
                     if (blueprint != null) {
                         addSeedDeckCard(blueprintId, blueprint.getTitle(), _players.get(i));
+                    }
+                }
+            }
+        }
+        if (missionsPiles != null) {
+            for (int i = 0; i < missionsPiles.size(); i++) {
+                List<String> missionList = missionsPiles.get(i);
+                for (String blueprintId : missionList) {
+                    CardBlueprint blueprint = cardLibrary.get(blueprintId);
+                    if (blueprint != null) {
+                        addMissionToDeck(blueprintId, blueprint.getTitle(), _players.get(i));
                     }
                 }
             }
@@ -113,12 +126,25 @@ public class GameTestBuilder {
                 }
             }
         }
-        try {
-            addJsonCards(cardLibrary, missions);
-        } catch(CardNotFoundException exp) {
-            throw exp;
-        } catch(Exception ignored) {
-            throw new CardNotFoundException("Unable to create cards for sample game");
+        if (discards != null) {
+            for (int i = 0; i < discards.size(); i++) {
+                List<String> discardList = discards.get(i);
+                for (String blueprintId : discardList) {
+                    CardBlueprint blueprint = cardLibrary.get(blueprintId);
+                    if (blueprint != null) {
+                        addCardInDiscard(blueprintId, blueprint.getTitle(), _players.get(i));
+                    }
+                }
+            }
+        }
+        if (missions != null) {
+            try {
+                addJsonCards(cardLibrary, missions);
+            } catch (CardNotFoundException exp) {
+                throw exp;
+            } catch (Exception ignored) {
+                throw new CardNotFoundException("Unable to create cards for sample game");
+            }
         }
     }
 
@@ -544,6 +570,11 @@ public class GameTestBuilder {
                 case "P2" -> _players.get(1);
                 default -> ownerText;
             };
+            try {
+                library.getCardBlueprint(blueprintId);
+            } catch(Exception exp) {
+                throw new CardNotFoundException("Could not find blueprint for id '" + blueprintId + "'");
+            }
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             if (blueprint.getCardType() == CardType.MISSION) {
                 MissionCard mission = addMission(blueprintId, blueprint.getTitle(), ownerName);
@@ -554,19 +585,23 @@ public class GameTestBuilder {
                         throw new CardNotFoundException("Unable to create shared mission for sample game");
                     }
                 }
-                if (node.has("IN_SPACE")) {
-                    addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
-                }
-                if (node.has("ON_PLANET")) {
-                    addJsonCards(library, node.get("ON_PLANET"), ChildCardRelationshipType.ON_PLANET, mission);
-                }
-                if (node.has("SEEDED_UNDERNEATH")) {
-                    for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
-                        String seedCardBlueprintId = seedCardNode.get("blueprintId").textValue();
-                        String seedCardOwner = seedCardNode.get("owner").textValue();
-                        CardBlueprint seedCardBlueprint = library.getCardBlueprint(seedCardBlueprintId);
-                        addSeedCardUnderMission(seedCardBlueprintId, seedCardBlueprint.getTitle(), seedCardOwner, mission);
+                try {
+                    if (node.has("IN_SPACE")) {
+                        addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
                     }
+                    if (node.has("ON_PLANET")) {
+                        addJsonCards(library, node.get("ON_PLANET"), ChildCardRelationshipType.ON_PLANET, mission);
+                    }
+                    if (node.has("SEEDED_UNDERNEATH")) {
+                        for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
+                            String seedCardBlueprintId = seedCardNode.get("blueprintId").textValue();
+                            String seedCardOwner = seedCardNode.get("owner").textValue();
+                            CardBlueprint seedCardBlueprint = library.getCardBlueprint(seedCardBlueprintId);
+                            addSeedCardUnderMission(seedCardBlueprintId, seedCardBlueprint.getTitle(), seedCardOwner, mission);
+                        }
+                    }
+                } catch(Exception exp) {
+                    throw new CardNotFoundException("Unable to add children cards for card '" + blueprint.getTitle() + "'");
                 }
             }
         }
@@ -585,16 +620,20 @@ public class GameTestBuilder {
             };
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             PhysicalCard cardToAdd = switch(childType) {
+                // ATOP
                 case ABOARD -> addCardAboardShipOrFacility(
                         blueprintId, blueprint.getTitle(), ownerName, (CardWithCrew) parentCard, ReportableCard.class);
+                case DOCKED -> addDockedShip(blueprintId, blueprint.getTitle(), ownerName, (FacilityCard) parentCard);
                 case IN_SPACE -> addCardInSpace(blueprint, ownerName, parentCard);
                 case ON_PLANET -> addCardOnPlanetSurface(blueprintId, blueprint.getTitle(), ownerName,
                         (MissionCard) parentCard, ReportableCard.class);
                 default -> throw new InvalidGameOperationException(
                         "GameTestBuilder is not yet equipped to handle ChildCardRelationshipType '" + childType + "'");
             };
-            if (node.has("ABOARD")) {
-                addJsonCards(library, node.get("ABOARD"), ChildCardRelationshipType.ABOARD, cardToAdd);
+            for (ChildCardRelationshipType type : ChildCardRelationshipType.values()) {
+                if (node.has(type.name())) {
+                    addJsonCards(library, node.get(type.name()), type, cardToAdd);
+                }
             }
         }
     }

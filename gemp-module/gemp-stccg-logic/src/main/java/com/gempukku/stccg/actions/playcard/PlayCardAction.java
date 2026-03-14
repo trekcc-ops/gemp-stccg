@@ -3,10 +3,7 @@ package com.gempukku.stccg.actions.playcard;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.ActionStatus;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.blueprints.UseNormalCardPlayBlueprint;
 import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
 import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
@@ -18,7 +15,7 @@ import com.gempukku.stccg.game.DefaultGame;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
+public abstract class PlayCardAction extends ActionWithSubActions implements CardPerformedAction {
     protected final PhysicalCard _performingCard;
     protected PhysicalCard _cardEnteringPlay;
     private final EnterPlayActionType _type;
