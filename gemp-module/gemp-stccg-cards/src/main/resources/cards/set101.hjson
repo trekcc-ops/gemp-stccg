@@ -1522,6 +1522,22 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR229.jpg
         }
         {
+            blueprintId: 101_231
+            title: Riva
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: V.I.P.
+            lore: Deaf mute Ramatin. Famed mediator from Ramatis III. He spoke with a chorus of three telepaths.
+            species: ramatin
+            gender: male
+            skill-box: "[*] Diplomacy x2"
+            integrity: 6
+            cunning: 8
+            strength: 3
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR231.jpg
+        }
+        {
             blueprintId: 101_232
             title: Ro Laren
             type: personnel
