@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardAction;
 import com.gempukku.stccg.actions.choose.SelectVisibleCardsAction;
-import com.gempukku.stccg.cards.physicalcard.*;
+import com.gempukku.stccg.cards.physicalcard.CardWithCrew;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -20,7 +23,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class BeamOrWalkAction extends ActionyAction implements TopLevelSelectableAction {
+public abstract class BeamOrWalkAction extends ActionyAction implements CardPerformedAction {
 
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)

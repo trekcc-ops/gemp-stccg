@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AttemptMissionAction extends ActionWithSubActions implements TopLevelSelectableAction,
+public class AttemptMissionAction extends ActionWithSubActions implements CardPerformedAction,
         ActionWithRespondableInitiation {
     private AttemptingUnitResolver _attemptingUnitTarget;
     @JsonProperty("targetCardId")

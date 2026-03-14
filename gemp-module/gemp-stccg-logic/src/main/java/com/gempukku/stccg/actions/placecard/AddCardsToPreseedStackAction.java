@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class AddCardsToPreseedStackAction extends ActionyAction implements TopLevelSelectableAction {
+public class AddCardsToPreseedStackAction extends ActionyAction implements CardPerformedAction {
 
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)

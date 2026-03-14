@@ -2,10 +2,7 @@ package com.gempukku.stccg.actions.missionattempt;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
 import com.gempukku.stccg.actions.discard.NullifyCardAction;
 import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
 import com.gempukku.stccg.actions.targetresolver.FixedCardResolver;
@@ -19,7 +16,7 @@ import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Objects;
 
-public class EncounterSeedCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
+public class EncounterSeedCardAction extends ActionWithSubActions implements CardPerformedAction {
     private final FixedCardResolver _cardTarget;
     private final AttemptMissionAction _parentAction;
     private final AttemptingUnit _attemptingUnit;

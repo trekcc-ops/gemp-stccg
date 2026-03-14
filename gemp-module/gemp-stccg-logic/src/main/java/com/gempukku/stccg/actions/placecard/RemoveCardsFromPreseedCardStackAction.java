@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class RemoveCardsFromPreseedCardStackAction extends ActionyAction implements TopLevelSelectableAction {
+public class RemoveCardsFromPreseedCardStackAction extends ActionyAction implements CardPerformedAction {
     @JsonProperty("targetCardIds")
     @JsonIdentityReference(alwaysAsId=true)
     private final List<PhysicalCard> _cardsBeingRemoved = new ArrayList<>();
