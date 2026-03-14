@@ -585,13 +585,12 @@ public class GameTestBuilder {
                         throw new CardNotFoundException("Unable to create shared mission for sample game");
                     }
                 }
+                for (ChildCardRelationshipType relationshipType : ChildCardRelationshipType.values()) {
+                    if (node.has(relationshipType.name())) {
+                        addJsonCards(library, node.get(relationshipType.name()), relationshipType, mission);
+                    }
+                }
                 try {
-                    if (node.has("IN_SPACE")) {
-                        addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
-                    }
-                    if (node.has("ON_PLANET")) {
-                        addJsonCards(library, node.get("ON_PLANET"), ChildCardRelationshipType.ON_PLANET, mission);
-                    }
                     if (node.has("SEEDED_UNDERNEATH")) {
                         for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
                             String seedCardBlueprintId = seedCardNode.get("blueprintId").textValue();
@@ -643,6 +642,7 @@ public class GameTestBuilder {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, title, ownerName);
         Action seedAction = new SeedCardToDestinationAction(_game, ownerName, List.of(cardToAdd), List.of(parentCard),
                 cardToAdd);
+        seedAction.executeNextSubAction(_game.getActionsEnvironment(), _game);
         executeAction(seedAction);
         return cardToAdd;
     }
