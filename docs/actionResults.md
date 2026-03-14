@@ -6,7 +6,7 @@ On the server side, these objects belong to the class ActionResult.
 
 Some actions may have multiple results, for example:
 * An action result is created at both the start and end of a mission attempt action.
-* "Group actions" (such as playing multiple cards at the same time) will create a result for each subaction.
+* "Group actions" (such as playing multiple cards at the same time) will commonly create a result for each subaction.
 
 All action result objects have these four properties:
 * <b>resultId</b> (integer) - unique id number for the action result
