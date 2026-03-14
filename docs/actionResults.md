@@ -123,7 +123,7 @@ example, a card played using a player's normal card play), performingCardId is e
 ### SEEDED_INTO_PLAY ###
 For example, seeding a facility or card like Continuing Mission. This result is not created when seeding cards under missions.
 * <b>seededCardId</b> (integer) - cardId for card seeded
-* <b>destinationCardId</b> (integer) - see "PLAYED_CARD" for additional details; this property works the same way
+* <b>[optional] destinationCardId</b> (integer) - see "PLAYED_CARD" for additional details; this property works the same way
 * <b>toCore</b> (boolean) - TRUE if seeded to a player's core; FALSE otherwise
 ### STARTED_TURN ###
 Example: If "player1" is the first player of the game, their first turn will be both gameTurnNumber = 1 and playerTurnNumber = 1.
