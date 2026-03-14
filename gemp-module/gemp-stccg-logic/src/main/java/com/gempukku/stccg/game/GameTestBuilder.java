@@ -41,7 +41,7 @@ public class GameTestBuilder {
     private final String _gameName;
 
     @JsonCreator
-    private GameTestBuilder(@JsonProperty("gameName") String gameName,
+    private GameTestBuilder(@JsonProperty(value = "gameName", required = true) String gameName,
                             @JsonProperty("players") List<String> players,
                             @JsonProperty("phase") Phase startingPhase,
                             @JsonProperty("missions") List<JsonNode> missions,
@@ -54,7 +54,10 @@ public class GameTestBuilder {
                             @JacksonInject FormatLibrary formatLibrary,
                             @JacksonInject CardBlueprintLibrary cardLibrary
                             ) throws InvalidGameOperationException, CardNotFoundException {
-        _gameName = gameName;
+        _gameName = Objects.requireNonNullElse(gameName, "Testing Game");
+        if (players == null || players.size() < 2) {
+            throw new InvalidGameOperationException("Cannot build game with less than two players specified");
+        }
         GameFormat format = formatLibrary.get("st1emoderncomplete");
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
@@ -65,12 +68,9 @@ public class GameTestBuilder {
             _decks.put(player, testDeck);
         }
         _game = new ST1EGame(format, _decks, cardLibrary, GameTimer.GLACIAL_TIMER, new GameRandomizer());
-        _startingPhase = Phase.SEED_DOORWAY;
+        _startingPhase = Objects.requireNonNullElse(startingPhase, Phase.SEED_DOORWAY);
         _players = players;
         _firstPlayerName = players.getFirst();
-        if (startingPhase != null) {
-            setPhase(startingPhase);
-        }
         if (seedDecks != null) {
             for (int i = 0; i < seedDecks.size(); i++) {
                 List<String> seedDeckList = seedDecks.get(i);
@@ -620,16 +620,20 @@ public class GameTestBuilder {
             };
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             PhysicalCard cardToAdd = switch(childType) {
+                // ATOP
                 case ABOARD -> addCardAboardShipOrFacility(
                         blueprintId, blueprint.getTitle(), ownerName, (CardWithCrew) parentCard, ReportableCard.class);
+                case DOCKED -> addDockedShip(blueprintId, blueprint.getTitle(), ownerName, (FacilityCard) parentCard);
                 case IN_SPACE -> addCardInSpace(blueprint, ownerName, parentCard);
                 case ON_PLANET -> addCardOnPlanetSurface(blueprintId, blueprint.getTitle(), ownerName,
                         (MissionCard) parentCard, ReportableCard.class);
                 default -> throw new InvalidGameOperationException(
                         "GameTestBuilder is not yet equipped to handle ChildCardRelationshipType '" + childType + "'");
             };
-            if (node.has("ABOARD")) {
-                addJsonCards(library, node.get("ABOARD"), ChildCardRelationshipType.ABOARD, cardToAdd);
+            for (ChildCardRelationshipType type : ChildCardRelationshipType.values()) {
+                if (node.has(type.name())) {
+                    addJsonCards(library, node.get(type.name()), type, cardToAdd);
+                }
             }
         }
     }
