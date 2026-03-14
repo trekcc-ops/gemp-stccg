@@ -99,9 +99,8 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
     public void bonusPointsTest() throws Exception {
         initializeGame(true, true);
         assertEquals(0, _game.getPlayer(P1).getScore());
-        AttemptMissionAction attemptAction = attemptMission(P1, mission);
-        assertTrue(attemptAction.wasSuccessful());
-        assertEquals(30, _game.getPlayer(P1).getScore());
+        attemptMission(P1, mission);
+        assertTrue(mission.isCompleted(_game));
         useGameText(P1, ams);
         assertEquals(35, _game.getPlayer(P1).getScore());
     }
@@ -111,7 +110,9 @@ public class Blueprint_109_063_AMS_Test extends AbstractAtTest {
         initializeGame(true, false);
         assertEquals(0, _game.getPlayer(P1).getScore());
         AttemptMissionAction attemptAction = attemptMission(P1, mission);
+        assertTrue(mission.isCompleted(_game));
         assertTrue(attemptAction.wasSuccessful());
+        assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, ams));
         assertEquals(30, _game.getPlayer(P1).getScore());
         assertThrows(DecisionResultInvalidException.class, () -> useGameText(P1, ams));
     }

@@ -38,7 +38,6 @@ public class AttemptMissionAction extends ActionWithSubActions implements CardPe
     private PhysicalCard _lastCardEncountered;
     private final int _locationId;
     private boolean _successDetermined;
-    private boolean _missionSpecHelped;
     private boolean _failedToOvercomeCondition;
 
     public AttemptMissionAction(DefaultGame cardGame, Player player, MissionCard cardForAction,
@@ -154,13 +153,12 @@ public class AttemptMissionAction extends ActionWithSubActions implements CardPe
                         Collection<PersonnelCard> personnelAttempting = attemptingUnit.getAttemptingPersonnel(cardGame);
 
                         if (requirement.canBeMetBy(personnelAttempting, cardGame, _actionContext)) {
-                            _missionSpecHelped = requirement
+                            boolean _missionSpecHelped = requirement
                                     .canBeMetWithMissionSpecialistHelping(personnelAttempting, cardGame, _actionContext);
                             mission.setAsCompleted();
                             Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
                             performingPlayer.recordSolvedMission(getMission());
-                            cardGame.addActionToStack(
-                                    new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints(), _actionContext, false));
+                            saveResult(new MissionAttemptEndedResult(cardGame, true, this, _performingCard, _missionSpecHelped), cardGame);
                         } else {
                             setAsFailed(cardGame);
                         }
@@ -168,7 +166,8 @@ public class AttemptMissionAction extends ActionWithSubActions implements CardPe
                         setAsFailed(cardGame);
                     }
                 } else if (!wasFailed()) {
-                    saveResult(new MissionAttemptEndedResult(cardGame, true, this, _performingCard, _missionSpecHelped), cardGame);
+                    cardGame.addActionToStack(
+                            new ScorePointsAction(cardGame, getMission(), _performingPlayerId, getMission().getPoints(), _actionContext, false));
                     setAsSuccessful();
                 }
             } else {

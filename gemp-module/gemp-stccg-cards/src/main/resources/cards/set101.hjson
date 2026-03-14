@@ -1312,7 +1312,7 @@
         }
         {
             blueprintId: 101_215
-            title: Jean-Luc Picard
+            "title": "Jean-Luc Picard",
             type: personnel
             affiliation: federation
             property-logo: tng-logo

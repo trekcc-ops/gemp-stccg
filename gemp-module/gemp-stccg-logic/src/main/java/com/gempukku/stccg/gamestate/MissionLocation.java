@@ -111,6 +111,7 @@ public class MissionLocation implements GameLocation {
     }
 
     @JsonProperty("seedCardCount")
+    @SuppressWarnings("unused") // used in JSON serialization
     private int getSeedCardCount() { return _seedCards.size(); }
 
     public boolean isInQuadrant(Quadrant quadrant) { return _quadrant == quadrant; }
@@ -306,19 +307,8 @@ public class MissionLocation implements GameLocation {
     }
 
 
-    public void removePreSeedCard(PhysicalCard card, Player player) {
-        CardPile<PhysicalCard> preSeeds = _preSeedCards.get(player.getPlayerId());
-        if (preSeeds != null) {
-            preSeeds.removeCard(card);
-        }
-    }
-
     public boolean isCompleted() {
         return _isCompleted;
-    }
-
-    public void setCompleted(boolean completed) {
-        _isCompleted = completed;
     }
 
     @JsonProperty("isHomeworld")

@@ -49,11 +49,11 @@ public class Blueprint_155_030_ScientificDiplomacy_Test extends AbstractAtTest {
 
 
         mercShip = builder.addShipInSpace("101_354", "Mercenary Ship", P1, mission);
-        PersonnelCard picard = (includePicardOnMercShip) ?
-                builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, mercShip, PersonnelCard.class) :
-                null;
-        PersonnelCard baran = builder.addCardAboardShipOrFacility("101_290", "Baran", P1, mercShip, PersonnelCard.class);
-        FacilityCard outpost2 = builder.addOutpost(Affiliation.FERENGI, P1, mission2);
+        if ((includePicardOnMercShip)) {
+            builder.addCardAboardShipOrFacility("101_215", "Jean-Luc Picard", P1, mercShip, PersonnelCard.class);
+        }
+        builder.addCardAboardShipOrFacility("101_290", "Baran", P1, mercShip, PersonnelCard.class);
+        builder.addOutpost(Affiliation.FERENGI, P1, mission2);
         builder.addCardToCoreAsSeeded("155_022", "Continuing Mission", P1); // to get TNG icon
         sciDiplomacyToSeed = builder.addSeedDeckCard("155_030", "Scientific Diplomacy", P1);
         sciDipInHand1 = builder.addCardInHand("155_030", "Scientific Diplomacy", P1);
@@ -145,7 +145,6 @@ public class Blueprint_155_030_ScientificDiplomacy_Test extends AbstractAtTest {
         attemptMission(P1, mission);
         playerDecided(P1, ""); // don't special download
         assertTrue(mission.isCompleted(_game));
-        assertEquals(40, _game.getPlayer(P1).getScore());
 
         // Can perform 3 actions - download Metaphasic with the mission, use Reyga's DL, or score points with a SCIENCE
         assertEquals(3, getSelectableActionsOfClass(P1, Action.class).size());
@@ -153,6 +152,8 @@ public class Blueprint_155_030_ScientificDiplomacy_Test extends AbstractAtTest {
         assertTrue(selectableCardsAre(P1, List.of(taitt1, taitt2)));
         selectCard(P1, taitt1);
 
+        // Can still use DL or download Metaphasic; don't do either
+        playerDecided(P1, "");
         assertEquals(46, _game.getPlayer(P1).getScore());
     }
 
