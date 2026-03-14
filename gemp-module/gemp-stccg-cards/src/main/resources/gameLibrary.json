@@ -77,7 +77,7 @@
     "phase": "CARD_PLAY",
     "missions": [
       {
-        "blueprintId": "101_154",
+        "blueprintId": "155_049",
         "owner": "asdf",
         "isShared": true,
         "ON_PLANET": [
