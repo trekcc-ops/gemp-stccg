@@ -65,6 +65,8 @@ public class FlyShipAction extends ActionyAction implements TopLevelSelectableAc
                 GameLocation originLocation = _flyingCard.getGameLocation(stGame);
                 GameLocation destinationLocation = destinationCard.getGameLocation(stGame);
                 int rangeNeeded = originLocation.getDistanceToLocation(stGame, destinationLocation, performingPlayer);
+                saveResult(new FlyShipActionResult(cardGame, this, _flyingCard, originLocation.getLocationId(),
+                    destinationLocation.getLocationId()), cardGame);
                 setAsSuccessful();
                 _flyingCard.useRange(rangeNeeded);
                 _flyingCard.setAsInSpaceAtLocation(destinationCard);

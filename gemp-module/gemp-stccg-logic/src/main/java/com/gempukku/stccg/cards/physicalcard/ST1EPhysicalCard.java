@@ -2,7 +2,6 @@ package com.gempukku.stccg.cards.physicalcard;
 
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
@@ -48,12 +47,15 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableC
     }
 
 
-    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
+    public PlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload) {
         PlayCardAction action = (this instanceof ReportableCard reportable) ?
-            new ReportCardAction(cardGame, reportable, forFree) :
+            new ReportCardAction(cardGame, reportable, forFree, isDownload) :
             _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
         if (forFree) {
             action.removeNormalCardPlayCost();
+        }
+        if (isDownload) {
+            action.setIsDownload();
         }
         if (action != null) {
             action.appendExtraCostsFromModifiers(this, cardGame);
@@ -137,10 +139,6 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableC
 
     public void setAsOnPlanet(PhysicalCard destination) {
         setParentCardRelationship(destination, ChildCardRelationshipType.ON_PLANET);
-    }
-
-    public void setAsInSpaceAtLocation(PhysicalCard destination) {
-        setParentCardRelationship(destination, ChildCardRelationshipType.IN_SPACE);
     }
 
 }

@@ -12,6 +12,7 @@ import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.evaluator.SingleValueSource;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.gamestate.GameState;
+import com.google.common.collect.Iterables;
 
 import java.util.Collection;
 
@@ -42,16 +43,22 @@ public class PlaceCardInPointAreaAction extends ActionyAction {
     @Override
     public void processEffect(DefaultGame cardGame) {
         Collection<PhysicalCard> cardBeingPlaced = getTargetCards();
-        GameState gameState = cardGame.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, cardBeingPlaced);
+        if (cardBeingPlaced.size() > 1) {
+            cardGame.sendErrorMessage("Unable to process PlaceCardInPointAreaAction for more than one card");
+            setAsFailed();
+        } else {
+            PhysicalCard placedCard = Iterables.getOnlyElement(cardBeingPlaced);
+            GameState gameState = cardGame.getGameState();
+            gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, cardBeingPlaced);
+            gameState.addCardToZone(cardGame, placedCard, Zone.POINT_AREA);
 
-        for (PhysicalCard card : cardBeingPlaced) {
-            gameState.addCardToZone(cardGame, card, Zone.POINT_AREA, _actionContext);
+            int pointsToScore = _pointValue.evaluateExpression(cardGame, _actionContext);
+            cardGame.addActionToStack(
+                    new ScorePointsAction(cardGame, _performingCard, _performingPlayerId, pointsToScore, _actionContext,
+                            true));
+            saveResult(new PlaceCardInPointAreaResult(cardGame, this, placedCard), cardGame);
+            setAsSuccessful();
         }
-
-        int pointsToScore = _pointValue.evaluateExpression(cardGame, _actionContext);
-        cardGame.addActionToStack(new ScorePointsAction(cardGame, _performingCard, _performingPlayerId, pointsToScore, _actionContext));
-        setAsSuccessful();
     }
 
     @SuppressWarnings("unused")

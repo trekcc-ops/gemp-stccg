@@ -15,7 +15,7 @@ public class ActivateConvertTribblePowerAction extends ActivateTribblePowerActio
             throws PlayerNotFoundException {
         super(cardGame, actionContext, performingCard);
         appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, actionContext.yourName(),
-                List.of(_performingCard)));
+                List.of(_performingCard), true));
         appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(cardGame,
                 cardGame.getPlayer(_performingPlayerId), 1));
     }

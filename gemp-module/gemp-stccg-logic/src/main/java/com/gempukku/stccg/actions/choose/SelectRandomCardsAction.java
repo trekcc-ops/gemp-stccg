@@ -37,8 +37,9 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
         _max = max;
     }
 
-    public SelectRandomCardsAction(DefaultGame cardGame, String selectingPlayerName, CardFilter cardFilter, int count) {
-        super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS);
+    public SelectRandomCardsAction(DefaultGame cardGame, String selectingPlayerName, CardFilter cardFilter, int count,
+                                   GameTextContext context) {
+        super(cardGame, selectingPlayerName, ActionType.SELECT_CARDS, context);
         _targetResolver = new AllCardsMatchingFilterResolver(cardFilter);
         _cardTargets.add(_targetResolver);
         _min = count;
@@ -133,7 +134,7 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
 
     @Override
     public void saveInitiationResult(DefaultGame cardGame) {
-        saveResult(new RandomSelectionInitiatedResult(this, getSelectableCards(cardGame)), cardGame);
+        saveResult(new RandomSelectionInitiatedResult(cardGame, this, getSelectableCards(cardGame)), cardGame);
     }
 
     public void setCardToRequired(PhysicalCard volunteeringCard) {
@@ -144,5 +145,9 @@ public class SelectRandomCardsAction extends ActionyAction implements ActionWith
         if (_actionContext != null && _saveToMemoryId != null) {
             _actionContext.setCardMemory(_saveToMemoryId, _selectedCards);
         }
+    }
+
+    public PhysicalCard getSelectingCard() {
+        return _actionContext.card();
     }
 }

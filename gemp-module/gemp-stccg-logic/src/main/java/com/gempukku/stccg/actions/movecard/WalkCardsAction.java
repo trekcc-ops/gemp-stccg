@@ -38,6 +38,11 @@ public class WalkCardsAction extends BeamOrWalkAction {
         return cards;
     }
 
+    @Override
+    protected void saveResult(DefaultGame cardGame) {
+        saveResult(new WalkCardsResult(cardGame, _performingPlayerId, this, _cardsToMove, _origin, _destination), cardGame);
+    }
+
     protected String actionVerb() { return "walk"; }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {

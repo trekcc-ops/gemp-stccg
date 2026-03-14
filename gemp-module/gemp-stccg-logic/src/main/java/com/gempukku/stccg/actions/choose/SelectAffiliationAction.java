@@ -28,7 +28,6 @@ public class SelectAffiliationAction extends ActionyAction {
         _affiliationOptions = affiliationOptions;
         if (_affiliationOptions.size() == 1) {
             _selectedAffiliation = Iterables.getOnlyElement(_affiliationOptions);
-            setAsSuccessful();
         }
     }
 
@@ -39,7 +38,9 @@ public class SelectAffiliationAction extends ActionyAction {
     }
 
     protected void processEffect(DefaultGame cardGame) {
-        if (_affiliationOptions.size() > 1 && _decision == null) {
+        if (_selectedAffiliation != null) {
+            setAsSuccessful();
+        } else if (_affiliationOptions.size() > 1 && _decision == null) {
             Map<String, Affiliation> affiliationStringMap = new HashMap<>();
             List<String> affiliationStrings = new ArrayList<>();
             for (Affiliation affiliation : _affiliationOptions) {

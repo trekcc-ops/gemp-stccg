@@ -61,7 +61,7 @@ public class SelectCardTargetBlueprint implements TargetResolverBlueprint {
                 Math.min(_count.evaluateExpression(cardGame, context), Filters.filter(cardGame, finalFilter).size()) :
                 _count.evaluateExpression(cardGame, context);
         if (_randomSelection) {
-            selectAction = new SelectRandomCardsAction(cardGame, selectingPlayerName, finalFilter, count);
+            selectAction = new SelectRandomCardsAction(cardGame, selectingPlayerName, finalFilter, count, context);
         } else {
             selectAction = new SelectCardsFromDialogAction(cardGame, selectingPlayerName, finalFilter, count);
         }

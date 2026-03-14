@@ -44,6 +44,7 @@ public class DockAction extends ActionyAction implements TopLevelSelectableActio
     protected void processEffect(DefaultGame cardGame) {
         Collection<PhysicalCard> selectedCards = _dockingTargetResolver.getCards(cardGame);
         if (selectedCards.size() == 1 && Iterables.getOnlyElement(selectedCards) instanceof FacilityCard facility) {
+            saveResult(new DockShipActionResult(cardGame, this, _cardToDock, facility), cardGame);
             setAsSuccessful();
             _cardToDock.setAsDockedAt(facility);
         } else {

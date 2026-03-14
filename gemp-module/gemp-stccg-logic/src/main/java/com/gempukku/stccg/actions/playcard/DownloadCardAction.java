@@ -11,6 +11,8 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,17 +41,29 @@ public class DownloadCardAction extends ActionWithSubActions implements Download
     protected void processEffect(DefaultGame cardGame) {
         PhysicalCard cardEnteringPlay = _targetResolver.getCardEnteringPlay();
         PhysicalCard destinationCard = _targetResolver.getDestination();
-        if (cardEnteringPlay == null || destinationCard == null) {
+        Player performingPlayer = null;
+        try {
+            performingPlayer = cardGame.getPlayer(_performingPlayerId);
+        } catch(PlayerNotFoundException ignored) {
+
+        }
+        if (cardEnteringPlay == null || destinationCard == null || performingPlayer == null) {
             cardGame.sendErrorMessage("Unable to resolve download card action");
             setAsFailed();
         } else {
+            boolean isFromDrawDeck = cardEnteringPlay.isInDrawDeck(cardGame);
             cardGame.removeCardsFromZone(List.of(cardEnteringPlay));
+            if (isFromDrawDeck) {
+                cardGame.shuffleCardPile(performingPlayer.getDrawDeck());
+            }
             if (destinationCard instanceof ProxyCoreCard) {
                 cardGame.getGameState()
-                        .addCardToZone(cardGame, cardEnteringPlay, destinationCard.getZone(), _actionContext);
+                        .addCardToZone(cardGame, cardEnteringPlay, destinationCard.getZone());
             } else {
                 cardEnteringPlay.setAsAtop(destinationCard);
             }
+            saveResult(new PlayCardResult(cardGame, this, cardEnteringPlay, destinationCard, ActionType.DOWNLOAD_CARD,
+                    _performingCard), cardGame);
             setAsSuccessful();
         }
     }

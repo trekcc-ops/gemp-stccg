@@ -73,7 +73,11 @@
         "firstPlayer": "player2", // Player ID for player with first turn of the game
         "isReversed": false, // Flag for play order being reversed (only used in Tribbles)
         "turnOrder": ["player2", "player1"], // Player order (only used in Tribbles)
-        "currentPlayer": "player2" // Player ID for the player whose current turn it is
+        "currentPlayer": "player2", // Player ID for the player whose current turn it is
+        "diceResults": { // Showing the results of the final dice roll that decided who would go first
+            "player1": 5,
+            "player2": 3
+        }
     },
     "cardsInGame": {
         /* Information for every card in GameState._allCards
@@ -200,11 +204,6 @@
             "performingPlayerId": "player1",
             "status": "completed_success" // See \logic\actions\ActionStatus.java for descriptions
         },
-        2: {
-            "actionId": 2,
-            "actionType": "SYSTEM_QUEUE", // Automated system actions do not have a performing player
-            "status": "completed_success"
-        },
         // etc.
     },
         /* performedActions only includes actionIds for actions that were finished,
@@ -276,6 +275,12 @@
             ]
             "context": "GENERAL_MULTIPLE_CHOICE"
         }
+    },
+    "endGameResult": {
+            // This item will only be populated in the game state if the game has ended
+        "reason": "WINNING_SCORE", // see EndGameResultType.java for all options
+        "winnerName": "player1", // will not be populated if game ended with no winner
+        "loserNames": ["player2"] // will be an empty list if game ended with no loser
     }
     // channelNumber added 18 Feb 2025
     // timeStamp added 19 Feb 2025

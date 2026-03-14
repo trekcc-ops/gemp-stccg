@@ -26,6 +26,8 @@ public class VolunteerForSelectionAction extends ActionyAction implements TopLev
     @Override
     protected void processEffect(DefaultGame cardGame) {
         _selectAction.setCardToRequired(_volunteeringCard);
+        saveResult(new VolunteerForSelectionResult(cardGame, this, _volunteeringCard, _selectAction.getSelectingCard()),
+                cardGame);
         setAsSuccessful();
     }
 

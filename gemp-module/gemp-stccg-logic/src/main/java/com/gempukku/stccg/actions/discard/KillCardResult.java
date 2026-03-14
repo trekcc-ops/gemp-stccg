@@ -1,16 +1,36 @@
 package com.gempukku.stccg.actions.discard;
 
-import com.gempukku.stccg.actions.Action;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 
-public class KillCardResult extends DiscardCardFromPlayResult {
+public class KillCardResult extends ActionResult {
 
-    public KillCardResult(Action action, PhysicalCard killedCard) {
-        super(killedCard, List.of(Type.KILL_CARD, Type.JUST_DISCARDED_FROM_PLAY), action);
+    private final PhysicalCard _killedCard;
+
+    @JsonProperty("performingCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private final PhysicalCard _performingCard;
+
+    public KillCardResult(DefaultGame cardGame, KillAction action, PhysicalCard killedCard) {
+        super(cardGame, ActionResultType.KILLED, action);
+        _killedCard = killedCard;
+        _performingCard = action.getPerformingCard();
     }
 
+    @JsonIgnore
+    public PhysicalCard getKilledCard() { return _killedCard; }
 
-    public PhysicalCard getKilledCard() { return _discardedCard; }
+    @JsonProperty("killedCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
+    private Collection<PhysicalCard> getKilledCards() {
+        return Collections.singleton(_killedCard);
+    }
 }

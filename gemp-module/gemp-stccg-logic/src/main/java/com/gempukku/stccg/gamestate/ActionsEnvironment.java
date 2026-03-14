@@ -1,6 +1,7 @@
 package com.gempukku.stccg.gamestate;
 
 import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -17,6 +18,8 @@ public class ActionsEnvironment {
     private final List<Action> _performedActions = new LinkedList<>();
     private final Map<PhysicalCard, Integer> _countdowns = new HashMap<>();
     private int _nextActionId = 1;
+    private int _nextResultId = 1;
+    private final List<ActionResult> _actionResults = new ArrayList<>();
 
     public void addAlwaysOnActionProxy(ActionProxy actionProxy) {
         _actionProxies.add(actionProxy);
@@ -139,5 +142,19 @@ public class ActionsEnvironment {
 
     public int getCountdown(PhysicalCard card) {
         return _countdowns.get(card);
+    }
+
+    public int getNextResultIdAndIncrement() {
+        int resultIdToReturn = _nextResultId;
+        _nextResultId++;
+        return resultIdToReturn;
+    }
+
+    public void logActionResult(ActionResult actionResult) {
+        _actionResults.add(actionResult);
+    }
+
+    public List<ActionResult> getActionResults() {
+        return _actionResults;
     }
 }

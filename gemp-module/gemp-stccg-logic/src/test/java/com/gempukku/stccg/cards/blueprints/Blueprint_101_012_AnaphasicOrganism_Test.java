@@ -61,7 +61,7 @@ public class Blueprint_101_012_AnaphasicOrganism_Test extends AbstractAtTest {
         attemptMission(P1, _mission);
 
         // Loews is discarded, but not killed
-        assertFalse(personnelWasKilled(loews));
+        assertFalse(personnelWasKilledAndDiscarded(loews));
         assertTrue(loews.isInDiscard(_game));
 
         assertEquals(Zone.REMOVED, organism.getZone());

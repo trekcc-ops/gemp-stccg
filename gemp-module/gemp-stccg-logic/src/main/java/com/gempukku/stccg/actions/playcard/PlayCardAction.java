@@ -14,22 +14,19 @@ import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.Collection;
 import java.util.List;
 
-public class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
-    private final PhysicalCard _performingCard;
+public abstract class PlayCardAction extends ActionWithSubActions implements TopLevelSelectableAction {
+    protected final PhysicalCard _performingCard;
     protected PhysicalCard _cardEnteringPlay;
     private final EnterPlayActionType _type;
     @JsonProperty("destinationZone")
     protected Zone _destinationZone;
-    private boolean _played;
+    protected boolean _isDownload;
 
-    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType, GameTextContext context) {
         super(cardGame, performingPlayerName, actionType, context);
         _performingCard = actionSource;
@@ -58,7 +55,7 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
         };
     }
 
-    public PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
                           String performingPlayerName, Zone toZone, ActionType actionType) {
         super(cardGame, performingPlayerName, actionType, new GameTextContext(actionSource, performingPlayerName));
         _performingCard = actionSource;
@@ -106,36 +103,12 @@ public class PlayCardAction extends ActionWithSubActions implements TopLevelSele
         }
     }
 
-    protected void putCardIntoPlay(DefaultGame cardGame) throws PlayerNotFoundException {
-        _cardEnteringPlay.removeFromCardGroup(cardGame);
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
-        if (performingPlayer.getCardsInDrawDeck().contains(_cardEnteringPlay)) {
-            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            performingPlayer.shuffleDrawDeck(cardGame);
-        }
-        GameState gameState = cardGame.getGameState();
-        cardGame.removeCardsFromZone(List.of(_cardEnteringPlay));
-        gameState.addCardToZone(cardGame, _cardEnteringPlay, _destinationZone, _actionContext);
-        saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
-        _played = true;
-    }
-
-    protected void processEffect(DefaultGame cardGame) {
-        if (!_played) {
-            try {
-                putCardIntoPlay(cardGame);
-            } catch (PlayerNotFoundException exp) {
-                cardGame.sendErrorMessage(exp);
-                setAsFailed();
-            }
-        } else {
-            super.processEffect(cardGame);
-        }
-    }
-
     public void removeNormalCardPlayCost() {
         _queuedCosts.removeIf(cost -> cost instanceof UseNormalCardPlayBlueprint);
+    }
+
+    public void setIsDownload() {
+        _isDownload = true;
     }
 
 }

@@ -81,11 +81,11 @@ public class SeedPhaseTest extends AbstractAtTest {
         Player archerOwner = _game.getPlayer(maglock.getOwnerName());
 
         assertEquals(0, missionLocation.getPreSeedCardCountForPlayer(archerOwner));
-        seedDilemma(maglock, missionLocation);
+        seedDilemma(maglock, playerTwoMission);
         assertEquals(1, missionLocation.getPreSeedCardCountForPlayer(archerOwner));
-        removeDilemma(maglock, missionLocation);
+        removeDilemma(maglock, playerTwoMission);
         assertEquals(0, missionLocation.getPreSeedCardCountForPlayer(archerOwner));
-        seedDilemma(maglock, missionLocation);
+        seedDilemma(maglock, playerTwoMission);
         assertEquals(1, missionLocation.getPreSeedCardCountForPlayer(archerOwner));
 
         while (_game.getCurrentPhase() == Phase.SEED_DILEMMA)

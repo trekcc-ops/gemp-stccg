@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.game.EndGameResultType;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
@@ -20,6 +21,7 @@ import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerOrder;
 import com.gempukku.stccg.processes.GameProcess;
+import com.google.common.collect.Iterables;
 
 import java.util.*;
 
@@ -227,12 +229,35 @@ public class ST1EGameState extends GameState {
     }
 
     public void checkVictoryConditions(DefaultGame cardGame) {
-            // TODO - VERY simplistic. Just a straight race to 100.
-            // TODO - Does not account for possible scenario where both players go over 100 simultaneously
+        List<Player> playersThatMetVictoryConditions = new ArrayList<>();
         for (Player player : getPlayers()) {
-            int score = player.getScore();
-            if (score >= 100)
-                cardGame.playerWon(player.getPlayerId(), score + " points");
+            if (player.hasMetVictoryConditions()) {
+                playersThatMetVictoryConditions.add(player);
+            }
+        }
+        if (playersThatMetVictoryConditions.size() == 1) {
+            String winningPlayerName = Iterables.getOnlyElement(playersThatMetVictoryConditions).getPlayerId();
+            cardGame.playerWon(winningPlayerName, EndGameResultType.WINNING_SCORE);
+        } else if (playersThatMetVictoryConditions.size() == 2) {
+            resolveDeckedOrSimultaneousVictoryConditions(cardGame);
+        } else if (_players.getFirst().getDrawDeck().isEmpty() && _players.getLast().getDrawDeck().isEmpty()) {
+            resolveDeckedOrSimultaneousVictoryConditions(cardGame);
+        }
+    }
+
+    private void resolveDeckedOrSimultaneousVictoryConditions(DefaultGame cardGame) {
+        Player player1 = _players.getFirst();
+        Player player2 = _players.getLast();
+
+        int score1 = player1.getScore();
+        int score2 = player2.getScore();
+
+        if (score1 > score2) {
+            cardGame.playerWon(player1.getPlayerId(), EndGameResultType.WINNING_SCORE);
+        } else if (score2 > score1) {
+            cardGame.playerWon(player2.getPlayerId(), EndGameResultType.WINNING_SCORE);
+        } else {
+            cardGame.endInTie();
         }
     }
 

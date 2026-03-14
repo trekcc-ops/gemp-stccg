@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.choose;
 
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
@@ -13,8 +14,9 @@ public class RandomSelectionInitiatedResult extends ActionResult {
 
     private final Collection<? extends PhysicalCard> _selectableCards;
 
-    public RandomSelectionInitiatedResult(Action action, Collection<? extends PhysicalCard> selectableCards) {
-        super(Type.RANDOM_SELECTION_INITIATED, action.getPerformingPlayerId(), action);
+    public RandomSelectionInitiatedResult(DefaultGame cardGame, Action action,
+                                          Collection<? extends PhysicalCard> selectableCards) {
+        super(cardGame, ActionResultType.RANDOM_SELECTION_INITIATED, action.getPerformingPlayerId(), action);
         _selectableCards = selectableCards;
     }
 

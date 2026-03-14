@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.draw;
 
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
@@ -12,6 +11,8 @@ import com.gempukku.stccg.decisions.IntegerAwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+
+import java.util.List;
 
 public class DrawCardsAction extends ActionyAction implements TopLevelSelectableAction {
 
@@ -55,9 +56,13 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
     @Override
     protected void processEffect(DefaultGame cardGame) {
         if (_minCardsToDraw == 1 && _maxCardsToDraw == 1) {
-            cardGame.getGameState().playerDrawsCard(_performingPlayerId);
-            setAsSuccessful();
-            saveResult(new ActionResult(ActionResult.Type.DRAW_CARD, _performingPlayerId, this), cardGame);
+            PhysicalCard cardDrawn = cardGame.getGameState().playerDrawsCard(_performingPlayerId);
+            if (cardDrawn != null) {
+                setAsSuccessful();
+                saveResult(new DrawCardsResult(cardGame, this, List.of(cardDrawn), false, _performingCard), cardGame);
+            } else {
+                setAsFailed();
+            }
         } else if (_minCardsToDraw == _maxCardsToDraw && _cardCountLastSelected == null) {
             _cardCountLastSelected = _maxCardsToDraw;
         } else if ((_cardCountLastSelected != null && _cardCountLastSelected == 0) ||
@@ -87,7 +92,7 @@ public class DrawCardsAction extends ActionyAction implements TopLevelSelectable
         } else if (_cardsDrawnSinceLastSelection < _cardCountLastSelected) {
             _cardsAlreadyDrawnCount++;
             _cardsDrawnSinceLastSelection++;
-            cardGame.addActionToStack(new DrawSingleCardAction(cardGame, _performingPlayerId));
+            cardGame.addActionToStack(new DrawSingleCardAction(cardGame, _performingPlayerId, _performingCard));
         }
     }
 

@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
-import com.gempukku.stccg.actions.playcard.ReportCardAction;
-import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.actions.playcard.SeedFacilityAction;
-import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
+import com.gempukku.stccg.actions.playcard.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
@@ -17,6 +14,7 @@ import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.GameTimer;
 import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.formats.FormatLibrary;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
@@ -58,7 +56,7 @@ public class GameTestBuilder {
         GameFormat format = formatLibrary.get("st1emoderncomplete");
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
-            testDeck.addCard(SubDeck.DRAW_DECK, "991_001");
+            testDeck.addCard(SubDeck.DRAW_DECK, "105_018");
         }
 
         for (String player : players) {
@@ -115,7 +113,13 @@ public class GameTestBuilder {
                 }
             }
         }
-        addJsonCards(cardLibrary, missions);
+        try {
+            addJsonCards(cardLibrary, missions);
+        } catch(CardNotFoundException exp) {
+            throw exp;
+        } catch(Exception ignored) {
+            throw new CardNotFoundException("Unable to create cards for sample game");
+        }
     }
 
     public GameTestBuilder(CardBlueprintLibrary cardBlueprintLibrary, FormatLibrary formatLibrary,
@@ -233,7 +237,9 @@ public class GameTestBuilder {
     }
 
     private void executeAction(Action action) throws InvalidGameOperationException {
-        action.setAsInitiated();
+        if (!action.wasCompleted()) {
+            action.setAsInitiated();
+        }
         action.executeNextSubAction(_game.getActionsEnvironment(), _game);
     }
 
@@ -266,6 +272,14 @@ public class GameTestBuilder {
     public MissionCard addMission(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException, InvalidGameOperationException {
         MissionCard mission = addCardToGame(blueprintId, cardTitle, ownerName, MissionCard.class);
+        for (PhysicalCard missionInPlay : Filters.filterCardsInPlay(_game, CardType.MISSION)) {
+            if (missionInPlay instanceof MissionCard missionCard && missionCard.isCopyOf(mission)) {
+                int locationZoneIndex = _game.getGameState().indexOfLocation(mission.getBlueprint().getLocation(), mission.getBlueprint().getQuadrant());
+                SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, locationZoneIndex);
+                executeAction(seedAction);
+                return mission;
+            }
+        }
         _missions.add(mission);
         SeedMissionCardAction seedAction = new SeedMissionCardAction(_game, mission, _missions.indexOf(mission));
         executeAction(seedAction);
@@ -296,6 +310,25 @@ public class GameTestBuilder {
                                                  MissionCard mission)
             throws InvalidGameOperationException, CardNotFoundException {
         return addCardOnPlanetSurface(blueprintId, cardTitle, ownerName, mission, ReportableCard.class);
+    }
+
+    public <T extends ReportableCard> T addCardOnPlanetSurface(String blueprintId, String cardTitle, String ownerName,
+                                                               MissionCard mission, Class<T> clazz, Affiliation affiliation)
+            throws CardNotFoundException, InvalidGameOperationException {
+        T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
+        GameLocation location = mission.getGameLocation(_game);
+        if (!location.isPlanet()) {
+            throw new InvalidGameOperationException("Location is not a planet");
+        }
+        ReportCardAction playAction = new ReportCardAction(_game, cardToAdd, true);
+        playAction.setDestination(mission);
+        playAction.setAffiliation(affiliation);
+        executeAction(playAction);
+        if (!cardToAdd.isInPlay() || !cardToAdd.isAtSameLocationAsCard(mission) || !cardToAdd.isOnPlanet(_game)) {
+            throw new InvalidGameOperationException("Did not achieve expected results from GameTestBuilder");
+        } else {
+            return cardToAdd;
+        }
     }
 
     public <T extends ReportableCard> T addCardOnPlanetSurface(String blueprintId, String cardTitle, String ownerName,
@@ -363,14 +396,14 @@ public class GameTestBuilder {
     public PhysicalCard addCardInHand(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND);
         return cardToAdd;
     }
 
     public PhysicalCard addCardInDiscard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DISCARD, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DISCARD);
         return cardToAdd;
     }
 
@@ -379,7 +412,7 @@ public class GameTestBuilder {
     public <T extends PhysicalCard> T addCardInHand(String blueprintId, String cardTitle, String ownerName,
                                                     Class<T> clazz) throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.HAND);
         return cardToAdd;
     }
 
@@ -441,14 +474,14 @@ public class GameTestBuilder {
     public PhysicalCard addSeedDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
         return cardToAdd;
     }
 
     public <T extends PhysicalCard> T addSeedDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
             throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
         return cardToAdd;
     }
 
@@ -456,14 +489,14 @@ public class GameTestBuilder {
     public PhysicalCard addDrawDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK);
         return cardToAdd;
     }
 
     public <T extends PhysicalCard> T addDrawDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
             throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.DRAW_DECK);
         return cardToAdd;
     }
 
@@ -471,7 +504,7 @@ public class GameTestBuilder {
     public MissionCard addMissionToDeck(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
         MissionCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, MissionCard.class);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.MISSIONS_PILE, null);
+        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.MISSIONS_PILE);
         return cardToAdd;
     }
 
@@ -479,7 +512,9 @@ public class GameTestBuilder {
             throws CardNotFoundException, InvalidGameOperationException {
         PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
 
-        SeedCardAction seedAction = new SeedCardAction(_game, cardToAdd, Zone.CORE);
+        SeedCardAction seedAction =
+                new SeedCardToDestinationAction(_game, ownerName, List.of(cardToAdd), List.of(new ProxyCoreCard(ownerName)), cardToAdd);
+
         executeAction(seedAction);
 
         return cardToAdd;
@@ -512,8 +547,18 @@ public class GameTestBuilder {
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             if (blueprint.getCardType() == CardType.MISSION) {
                 MissionCard mission = addMission(blueprintId, blueprint.getTitle(), ownerName);
+                if (node.has("isShared") && node.get("isShared").booleanValue()) {
+                    try {
+                        MissionCard missionOnTop = addMission(blueprintId, blueprint.getTitle(), _game.getOpponent(ownerName));
+                    } catch(Exception exp) {
+                        throw new CardNotFoundException("Unable to create shared mission for sample game");
+                    }
+                }
                 if (node.has("IN_SPACE")) {
                     addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
+                }
+                if (node.has("ON_PLANET")) {
+                    addJsonCards(library, node.get("ON_PLANET"), ChildCardRelationshipType.ON_PLANET, mission);
                 }
                 if (node.has("SEEDED_UNDERNEATH")) {
                     for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
@@ -543,6 +588,8 @@ public class GameTestBuilder {
                 case ABOARD -> addCardAboardShipOrFacility(
                         blueprintId, blueprint.getTitle(), ownerName, (CardWithCrew) parentCard, ReportableCard.class);
                 case IN_SPACE -> addCardInSpace(blueprint, ownerName, parentCard);
+                case ON_PLANET -> addCardOnPlanetSurface(blueprintId, blueprint.getTitle(), ownerName,
+                        (MissionCard) parentCard, ReportableCard.class);
                 default -> throw new InvalidGameOperationException(
                         "GameTestBuilder is not yet equipped to handle ChildCardRelationshipType '" + childType + "'");
             };

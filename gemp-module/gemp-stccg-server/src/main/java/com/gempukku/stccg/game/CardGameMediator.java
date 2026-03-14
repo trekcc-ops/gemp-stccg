@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionConflictException;
 import com.gempukku.stccg.SubscriptionExpiredException;
-import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -141,27 +140,6 @@ public class CardGameMediator {
         return chatRoom;
     }
 
-    private GameChatRoomMediator createGameChat(boolean isCompetitive, GameParticipant[] participants) {
-        String chatRoomName = "Game " + _gameId;
-        Set<String> allowedUsers = new HashSet<>();
-
-        if (isCompetitive) {
-            for (GameParticipant participant : participants)
-                allowedUsers.add(participant.getPlayerId());
-        }
-
-        String welcomeMessage = isCompetitive ? "Welcome to private room" : "Welcome to room";
-        GameChatRoomMediator chatRoom = new GameChatRoomMediator(false, allowedUsers,
-                false, chatRoomName);
-        try {
-            chatRoom.sendChatMessage(ChatStrings.SYSTEM_USER_ID,
-                    welcomeMessage + ": " + chatRoomName, true);
-        } catch (PrivateInformationException | ChatCommandErrorException exp) {
-            // Ignore, sent as admin
-        }
-        return chatRoom;
-    }
-
 
     public final boolean isDestroyed() {
         return _destroyed;
@@ -188,10 +166,6 @@ public class CardGameMediator {
         }
     }
 
-
-    final void sendMessageToPlayers(String message) {
-        _game.sendMessage(message);
-    }
 
     public final String getWinner() {
         return _game.getWinnerPlayerId();
@@ -251,7 +225,7 @@ public class CardGameMediator {
                         if (ZonedDateTime.now()
                                 .isAfter(decisionSent.plusSeconds(_timeSettings.maxSecondsPerDecision()))) {
                             addTimeSpentOnDecisionToUserClock(player);
-                            _game.playerLost(player, "Player decision timed-out");
+                            _game.playerLost(player, EndGameResultType.DECISION_TIMEOUT);
                         }
                     }
 
@@ -260,7 +234,7 @@ public class CardGameMediator {
                         if (_timeSettings.maxSecondsPerPlayer() -
                                 playerClock.getTimeElapsed() - getCurrentUserPendingTime(player) < 0) {
                             addTimeSpentOnDecisionToUserClock(player);
-                            _game.playerLost(player, "Player run out of time");
+                            _game.playerLost(player, EndGameResultType.PLAYER_TIMEOUT);
                         }
                     }
                 }
@@ -272,7 +246,7 @@ public class CardGameMediator {
         try (CloseableWriteLock ignored = _writeLock.open()) {
             if (getGame().getWinnerPlayerId() == null && _playersPlaying.contains(userName)) {
                 addTimeSpentOnDecisionToUserClock(userName);
-                getGame().playerLost(userName, "Concession");
+                getGame().playerLost(userName, EndGameResultType.CONCEDED);
             }
         }
     }
@@ -282,8 +256,8 @@ public class CardGameMediator {
             if (_playersPlaying.contains(userName)) {
                 _requestedCancel.add(userName);
                 if (_requestedCancel.size() == _playersPlaying.size() && !isFinished()) {
-                    _game.setCancelled(true);
-                    _game.sendMessage("Game was cancelled, as requested by all parties.");
+                    _game.setCancelled();
+                    _game.saveGameResult(new EndGameResult(_game, EndGameResultType.ALL_PLAYERS_CANCELLED));
                     for (GameResultListener gameResultListener : _gameResultListeners)
                         gameResultListener.gameCancelled();
                 }
@@ -293,15 +267,12 @@ public class CardGameMediator {
 
     public void cancelGameDueToError() {
         if (!isFinished()) {
-            _game.setCancelled(true);
-            _game.sendMessage(
-                        "Game was cancelled due to an error, the error was logged and will be fixed soon.");
-            _game.sendMessage(
-                        "Please post the replay game link and description of what happened on the tech support forum.");
+            _game.setCancelled();
+            _game.saveGameResult(new EndGameResult(_game, EndGameResultType.ERROR));
         }
         for (GameResultListener gameResultListener : _gameResultListeners)
             gameResultListener.gameCancelled();
-        _game.setFinished(true);
+        _game.setFinished();
     }
 
 
@@ -435,10 +406,6 @@ public class CardGameMediator {
     }
 
     public void initialize(List<GameResultListener> listeners) {
-        GameFormat gameFormat = _game.getFormat();
-        sendMessageToPlayers("You're starting a game of " + gameFormat);
-        String players = TextUtils.concatenateStrings(_playersPlaying);
-        sendMessageToPlayers("Players in the game are: " + players);
         _gameResultListeners.addAll(listeners);
     }
 

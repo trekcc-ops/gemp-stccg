@@ -1,12 +1,16 @@
 package com.gempukku.stccg.gamestate;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.AwayTeam;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.game.EndGameResult;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerClock;
 import com.gempukku.stccg.player.PlayerOrder;
@@ -16,10 +20,10 @@ import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIncludeProperties({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame",
-        "versionNumber",
+        "versionNumber", "actionResults", "endGameResult",
         "spacelineLocations", "awayTeams", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations"})
 @JsonPropertyOrder({ "requestingPlayer", "currentPhase", "phasesInOrder", "playerMap", "playerOrder", "visibleCardsInGame", "spacelineLocations",
-        "versionNumber",
+        "versionNumber", "actionResults", "endGameResult",
         "awayTeams", "actions", "lastAction", "performedActions", "playerClocks", "pendingDecision", "spacelineElements", "gameLocations" })
 public class GameStateView {
 
@@ -102,6 +106,15 @@ public class GameStateView {
         else return null;
     }
 
+    @JsonProperty("actionResults")
+    private List<ActionResult> actionResults() {
+        List<ActionResult> results = new ArrayList<>();
+        for (ActionResult actionResult : _gameState.getActionsEnvironment().getActionResults()) {
+            results.add(actionResult.getResultForPlayer(_requestingPlayerId));
+        }
+        return results;
+    }
+
     @JsonProperty("playerMap")
     private Map<String, PlayerView> getPlayerMap() {
         Map<String, PlayerView> result = new HashMap<>();
@@ -122,13 +135,7 @@ public class GameStateView {
 
     @JsonProperty("performedActions")
     private List<Action> performedActions() {
-        List<Action> result = new ArrayList<>();
-        for (Action action : _gameState.getActionsEnvironment().getPerformedActions()) {
-            if (action.getActionType() != ActionType.SYSTEM_QUEUE) {
-                result.add(action);
-            }
-        }
-        return result;
+        return _gameState.getActionsEnvironment().getPerformedActions();
     }
 
     @JsonProperty("playerClocks")
@@ -139,6 +146,11 @@ public class GameStateView {
     @JsonProperty("pendingDecision")
     private AwaitingDecision decision() {
         return _gameState.getDecision(_requestingPlayerId);
+    }
+
+    @JsonProperty("endGameResult")
+    private EndGameResult getEndGameResult() {
+        return _gameState.getEndGameResult();
     }
 
 }

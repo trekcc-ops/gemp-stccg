@@ -6,7 +6,6 @@ import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.Collection;
@@ -17,6 +16,7 @@ import java.util.Map;
 public class SeedCardToDestinationAction extends SeedCardAction {
     private final EnterPlayAtDestinationResolver _targetResolver;
     private final boolean _onPlanet;
+    private boolean _seeded;
 
     public SeedCardToDestinationAction(DefaultGame cardGame, String performingPlayerName,
                                        Collection<PhysicalCard> seedableCards,
@@ -48,13 +48,12 @@ public class SeedCardToDestinationAction extends SeedCardAction {
 
 
     public void processEffect(DefaultGame cardGame) {
-        if (cardGame instanceof ST1EGame stGame) {
+        if (!_seeded) {
             PhysicalCard cardEnteringPlay = _targetResolver.getCardEnteringPlay();
-            GameState gameState = stGame.getGameState();
             PhysicalCard destination = _targetResolver.getDestination();
             cardGame.removeCardsFromZone(List.of(cardEnteringPlay));
-            gameState.addCardToZone(cardGame, cardEnteringPlay, Zone.AT_LOCATION, _actionContext);
-            if (destination instanceof CardWithCrew cardWithCrew && cardEnteringPlay instanceof ReportableCard reportable) {
+            cardGame.getGameState().addCardToZone(cardGame, cardEnteringPlay, Zone.AT_LOCATION);
+            if (destination instanceof CardWithCrew && cardEnteringPlay instanceof ReportableCard reportable) {
                 // if reporting to a ship or facility
                 if (reportable.getCardType() != CardType.SHIP) {
                     reportable.setAsAboard(destination);
@@ -62,27 +61,29 @@ public class SeedCardToDestinationAction extends SeedCardAction {
                 if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
                     ship.setAsDockedAt(facility);
                 }
-            } else if (cardEnteringPlay instanceof ShipCard shipCard) {
-                // if reporting a ship in space at a location
-                shipCard.setAsInSpaceAtLocation(destination);
+            } else if (cardEnteringPlay instanceof CardWithCrew cardWithCrew && !_onPlanet) {
+                // if reporting a ship or facility in space at a location
+                cardWithCrew.setAsInSpaceAtLocation(destination);
             } else if (cardEnteringPlay instanceof ReportableCard reportable) {
                 // if reporting another reportable to a location
                 reportable.setAsOnPlanet(destination);
                 if (destination instanceof MissionCard missionDestination &&
+                        cardGame instanceof ST1EGame stGame &&
                         missionDestination.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
                     stGame.getGameState().addCardToEligibleAwayTeam(stGame, reportable, missionLocation);
                 }
             } else {
                 if (_onPlanet) {
                     cardEnteringPlay.setAsOnPlanet(destination);
-                } else {
+                } else if (!(destination instanceof ProxyCoreCard)) {
                     cardEnteringPlay.setAsAtop(destination);
                 }
             }
-            setAsSuccessful();
+            saveResult(new SeedCardResult(cardGame, this, cardEnteringPlay, destination), cardGame);
+            _seeded = true;
         } else {
-            cardGame.sendErrorMessage("Unable to process seed card action");
-            setAsFailed();
+            super.processEffect(cardGame);
+            setAsSuccessful();
         }
     }
 

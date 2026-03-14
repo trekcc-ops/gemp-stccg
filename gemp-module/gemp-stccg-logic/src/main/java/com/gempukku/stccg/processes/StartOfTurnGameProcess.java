@@ -14,9 +14,6 @@ import com.gempukku.stccg.processes.tribbles.TribblesPlayerPlaysOrDraws;
 public class StartOfTurnGameProcess extends GameProcess {
     @Override
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
-        cardGame.sendMessage("\n\n========\n\nStart of " + cardGame.getCurrentPlayerId() + "'s turn.");
-        cardGame.getGameState().setCurrentPhase(Phase.START_OF_TURN);
-        cardGame.sendActionResultToClient(); // for phase and turn change
         cardGame.getActionsEnvironment().addActionToStack(new StartTurnAction(cardGame, cardGame.getCurrentPlayerId()));
     }
 

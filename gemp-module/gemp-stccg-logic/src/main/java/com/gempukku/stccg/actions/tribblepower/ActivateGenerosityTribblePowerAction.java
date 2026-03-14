@@ -63,11 +63,11 @@ public class ActivateGenerosityTribblePowerAction extends ActivateTribblePowerAc
         Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
         Player chosenPlayerObj = cardGame.getPlayer(chosenPlayer);
         // You and one other player (your choice) each score 25,000 points.
-        appendEffect(new ScorePointsAction(cardGame, _performingCard, performingPlayer, BONUS_POINTS));
-        appendEffect(new ScorePointsAction(cardGame, _performingCard, chosenPlayerObj, BONUS_POINTS));
+        appendEffect(new ScorePointsAction(cardGame, _performingCard, performingPlayer, BONUS_POINTS, true));
+        appendEffect(new ScorePointsAction(cardGame, _performingCard, chosenPlayerObj, BONUS_POINTS, true));
 
         // Draw a card.
-        appendEffect(new DrawSingleCardAction(cardGame, _performingPlayerId));
+        appendEffect(new DrawSingleCardAction(cardGame, _performingPlayerId, _actionContext.card()));
     }
 
 

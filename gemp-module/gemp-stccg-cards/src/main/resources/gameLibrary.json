@@ -74,14 +74,39 @@
     ]
   },
   {
-    "gameName": "Shall We Begin Again?",
+    "gameName": "Action Testing",
     "players": ["asdf", "qwer"],
-    "phase": "EXECUTE_ORDERS",
+    "phase": "CARD_PLAY",
     "missions": [
       {
         "blueprintId": "101_154",
         "owner": "asdf",
+        "isShared": true,
+        "ON_PLANET": [
+          {
+            "blueprintId": "101_233",
+            "owner": "asdf"
+          },
+          {
+            "blueprintId": "101_213",
+            "owner": "asdf"
+          }
+        ],
         "IN_SPACE": [
+          {
+            "blueprintId": "101_104",
+            "owner": "asdf",
+            "ABOARD": [
+              {
+                "blueprintId": "155_054",
+                "owner": "asdf"
+              }
+            ]
+          },
+          {
+            "blueprintId": "163_054",
+            "owner": "asdf"
+          },
           {
             "blueprintId": "101_331",
             "owner": "asdf",
@@ -93,6 +118,14 @@
               {
                 "blueprintId": "112_215",
                 "owner": "asdf"
+              },
+              {
+                "blueprintId": "123_120",
+                "owner": "asdf"
+              },
+              {
+                "blueprintId": "223_030",
+                "owner": "asdf"
               }
             ]
           }
@@ -101,9 +134,32 @@
           {
             "blueprintId": "161_009",
             "owner": "qwer"
+          },
+          {
+            "blueprintId": "101_015",
+            "owner": "qwer"
+          },
+          {
+            "blueprintId": "155_012",
+            "owner": "qwer"
+          },
+          {
+            "blueprintId": "112_031",
+            "owner": "qwer"
           }
         ]
+      },
+      {
+        "blueprintId": "101_156",
+        "owner": "qwer"
       }
+    ],
+    "hand": [
+      ["101_083","155_016","101_064","101_064"],
+      ["101_225", "101_225", "159_031"]
+    ],
+    "drawDeck": [
+      ["101_064","101_064"]
     ]
   }
 

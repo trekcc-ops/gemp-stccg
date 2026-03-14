@@ -62,7 +62,7 @@ public class Blueprint_111_002_ArmusStickySituation_Test extends AbstractAtTest 
         initializeGame(false, false, false);
         attemptMission(P1, mission);
 
-        assertTrue(personnelWasKilled(riker));
+        assertTrue(personnelWasKilledAndDiscarded(riker));
         assertNotEquals(Zone.REMOVED, armus.getZone());
     }
 
@@ -74,7 +74,7 @@ public class Blueprint_111_002_ArmusStickySituation_Test extends AbstractAtTest 
         attemptMission(P1, mission);
         selectCard(P2, secondPersonnel);
 
-        assertTrue(personnelWasKilled(secondPersonnel));
+        assertTrue(personnelWasKilledAndDiscarded(secondPersonnel));
         assertEquals(Zone.REMOVED, armus.getZone());
     }
 
@@ -86,7 +86,7 @@ public class Blueprint_111_002_ArmusStickySituation_Test extends AbstractAtTest 
         attemptMission(P1, mission);
         selectCard(P2, riker);
 
-        assertFalse(personnelWasKilled(secondPersonnel));
+        assertFalse(personnelWasKilledAndDiscarded(secondPersonnel));
         assertTrue(riker.isStopped());
         assertEquals(Zone.REMOVED, armus.getZone());
     }

@@ -2,6 +2,8 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.gempukku.stccg.actions.playcard.DownloadActionBlueprint;
+import com.gempukku.stccg.actions.playcard.DownloadReportableActionBlueprint;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.game.DefaultGame;
 

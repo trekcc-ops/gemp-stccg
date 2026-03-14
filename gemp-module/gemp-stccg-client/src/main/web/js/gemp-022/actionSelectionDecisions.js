@@ -292,6 +292,10 @@ export function getActionInitiationCardActionMap(action, gameState) {
                 cardActionMap.set(performingCardId, "Use game text");
             }
             return cardActionMap;
+        case "VOLUNTEER_FOR_SELECTION": {
+            cardActionMap.set(performingCardId, "Volunteer for selection");
+            return cardActionMap;
+        }
         case "WALK_CARDS":
             // performingCardId for this action represents the origin (ship, location, or facility cards are walking from)
             cardActionMap.set(performingCardId, "Walk cards"); // TODO (Beam/walk cards to/from X)
@@ -319,7 +323,6 @@ export function getActionInitiationCardActionMap(action, gameState) {
         case "SELECT_AWAY_TEAM":
         case "SELECT_CARDS":
         case "SELECT_SKILL":
-        case "SYSTEM_QUEUE": // Under-the-hood subaction management, does not represent a change to gamestate
         case "USAGE_LIMIT": // Payment of a usage cost, like normal card play or "once per turn" limit
         default:
             console.error("No action initiation user message available for action type: '" + actionType + "'.");

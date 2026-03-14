@@ -7,8 +7,9 @@ import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.actions.blueprints.SeedThisCardActionBlueprint;
+import com.gempukku.stccg.actions.playcard.SeedThisCardActionBlueprint;
 import com.gempukku.stccg.actions.missionattempt.EncounterSeedCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.CardNotFoundException;
@@ -32,6 +33,8 @@ import java.util.*;
 import static com.gempukku.stccg.gamestate.ChildCardRelationshipType.*;
 
 public abstract class AbstractPhysicalCard implements PhysicalCard {
+
+    private final static int NULL_LOCATION_ID = -999;
 
     protected final CardBlueprint _blueprint;
     protected final String _ownerName;
@@ -61,16 +64,9 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         _cardId = cardId;
         _ownerName = ownerName;
         _blueprint = blueprint;
-        _currentLocationId = -999;
+        _currentLocationId = NULL_LOCATION_ID;
     }
 
-
-    public AbstractPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
-        _cardId = cardId;
-        _ownerName = owner.getPlayerId();
-        _blueprint = blueprint;
-        _currentLocationId = -999;
-    }
 
     public Zone getZone() {
         return _zone;
@@ -127,7 +123,7 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         if (_parentCard == null || _parentCardRelationship == null) {
             return null;
         } else {
-            List<ChildCardRelationshipType> attachedRelationships = List.of(ABOARD, ATOP, ON_PLANET);
+            List<ChildCardRelationshipType> attachedRelationships = List.of(ABOARD, ATOP, ChildCardRelationshipType.DOCKED, ON_PLANET);
             if (attachedRelationships.contains(_parentCardRelationship) && !isPlacedOnMission()) {
                 return _parentCard.getCardId();
             } else {
@@ -233,11 +229,11 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
 
     public String getFullName() { return _blueprint.getFullName(); }
 
-    public TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame) {
-        return getPlayCardAction(cardGame, false);
+    public TopLevelSelectableAction getNormalPlayCardAction(DefaultGame cardGame) {
+        return getPlayCardAction(cardGame, false, false);
     }
 
-    public abstract TopLevelSelectableAction getPlayCardAction(DefaultGame cardGame, boolean forFree);
+    public abstract PlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload);
 
 
     public boolean hasTextRemoved(DefaultGame game) {
@@ -518,6 +514,10 @@ public abstract class AbstractPhysicalCard implements PhysicalCard {
         } else {
             return false;
         }
+    }
+
+    public void clearLocation() {
+        _currentLocationId = NULL_LOCATION_ID;
     }
 
 }

@@ -45,7 +45,7 @@ public class DownloadReportableCardToDestinationAction extends ActionWithSubActi
         if (cardsToDownload.size() == 1 &&
                 Iterables.getOnlyElement(cardsToDownload) instanceof ReportableCard reportable) {
             Map<PhysicalCard, List<Affiliation>> destinationMap = _targetMap.get(reportable);
-            Action _playCardAction = new ReportCardAction(cardGame, reportable, true, destinationMap);
+            Action _playCardAction = new ReportCardAction(cardGame, reportable, true, destinationMap, true);
             cardGame.getActionsEnvironment().addActionToStack(_playCardAction);
             setAsSuccessful();
         } else {

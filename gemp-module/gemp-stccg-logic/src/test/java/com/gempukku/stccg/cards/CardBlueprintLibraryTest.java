@@ -60,5 +60,4 @@ public class CardBlueprintLibraryTest {
         assertEquals(2, _cardLibrary.getAllAlternates("113_003").size());
     }
 
-
 }

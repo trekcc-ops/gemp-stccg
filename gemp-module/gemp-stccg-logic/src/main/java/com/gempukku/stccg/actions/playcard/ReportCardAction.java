@@ -31,14 +31,25 @@ public class ReportCardAction extends PlayCardAction {
         _cardTargets.add(_targetResolver);
     }
 
+    public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree, boolean isDownload) {
+        super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
+        if (!forFree) {
+            appendCost(new UseNormalCardPlayBlueprint());
+        }
+        _targetResolver = new ReportCardResolver(cardGame, cardToPlay);
+        _cardTargets.add(_targetResolver);
+        _isDownload = isDownload;
+    }
+
     public ReportCardAction(DefaultGame cardGame, ReportableCard cardToPlay, boolean forFree,
-                            Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap) {
+                            Map<PhysicalCard, List<Affiliation>> calculatedDestinationMap, boolean isDownload) {
         super(cardGame, cardToPlay, cardToPlay, cardToPlay.getOwnerName(), null, ActionType.PLAY_CARD);
         if (!forFree) {
             appendCost(new UseNormalCardPlayBlueprint());
         }
         _targetResolver = new ReportCardResolver(cardToPlay, calculatedDestinationMap);
         _cardTargets.add(_targetResolver);
+        _isDownload = isDownload;
     }
 
     public ReportCardAction(DefaultGame cardGame, String performingPlayerName,
@@ -71,7 +82,7 @@ public class ReportCardAction extends PlayCardAction {
                 GameState gameState = cardGame.getGameState();
 
                 cardGame.removeCardsFromZone(Collections.singleton(reportable));
-                gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION, _actionContext);
+                gameState.addCardToZone(cardGame, reportable, Zone.AT_LOCATION);
 
                 if (destination instanceof CardWithCrew cardWithCrew) {
                     // if reporting to a ship or facility
@@ -81,8 +92,8 @@ public class ReportCardAction extends PlayCardAction {
                     if (reportable instanceof ShipCard ship && destination instanceof FacilityCard facility) {
                         ship.setAsDockedAt(facility);
                     }
-                } else if (reportable.getCardType() == CardType.SHIP) {
-                    reportable.setAsInSpaceAtLocation(destination);
+                } else if (reportable instanceof ShipCard ship) {
+                    ship.setAsInSpaceAtLocation(destination);
                     // if reporting a ship in space at a location
                 } else {
                     // if reporting another reportable to a location
@@ -93,8 +104,8 @@ public class ReportCardAction extends PlayCardAction {
                         stGame.getGameState().addCardToEligibleAwayTeam(stGame, reportable, missionLocation);
                     }
                 }
-
-                saveResult(new PlayCardResult(this, _cardEnteringPlay), cardGame);
+                ActionType actionType = _isDownload ? ActionType.DOWNLOAD_CARD : ActionType.PLAY_CARD;
+                saveResult(new PlayCardResult(cardGame,this, _cardEnteringPlay, destination, actionType, _performingCard), cardGame);
             } else {
                 throw new InvalidGameLogicException("Tried to report a non-reportable card");
             }

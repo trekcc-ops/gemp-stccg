@@ -25,7 +25,8 @@
                                 "random" : true,
                                 "filter" : "personnel + encounteringThisCard + not(Borg)",
                                 "count" : 1
-                            }
+                            },
+                            "showOpponent": true
                         }
                     }
                 }

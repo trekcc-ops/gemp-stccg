@@ -65,7 +65,7 @@ public class Blueprint_178_002_BadEnd_Test extends AbstractAtTest {
         selectCards(P1, stoppedPersonnel.subList(0,3));
 
         for (PersonnelCard personnel : stoppedPersonnel.subList(0,3)) {
-            assertTrue(personnelWasKilled(personnel));
+            assertTrue(personnelWasKilledAndDiscarded(personnel));
         }
 
         // Remaining Away Team is stopped because you don't have Biology x2
@@ -92,7 +92,7 @@ public class Blueprint_178_002_BadEnd_Test extends AbstractAtTest {
         selectCards(P1, stoppedPersonnel.subList(0,3));
 
         for (PersonnelCard personnel : stoppedPersonnel.subList(0,3)) {
-            assertTrue(personnelWasKilled(personnel));
+            assertTrue(personnelWasKilledAndDiscarded(personnel));
         }
 
         // Nobody else is stopped because you have Biology x2

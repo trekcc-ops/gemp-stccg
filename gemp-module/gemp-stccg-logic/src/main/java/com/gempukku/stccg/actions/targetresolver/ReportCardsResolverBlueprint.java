@@ -64,4 +64,13 @@ public class ReportCardsResolverBlueprint implements TargetResolverBlueprint {
     public boolean canBeResolved(DefaultGame cardGame, GameTextContext context) {
         return !getTargetResolver(cardGame, context).cannotBeResolved(cardGame);
     }
+
+    public int getMinimumCards(DefaultGame cardGame, GameTextContext context) {
+        return _count.getMinimum(cardGame, context);
+    }
+
+    public int getMaximumCards(DefaultGame cardGame, GameTextContext context) {
+        return _count.getMaximum(cardGame, context);
+    }
+
 }

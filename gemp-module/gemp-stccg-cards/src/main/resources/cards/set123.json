@@ -18,6 +18,52 @@
             "image-url" : "https://www.trekcc.org/1e/cardimages/voy/aftermath.jpg"
         },
         {
+            "blueprintId" : "123_120",
+            "title" : "Harry Kim",
+            "type" : "personnel",
+            "affiliation" : "federation",
+            "property-logo" : "voy-logo",
+            "classification": "OFFICER",
+            "quadrant": "delta",
+            "icons": "staff",
+            "lore" : "<i>U.S.S. Voyager</i> operations officer, his first posting out of the Academy. Until then, had never missed calling home every week. Plays reed instruments. Unlucky at love.",
+            "species": "human",
+            "gender": "male",
+            "integrity": 7,
+            "cunning": 7,
+            "strength": 6,
+            "skill-box": {
+                "skill-dots": 5,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Stellar Cartography"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "ENGINEER"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Music"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Youth"
+                    },
+                    {
+                        "type": "specialResponse",
+                        "text": "May volunteer for random selections (if applicable).",
+                        "action": {
+                            "type": "volunteerForRandomSelection"
+                        },
+                        "optional": true
+                    }
+                ]
+            },
+            "image-url" : "https://www.trekcc.org/1e/cardimages/voy/harrykim.jpg"
+        },
+        {
             "blueprintId" : "123_193",
             "title" : "U.S.S. Intrepid",
             "type" : "ship",

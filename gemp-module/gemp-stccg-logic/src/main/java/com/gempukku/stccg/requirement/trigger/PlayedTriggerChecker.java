@@ -2,6 +2,7 @@ package com.gempukku.stccg.requirement.trigger;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
 import com.gempukku.stccg.actions.playcard.PlayCardResult;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
@@ -44,8 +45,7 @@ public class PlayedTriggerChecker implements TriggerChecker {
             final boolean played;
 
             if (_onFilter != null) {
-                final Filterable onFilterable = _onFilter.getFilterable(cardGame, actionContext);
-                played = playedOn(cardGame, actionResult, onFilterable, filterable);
+                played = false;
             } else {
                 played = played(cardGame, actionResult, actionContext, filterable);
             }
@@ -58,22 +58,8 @@ public class PlayedTriggerChecker implements TriggerChecker {
         }
     }
 
-    private static boolean playedOn(DefaultGame game, ActionResult actionResult,
-                                   Filterable targetFilter, Filterable... filters) {
-        if (actionResult.hasType(ActionResult.Type.JUST_PLAYED)) {
-            final PlayCardResult playResult = (PlayCardResult) actionResult;
-            final PhysicalCard attachedTo = playResult.getAttachedTo();
-            if (attachedTo == null)
-                return false;
-            PhysicalCard playedCard = playResult.getPlayedCard();
-            return Filters.and(filters).accepts(game, playedCard)
-                    && Filters.and(targetFilter).accepts(game, attachedTo);
-        }
-        return false;
-    }
-
     private boolean played(DefaultGame game, ActionResult actionResult, GameTextContext context, Filterable... filters) {
-        if (actionResult.hasType(ActionResult.Type.JUST_PLAYED)) {
+        if (actionResult.hasType(ActionResultType.PLAYED_CARD)) {
             if (_playingPlayer == null ||
                     actionResult.getPerformingPlayerId().equals(_playingPlayer.getPlayerName(game, context))) {
                 PhysicalCard playedCard = ((PlayCardResult) actionResult).getPlayedCard();

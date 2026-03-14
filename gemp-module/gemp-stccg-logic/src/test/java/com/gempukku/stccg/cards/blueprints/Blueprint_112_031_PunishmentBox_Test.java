@@ -76,7 +76,7 @@ public class Blueprint_112_031_PunishmentBox_Test extends AbstractAtTest {
         // Togaran is stopped, so the attempt continues and Armus kills Kallis
         assertTrue(togaran.isStopped());
         assertFalse(mission.getGameLocation(_game).hasCardSeededUnderneath(armus));
-        assertTrue(personnelWasKilled(kallis));
+        assertTrue(personnelWasKilledAndDiscarded(kallis));
 
         // Next turn, Togaran is unstopped; we try again
         skipToNextTurnAndPhase(P1, Phase.CARD_PLAY);

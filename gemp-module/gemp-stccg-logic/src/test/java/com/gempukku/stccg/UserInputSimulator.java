@@ -6,8 +6,9 @@ import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.battle.InitiateShipBattleAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
-import com.gempukku.stccg.actions.placecard.AddCardsToSeedCardStackAction;
-import com.gempukku.stccg.actions.placecard.RemoveCardsFromSeedCardStackAction;
+import com.gempukku.stccg.actions.movecard.WalkCardsAction;
+import com.gempukku.stccg.actions.placecard.AddCardsToPreseedStackAction;
+import com.gempukku.stccg.actions.placecard.RemoveCardsFromPreseedCardStackAction;
 import com.gempukku.stccg.actions.playcard.*;
 import com.gempukku.stccg.actions.turn.UseGameTextAction;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
@@ -20,7 +21,6 @@ import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.gamestate.MissionLocation;
 import com.google.common.collect.Iterables;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public interface UserInputSimulator {
 
     DefaultGame getGame();
 
-    default void performAction(String playerId, Class<? extends Action> actionClass, PhysicalCard performingCard)
+    default Action performAction(String playerId, Class<? extends Action> actionClass, PhysicalCard performingCard)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         Action choice = null;
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
@@ -58,6 +58,8 @@ public interface UserInputSimulator {
         }
         if (choice == null) {
             throw new DecisionResultInvalidException("Could not find game text action");
+        } else {
+            return choice;
         }
     }
 
@@ -139,7 +141,7 @@ public interface UserInputSimulator {
         }
     }
 
-    default void selectCards(String playerId, List<? extends PhysicalCard> cards)
+    default void selectCards(String playerId, Collection<? extends PhysicalCard> cards)
             throws DecisionResultInvalidException, InvalidGameOperationException {
         AwaitingDecision decision = getGame().getAwaitingDecision(playerId);
         if (decision instanceof CardSelectionDecision cardSelection) {
@@ -251,36 +253,39 @@ public interface UserInputSimulator {
         }
     }
 
-
-    default void seedDilemma(PhysicalCard seedCard, MissionLocation mission) throws DecisionResultInvalidException,
+    default Action seedDilemma(PhysicalCard seedCard, MissionCard mission) throws DecisionResultInvalidException,
             InvalidGameOperationException {
         String playerName = seedCard.getOwnerName();
         AwaitingDecision missionSelection = getGame().getAwaitingDecision(playerName);
+        Action chosenAction = null;
         if (missionSelection instanceof ActionSelectionDecision actionDecision) {
             String actionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
-                if (actionDecision.getActions().get(i) instanceof AddCardsToSeedCardStackAction seedAction &&
+                if (actionDecision.getActions().get(i) instanceof AddCardsToPreseedStackAction seedAction &&
                         seedAction.getLocationId() == mission.getLocationId()) {
                     actionId = String.valueOf(seedAction.getActionId());
+                    chosenAction = seedAction;
+                    break;
                 }
             }
             playerDecided(playerName, actionId);
-
             playerDecided(playerName, String.valueOf(seedCard.getCardId()));
+            return chosenAction;
         } else {
             throw new DecisionResultInvalidException("Could not find action selection decision");
         }
     }
 
-    default void removeDilemma(PhysicalCard seedCard, MissionLocation mission) throws DecisionResultInvalidException,
+
+    default void removeDilemma(PhysicalCard seedCard, MissionCard mission) throws DecisionResultInvalidException,
             InvalidGameOperationException {
         String playerName = seedCard.getOwnerName();
         AwaitingDecision missionSelection = getGame().getAwaitingDecision(playerName);
         if (missionSelection instanceof ActionSelectionDecision actionDecision) {
             String actionId = null;
             for (int i = 0; i < actionDecision.getActions().size(); i++) {
-                if (actionDecision.getActions().get(i) instanceof RemoveCardsFromSeedCardStackAction seedAction &&
-                        seedAction.getLocation() == mission) {
+                if (actionDecision.getActions().get(i) instanceof RemoveCardsFromPreseedCardStackAction seedAction &&
+                        seedAction.getPerformingCard() == mission) {
                     actionId = String.valueOf(seedAction.getActionId());
                 }
             }
@@ -380,6 +385,21 @@ public interface UserInputSimulator {
             }
         }
         throw new DecisionResultInvalidException("No valid action to download " + cardToPlay.getTitle());
+    }
+
+    default Action walkCards(String playerId, PhysicalCard origin,
+                             Collection<? extends ReportableCard> cardsToWalk, PhysicalCard destination)
+            throws DecisionResultInvalidException, InvalidGameOperationException {
+        List<WalkCardsAction> actions = getSelectableActionsOfClass(playerId, WalkCardsAction.class);
+        for (WalkCardsAction action : actions) {
+            if (action.getPerformingCard() == origin) {
+                action.setCardsToMove(cardsToWalk);
+                action.setDestination(destination);
+                selectAction(playerId, action);
+                return action;
+            }
+        }
+        throw new DecisionResultInvalidException("No valid action to beam specified cards");
     }
 
 

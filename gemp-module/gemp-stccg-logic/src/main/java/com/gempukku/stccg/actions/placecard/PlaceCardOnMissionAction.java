@@ -64,8 +64,8 @@ public class PlaceCardOnMissionAction extends ActionyAction {
             GameLocation location = gameState.getLocationById(_locationId);
             if (location instanceof MissionLocation mission) {
                 gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, List.of(_cardBeingPlaced));
-                _cardBeingPlaced.setParentCardRelationship(mission.getTopMissionCard(), ChildCardRelationshipType.ATOP);
-                gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION, _actionContext);
+                _cardBeingPlaced.setParentCardRelationship(mission.getBottomMissionCard(), ChildCardRelationshipType.ATOP);
+                gameState.addCardToZone(cardGame, _cardBeingPlaced, Zone.AT_LOCATION);
                 gameState.getModifiersLogic().addWhileThisCardInPlayModifiers(_modifiersWhileInPlay, _cardBeingPlaced);
 
                 for (GameLocation spacelineLocation : gameState.getOrderedSpacelineLocations()) {
@@ -78,6 +78,8 @@ public class PlaceCardOnMissionAction extends ActionyAction {
                         missionLoc.removeSeedCard(_cardBeingPlaced);
                     }
                 }
+                _cardBeingPlaced.reveal();
+                saveResult(new DilemmaPlacedOnCardResult(cardGame, _cardBeingPlaced, this, _cardBeingPlaced.getParentCard()), cardGame);
                 setAsSuccessful();
             } else {
                 setAsFailed();

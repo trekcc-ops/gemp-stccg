@@ -2,10 +2,13 @@ package com.gempukku.stccg.gamestate;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.blueprints.ActionBlueprint;
-import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.cards.cardgroup.DrawDeck;
 import com.gempukku.stccg.cards.cardgroup.PhysicalCardGroup;
@@ -17,6 +20,7 @@ import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.EndGameResult;
 import com.gempukku.stccg.game.InvalidGameOperationException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.modifiers.LimitCounter;
@@ -61,6 +65,10 @@ public abstract class GameState {
 
     private final Map<String, AwaitingDecision> _awaitingDecisionMap = new HashMap<>();
     private int nextDecisionId = 1;
+    private final Map<String, Integer> _playerTurnNumbers = new HashMap<>();
+
+    @JsonProperty("endGameResult")
+    private EndGameResult _endGameResult;
 
 
     protected GameState(Iterable<String> playerIds, GameTimer gameTimer)
@@ -182,16 +190,20 @@ public abstract class GameState {
         List<PhysicalCard> zoneCardList = getZoneCards(card.getOwnerName(), Zone.REMOVED);
         zoneCardList.add(card);
         card.setZone(Zone.REMOVED);
+        card.clearLocation();
     }
 
-    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone, GameTextContext context) {
+    public void addCardToZone(DefaultGame cardGame, PhysicalCard card, Zone zone) {
         if (zone == Zone.DISCARD) {
             cardGame.addCardToTopOfDiscardPile(card);
         } else if (zone == Zone.REMOVED) {
             addCardToRemovedPile(card);
         }else {
             if (zone.isInPlay()) {
-                addCardToInPlay(cardGame, card, context);
+                addCardToInPlay(cardGame, card);
+            } else if (zone != Zone.VOID) {
+                // Kind of weird to call out VOID, but this may still be used for dilemma seeding
+                card.clearLocation();
             }
 
             if (zone.hasList()) {
@@ -233,13 +245,13 @@ public abstract class GameState {
     }
 
     public void startPlayerTurn(Player player) {
-        _playerOrder.setCurrentPlayer(player.getPlayerId());
-        _currentTurnNumber++;
+        startPlayerTurn(player.getPlayerId());
     }
 
     public void startPlayerTurn(String playerName) {
         _playerOrder.setCurrentPlayer(playerName);
         _currentTurnNumber++;
+        _playerTurnNumbers.merge(playerName, 1, Integer::sum);
     }
 
 
@@ -248,7 +260,7 @@ public abstract class GameState {
         return _currentPhase;
     }
 
-    public void playerDrawsCard(Player player) {
+    public PhysicalCard playerDrawsCard(Player player) {
         DrawDeck drawDeck = player.getDrawDeck();
         if (!drawDeck.isEmpty()) {
             PhysicalCard card = drawDeck.getTopCard();
@@ -256,13 +268,18 @@ public abstract class GameState {
             List<PhysicalCard> zoneCardList = getZoneCards(player, Zone.HAND);
             zoneCardList.add(card);
             card.setZone(Zone.HAND);
+            return card;
+        } else {
+            return null;
         }
     }
 
-    public void playerDrawsCard(String playerName) {
+    public PhysicalCard playerDrawsCard(String playerName) {
         Player player = getPlayerMap().get(playerName);
         if (player != null) {
-            playerDrawsCard(player);
+            return playerDrawsCard(player);
+        } else {
+            return null;
         }
     }
 
@@ -326,9 +343,15 @@ public abstract class GameState {
         return new GameStateMapper().writer(true).writeValueAsString(this);
     }
 
+    public JsonNode serializeForPlayerIntoNode(String playerName) throws JsonProcessingException {
+        String jsonString = serializeForPlayer(playerName);
+        return new ObjectMapper().readTree(jsonString);
+    }
+
     public String serializeForPlayer(String playerId) throws JsonProcessingException {
-        return new GameStateMapper()
-                .writer(false)
+        GameStateMapper mapper = new GameStateMapper();
+        mapper.registerModule(new JavaTimeModule());
+        return mapper.writer(false)
                 .writeValueAsString(new GameStateView(playerId, this));
     }
 
@@ -364,7 +387,7 @@ public abstract class GameState {
         return _playerClocks.values();
     }
 
-    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card, GameTextContext context) {
+    public void addCardToInPlay(DefaultGame cardGame, PhysicalCard card) {
         if (!_inPlay.contains(card)) {
             _inPlay.add(card);
 
@@ -457,4 +480,15 @@ public abstract class GameState {
         return result;
     }
 
+    public void saveGameResult(EndGameResult result) {
+        _endGameResult = result;
+    }
+
+    public EndGameResult getEndGameResult() {
+        return _endGameResult;
+    }
+
+    public int getCurrentPlayerTurnNumber() {
+        return Objects.requireNonNullElse(_playerTurnNumbers.get(getCurrentPlayerId()), 0);
+    }
 }

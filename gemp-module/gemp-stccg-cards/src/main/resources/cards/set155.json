@@ -191,7 +191,7 @@
             "type": "event",
             "property-logo": "tng-logo",
             "lore": "Spock undertook a personal mission to reconcile ancient enemies Romulus and Vulcan. Starfleet took a dim view of his brash actions.",
-            "image-url": "https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg",
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/16V.jpg",
             "playThisCardAction": {
                 "type": "playThis",
                 "perGameLimit": 1,
@@ -263,18 +263,11 @@
                 {
                     "type": "seedThis",
                     "limit": 1,
-                    "toCore": true
-                },
-                {
-                    "type": "optionalTrigger",
-                    "trigger": {
-                        "type": "played",
-                        "filter": "self"
-                    },
-                    "triggerDuringSeed": true,
-                    "effect": {
+                    "toCore": true,
+                    "immediateEffect": {
                         "type": "download",
-                        "filter": "warp-core"
+                        "filter": "warp-core",
+                        "optional": true
                     }
                 },
                 {
@@ -339,7 +332,8 @@
                             "filter": "inYourHand + tng-icon",
                             "count": 2
                         },
-                        "player": "you"
+                        "player": "you",
+                        "showOpponent": true
                     },
                     "effect": [
                         {
@@ -383,7 +377,8 @@
                                         "filter": "bottomCardsOfYourDiscardPile(3, tng-icon + (ship OR personnel))",
                                         "count": 3
                                     },
-                                    "player": "you"
+                                    "player": "you",
+                                    "showOpponent": true
                                 }
                             ]
                         },
@@ -1379,7 +1374,7 @@
             "species": "klingon",
             "gender": "male",
             "skill-box": {
-                "skill-dots": 3,
+                "skill-dots": 4,
                 "skills": [
                     {
                         "type": "regular",

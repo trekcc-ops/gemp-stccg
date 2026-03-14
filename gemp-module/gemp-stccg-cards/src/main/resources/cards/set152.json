@@ -202,7 +202,8 @@
                                 "type": "select",
                                 "filter": "personnel + inYourDiscard",
                                 "saveToMemoryId": "recoveredPersonnel"
-                            }
+                            },
+                            "showOpponent": true
                         },
                         {
                             "type": "discardThisCard",

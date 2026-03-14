@@ -60,7 +60,7 @@ public class Blueprint_152_002_DangerousClimb_Test extends AbstractAtTest {
         int killedPersonnel = 0;
 
         for (PersonnelCard personnelCard : personnelAttempting) {
-            if (personnelWasKilled(personnelCard)) {
+            if (personnelWasKilledAndDiscarded(personnelCard)) {
                 killedPersonnel++;
             }
             if (personnelCard.isStopped()) {
@@ -84,7 +84,7 @@ public class Blueprint_152_002_DangerousClimb_Test extends AbstractAtTest {
         int killedPersonnel = 0;
 
         for (PersonnelCard personnelCard : personnelAttempting) {
-            if (personnelWasKilled(personnelCard)) {
+            if (personnelWasKilledAndDiscarded(personnelCard)) {
                 killedPersonnel++;
             }
             if (personnelCard.isStopped()) {

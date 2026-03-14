@@ -48,7 +48,7 @@ public class Blueprint_101_014_Archer_Test extends AbstractAtTest {
         Wilkins has the highest attributes and will be killed */
         initializeGame(1, false);
         attemptMission(P1, _mission);
-        assertTrue(personnelWasKilled(wilkins));
+        assertTrue(personnelWasKilledAndDiscarded(wilkins));
         assertEquals(Zone.REMOVED, archer.getZone());
         assertTrue(wallace.isStopped());
     }
@@ -59,11 +59,11 @@ public class Blueprint_101_014_Archer_Test extends AbstractAtTest {
         Wilkins has the highest attributes. Player two must select which one will be killed. */
         initializeGame(2, false);
         attemptMission(P1, _mission);
-        assertFalse(personnelWasKilled(wilkins));
+        assertFalse(personnelWasKilledAndDiscarded(wilkins));
         assertNotEquals(Zone.REMOVED, archer.getZone());
         assertTrue(selectableCardsAre(P2, List.of(wilkins, wilkins2)));
         selectCard(P2, wilkins2);
-        assertTrue(personnelWasKilled(wilkins2));
+        assertTrue(personnelWasKilledAndDiscarded(wilkins2));
         assertEquals(Zone.REMOVED, archer.getZone());
         assertTrue(wilkins.isStopped());
         assertTrue(wallace.isStopped());
@@ -74,8 +74,8 @@ public class Blueprint_101_014_Archer_Test extends AbstractAtTest {
         /* If Away Team has SECURITY + MEDICAL, dilemma is overcome and nobody is killed or stopped. */
         initializeGame(1, true);
         attemptMission(P1, _mission);
-        assertFalse(personnelWasKilled(wilkins));
-        assertFalse(personnelWasKilled(wallace));
+        assertFalse(personnelWasKilledAndDiscarded(wilkins));
+        assertFalse(personnelWasKilledAndDiscarded(wallace));
         assertEquals(Zone.REMOVED, archer.getZone());
         assertFalse(wilkins.isStopped());
         assertFalse(wallace.isStopped());

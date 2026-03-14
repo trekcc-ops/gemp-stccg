@@ -1,5 +1,7 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
@@ -11,36 +13,19 @@ import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class ActionResult {
 
-    public enum Type {
-        ACTIVATE_TRIBBLE_POWER,
-        DRAW_CARD_OR_PUT_INTO_HAND,
-        END_OF_TURN,
-        FOR_EACH_DISCARDED_FROM_HAND,
-        FOR_EACH_DISCARDED_FROM_PLAY_PILE,
-        FOR_EACH_RETURNED_TO_HAND,
-        FOR_EACH_REVEALED_FROM_HAND,
-        FOR_EACH_REVEALED_FROM_TOP_OF_DECK,
-        JUST_DISCARDED_FROM_PLAY,
-        JUST_PLAYED,
-        PLAY_CARD_INITIATION,
-        PLAYER_WENT_OUT,
-        START_OF_MISSION_ATTEMPT,
-        START_OF_PHASE,
-        START_OF_TURN,
-        DRAW_CARD, RANDOM_SELECTION_INITIATED, SOLVE_MISSION, KILL_CARD
-    }
-
-    private final List<Type> _types;
+    @JsonProperty("type")
+    private final ActionResultType _type;
     private final Set<Integer> _triggerActionIdsUsed = new HashSet<>();
 
     // Actions that can be initiated as optional responses. The key of this map is player name.
     private final Map<String, List<Action>> _optionalAfterTriggerActions = new HashMap<>();
 
-    // TODO - In general this isn't doing a great job of assessing who actually performed the action
     protected final String _performingPlayerId;
     private boolean _initialized;
     private ActionOrder _optionalResponsePlayerOrder;
@@ -48,25 +33,36 @@ public class ActionResult {
     private int _passCount;
     protected final Action _action;
 
-    public ActionResult(List<Type> types, String performingPlayerId, Action action) {
-        _types = types;
+    protected final ZonedDateTime _timestamp;
+
+    @JsonProperty("resultId")
+    protected final int _resultId;
+
+    protected ActionResult(int resultId, ActionResultType type, String performingPlayerId, Action action,
+                        ZonedDateTime timestamp) {
+        // This is only used to create action results that have already been logged in the game
+        _type = type;
         _performingPlayerId = performingPlayerId;
         _action = action;
         _passCount = 0;
+        _timestamp = timestamp;
+        _resultId = resultId;
     }
 
-
-    public ActionResult(Type type, String performingPlayerId, Action action) {
-        this(List.of(type), performingPlayerId, action);
+    public ActionResult(DefaultGame cardGame, ActionResultType type, String performingPlayerId, Action action) {
+        _type = type;
+        _performingPlayerId = performingPlayerId;
+        _action = action;
+        _passCount = 0;
+        _timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
+        _resultId = cardGame.getActionsEnvironment().getNextResultIdAndIncrement();
+        cardGame.getActionsEnvironment().logActionResult(this);
     }
 
-    public ActionResult(List<Type> types, Action action) {
-        this(types, action.getPerformingPlayerId(), action);
+    public ActionResult(DefaultGame cardGame, ActionResultType type, Action action) {
+        this(cardGame, type, action.getPerformingPlayerId(), action);
     }
 
-    public ActionResult(Type type, Action action) {
-        this(List.of(type), action.getPerformingPlayerId(), action);
-    }
 
     public void initialize(DefaultGame cardGame) {
         if (!_initialized) {
@@ -77,16 +73,11 @@ public class ActionResult {
         }
     }
 
-    public boolean hasType(Type type) {
-        return _types.contains(type);
+    public boolean hasType(ActionResultType type) {
+        return _type == type;
     }
-    public boolean hasAnyType(List<Type> types) {
-        for (Type type : types) {
-            if (_types.contains(type)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean hasAnyType(List<ActionResultType> types) {
+        return types.contains(_type);
     }
 
     public void createOptionalAfterTriggerActions(DefaultGame game) {
@@ -104,6 +95,7 @@ public class ActionResult {
     }
 
 
+    @JsonProperty("performingPlayerId")
     public String getPerformingPlayerId() { return _performingPlayerId; }
 
     public List<Action> getRequiredResponseActions(DefaultGame cardGame) {
@@ -117,6 +109,7 @@ public class ActionResult {
         return gatheredActions;
     }
 
+    @JsonIgnore
     public boolean canBeRespondedTo() {
         return !_requiredResponses.isEmpty() || _passCount < _optionalResponsePlayerOrder.getPlayerCount();
     }
@@ -198,8 +191,18 @@ public class ActionResult {
         }
     }
 
+    @JsonIgnore
     public Action getAction() {
         return _action;
+    }
+
+    @JsonProperty("timestamp")
+    public String getTimestamp() {
+        return _timestamp.toString();
+    }
+
+    public ActionResult getResultForPlayer(String playerName) {
+        return this;
     }
 
 }

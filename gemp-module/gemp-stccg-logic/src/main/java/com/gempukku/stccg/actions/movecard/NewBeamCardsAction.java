@@ -118,6 +118,11 @@ public class NewBeamCardsAction extends BeamOrWalkAction {
         return cards;
     }
 
+    @Override
+    protected void saveResult(DefaultGame cardGame) {
+
+    }
+
     protected String actionVerb() { return "beam"; }
 
     public boolean requirementsAreMet(DefaultGame cardGame) {

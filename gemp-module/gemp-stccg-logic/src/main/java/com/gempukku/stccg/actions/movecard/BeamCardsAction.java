@@ -2,6 +2,7 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.CardWithCrew;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
@@ -22,7 +23,7 @@ public class BeamCardsAction extends BeamOrWalkAction {
     @Override
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
         // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
-        return Filters.filterCardsInPlay(
+        Collection<PhysicalCard> destinations = Filters.filterCardsInPlay(
                 game,
                 Filters.atLocation(_cardSource.getLocationId()),
                 Filters.or(
@@ -33,6 +34,8 @@ public class BeamCardsAction extends BeamOrWalkAction {
                         )
                 )
         );
+        destinations.removeIf(card -> card instanceof MissionCard missionCard && missionCard.getBottomMission() != missionCard);
+        return destinations;
     }
 
     @Override
@@ -46,6 +49,11 @@ public class BeamCardsAction extends BeamOrWalkAction {
                 cards.add(destinationCard);
         }
         return cards;
+    }
+
+    @Override
+    protected void saveResult(DefaultGame cardGame) {
+        saveResult(new BeamCardsResult(cardGame, _performingPlayerId, this, _cardsToMove, _origin, _destination), cardGame);
     }
 
     protected String actionVerb() { return "beam"; }

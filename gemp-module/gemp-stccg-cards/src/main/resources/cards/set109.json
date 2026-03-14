@@ -93,16 +93,8 @@
             "actions" : [
                 {
                     "type" : "seedThis",
-                    "toCore" : "true"
-                },
-                {
-                    "type" : "optionalTrigger",
-                    "player" : "you",
-                    "trigger" : {
-                        "type" : "thisCardPlayed"
-                    },
-                    "triggerDuringSeed" : true,
-                    "effect" : {
+                    "toCore" : "true",
+                    "immediateEffect": {
                         "type" : "downloadReportable",
                         "target" : {
                             "type" : "reportCards",
@@ -111,7 +103,8 @@
                             "differentCardsOnly" : true,
                             "destination" : "your + outpost",
                             "specialReporting" : true
-                        }
+                        },
+                        "optional": true
                     }
                 },
                 {

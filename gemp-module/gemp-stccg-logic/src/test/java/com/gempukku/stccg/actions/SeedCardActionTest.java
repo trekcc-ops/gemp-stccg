@@ -29,11 +29,10 @@ public class SeedCardActionTest extends AbstractAtTest {
         selectAction(P1, seedAction);
 
         JsonNode actionNode = getJsonForPerformedAction(_game.getGameState(), P1, seedAction);
-        assertEquals(9, actionNode.size());
-        assertEquals(".playcard.SeedCardAction", actionNode.get("className").textValue());
+        assertEquals(8, actionNode.size());
+        assertEquals(".playcard.SeedCardToDestinationAction", actionNode.get("className").textValue());
         assertEquals(seedAction.getActionId(), actionNode.get("actionId").intValue());
         assertEquals("completed_success", actionNode.get("status").textValue());
-        assertEquals("CORE", actionNode.get("destinationZone").textValue());
         assertEquals(door.getCardId(), actionNode.get("seededCardId").intValue());
         assertEquals(door.getCardId(), actionNode.get("targetCardId").intValue());
         assertEquals(door.getCardId(), actionNode.get("performingCardId").intValue());
@@ -52,11 +51,10 @@ public class SeedCardActionTest extends AbstractAtTest {
         Action seedAction = Iterables.getOnlyElement(getSelectableActionsOfClass(P1, SeedCardAction.class));
 
         JsonNode actionNode = getJsonForSelectableAction(_game.getGameState(), P1, seedAction);
-        assertEquals(9, actionNode.size());
-        assertEquals(".playcard.SeedCardAction", actionNode.get("className").textValue());
+        assertEquals(8, actionNode.size());
+        assertEquals(".playcard.SeedCardToDestinationAction", actionNode.get("className").textValue());
         assertEquals(seedAction.getActionId(), actionNode.get("actionId").intValue());
         assertEquals("virtual", actionNode.get("status").textValue());
-        assertEquals("CORE", actionNode.get("destinationZone").textValue());
         assertEquals(door.getCardId(), actionNode.get("seededCardId").intValue());
         assertEquals(door.getCardId(), actionNode.get("targetCardId").intValue());
         assertEquals(door.getCardId(), actionNode.get("performingCardId").intValue());

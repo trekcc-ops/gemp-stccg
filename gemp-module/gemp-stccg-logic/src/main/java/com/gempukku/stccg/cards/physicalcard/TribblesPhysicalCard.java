@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.Player;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -17,9 +16,6 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
 
     public TribblesPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
         super(cardId, ownerName, blueprint);
-    }
-    public TribblesPhysicalCard(int cardId, Player owner, CardBlueprint blueprint) {
-        super(cardId, owner, blueprint);
     }
 
     public boolean isMisSeed(DefaultGame game, MissionLocation mission) {
@@ -38,7 +34,7 @@ public class TribblesPhysicalCard extends AbstractPhysicalCard {
     }
 
     @Override
-    public TribblesPlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree) {
+    public TribblesPlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload) {
         return new TribblesPlayCardAction(cardGame, this);
     }
 
