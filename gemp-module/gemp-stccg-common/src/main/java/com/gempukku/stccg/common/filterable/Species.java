@@ -17,7 +17,7 @@ public enum Species implements Filterable {
     HUMAN("human"),
     HUMANOID("humanoid"),
     JEM_HADAR ("Jem'Hadar"),
-    KELLERUN, KLINGON, LETHEAN, MARKALIAN, NAPEAN, REMAN, ROMULAN, RUTIAN,
+    KELLERUN, KLINGON, LETHEAN, MARKALIAN, NAPEAN, RAMATIN, REMAN, ROMULAN, RUTIAN,
     TAKARAN, TAMARIAN, TILONIAN, TRILL, VORTA, VULCAN, YRIDIAN, ZALKONIAN, ZAKDORN;
     private final String _humanReadable;
 
