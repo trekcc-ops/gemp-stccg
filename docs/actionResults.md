@@ -1,5 +1,4 @@
 # Action results
-<i>Last updated 11 March 2026</i>
 
 The serialized game state property "actionResults" contains
 information about game actions that have been initiated and/or completed.
