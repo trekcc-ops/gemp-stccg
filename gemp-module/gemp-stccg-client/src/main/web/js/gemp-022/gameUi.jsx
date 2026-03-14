@@ -41,8 +41,6 @@ export default class GameTableUI {
     hand;
     specialGroup;
 
-    adventureDeckDialogs;
-    adventureDeckGroups;
     miscPileDialogs;
     miscPileGroups;
 
@@ -133,8 +131,6 @@ export default class GameTableUI {
 
         this.reactRoot;
         this.reactGameState = {};
-        this.adventureDeckDialogs = {};
-        this.adventureDeckGroups = {};
         this.miscPileDialogs = {};
         this.miscPileGroups = {};
         this.playPiles = {};
@@ -1252,7 +1248,6 @@ export default class GameTableUI {
     }
 
     layoutZones() {
-//        this.advPathGroup.layoutCards();
         for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
             cardGroup.layoutCards();
         }
@@ -1865,12 +1860,6 @@ export class ST1EGameTableUI extends GameTableUI {
             this.playerAtLocationCardGroups[locationIndex].layoutCards();
 
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
-        }
-
-        for (let playerId in this.adventureDeckGroups) {
-            if (Object.hasOwn(this.adventureDeckGroups, playerId)) {
-                this.adventureDeckGroups[playerId].layoutCards();
-            }
         }
 
         for (let playerId in this.miscPileGroups) {
