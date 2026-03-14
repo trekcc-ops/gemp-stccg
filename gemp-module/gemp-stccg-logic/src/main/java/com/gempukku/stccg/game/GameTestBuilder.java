@@ -47,6 +47,7 @@ public class GameTestBuilder {
                             @JsonProperty("missions") List<JsonNode> missions,
                             @JsonProperty("seedDeck") List<List<String>> seedDecks,
                             @JsonProperty("drawDeck") List<List<String>> drawDecks,
+                            @JsonProperty("missionsPile") List<List<String>> missionsPiles,
                             @JsonProperty("core") List<List<String>> cores,
                             @JsonProperty("hand") List<List<String>> hands,
                             @JacksonInject FormatLibrary formatLibrary,
@@ -76,6 +77,17 @@ public class GameTestBuilder {
                     CardBlueprint blueprint = cardLibrary.get(blueprintId);
                     if (blueprint != null) {
                         addSeedDeckCard(blueprintId, blueprint.getTitle(), _players.get(i));
+                    }
+                }
+            }
+        }
+        if (missionsPiles != null) {
+            for (int i = 0; i < missionsPiles.size(); i++) {
+                List<String> missionList = missionsPiles.get(i);
+                for (String blueprintId : missionList) {
+                    CardBlueprint blueprint = cardLibrary.get(blueprintId);
+                    if (blueprint != null) {
+                        addMissionToDeck(blueprintId, blueprint.getTitle(), _players.get(i));
                     }
                 }
             }
@@ -113,12 +125,14 @@ public class GameTestBuilder {
                 }
             }
         }
-        try {
-            addJsonCards(cardLibrary, missions);
-        } catch(CardNotFoundException exp) {
-            throw exp;
-        } catch(Exception ignored) {
-            throw new CardNotFoundException("Unable to create cards for sample game");
+        if (missions != null) {
+            try {
+                addJsonCards(cardLibrary, missions);
+            } catch (CardNotFoundException exp) {
+                throw exp;
+            } catch (Exception ignored) {
+                throw new CardNotFoundException("Unable to create cards for sample game");
+            }
         }
     }
 
@@ -544,6 +558,11 @@ public class GameTestBuilder {
                 case "P2" -> _players.get(1);
                 default -> ownerText;
             };
+            try {
+                library.getCardBlueprint(blueprintId);
+            } catch(Exception exp) {
+                throw new CardNotFoundException("Could not find blueprint for id '" + blueprintId + "'");
+            }
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             if (blueprint.getCardType() == CardType.MISSION) {
                 MissionCard mission = addMission(blueprintId, blueprint.getTitle(), ownerName);
@@ -554,19 +573,23 @@ public class GameTestBuilder {
                         throw new CardNotFoundException("Unable to create shared mission for sample game");
                     }
                 }
-                if (node.has("IN_SPACE")) {
-                    addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
-                }
-                if (node.has("ON_PLANET")) {
-                    addJsonCards(library, node.get("ON_PLANET"), ChildCardRelationshipType.ON_PLANET, mission);
-                }
-                if (node.has("SEEDED_UNDERNEATH")) {
-                    for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
-                        String seedCardBlueprintId = seedCardNode.get("blueprintId").textValue();
-                        String seedCardOwner = seedCardNode.get("owner").textValue();
-                        CardBlueprint seedCardBlueprint = library.getCardBlueprint(seedCardBlueprintId);
-                        addSeedCardUnderMission(seedCardBlueprintId, seedCardBlueprint.getTitle(), seedCardOwner, mission);
+                try {
+                    if (node.has("IN_SPACE")) {
+                        addJsonCards(library, node.get("IN_SPACE"), ChildCardRelationshipType.IN_SPACE, mission);
                     }
+                    if (node.has("ON_PLANET")) {
+                        addJsonCards(library, node.get("ON_PLANET"), ChildCardRelationshipType.ON_PLANET, mission);
+                    }
+                    if (node.has("SEEDED_UNDERNEATH")) {
+                        for (JsonNode seedCardNode : node.get("SEEDED_UNDERNEATH")) {
+                            String seedCardBlueprintId = seedCardNode.get("blueprintId").textValue();
+                            String seedCardOwner = seedCardNode.get("owner").textValue();
+                            CardBlueprint seedCardBlueprint = library.getCardBlueprint(seedCardBlueprintId);
+                            addSeedCardUnderMission(seedCardBlueprintId, seedCardBlueprint.getTitle(), seedCardOwner, mission);
+                        }
+                    }
+                } catch(Exception exp) {
+                    throw new CardNotFoundException("Unable to add children cards for card '" + blueprint.getTitle() + "'");
                 }
             }
         }
