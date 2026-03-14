@@ -397,7 +397,7 @@ export function communicateActionResult(jsonAction, jsonGameState, gameUi) {
             gameChat.appendMessage("--------------------", "gameMessage");
             message = "Start of ";
             if (performingPlayerText === "You") {
-                message = message = "Your turn";
+                message = message + "your turn";
             } else {
                 message = message + performingPlayerText + "'s turn";
             }
