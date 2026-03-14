@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.blueprints.*;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.playcard.*;
@@ -428,14 +427,6 @@ public class CardBlueprint {
     }
 
 
-    public ActionBlueprint getDiscardedFromPlayTrigger(RequiredType requiredType) {
-        return null;
-    }
-
-    public List<TopLevelSelectableAction> getPlayActionsFromGameText(PhysicalCard thisCard, Player player,
-                                                                     DefaultGame cardGame) {
-        return new ArrayList<>();
-    }
     public List<PlayOutOfSequenceRequirement> getPlayOutOfSequenceConditions() { return playOutOfSequenceConditions; }
 
 
@@ -509,9 +500,9 @@ public class CardBlueprint {
         return _characteristics.contains(characteristic);
     }
 
-    public List<TopLevelSelectableAction> getRequiredAfterTriggerActions(DefaultGame cardGame,
+    public List<? extends Action> getRequiredAfterTriggerActions(DefaultGame cardGame,
                                                                          ActionResult actionResult, PhysicalCard card) {
-        List<TopLevelSelectableAction> result = new LinkedList<>();
+        List<UseGameTextAction> result = new LinkedList<>();
         getTriggers(RequiredType.REQUIRED).forEach(actionSource -> {
             if (actionSource instanceof RequiredTriggerActionBlueprint triggerSource) {
                 GameTextContext context = new GameTextContext(card, card.getControllerName());

@@ -1,7 +1,7 @@
 package com.gempukku.stccg.cards.physicalcard;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.movecard.BeamCardsAction;
 import com.gempukku.stccg.actions.movecard.WalkCardsAction;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -68,8 +68,8 @@ public class FacilityCard extends AffiliatedCard implements CardWithCrew, CardWi
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
-        List<TopLevelSelectableAction> actions = new LinkedList<>();
+    public List<? extends Action> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
+        List<Action> actions = new LinkedList<>();
         if (cardGame.getCurrentPhase() == Phase.EXECUTE_ORDERS) {
             if (hasTransporters() && isControlledBy(player.getPlayerId())) {
                 actions.add(new BeamCardsAction(cardGame, player, this));

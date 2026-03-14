@@ -1,7 +1,6 @@
 package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.actions.playcard.SeedMissionCardAction;
@@ -29,17 +28,8 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
     public List<Action> getPhaseActions(DefaultGame cardGame, Player player) {
         final List<Action> result = new LinkedList<>();
         if (cardGame instanceof ST1EGame stGame) {
-            final List<PhysicalCard> cardsInHand = player.getCardsInHand();
             final String currentPlayerId = cardGame.getGameState().getCurrentPlayerId();
             boolean isCurrentPlayer = Objects.equals(player.getPlayerId(), currentPlayerId);
-
-            for (PhysicalCard card : cardsInHand) {
-                for (TopLevelSelectableAction action : card.getPlayActionsFromGameText(player, cardGame)) {
-                    if (action != null && action.canBeInitiated(cardGame)) {
-                        result.add(action);
-                    }
-                }
-            }
 
             final Phase phase = cardGame.getGameState().getCurrentPhase();
             if (phase == Phase.SEED_MISSION && !player.getMissionsPile().isEmpty() && isCurrentPlayer) {
@@ -78,7 +68,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                     if (isCurrentPlayer) {
                         if (cardGame.getRules()
                                 .cardCanEnterPlay(cardGame, card, EnterPlayActionType.PLAY)) {
-                            TopLevelSelectableAction action = card.getNormalPlayCardAction(cardGame);
+                            Action action = card.getNormalPlayCardAction(cardGame);
                             if (action != null && action.canBeInitiated(cardGame))
                                 result.add(action);
                         }

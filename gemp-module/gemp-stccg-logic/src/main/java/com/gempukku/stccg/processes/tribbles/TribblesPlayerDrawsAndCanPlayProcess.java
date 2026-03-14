@@ -1,15 +1,15 @@
 package com.gempukku.stccg.processes.tribbles;
 
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.draw.DrawSingleCardAction;
 import com.gempukku.stccg.actions.playcard.TribblesPlayCardAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
-import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
@@ -34,11 +34,11 @@ public class TribblesPlayerDrawsAndCanPlayProcess extends TribblesGameProcess {
             cardGame.getActionsEnvironment().logCompletedActionNotInStack(drawAction);
             cardGame.sendActionResultToClient();
             List<? extends PhysicalCard> playerHand = currentPlayer.getCardsInHand();
-            PhysicalCard cardDrawn = playerHand.getLast();
-            final List<TopLevelSelectableAction> playableActions = new LinkedList<>();
-            if (((TribblesPhysicalCard) cardDrawn).canBePlayed(cardGame)) {
-                TribblesPlayCardAction action = new TribblesPlayCardAction(cardGame, (TribblesPhysicalCard) cardDrawn);
-                playableActions.add(action);
+            final List<Action> playableActions = new LinkedList<>();
+            if (playerHand.getLast() instanceof TribblesPhysicalCard tribblesCard &&
+                    tribblesCard.canBePlayed(cardGame)
+            ) {
+                playableActions.add(new TribblesPlayCardAction(cardGame, tribblesCard));
             }
 
             if (playableActions.isEmpty() && cardGame.shouldAutoPass(cardGame.getGameState().getCurrentPhase(), currentPlayer.getPlayerId())) {

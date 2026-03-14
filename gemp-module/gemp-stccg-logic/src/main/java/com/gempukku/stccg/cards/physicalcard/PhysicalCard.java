@@ -3,7 +3,6 @@ package com.gempukku.stccg.cards.physicalcard;
 import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
@@ -86,7 +85,7 @@ public interface PhysicalCard {
 
     String getFullName();
 
-    TopLevelSelectableAction getNormalPlayCardAction(DefaultGame cardGame);
+    Action getNormalPlayCardAction(DefaultGame cardGame);
 
     Action getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload);
 
@@ -94,7 +93,7 @@ public interface PhysicalCard {
 
     @JsonProperty("cardType")
     CardType getCardType();
-    List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame);
+    List<? extends Action> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame);
 
     List<PhysicalCard> getStackedCards(DefaultGame game);
 
@@ -170,10 +169,6 @@ public interface PhysicalCard {
         return getBlueprint().getOptionalResponseActionsWhileInHand(cardGame, this, player);
     }
 
-
-    default List<TopLevelSelectableAction> getPlayActionsFromGameText(Player player, DefaultGame cardGame) {
-        return getBlueprint().getPlayActionsFromGameText(this, player, cardGame);
-    }
 
     boolean isOwnedBy(String playerName);
 
