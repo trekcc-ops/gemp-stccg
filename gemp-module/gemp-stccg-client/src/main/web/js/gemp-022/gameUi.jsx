@@ -15,6 +15,8 @@ import strengthIconImg from "../../images/o_icon_strength.png";
 import vitalityIconImg from "../../images/o_icon_strength.png";
 import compassIconImg from "../../images/o_icon_strength.png";
 import resistanceIconImg from "../../images/o_icon_strength.png";
+import { createRoot } from 'react-dom/client';
+import JQGameStateWrapper from './jqGameStateWrapper.jsx';
 
 
 export default class GameTableUI {
@@ -28,7 +30,7 @@ export default class GameTableUI {
     gameUiInitialized = false
     cardActionDialog;
     smallDialog;
-    gameStateElem;
+    gameStatsUIElem;
     alertBox;
     alertText;
     alertButtons;
@@ -39,12 +41,6 @@ export default class GameTableUI {
     hand;
     specialGroup;
 
-    discardPileDialogs;
-    discardPileGroups;
-    adventureDeckDialogs;
-    adventureDeckGroups;
-    removedPileDialogs;
-    removedPileGroups;
     miscPileDialogs;
     miscPileGroups;
 
@@ -74,7 +70,7 @@ export default class GameTableUI {
         this.alertBox = $("#alertBox");
         this.alertText = $("#alertText");
         this.alertButtons = $("#alertButtons");
-        this.gameStateElem = $("#gameStateElem");
+        this.gameStatsUIElem = $("#gameStatsUIElem");
         this.statsDiv = $("#statsDiv");
 
         this.animations = new GameAnimations(this);
@@ -133,12 +129,8 @@ export default class GameTableUI {
             $("#replay").remove();
         }
 
-        this.discardPileDialogs = {};
-        this.discardPileGroups = {};
-        this.adventureDeckDialogs = {};
-        this.adventureDeckGroups = {};
-        this.removedPileDialogs = {};
-        this.removedPileGroups = {};
+        this.reactRoot;
+        this.reactGameState = {};
         this.miscPileDialogs = {};
         this.miscPileGroups = {};
         this.playPiles = {};
@@ -162,6 +154,7 @@ export default class GameTableUI {
                 return this.getReorganizableCardGroupForCardData(cardData.attachedToCard);
             }
         }
+
         for (let i=0; i < this.missionCardGroups.length; i++) {
             if (this.missionCardGroups[i].cardBelongs(cardData)) {
                 return this.missionCardGroups[i];
@@ -205,43 +198,26 @@ export default class GameTableUI {
         this.layoutUI(false);
     }
 
+    reRenderReactRoot() {
+        this.reactRoot.render(
+            <JQGameStateWrapper gamestate={this.reactGameState} />
+        );
+    }
+
     initializeGameUI(discardPublic) {
+        
         var that = this;
 
+        // Use new player stats pane.
+        let reactWrapper = document.createElement("div");
+        reactWrapper.id = "reactWrapper";
+        this.reactRoot = createRoot(reactWrapper);
+        this.reRenderReactRoot();
+        this.gameStatsUIElem.append(reactWrapper);
+
+
+
         for (var i = 0; i < this.allPlayerIds.length; i++) {
-
-            this.gameStateElem.append(
-                "<div class='playerStats'>" +
-                    `<div id='player${i}' class='player'>${(i+1)}. ${this.allPlayerIds[i]}</div>` +
-                    `<div id='clock${i}' class='clock'></div>` +
-                    `<div id='deck${i}' class='deckSize' title='Draw deck size'>0</div>` +
-                    `<div id='hand${i}' class='handSize' title='Hand size'>0</div>` +
-                    `<div id='discard${i}' class='discardSize' title='Discard size'>0</div>` +
-                    `<div id='score${i}' class='playerScore'>SCORE 0</div>` +
-                "</div>");
-
-            var showBut = $("<div class='slimButton'>+</div>").button().click(
-                (function (playerIndex) {
-                    return function () {
-                        $(".player").each(
-                            function (index) {
-                                if (index == playerIndex) {
-                                    if ($(this).hasClass("opened")) {
-                                        $(this).removeClass("opened").css({width: 150 - that.padding});
-                                        $("#adventureDeck" + playerIndex).css({display: "none"});
-                                        $("#removedPile" + playerIndex).css({display: "none"});
-                                    } else {
-                                        $(this).addClass("opened").css({width: 150 - that.padding + 168});
-                                        $("#adventureDeck" + playerIndex).css({display: "table-cell"});
-                                        $("#removedPile" + playerIndex).css({display: "table-cell"});
-                                    }
-                                }
-                            });
-                    };
-                })(i));
-
-            $("#showStats" + i).append(showBut);
-
             this.playPiles[this.allPlayerIds[i]] = new PlayPileCardGroup(
                 $("#main"),
                 this.allPlayerIds[i],
@@ -259,30 +235,6 @@ export default class GameTableUI {
                 },
                 "tableAreaDiv_" + this.allPlayerIds[i]
             );
-
-            $("#removedPile" + i).addClass("clickable").click(
-                (function (index) {
-                    return function () {
-                        var dialog = that.removedPileDialogs[that.allPlayerIds[index]];
-                        var group = that.removedPileGroups[that.allPlayerIds[index]];
-                        openSizeDialog(dialog);
-                        that.dialogResize(dialog, group);
-                        group.layoutCards();
-                    };
-                })(i));
-
-            if(discardPublic) {
-                $("#discard" + i).addClass("clickable").click(
-                    (function (index) {
-                        return function () {
-                            var dialog = that.discardPileDialogs[that.allPlayerIds[index]];
-                            var group = that.discardPileGroups[that.allPlayerIds[index]];
-                            openSizeDialog(dialog);
-                            that.dialogResize(dialog, group);
-                            group.layoutCards();
-                        };
-                    })(i));
-            }
         }
 
         this.specialGroup = new NormalCardGroup(this.cardActionDialog, function (card) {
@@ -294,28 +246,6 @@ export default class GameTableUI {
             this.hand = new NormalCardGroup($("#main"), function (card) {
                 return (card.zone === "HAND" || card.zone === "EXTRA" || card.zone === "MISSIONS_PILE" || card.zone === "SEED_DECK");
             });
-            if(!discardPublic) {
-                $("#discard" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-                    (function (index) {
-                        return function () {
-                            var dialog = that.discardPileDialogs[index];
-                            var group = that.discardPileGroups[index];
-                            openSizeDialog(dialog);
-                            that.dialogResize(dialog, group);
-                            group.layoutCards();
-                        };
-                    })(that.bottomPlayerId));
-            }
-            $("#adventureDeck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-                (function (index) {
-                    return function () {
-                        var dialog = that.adventureDeckDialogs[index];
-                        var group = that.adventureDeckGroups[index];
-                        openSizeDialog(dialog);
-                        that.dialogResize(dialog, group);
-                        group.layoutCards();
-                    };
-                })(that.bottomPlayerId));
         }
 
         var dragFunc = function (event) {
@@ -358,17 +288,6 @@ export default class GameTableUI {
         if(this.allPlayerIds == null) {
             return;
         }
-
-        $("#deck" + this.getPlayerIndex(this.bottomPlayerId)).addClass("clickable").click(
-            (function (index) {
-                return function () {
-                    var dialog = that.miscPileDialogs[index];
-                    var group = that.miscPileGroups[index];
-                    openSizeDialog(dialog);
-                    that.dialogResize(dialog, group);
-                    group.layoutCards();
-                };
-            })(that.bottomPlayerId));
     }
 
     addBottomLeftTabPane() {
@@ -1198,6 +1117,11 @@ export default class GameTableUI {
                 this.animations.updateGameState(false);
             }
 
+            // push gamestate to embedded React nodes
+            this.reactGameState = gameState;
+            this.reRenderReactRoot();
+
+
         } catch (e) {
             console.error(e);
             this.showErrorDialog(
@@ -1244,6 +1168,7 @@ export default class GameTableUI {
     processGameEvents(jsonNode, animate) {
         try {
             this.channelNumber = jsonNode.channelNumber;
+            
 
             // Go through all the events
             for (let i = 0; i < jsonNode.gameEvents.length; i++) {
@@ -1253,6 +1178,9 @@ export default class GameTableUI {
                     let gameState;
                     if (gameEvent.gameState) {
                         gameState = typeof(gameEvent.gameState) === "string" ? JSON.parse(gameEvent.gameState) : gameEvent.gameState;
+                        // push gamestate to embedded React nodes
+                        this.reactGameState = gameState;
+                        this.reRenderReactRoot();
                     }
                     else {
                         continue;
@@ -1320,7 +1248,6 @@ export default class GameTableUI {
     }
 
     layoutZones() {
-//        this.advPathGroup.layoutCards();
         for (var [playerId, cardGroup] of Object.entries(this.playPiles)) {
             cardGroup.layoutCards();
         }
@@ -1335,8 +1262,6 @@ export default class GameTableUI {
 
         for (const playerId of Object.keys(gameState.playerMap)) {
             this.allPlayerIds.push(playerId);
-            this.createPile(playerId, "'Removed From Game' Pile", "removedPileDialogs", "removedPileGroups");
-            this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
         }
 
         var index = this.getPlayerIndex(this.bottomPlayerId);
@@ -1527,14 +1452,6 @@ export class TribblesGameTableUI extends GameTableUI {
         this.chatBox.setBounds(BORDER_PADDING + TAB_PANE_WIDTH_PADDING, TAB_PANE_HEIGHT,
             CHAT_WIDTH - (2 * TAB_PANE_WIDTH_PADDING), CHAT_HEIGHT - TAB_PANE_HEIGHT);
 
-        this.gameStateElem.css({
-            position: "absolute",
-            left: BORDER_PADDING,
-            top: BORDER_PADDING,
-            width: CHAT_WIDTH,
-            height: STATS_TOP - BORDER_PADDING * 2
-        });
-
         this.statsDiv.css({
             position: "absolute",
             left: BORDER_PADDING,
@@ -1626,13 +1543,6 @@ export class TribblesGameTableUI extends GameTableUI {
 
         if (!this.spectatorMode) {
             this.hand.setBounds(HAND_LEFT, HAND_TOP, HAND_WIDTH, HAND_HEIGHT);
-        }
-
-
-        for (var playerId in this.discardPileGroups) {
-            if (Object.hasOwn(this.discardPileGroups, playerId)) {
-                this.discardPileGroups[playerId].layoutCards();
-            }
         }
 
         if (this.replayMode) {
@@ -1805,7 +1715,7 @@ export class ST1EGameTableUI extends GameTableUI {
             scaleTotal += heightScales[i];
         }
 
-        let specialUiWidth = 150;
+        let gameStatsUiWidth = "430px";
 
         if (!this.gameUiInitialized) {
             return;
@@ -1818,11 +1728,11 @@ export class ST1EGameTableUI extends GameTableUI {
             width: HAND_LEFT - (this.tabPane.offset().left + this.tabPane.width() + BORDER_PADDING * 5) - BORDER_PADDING * 4,
             height: 40
         });
-        this.gameStateElem.css({
+        this.gameStatsUIElem.css({
             position: "absolute",
             left: padding * 2,
             top: padding,
-            width: specialUiWidth - padding + 75,
+            width: gameStatsUiWidth,
             //height: TABLE_AREA_TOP - padding * 2
             height: 117
         });
@@ -1952,24 +1862,6 @@ export class ST1EGameTableUI extends GameTableUI {
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
         }
 
-        for (let playerId in this.discardPileGroups) {
-            if (Object.hasOwn(this.discardPileGroups, playerId)) {
-                this.discardPileGroups[playerId].layoutCards();
-            }
-        }
-
-        for (let playerId in this.adventureDeckGroups) {
-            if (Object.hasOwn(this.adventureDeckGroups, playerId)) {
-                this.adventureDeckGroups[playerId].layoutCards();
-            }
-        }
-
-        for (let playerId in this.removedPileGroups) {
-            if (Object.hasOwn(this.removedPileGroups, playerId)) {
-                this.removedPileGroups[playerId].layoutCards();
-            }
-        }
-
         for (let playerId in this.miscPileGroups) {
             if (Object.hasOwn(this.miscPileGroups, playerId)) {
                 this.miscPileGroups[playerId].layoutCards();
@@ -2044,25 +1936,7 @@ export class ST1EGameTableUI extends GameTableUI {
     }
 
     updateGameStats(gameState) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                for (const player of Object.values(gameState.playerMap)) {
-                    let playerId = player.playerId;
-                    let drawDeckSize = player.cardGroups["DRAW_DECK"].cardCount;
-                    let handSize = player.cardGroups["HAND"].cardCount;
-                    let discardSize = player.cardGroups["DISCARD"].cardCount;
-                    let removedSize = player.cardGroups["REMOVED"].cardCount;
-                    let score = player.score;
-
-                    $("#deck" + that.getPlayerIndex(playerId)).text(drawDeckSize);
-                    $("#hand" + that.getPlayerIndex(playerId)).text(handSize);
-                    $("#discard" + that.getPlayerIndex(playerId)).text(discardSize);
-                    $("#removedPile" + that.getPlayerIndex(playerId)).text(removedSize);
-                    $("#score" + that.getPlayerIndex(playerId)).text(`SCORE ${score}`);
-                }
-                next();
-            });
+        this.reRenderReactRoot();
     }
 
     addNonMissionInPlayToClientRecursively(card, gameState) {

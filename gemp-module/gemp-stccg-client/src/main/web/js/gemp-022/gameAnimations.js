@@ -236,6 +236,19 @@ export default class GameAnimations {
     }
 
     addCardToHiddenZone(cardJson, zone, zoneOwner) {
+        if (cardJson == null) {
+            console.warn(`addCardToHiddenZone: cardJson parameter was null or undefined.`);
+            return;
+        }
+        if (zone == null) {
+            console.warn(`addCardToHiddenZone: zone parameter was null or undefined.`);
+            return;
+        }
+        if (zoneOwner == null) {
+            console.warn(`addCardToHiddenZone: zoneOwner parameter was null or undefined.`);
+            return;
+        }
+
         // Adding card to discard, hand, removed, or draw deck
         // console.log("calling addCardToHiddenZone");
         var that = this;
@@ -253,14 +266,13 @@ export default class GameAnimations {
                 let card = new Card(blueprintId, zone, cardId, controllerId, cardTitle, imageUrl, locationIndex, upsideDown);
                 let cardDiv = that.game.createCardDivWithData(card);
 
-                if (zone == "DISCARD")
-                    that.game.discardPileDialogs[controllerId].append(cardDiv);
-                else if (zone == "DRAW_DECK")
+                if (zone === "DRAW_DECK") {
                     that.game.miscPileDialogs[controllerId].append(cardDiv);
-                else if (zone == "REMOVED")
-                    that.game.removedPileDialogs[controllerId].append(cardDiv);
-                else
+                }
+                else {
+                    console.warn(`addCardToHiddenZone: Unknown zone ${zone}, appending to main.`);
                     $("#main").append(cardDiv);
+                }
                 next();
             });
 
@@ -593,8 +605,10 @@ export default class GameAnimations {
             $("#main").queue(
                 function (next) {
                     that.game.layoutGroupWithCard(that.cardId);
-                    that.cardData.oldGroup.layoutCards();
-                    that.cardData.oldGroup = null;
+                    if (that.cardData.oldGroup != null) {
+                        that.cardData.oldGroup.layoutCards();
+                        that.cardData.oldGroup = null;
+                    }
                     next();
                 });
     }
@@ -1012,9 +1026,11 @@ export default class GameAnimations {
     }
 
     attachCardDivToTargetCardId(cardDiv, targetCardId) {
-        let targetCardData = getCardDivFromId(targetCardId).data("card");
-        targetCardData.attachedCards.push(cardDiv);
-        cardDiv.data("card").attachedToCard = targetCardData;
+        if ((cardDiv != null) && (targetCardId != null)) {
+            let targetCardData = getCardDivFromId(targetCardId).data("card");
+            targetCardData.attachedCards.push(cardDiv);
+            cardDiv.data("card").attachedToCard = targetCardData;
+        }
     }
 
 }
