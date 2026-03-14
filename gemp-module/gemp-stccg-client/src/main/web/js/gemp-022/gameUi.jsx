@@ -41,8 +41,6 @@ export default class GameTableUI {
     hand;
     specialGroup;
 
-    discardPileDialogs;
-    discardPileGroups;
     adventureDeckDialogs;
     adventureDeckGroups;
     miscPileDialogs;
@@ -135,8 +133,6 @@ export default class GameTableUI {
 
         this.reactRoot;
         this.reactGameState = {};
-        this.discardPileDialogs = {};
-        this.discardPileGroups = {};
         this.adventureDeckDialogs = {};
         this.adventureDeckGroups = {};
         this.miscPileDialogs = {};
@@ -1271,7 +1267,6 @@ export default class GameTableUI {
 
         for (const playerId of Object.keys(gameState.playerMap)) {
             this.allPlayerIds.push(playerId);
-            this.createPile(playerId, "Discard Pile", "discardPileDialogs", "discardPileGroups");
         }
 
         var index = this.getPlayerIndex(this.bottomPlayerId);
@@ -1553,13 +1548,6 @@ export class TribblesGameTableUI extends GameTableUI {
 
         if (!this.spectatorMode) {
             this.hand.setBounds(HAND_LEFT, HAND_TOP, HAND_WIDTH, HAND_HEIGHT);
-        }
-
-
-        for (var playerId in this.discardPileGroups) {
-            if (Object.hasOwn(this.discardPileGroups, playerId)) {
-                this.discardPileGroups[playerId].layoutCards();
-            }
         }
 
         if (this.replayMode) {
@@ -1877,12 +1865,6 @@ export class ST1EGameTableUI extends GameTableUI {
             this.playerAtLocationCardGroups[locationIndex].layoutCards();
 
             x = (x + locationDivWidth + (LOCATION_BORDER_PADDING / 2));
-        }
-
-        for (let playerId in this.discardPileGroups) {
-            if (Object.hasOwn(this.discardPileGroups, playerId)) {
-                this.discardPileGroups[playerId].layoutCards();
-            }
         }
 
         for (let playerId in this.adventureDeckGroups) {
