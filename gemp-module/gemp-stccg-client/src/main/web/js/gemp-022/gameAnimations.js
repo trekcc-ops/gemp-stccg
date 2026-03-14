@@ -615,7 +615,7 @@ export default class GameAnimations {
                 function (next) {
                     that.game.layoutGroupWithCard(that.cardId);
                     if (that.cardData.oldGroup != null) {
-                        that.cardData.layoutCards();
+                        that.cardData.oldGroup.layoutCards();
                         that.cardData.oldGroup = null;
                     }
                     next();
