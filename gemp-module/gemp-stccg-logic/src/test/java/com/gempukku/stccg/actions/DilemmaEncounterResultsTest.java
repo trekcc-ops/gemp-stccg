@@ -35,24 +35,30 @@ public class DilemmaEncounterResultsTest extends AbstractAtTest implements Actio
         JsonNode json = _game.serializeGameStateForPlayer(P1);
         JsonNode resultsNode = json.get("actionResults");
 
+        JsonNode revealNode = null;
         JsonNode placeNode = null;
         JsonNode stopNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
             if (resultsNode.get(i).get("type").textValue().equals("DILEMMA_PLACED_ON_CARD")) {
+                revealNode = resultsNode.get(i-1);
                 placeNode = resultsNode.get(i);
                 stopNode = resultsNode.get(i+1);
+                assertEquals("REVEALED_SEED_CARD", revealNode.get("type").textValue());
                 assertEquals("STOPPED_CARDS", stopNode.get("type").textValue());
                 break;
             }
         }
 
+        assertNotNull(revealNode);
         assertNotNull(placeNode);
         assertNotNull(stopNode);
 
+        assertSerializedFields(revealNode, "targetCardId");
         assertSerializedFields(placeNode, "targetCardId", "cardPlacedOnId");
         assertSerializedFields(stopNode, "targetCardIds");
 
+        assertEquals(punishmentBox.getCardId(), revealNode.get("targetCardId").intValue());
         assertEquals(punishmentBox.getCardId(), placeNode.get("targetCardId").intValue());
         assertEquals(mission.getCardId(), placeNode.get("cardPlacedOnId").intValue());
         assertEquals(picard.getCardId(), stopNode.get("targetCardIds").get(0).intValue());
@@ -66,24 +72,30 @@ public class DilemmaEncounterResultsTest extends AbstractAtTest implements Actio
         JsonNode json = _game.serializeGameStateForPlayer(P2);
         JsonNode resultsNode = json.get("actionResults");
 
+        JsonNode revealNode = null;
         JsonNode placeNode = null;
         JsonNode stopNode = null;
 
         for (int i = 0; i < resultsNode.size(); i++) {
             if (resultsNode.get(i).get("type").textValue().equals("DILEMMA_PLACED_ON_CARD")) {
+                revealNode = resultsNode.get(i-1);
                 placeNode = resultsNode.get(i);
                 stopNode = resultsNode.get(i+1);
+                assertEquals("REVEALED_SEED_CARD", revealNode.get("type").textValue());
                 assertEquals("STOPPED_CARDS", stopNode.get("type").textValue());
                 break;
             }
         }
 
+        assertNotNull(revealNode);
         assertNotNull(placeNode);
         assertNotNull(stopNode);
 
+        assertSerializedFields(revealNode, "targetCardId");
         assertSerializedFields(placeNode, "targetCardId", "cardPlacedOnId");
         assertSerializedFields(stopNode, "targetCardIds");
 
+        assertEquals(punishmentBox.getCardId(), revealNode.get("targetCardId").intValue());
         assertEquals(punishmentBox.getCardId(), placeNode.get("targetCardId").intValue());
         assertEquals(mission.getCardId(), placeNode.get("cardPlacedOnId").intValue());
         assertEquals(picard.getCardId(), stopNode.get("targetCardIds").get(0).intValue());
