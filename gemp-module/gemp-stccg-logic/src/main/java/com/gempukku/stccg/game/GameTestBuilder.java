@@ -620,9 +620,9 @@ public class GameTestBuilder {
             };
             CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
             PhysicalCard cardToAdd = switch(childType) {
-                // ATOP
                 case ABOARD -> addCardAboardShipOrFacility(
                         blueprintId, blueprint.getTitle(), ownerName, (CardWithCrew) parentCard, ReportableCard.class);
+                case ATOP -> addCardOnCard(blueprintId, blueprint.getTitle(), ownerName, parentCard);
                 case DOCKED -> addDockedShip(blueprintId, blueprint.getTitle(), ownerName, (FacilityCard) parentCard);
                 case IN_SPACE -> addCardInSpace(blueprint, ownerName, parentCard);
                 case ON_PLANET -> addCardOnPlanetSurface(blueprintId, blueprint.getTitle(), ownerName,
@@ -636,6 +636,15 @@ public class GameTestBuilder {
                 }
             }
         }
+    }
+
+    private PhysicalCard addCardOnCard(String blueprintId, String title, String ownerName, PhysicalCard parentCard)
+            throws CardNotFoundException, InvalidGameOperationException {
+        PhysicalCard cardToAdd = addCardToGame(blueprintId, title, ownerName);
+        Action seedAction = new SeedCardToDestinationAction(_game, ownerName, List.of(cardToAdd), List.of(parentCard),
+                cardToAdd);
+        executeAction(seedAction);
+        return cardToAdd;
     }
 
     private PhysicalCard addCardInSpace(CardBlueprint cardBlueprint, String ownerName, PhysicalCard mission)

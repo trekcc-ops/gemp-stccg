@@ -88,6 +88,18 @@
           {
             "blueprintId": "101_213",
             "owner": "asdf"
+          },
+          {
+            "blueprintId": "101_215",
+            "owner": "asdf"
+          },
+          {
+            "blueprintId": "101_231",
+            "owner": "asdf"
+          },
+          {
+            "blueprintId": "101_203",
+            "owner": "asdf"
           }
         ],
         "IN_SPACE": [
@@ -98,41 +110,37 @@
               {
                 "blueprintId": "155_054",
                 "owner": "asdf"
-              },
-              {
-                "blueprintId": "101_292",
-                "owner": "asdf"
               }
             ]
           },
           {
             "blueprintId": "163_054",
             "owner": "asdf"
-          },
-          {
-            "blueprintId": "101_331",
-            "owner": "asdf",
-            "ABOARD": [
-              {
-                "blueprintId": "101_242",
-                "owner": "asdf"
-              },
-              {
-                "blueprintId": "112_215",
-                "owner": "asdf"
-              },
-              {
-                "blueprintId": "123_120",
-                "owner": "asdf"
-              },
-              {
-                "blueprintId": "223_030",
-                "owner": "asdf"
-              }
-            ]
           }
         ],
         "SEEDED_UNDERNEATH": [
+          {
+            "blueprintId": "112_031",
+            "owner": "qwer"
+          },
+          {
+            "blueprintId": "155_012",
+            "owner": "qwer"
+          }
+        ]
+      },
+      {
+        "blueprintId": "141_017",
+        "owner": "asdf",
+        "SEEDED_UNDERNEATH": [
+          {
+            "blueprintId": "139_006",
+            "owner": "qwer"
+          },
+          {
+            "blueprintId": "116_008",
+            "owner": "qwer"
+          },
           {
             "blueprintId": "161_009",
             "owner": "qwer"
@@ -140,31 +148,96 @@
           {
             "blueprintId": "101_015",
             "owner": "qwer"
+          }
+        ],
+        "ON_PLANET": [
+          {
+            "blueprintId": "101_261",
+            "owner": "asdf"
           },
           {
-            "blueprintId": "155_012",
-            "owner": "qwer"
+            "blueprintId": "155_086",
+            "owner": "asdf"
           },
           {
-            "blueprintId": "112_031",
-            "owner": "qwer"
+            "blueprintId": "101_300",
+            "owner": "asdf"
+          },
+          {
+            "blueprintId": "101_300",
+            "owner": "asdf"
+          }
+        ],
+        "IN_SPACE": [
+          {
+            "blueprintId": "101_105",
+            "owner": "asdf"
+          },
+          {
+            "blueprintId": "101_355",
+            "owner": "asdf",
+            "ABOARD": [
+              {
+                "blueprintId": "101_292",
+                "owner": "asdf"
+              },
+              {
+                "blueprintId": "155_093",
+                "owner": "asdf",
+                "ATOP": [
+                  {
+                    "blueprintId": "152_022",
+                    "owner": "asdf"
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
       {
-        "blueprintId": "101_156",
-        "owner": "qwer"
+        "blueprintId": "155_039",
+        "owner": "qwer",
+        "ATOP": [
+          {
+            "blueprintId": "155_030",
+            "owner": "asdf"
+          }
+        ],
+        "IN_SPACE": [
+          {
+            "blueprintId": "101_347",
+            "owner": "asdf",
+            "ABOARD": [
+              {
+                "blueprintId": "101_263",
+                "owner": "asdf"
+              },
+              {
+                "blueprintId": "101_270",
+                "owner": "asdf"
+              },
+              {
+                "blueprintId": "138_034",
+                "owner": "asdf"
+              }
+            ]
+          }
+        ]
       }
     ],
     "hand": [
-      ["101_083","155_016","101_064","101_064","152_022"],
+      ["101_083","155_016","101_064","109_063","101_260","101_260","101_260"],
       ["101_225", "101_225", "159_031"]
     ],
     "drawDeck": [
-      ["101_064","101_064"]
+      ["101_064","101_064","101_083","101_083","101_225","101_293","101_293","101_314","101_236","101_276"]
     ],
     "discard": [
-      ["101_242", "101_242", "202_056"]
+      ["101_242", "101_242", "202_056","161_039"]
+    ],
+    "core": [
+      ["155_022","155_026","155_027"]
     ]
   }
 
