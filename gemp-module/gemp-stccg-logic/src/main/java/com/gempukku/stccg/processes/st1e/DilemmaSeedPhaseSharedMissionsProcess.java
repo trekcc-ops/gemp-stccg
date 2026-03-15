@@ -14,13 +14,14 @@ import java.util.List;
 
 @JsonTypeName("DilemmaSeedPhaseSharedMissionsProcess")
 public class DilemmaSeedPhaseSharedMissionsProcess extends DilemmaSeedPhaseProcess {
+
     DilemmaSeedPhaseSharedMissionsProcess(ST1EGame game) {
-        super(game.getPlayerIds());
+        super(game.getPlayerIds(), DilemmaSeedPhaseType.SHARED_MISSION);
     }
 
     @ConstructorProperties({"playersParticipating"})
     public DilemmaSeedPhaseSharedMissionsProcess(Collection<String> playersSelecting) {
-        super(playersSelecting);
+        super(playersSelecting, DilemmaSeedPhaseType.SHARED_MISSION);
     }
 
 

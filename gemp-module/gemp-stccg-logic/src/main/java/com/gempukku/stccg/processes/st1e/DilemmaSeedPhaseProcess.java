@@ -24,8 +24,11 @@ import java.util.List;
 
 public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
 
-    DilemmaSeedPhaseProcess(Collection<String> playersSelecting) {
+    protected final DilemmaSeedPhaseType _type;
+
+    DilemmaSeedPhaseProcess(Collection<String> playersSelecting, DilemmaSeedPhaseType type) {
         super(playersSelecting);
+        _type = type;
     }
 
     @Override
@@ -64,9 +67,15 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
                 }
             }
 
+            DecisionContext decisionContext = switch(_type) {
+                case YOUR_MISSION -> DecisionContext.SELECT_YOUR_MISSION_FOR_SEED_CARDS;
+                case OPPONENT_MISSION -> DecisionContext.SELECT_OPPONENT_MISSION_FOR_SEED_CARDS;
+                case SHARED_MISSION -> DecisionContext.SELECT_SHARED_MISSION_FOR_SEED_CARDS;
+            };
+
             cardGame.sendAwaitingDecision(
                     new ActionSelectionDecision(cardGame.getPlayer(playerId),
-                            DecisionContext.SELECT_MISSION_FOR_SEED_CARDS, seedActions, cardGame, false) {
+                            decisionContext, seedActions, cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
                             Action action = getSelectedAction(result);
