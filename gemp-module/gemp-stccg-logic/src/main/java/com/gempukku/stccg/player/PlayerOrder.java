@@ -9,12 +9,12 @@ import com.gempukku.stccg.game.ActionOrder;
 import java.beans.ConstructorProperties;
 import java.util.*;
 
-@JsonIncludeProperties({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed", "diceResults" })
-@JsonPropertyOrder({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed", "diceResults" })
+@JsonIncludeProperties({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
+@JsonPropertyOrder({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
 public class PlayerOrder {
     private boolean _isReversed;
     private final List<String> _turnOrder = new LinkedList<>();
-    @JsonProperty("diceResults")
+    @JsonIgnore
     private Map<String, Integer> _diceResults = new HashMap<>();
     @JsonProperty("firstPlayer")
     private final String _firstPlayer;
