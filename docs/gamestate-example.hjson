@@ -39,7 +39,17 @@
         // Information specific to a player. Map using the "playerId" field as a key.
         "player2": {
             "playerId": "player2",
-            "score": 0, // Player score. As of 1/25/25, no distinction between bonus and non-bonus points.
+            "score": 0, // Player score. Being deprecated in favor of "points" property.
+            "points": {
+                "bonus": 0, // Current bonus points total
+                "nonBonus": 0, // Current nonbonus points total
+                "total": 0, // Current total points = bonus + nonBonus
+                "towardWinning": 0, // Current total points that count toward winning
+
+                    /* Current total points required to win. This is a deceptively high number until a player has
+                        completed both a [S] and [P] mission. */
+                "requiredToWin": 140
+            },
             "decked": false, // Tribbles only
             "cardGroups": {
                     /* Cards that are organized in a certain way on the table. Mostly important for piles like
