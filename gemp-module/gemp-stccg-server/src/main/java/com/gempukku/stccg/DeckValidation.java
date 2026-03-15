@@ -198,7 +198,7 @@ public class DeckValidation {
         if (planetMissions < _format.getMinPlanetMissions()) {
             _errors.add("Deck must contain at least " + _format.getMinPlanetMissions() + " planet missions.");
         }
-        if (planetMissions < _format.getMinSpaceMissions()) {
+        if (spaceMissions < _format.getMinSpaceMissions()) {
             _errors.add("Deck must contain at least " + _format.getMinSpaceMissions() + " space missions.");
         }
 
