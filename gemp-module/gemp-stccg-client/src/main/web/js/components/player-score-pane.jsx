@@ -21,7 +21,7 @@ function get_player_data(player_id, gamestate) {
         "discardsize": 0,
         "removedsize": 0,
         "totalPoints": 0,
-        "missionPoints": 0,
+        "nonBonusPoints": 0,
         "bonusPoints": 0,
         "clock": "0:00"
     };
@@ -37,7 +37,7 @@ function get_player_data(player_id, gamestate) {
             let discardsize = player_data["cardGroups"]["DISCARD"]["cardCount"];
             let removedsize = player_data["cardGroups"]["REMOVED"]["cardCount"];
             let totalPoints = player_data["points"]["total"];
-            let missionPoints = player_data["points"]["nonBonus"];
+            let nonBonusPoints = player_data["points"]["nonBonus"];
             let bonusPoints = player_data["points"]["bonus"];
 
             let player_clock;
@@ -59,7 +59,7 @@ function get_player_data(player_id, gamestate) {
                 "discardsize": discardsize,
                 "removedsize": removedsize,
                 "totalPoints": totalPoints,
-                "missionPoints": missionPoints,
+                "nonBonusPoints": nonBonusPoints,
                 "bonusPoints": bonusPoints,
             };
         }
@@ -81,7 +81,7 @@ function get_player_data(player_id, gamestate) {
 function missionAndBonusPointsTooltip(player_data) {
     return(
         <Stack direction="column">
-            <Typography>Mission points: {player_data.missionPoints}</Typography>
+            <Typography>Non-bonus points: {player_data.nonBonusPoints}</Typography>
             <Typography>Bonus points: {player_data.bonusPoints}</Typography>
         </Stack>
     )
