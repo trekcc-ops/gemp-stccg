@@ -382,7 +382,7 @@ export default class GameTableUI {
             Cookies.set("autoPassPhases", newAutoPassPhases, {expires: 365});
         });
 
-        let chatRoomName = (this.replayMode ? undefined : ("Game" + getUrlParam("gameId")));
+        let chatRoomName = (this.replayMode ? undefined : ("Game " + getUrlParam("gameId")));
         let chatBoxDiv = $("#chatBox");
         let chatBoxUrl = this.communication.url;
         let showList = false;
@@ -1365,6 +1365,10 @@ export default class GameTableUI {
         } else
             this.dialogResize(this.cardActionDialog, this.specialGroup);
     }
+
+    updateGameStats(gameState) {
+        this.reRenderReactRoot();
+    }
 }
 
 export class TribblesGameTableUI extends GameTableUI {
@@ -1933,10 +1937,6 @@ export class ST1EGameTableUI extends GameTableUI {
             default:
                 return "";
         }
-    }
-
-    updateGameStats(gameState) {
-        this.reRenderReactRoot();
     }
 
     addNonMissionInPlayToClientRecursively(card, gameState) {
