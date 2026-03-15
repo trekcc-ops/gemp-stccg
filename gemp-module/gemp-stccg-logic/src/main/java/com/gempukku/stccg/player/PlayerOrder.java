@@ -14,8 +14,6 @@ import java.util.*;
 public class PlayerOrder {
     private boolean _isReversed;
     private final List<String> _turnOrder = new LinkedList<>();
-    @JsonIgnore
-    private Map<String, Integer> _diceResults = new HashMap<>();
     @JsonProperty("firstPlayer")
     private final String _firstPlayer;
     @JsonProperty("currentPlayer")
@@ -26,11 +24,6 @@ public class PlayerOrder {
         _firstPlayer = turnOrder.getFirst();
         _currentPlayerId = currentPlayer;
         _turnOrder.addAll(turnOrder);
-    }
-
-    public PlayerOrder(List<String> turnOrder, Map<String, Integer> diceResults) {
-        this(false, turnOrder.getFirst(), turnOrder);
-        _diceResults = diceResults;
     }
 
     public PlayerOrder(List<String> turnOrder) {

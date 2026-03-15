@@ -33,7 +33,7 @@ public class ST1EPlayerOrderProcess extends ST1EGameProcess {
                 playerOrderIndex++;
             }
         }
-        return new PlayerOrder(playerOrder, diceResults);
+        return new PlayerOrder(playerOrder);
     }
 
     private static Map<String, Integer> getDiceResults(String[] players) {
