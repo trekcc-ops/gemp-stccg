@@ -49,13 +49,8 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            if (jsonAction.destination === "POINT_AREA") {
-                // TODO - Implement point area
-                let message = "ERROR: You don't have a a point area. Try again later when the devs have added one.";
-                gameAnimations.game.chatBox.appendMessage(message, "gameMessage");
-            } else {
-                gameAnimations.addCardToHiddenZone(targetCard, jsonAction.destination, targetCard.owner);
-            }
+            gameAnimations.addCardToHiddenZone(targetCard, jsonAction.destination, targetCard.owner);
+            // TODO: Consider animating a card flying towards the Player Stats Pane
             break;
         }
         case "DOCKED": {
@@ -88,9 +83,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
-            // TODO - Implement point area
-            let message = "ERROR: You don't have a a point area. Try again later when the devs have added one.";
-            gameAnimations.game.chatBox.appendMessage(message, "gameMessage");
+            // TODO: Consider animating a card flying towards the Player Stats Pane
             break;
         }
         case "PLAYED_CARD": {
@@ -110,6 +103,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
                 let cardToRemove = jsonGameState.visibleCardsInGame[cardId];
                 gameAnimations.addCardToHiddenZone(cardToRemove, "REMOVED", cardToRemove.owner);
             }
+            // TODO: Consider animating a card flying towards the Player Stats Pane
             break;
         }
         case "REMOVED_PRESEEDS": // preparing for dilemma seeds; returns card to seed deck pile
