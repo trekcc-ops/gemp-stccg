@@ -382,7 +382,7 @@ export default class GameTableUI {
             Cookies.set("autoPassPhases", newAutoPassPhases, {expires: 365});
         });
 
-        let chatRoomName = (this.replayMode ? undefined : ("Game" + getUrlParam("gameId")));
+        let chatRoomName = (this.replayMode ? undefined : ("Game " + getUrlParam("gameId")));
         let chatBoxDiv = $("#chatBox");
         let chatBoxUrl = this.communication.url;
         let showList = false;
