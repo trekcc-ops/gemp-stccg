@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionWithSubActions;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.actions.choose.SelectAffiliationAction;
 import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.*;
@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ChangeAffiliationAction extends ActionWithSubActions implements TopLevelSelectableAction {
+public class ChangeAffiliationAction extends ActionWithSubActions implements CardPerformedAction {
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final AffiliatedCard _performingCard;

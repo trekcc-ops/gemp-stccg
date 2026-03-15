@@ -1,27 +1,28 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.targetresolver.ReportMultipleCardsResolver;
 import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ReportableCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.modifiers.ModifierFlag;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DownloadMultipleReportablesActionNew extends ActionyAction implements DownloadAction {
+public class DownloadMultipleReportablesAction extends ActionyAction implements DownloadAction {
     private final Zone _fromZone;
     private final PhysicalCard _performingCard;
     private final ReportMultipleCardsResolver _resolver;
 
-    public DownloadMultipleReportablesActionNew(DefaultGame cardGame, Zone fromZone,
-                                                String performingPlayerName,
-                                                PhysicalCard actionSource,
-                                                ReportMultipleCardsResolver resolver) {
+    public DownloadMultipleReportablesAction(DefaultGame cardGame, Zone fromZone,
+                                             String performingPlayerName,
+                                             PhysicalCard actionSource,
+                                             ReportMultipleCardsResolver resolver) {
         super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD);
         _resolver = resolver;
         _cardTargets.add(_resolver);
@@ -41,13 +42,18 @@ public class DownloadMultipleReportablesActionNew extends ActionyAction implemen
     }
 
     protected void processEffect(DefaultGame cardGame) {
-        Collection<PhysicalCard> _cardsToDownload = _resolver.getCardsToDownload();
+        List<PhysicalCard> _cardsToDownload = new ArrayList<>(_resolver.getCardsToDownload());
         FacilityCard _destination = _resolver.getDestinationFacility();
-        for (PhysicalCard card : _cardsToDownload) {
-            Action playCardAction = card.getPlayCardAction(cardGame, true, true);
-            if (playCardAction instanceof ReportCardAction reportAction) {
-                reportAction.setDestination(_destination);
+            // iterate backwards so the stacked actions will be executed in the right order
+        for (int i = _cardsToDownload.size() - 1; i >= 0; i--) {
+            PhysicalCard card = _cardsToDownload.get(i);
+            if (card instanceof ReportableCard reportable) {
+                ReportCardAction playCardAction =
+                        new ReportCardAction(cardGame, reportable, true, true, _performingCard);
+                playCardAction.setDestination(_destination);
                 cardGame.addActionToStack(playCardAction);
+            } else {
+                cardGame.sendErrorMessage("Could not report card because it was not a reportable card type");
             }
         }
         setAsSuccessful();

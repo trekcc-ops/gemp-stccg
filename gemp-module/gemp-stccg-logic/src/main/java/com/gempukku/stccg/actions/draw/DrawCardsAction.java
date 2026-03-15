@@ -2,7 +2,7 @@ package com.gempukku.stccg.actions.draw;
 
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.decisions.AwaitingDecision;
@@ -14,7 +14,7 @@ import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
-public class DrawCardsAction extends ActionyAction implements TopLevelSelectableAction {
+public class DrawCardsAction extends ActionyAction implements CardPerformedAction {
 
     private final PhysicalCard _performingCard;
     private int _cardsAlreadyDrawnCount;

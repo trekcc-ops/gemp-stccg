@@ -1,6 +1,6 @@
 package com.gempukku.stccg.cards;
 
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.DefaultGame;
 
@@ -9,5 +9,5 @@ public abstract class ActionSkill extends Skill {
         super();
     }
 
-    public abstract TopLevelSelectableAction getAction(DefaultGame cardGame,  PhysicalCard thisCard);
+    public abstract Action getAction(DefaultGame cardGame, PhysicalCard thisCard);
 }

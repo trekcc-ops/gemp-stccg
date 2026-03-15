@@ -23,8 +23,7 @@ public class YouPlayerSource implements PlayerSource {
         }
     }
     @Override
-    public String getPlayerName(DefaultGame cardGame, GameTextContext actionContext) {
-        PhysicalCard thisCard = actionContext.card();
-        return thisCard.getOwnerName();
+    public String getPlayerName(DefaultGame cardGame, GameTextContext context) {
+        return context.yourName();
     }
 }

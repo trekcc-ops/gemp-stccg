@@ -1,5 +1,4 @@
 # Action results
-<i>Last updated 11 March 2026</i>
 
 The serialized game state property "actionResults" contains
 information about game actions that have been initiated and/or completed.
@@ -7,7 +6,7 @@ On the server side, these objects belong to the class ActionResult.
 
 Some actions may have multiple results, for example:
 * An action result is created at both the start and end of a mission attempt action.
-* "Group actions" (such as playing multiple cards at the same time) will create a result for each subaction.
+* "Group actions" (such as playing multiple cards at the same time) will commonly create a result for each subaction.
 
 All action result objects have these four properties:
 * <b>resultId</b> (integer) - unique id number for the action result
@@ -124,7 +123,7 @@ example, a card played using a player's normal card play), performingCardId is e
 ### SEEDED_INTO_PLAY ###
 For example, seeding a facility or card like Continuing Mission. This result is not created when seeding cards under missions.
 * <b>seededCardId</b> (integer) - cardId for card seeded
-* <b>destinationCardId</b> (integer) - see "PLAYED_CARD" for additional details; this property works the same way
+* <b>[optional] destinationCardId</b> (integer) - see "PLAYED_CARD" for additional details; this property works the same way
 * <b>toCore</b> (boolean) - TRUE if seeded to a player's core; FALSE otherwise
 ### STARTED_TURN ###
 Example: If "player1" is the first player of the game, their first turn will be both gameTurnNumber = 1 and playerTurnNumber = 1.

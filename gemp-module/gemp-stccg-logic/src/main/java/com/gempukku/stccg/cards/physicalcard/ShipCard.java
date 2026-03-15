@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.movecard.*;
 import com.gempukku.stccg.cards.AttemptingUnit;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
@@ -57,8 +57,8 @@ public class ShipCard extends AffiliatedCard implements AttemptingUnit, CardWith
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
-        List<TopLevelSelectableAction> actions = new LinkedList<>();
+    public List<? extends Action> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
+        List<Action> actions = new LinkedList<>();
         if (cardGame.getCurrentPhase() == Phase.EXECUTE_ORDERS && cardGame instanceof ST1EGame stGame) {
                 // TODO - Implement land, take off, cloak
             if (isControlledBy(player.getPlayerId())) {

@@ -47,7 +47,7 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
                             @Override
                             protected void yes() {
                                 cardGame1.addActionToStack(
-                                        new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK, context.yourName(),
+                                        new DownloadMultipleReportablesAction(cardGame, Zone.DRAW_DECK, context.yourName(),
                                                 context.card(), multipleResolver));
                             }
 
@@ -59,7 +59,7 @@ public class DownloadReportableActionBlueprint implements SubActionBlueprint {
                     }
                 };
             } else {
-                return new DownloadMultipleReportablesActionNew(cardGame, Zone.DRAW_DECK, context.yourName(),
+                return new DownloadMultipleReportablesAction(cardGame, Zone.DRAW_DECK, context.yourName(),
                         context.card(), multipleResolver);
             }
         } else {

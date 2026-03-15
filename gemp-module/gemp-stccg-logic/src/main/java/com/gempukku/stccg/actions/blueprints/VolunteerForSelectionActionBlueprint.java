@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.blueprints;
 
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.choose.RandomSelectionInitiatedResult;
 import com.gempukku.stccg.actions.choose.SelectRandomCardsAction;
 import com.gempukku.stccg.actions.choose.VolunteerForSelectionAction;
@@ -16,7 +15,7 @@ public class VolunteerForSelectionActionBlueprint extends DefaultActionBlueprint
     }
 
     @Override
-    public TopLevelSelectableAction createAction(DefaultGame cardGame, GameTextContext context) {
+    public VolunteerForSelectionAction createAction(DefaultGame cardGame, GameTextContext context) {
         if (context.acceptsAllRequirements(cardGame, _requirements)) {
             if (cardGame.getCurrentActionResult() instanceof RandomSelectionInitiatedResult actionResult &&
                     actionResult.includesCardMatchingFilter(cardGame, Filters.card(context.card()))) {

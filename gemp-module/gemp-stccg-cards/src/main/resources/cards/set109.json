@@ -90,6 +90,22 @@
             "uniqueness" : "unique",
             "property-logo" : "first-contact-logo",
             "image-url" : "https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg",
+            "playThisCardAction": {
+                "type" : "playThis",
+                "toCore" : "true",
+                "immediateEffect": {
+                    "type" : "downloadReportable",
+                    "target" : {
+                        "type" : "reportCards",
+                        "filter" : "youOwnNoCopiesInPlay + missionSpecialist",
+                        "count" : "1-2",
+                        "differentCardsOnly" : true,
+                        "destination" : "your + outpost",
+                        "specialReporting" : true
+                    },
+                    "optional": true
+                }
+            },
             "actions" : [
                 {
                     "type" : "seedThis",

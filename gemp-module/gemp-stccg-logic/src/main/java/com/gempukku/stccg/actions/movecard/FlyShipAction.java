@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FlyShipAction extends ActionyAction implements TopLevelSelectableAction {
+public class FlyShipAction extends ActionyAction implements CardPerformedAction {
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     private final ShipCard _flyingCard;
