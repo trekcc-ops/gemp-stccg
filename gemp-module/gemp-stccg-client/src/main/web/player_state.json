@@ -10,7 +10,13 @@
     "players": [
         {
             "playerId": "andrew2",
-            "score": 25,
+            "points": {
+                "bonus": 5,
+                "nonBonus": 20,
+                "total": 25,
+                "towardWinning": 25,
+                "requiredToWin": 140
+            },
             "decked": false,
             "cardGroups": {
                 "DRAW_DECK": {
@@ -70,7 +76,13 @@
         },
         {
             "playerId": "andrew",
-            "score": 35,
+            "points": {
+                "bonus": 0,
+                "nonBonus": 35,
+                "total": 35,
+                "towardWinning": 35,
+                "requiredToWin": 140
+            },
             "decked": false,
             "cardGroups": {
                 "DRAW_DECK": {
@@ -127,7 +139,13 @@
     "playerMap": {
         "andrew2": {
             "playerId": "andrew2",
-            "score": 25,
+            "points": {
+                "bonus": 5,
+                "nonBonus": 20,
+                "total": 25,
+                "towardWinning": 25,
+                "requiredToWin": 140
+            },
             "decked": false,
             "cardGroups": {
                 "DRAW_DECK": {
@@ -187,7 +205,13 @@
         },
         "andrew": {
             "playerId": "andrew",
-            "score": 35,
+            "points": {
+                "bonus": 0,
+                "nonBonus": 35,
+                "total": 35,
+                "towardWinning": 35,
+                "requiredToWin": 140
+            },
             "decked": false,
             "cardGroups": {
                 "DRAW_DECK": {

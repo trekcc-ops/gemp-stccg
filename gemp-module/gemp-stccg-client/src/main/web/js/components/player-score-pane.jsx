@@ -20,7 +20,9 @@ function get_player_data(player_id, gamestate) {
         "handsize": 0,
         "discardsize": 0,
         "removedsize": 0,
-        "score": 0,
+        "totalPoints": 0,
+        "missionPoints": 0,
+        "bonusPoints": 0,
         "clock": "0:00"
     };
 
@@ -34,7 +36,9 @@ function get_player_data(player_id, gamestate) {
             let handsize = player_data["cardGroups"]["HAND"]["cardCount"];
             let discardsize = player_data["cardGroups"]["DISCARD"]["cardCount"];
             let removedsize = player_data["cardGroups"]["REMOVED"]["cardCount"];
-            let thescore = player_data["score"];
+            let totalPoints = player_data["points"]["total"];
+            let missionPoints = player_data["points"]["nonBonus"];
+            let bonusPoints = player_data["points"]["bonus"];
 
             let player_clock;
             for (const clockObj of gamestate["playerClocks"]) {
@@ -54,7 +58,9 @@ function get_player_data(player_id, gamestate) {
                 "handsize": handsize,
                 "discardsize": discardsize,
                 "removedsize": removedsize,
-                "score": thescore,
+                "totalPoints": totalPoints,
+                "missionPoints": missionPoints,
+                "bonusPoints": bonusPoints,
             };
         }
         // Playermap but no ID
@@ -70,6 +76,15 @@ function get_player_data(player_id, gamestate) {
         // 0 here hides the number badges
         return failure_case;    
     }
+}
+
+function missionAndBonusPointsTooltip(player_data) {
+    return(
+        <Stack direction="column">
+            <Typography>Mission points: {player_data.missionPoints}</Typography>
+            <Typography>Bonus points: {player_data.bonusPoints}</Typography>
+        </Stack>
+    )
 }
 
 export default function PlayerScorePane ( {gamestate, player_id, openPileDetailsFunc} ) {
@@ -112,11 +127,13 @@ export default function PlayerScorePane ( {gamestate, player_id, openPileDetails
                 </Tooltip>
             </Box>
             <Box className="Score">
-                <Button color="white" sx={{padding: 0, minWidth: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "POINT_AREA"})}>
-                    <Typography align='center'>
-                        SCORE: {player_data.score}
-                    </Typography>
-                </Button>
+                <Tooltip title={missionAndBonusPointsTooltip(player_data)}>
+                    <Button color="white" sx={{padding: 0, minWidth: 0}} onClick={() => openPileDetailsFunc({playerId: player_id, pileName: "POINT_AREA"})}>
+                        <Typography align='center'>
+                            SCORE: {player_data.totalPoints}
+                        </Typography>
+                    </Button>
+                </Tooltip>
             </Box>
             
         </Box>
