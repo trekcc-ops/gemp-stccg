@@ -243,7 +243,7 @@ public class Player {
     public Collection<PhysicalCard> getSeedDeckCards() {
         Collection<PhysicalCard> result = new ArrayList<>();
         for (Zone seedZone : List.of(Zone.SEED_DECK_OTHER, Zone.SEED_DECK_FOR_DILEMMA_PHASE)) {
-            if (_cardGroups.get(seedZone) != null && _cardGroups.get(seedZone).isEmpty()) {
+            if (_cardGroups.get(seedZone) != null && !_cardGroups.get(seedZone).isEmpty()) {
                 result.addAll(_cardGroups.get(seedZone).getCards());
             }
         }
