@@ -71,7 +71,7 @@ export default class ChatBoxUI {
         if (this.name !== undefined) {
             if (this.name === "Game Hall") {
                 this.discordDiv = $("#discordChat");
-                this.chatTalkDiv = $("#chatTalk");
+                this.chatTalkDiv = document.getElementById("chatTalk");
 
                 this.hideSystemButton = $("#showSystemButton");
                 if (showHideSystemButton) {
@@ -102,15 +102,16 @@ export default class ChatBoxUI {
                             that.scrollChatToBottom();
                         }, this.chatErrorMap());
 
-                this.chatTalkDiv.keydown(function (e) {
-                    if (e.keyCode === 13) {
-                        if (!e.shiftKey) {
-                            e.preventDefault();
-                            let value = $(this).val();
-                            if (value !== "")
-                                that.sendMessage(value);
-                            $(this).val("").trigger("oninput");
-                            that.scrollChatToBottom();
+                this.chatTalkDiv.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter") { // Enter key
+                        if (!event.shiftKey) { // without Shift
+                            event.preventDefault(); // take control of event
+                            let textToSend = event.currentTarget.value;
+                            if (textToSend != "") {
+                                this.comm.sendChatMessage(this.name, textToSend, this.chatErrorMap());
+                                // clear out text in UI
+                                event.currentTarget.value = "";
+                            }
                         }
                     }
                 });
@@ -129,7 +130,9 @@ export default class ChatBoxUI {
                 this.setDiscordVisible(false);
             }
             else {
-                this.chatTalkDiv = $("<input type='text' class='chatTalk'>");
+                this.chatTalkDiv = document.createElement("input");
+                this.chatTalkDiv.type = "text";
+                this.chatTalkDiv.classList.add("chatTalk");
                 this.hideSystemButton = $("#showSystemButton");
 
                 if (showHideSystemButton) {
@@ -167,14 +170,17 @@ export default class ChatBoxUI {
                     this.chatErrorMap()
                 );
 
-                this.chatTalkDiv.bind("keypress", function (e) {
-                    let code = (e.keyCode ? e.keyCode : e.which);
-                    if (code === 13) {
-                        let value = $(this).val();
-                        if (value != "") {
-                            that.sendMessage(value);
+                this.chatTalkDiv.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter") { // Enter key
+                        if (!event.shiftKey) { // without Shift
+                            event.preventDefault(); // take control of event
+                            let textToSend = event.currentTarget.value;
+                            if (textToSend != "") {
+                                this.comm.sendChatMessage(this.name, textToSend, this.chatErrorMap());
+                                // clear out text in UI
+                                event.currentTarget.value = "";
+                            }
                         }
-                        $(this).val("");
                     }
                 });
             }
@@ -238,8 +244,8 @@ export default class ChatBoxUI {
                 //     this.lockButton.css({position:"absolute", left:x + width - talkBoxPadding - this.talkBoxHeight - leftTextBoxPadding + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:this.talkBoxHeight, height:this.talkBoxHeight});
                 //     leftTextBoxPadding += this.talkBoxHeight + talkBoxPadding;
                 // }
-
-                this.chatTalkDiv.css({ position:"absolute", left:x + talkBoxPadding + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:width - 3 * talkBoxPadding - leftTextBoxPadding, height:this.talkBoxHeight });
+                let jqChatTalkDiv = $(this.chatTalkDiv);
+                jqChatTalkDiv.css({ position:"absolute", left:x + talkBoxPadding + "px", top:y - 2 * talkBoxPadding + (height - this.talkBoxHeight) + "px", width:width - 3 * talkBoxPadding - leftTextBoxPadding, height:this.talkBoxHeight });
             }
         }
 
@@ -274,7 +280,8 @@ export default class ChatBoxUI {
             }
             
             if (this.chatTalkDiv !== undefined) {
-                this.chatTalkDiv.hide();
+                let jqChatTalkDiv = $(this.chatTalkDiv);
+                jqChatTalkDiv.hide();
             }
 
             if (this.hideSystemButton !== undefined) {
@@ -293,7 +300,8 @@ export default class ChatBoxUI {
             }
             
             if (this.chatTalkDiv !== undefined) {
-                this.chatTalkDiv.show();
+                let jqChatTalkDiv = $(this.chatTalkDiv);
+                jqChatTalkDiv.show();
             }
 
             if (this.hideSystemButton !== undefined) {
@@ -477,8 +485,9 @@ export default class ChatBoxUI {
 
     chatMalfunction() {
         this.stopUpdates = true;
-        this.chatTalkDiv.prop('disabled', true);
-        this.chatTalkDiv.css({"background-color": "#ff9999"});
+        let jqChatTalkDiv = $(this.chatTalkDiv);
+        jqChatTalkDiv.prop('disabled', true);
+        jqChatTalkDiv.css({"background-color": "#ff9999"});
         
         if (this.discordDiv) {
             this.discordDiv.prop('disabled', true);
