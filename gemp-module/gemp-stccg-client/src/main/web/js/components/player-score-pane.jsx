@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
@@ -6,10 +7,14 @@ import decipher_card_deck from '../../images/decipher_card_deck.svg?no-inline';
 import decipher_card_discard from '../../images/decipher_card_discard.svg?no-inline';
 import decipher_card_hand from '../../images/decipher_card_hand.svg?no-inline';
 import decipher_card_removed from '../../images/decipher_card_removed.svg?no-inline';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import '../../css/player-score-pane.css';
 
 function get_player_data(player_id, gamestate) {
     let failure_case = {
+        "isCurrentPlayer": false,
+        "isFirstPlayer": false,
         "username": "",
         "drawsize": 0,
         "handsize": 0,
@@ -22,6 +27,8 @@ function get_player_data(player_id, gamestate) {
     if (Object.hasOwn(gamestate, "playerMap")) {
         let player_data = gamestate.playerMap[player_id];
         if (player_data != null) {
+            let isCurrentPlayer = gamestate["playerOrder"]["currentPlayer"] == player_data["playerId"] ? true : false;
+            let isFirstPlayer = gamestate["playerOrder"]["firstPlayer"] == player_data["playerId"] ? true : false;
             let username = player_data["playerId"];
             let drawsize = player_data["cardGroups"]["DRAW_DECK"]["cardCount"];
             let handsize = player_data["cardGroups"]["HAND"]["cardCount"];
@@ -39,6 +46,8 @@ function get_player_data(player_id, gamestate) {
             }
             
             return {
+                "isCurrentPlayer": isCurrentPlayer,
+                "isFirstPlayer": isFirstPlayer,
                 "username": username,
                 "clock": player_clock,
                 "drawsize": drawsize,
@@ -68,9 +77,11 @@ export default function PlayerScorePane ( {gamestate, player_id, openPileDetails
 
     return(
         <Box className="PlayerScorePane">
-            <Box className="PlayerName">
+            <Stack direction="row" spacing={0.5} className="PlayerName">
+                {player_data.isCurrentPlayer ? <Tooltip title="Current player"><KeyboardDoubleArrowRightIcon /></Tooltip> : null}
                 <Typography>{player_data.username}</Typography>
-            </Box>
+                {player_data.isFirstPlayer ? <Tooltip title="First player"><WorkspacePremiumIcon/></Tooltip> : null}
+            </Stack>
             <Box>
                 <Tooltip title="Remaining clock">
                     <Typography>{player_data.clock}</Typography>
