@@ -41,10 +41,13 @@
             "playerId": "player2",
             "score": 0, // Player score. Being deprecated in favor of "points" property.
             "points": {
-                "bonus": 0,
-                "nonBonus": 0,
-                "total": 0,
-                "towardWinning": 0,
+                "bonus": 0, // Current bonus points total
+                "nonBonus": 0, // Current nonbonus points total
+                "total": 0, // Current total points = bonus + nonBonus
+                "towardWinning": 0, // Current total points that count toward winning
+
+                    /* Current total points required to win. This is a deceptively high number until a player has
+                        completed both a [S] and [P] mission. */
                 "requiredToWin": 140
             },
             "decked": false, // Tribbles only
