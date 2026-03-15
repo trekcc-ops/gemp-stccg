@@ -16,6 +16,8 @@ import java.util.*;
 })
 public class DefaultGameFormat implements GameFormat {
 
+    private static final int DEFAULT_MIN_VALUE = 999;
+
     @JsonProperty("name")
     private final String _name;
 
@@ -49,6 +51,9 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
     private final GameType _gameType;
+    private final int _minPlanetMissions;
+    private final int _minSpaceMissions;
+    private final boolean _misSeedsAllowed;
 
     @JsonCreator
     private DefaultGameFormat(@JacksonInject CardBlueprintLibrary blueprintLibrary,
@@ -62,12 +67,18 @@ public class DefaultGameFormat implements GameFormat {
                               @JsonProperty("maximumSeedDeckSize") Integer maxSeedDeck,
                               @JsonProperty("bannedCards") @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> bannedCards,
                               @JsonProperty("missions") Integer missions,
-                              @JsonProperty("hall") Boolean hallVisible) {
+                              @JsonProperty("hall") Boolean hallVisible,
+                              @JsonProperty("minPlanetMissions") Integer minPlanetMissions,
+                              @JsonProperty("minSpaceMissions") Integer minSpaceMissions,
+                              @JsonProperty("misSeedsAllowed") Boolean misSeedsAllowed) {
         _name = name;
         _code = code;
         _order = 1000;
         _minimumDrawDeckSize = Objects.requireNonNullElse(minDrawDeck, 60);
-        _maximumSameName = 9999;
+        _minPlanetMissions = Objects.requireNonNullElse(minPlanetMissions, DEFAULT_MIN_VALUE);
+        _minSpaceMissions = Objects.requireNonNullElse(minSpaceMissions, DEFAULT_MIN_VALUE);
+        _misSeedsAllowed = Objects.requireNonNullElse(misSeedsAllowed, true);
+        _maximumSameName = DEFAULT_MIN_VALUE;
         _discardPileIsPublic = false;
         _isPlaytest = false;
         _hallVisible = Objects.requireNonNullElse(hallVisible, true);

@@ -19,6 +19,19 @@
         "missions": 6
     },
     {
+        "name": "1E Velara",
+        "gameType": "First Edition",
+        "code": "velara1e",
+        "minimumDrawDeckSize": 30,
+        "maximumSeedDeckSize": 30,
+        "excludedSets": "991",
+        "misSeedsAllowed": false,
+        "bannedCards": ["101_125","155_046","163_018","212_019"],
+        "missions": 6,
+        "minSpaceMissions": 2,
+        "minPlanetMissions": 2
+    },
+    {
         "name": "2E All",
         "gameType": "Second Edition",
         "code": "st2e",
