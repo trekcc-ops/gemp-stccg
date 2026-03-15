@@ -119,12 +119,14 @@ export default class ChatBoxUI {
                 
                 if (showList) {
                     this.chatListDiv = $("#userList");
+                    /* Disabled for MVP 
                     this.toggleChatButton = $("#toggleChatButt");
 
                     this.toggleChatButton.button();
                     this.toggleChatButton.on("click", function() {
                         that.toggleChat();
                     });
+                    */
                 }
                 
                 this.setDiscordVisible(false);
@@ -255,7 +257,7 @@ export default class ChatBoxUI {
     handleChatVisibility() {
         if (this.enableDiscord) {
             if (this.displayDiscord) {
-                this.toggleChatButton.text("Switch to Legacy");
+                /* Disabled for MVP: this.toggleChatButton.text("Switch to Legacy"); */
                 
                 if(this.chatEmbed === undefined) {
                     this.discordDiv.show();
@@ -266,7 +268,7 @@ export default class ChatBoxUI {
                 }
             }
             else {
-                this.toggleChatButton.text("Switch to Discord");
+                /* Disabled for MVP: this.toggleChatButton.text("Switch to Discord"); */
             } 
         }
         

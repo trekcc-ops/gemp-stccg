@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	let playerListener;
 	let showHideSystemButton = false;
 	let displayChatListener;
-	let allowDiscord = true;
+	let allowDiscord = false;
 	let chat = new ChatBoxUI(chatBoxName, chatBoxDiv, chatBoxUrl, showList, playerListener, showHideSystemButton, displayChatListener, allowDiscord);
 	chat.showTimestamps = true;
 	
