@@ -40,7 +40,7 @@ public class Blueprint_101_104_FedOutpost_Test extends AbstractAtTest {
         gammaMission = builder.addMission("112_105", "Access Relay Station", P1);
         outpost1 = builder.addSeedDeckCard("101_104", "Federation Outpost", P1, FacilityCard.class);
 
-        if (secondOutpostZone == Zone.SEED_DECK) {
+        if (secondOutpostZone == Zone.SEED_DECK_OTHER) {
             outpost2 = builder.addSeedDeckCard("101_104", "Federation Outpost", P1, FacilityCard.class);
             outpostPlayerTwo = builder.addSeedDeckCard("101_104", "Federation Outpost", P2, FacilityCard.class);
         } else if (secondOutpostZone == Zone.HAND) {
@@ -61,7 +61,7 @@ public class Blueprint_101_104_FedOutpost_Test extends AbstractAtTest {
     @Test
     public void cannotSeedTest() throws DecisionResultInvalidException, CardNotFoundException,
             InvalidGameOperationException {
-        initializeGame(Zone.SEED_DECK, Phase.SEED_FACILITY);
+        initializeGame(Zone.SEED_DECK_OTHER, Phase.SEED_FACILITY);
         seedFacility(P1, outpost1);
 
         // Verify that the outpost can't be seeded at a non-homeworld, non-Fed mission, or GQ mission

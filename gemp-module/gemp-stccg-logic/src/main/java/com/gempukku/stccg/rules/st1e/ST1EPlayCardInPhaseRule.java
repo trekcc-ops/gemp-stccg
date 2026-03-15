@@ -12,7 +12,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -39,7 +38,7 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                     result.add(new SeedMissionCardAction(cardGame, missionCard));
                 }
             } else if (phase == Phase.SEED_FACILITY) {
-                for (PhysicalCard card : player.getCardsInGroup(Zone.SEED_DECK)) {
+                for (PhysicalCard card : player.getSeedDeckCards()) {
                     if (isCurrentPlayer && canCardBeSeeded(card, stGame) &&
                             card instanceof ST1EPhysicalCard stCard &&
                             card.getCardType() != CardType.DOORWAY

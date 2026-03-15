@@ -36,7 +36,9 @@ public class SeedCardIntoPlayBlueprint extends DefaultActionBlueprint {
     public SeedCardAction createAction(DefaultGame cardGame, GameTextContext context) {
         CardFilter seedableCardFilter = _cardToSeedBlueprint.getFilterable(cardGame, context);
         CardFilter destinationFilter = _destinationBlueprint.getFilterable(cardGame, context);
-        Collection<PhysicalCard> seedableCards = Filters.filter(cardGame, Zone.SEED_DECK, seedableCardFilter,
+        Collection<PhysicalCard> seedableCards = Filters.filter(cardGame,
+                Filters.or(Zone.SEED_DECK_FOR_DILEMMA_PHASE, Zone.SEED_DECK_OTHER),
+                seedableCardFilter,
                 new CanEnterPlayFilter(EnterPlayActionType.SEED),
                 Filters.owner(context.yourName()));
         Collection<PhysicalCard> destinationOptions = Filters.filterCardsInPlay(cardGame, destinationFilter);

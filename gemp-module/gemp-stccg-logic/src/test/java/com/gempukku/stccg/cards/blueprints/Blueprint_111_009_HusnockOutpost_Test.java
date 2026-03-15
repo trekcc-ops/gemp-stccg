@@ -51,7 +51,7 @@ public class Blueprint_111_009_HusnockOutpost_Test extends AbstractAtTest {
         PhysicalCard husnockShip2 = builder.addSeedDeckCard("101_353", "Husnock Ship", P1);
         builder.setPhase(Phase.SEED_FACILITY);
         builder.startGame();
-        PhysicalCardGroup seedDeck = _game.getGameState().getCardGroup(P1, Zone.SEED_DECK);
+        PhysicalCardGroup seedDeck = _game.getGameState().getCardGroup(P1, Zone.SEED_DECK_OTHER);
         seedCard(P1, outpost1);
         selectCard(P1, mission1);
         assertTrue(outpost1.isInPlay());

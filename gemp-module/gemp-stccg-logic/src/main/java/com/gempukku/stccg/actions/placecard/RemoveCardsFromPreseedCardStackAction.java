@@ -44,9 +44,9 @@ public class RemoveCardsFromPreseedCardStackAction extends ActionyAction impleme
             for (PhysicalCard card : _cardsBeingRemoved) {
                 _location.removePreSeedCard(card, _performingPlayerId);
                 cardGame.getGameState().removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(card));
-                List<PhysicalCard> zoneCards = performingPlayer.getCardGroupCards(Zone.SEED_DECK);
+                List<PhysicalCard> zoneCards = performingPlayer.getCardGroupCards(Zone.SEED_DECK_FOR_DILEMMA_PHASE);
                 zoneCards.add(card);
-                card.setZone(Zone.SEED_DECK);
+                card.setZone(Zone.SEED_DECK_FOR_DILEMMA_PHASE);
             }
             saveResult(new RemoveCardsFromPreseedStackActionResult(cardGame, _performingPlayerId, this, _cardsBeingRemoved), cardGame);
             setAsSuccessful();

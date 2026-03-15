@@ -499,15 +499,18 @@ public class GameTestBuilder {
 
     public PhysicalCard addSeedDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
-        PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
-        return cardToAdd;
+        return addSeedDeckCard(blueprintId, cardTitle, ownerName, PhysicalCard.class);
     }
 
     public <T extends PhysicalCard> T addSeedDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
             throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
+        if (cardToAdd.getCardType() == CardType.DILEMMA || cardToAdd.getCardType() == CardType.ARTIFACT ||
+                _game.getFormat().misSeedsAllowed()) {
+            _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK_FOR_DILEMMA_PHASE);
+        } else {
+            _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK_OTHER);
+        }
         return cardToAdd;
     }
 

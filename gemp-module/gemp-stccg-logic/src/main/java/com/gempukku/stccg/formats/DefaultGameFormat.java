@@ -292,6 +292,11 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
+    public boolean misSeedsAllowed() {
+        return _misSeedsAllowed;
+    }
+
+    @Override
     public String validateCard(CardBlueprintLibrary library, String blueprintId) {
         blueprintId = library.getBaseBlueprintId(blueprintId);
         try {

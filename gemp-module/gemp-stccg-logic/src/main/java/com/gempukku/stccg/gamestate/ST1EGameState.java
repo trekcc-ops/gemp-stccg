@@ -90,7 +90,8 @@ public class ST1EGameState extends GameState {
         for (Player player : _players) {
             player.addCardGroup(Zone.CORE);
             player.addCardGroup(Zone.MISSIONS_PILE);
-            player.addCardGroup(Zone.SEED_DECK);
+            player.addCardGroup(Zone.SEED_DECK_OTHER);
+            player.addCardGroup(Zone.SEED_DECK_FOR_DILEMMA_PHASE);
             player.addCardGroup(Zone.POINT_AREA);
         }
     }
@@ -102,7 +103,8 @@ public class ST1EGameState extends GameState {
         for (Player player : _players) {
             player.addCardGroup(Zone.CORE);
             player.addCardGroup(Zone.MISSIONS_PILE);
-            player.addCardGroup(Zone.SEED_DECK);
+            player.addCardGroup(Zone.SEED_DECK_OTHER);
+            player.addCardGroup(Zone.SEED_DECK_FOR_DILEMMA_PHASE);
             player.addCardGroup(Zone.POINT_AREA);
         }
     }
@@ -111,7 +113,8 @@ public class ST1EGameState extends GameState {
     @Override
     public List<PhysicalCard> getZoneCards(Player player, Zone zone) {
         if (zone == Zone.DRAW_DECK || zone == Zone.HAND || zone == Zone.REMOVED ||
-                zone == Zone.DISCARD || zone == Zone.CORE || zone == Zone.MISSIONS_PILE || zone == Zone.SEED_DECK)
+                zone == Zone.DISCARD || zone == Zone.CORE || zone == Zone.MISSIONS_PILE ||
+                zone == Zone.SEED_DECK_FOR_DILEMMA_PHASE || zone == Zone.SEED_DECK_OTHER)
             return player.getCardGroupCards(zone);
         else // This should never be accessed
             return _inPlay; // TODO - Should this just be an exception?
@@ -137,9 +140,21 @@ public class ST1EGameState extends GameState {
                         for (PhysicalCard card : subDeck)
                             card.setZone(Zone.DRAW_DECK);
                     } else if (entry.getKey() == SubDeck.SEED_DECK) {
-                        player.setCardGroup(Zone.SEED_DECK, subDeck);
-                        for (PhysicalCard card : subDeck)
-                            card.setZone(Zone.SEED_DECK);
+                        List<PhysicalCard> dilemmas = new ArrayList<>();
+                        List<PhysicalCard> otherSeeds = new ArrayList<>();
+                        for (PhysicalCard card : subDeck) {
+                            if (card.getCardType() == CardType.DILEMMA || card.getCardType() == CardType.ARTIFACT ||
+                                    cardGame.getFormat().misSeedsAllowed()
+                            ) {
+                                card.setZone(Zone.SEED_DECK_FOR_DILEMMA_PHASE);
+                                dilemmas.add(card);
+                            } else {
+                                card.setZone(Zone.SEED_DECK_OTHER);
+                                otherSeeds.add(card);
+                            }
+                        }
+                        player.setCardGroup(Zone.SEED_DECK_FOR_DILEMMA_PHASE, dilemmas);
+                        player.setCardGroup(Zone.SEED_DECK_OTHER, otherSeeds);
                     } else if (entry.getKey() == SubDeck.MISSIONS) {
                         player.setCardGroup(Zone.MISSIONS_PILE, subDeck);
                         for (PhysicalCard card : subDeck)

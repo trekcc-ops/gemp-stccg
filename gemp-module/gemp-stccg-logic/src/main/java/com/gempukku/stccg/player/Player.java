@@ -42,9 +42,6 @@ public class Player {
     @JsonProperty("missionsPile")
     CardPile<PhysicalCard> _missionsPile;
 
-    @JsonProperty("seedDeck")
-    PhysicalCardGroup<PhysicalCard> _seedDeck;
-
     Map<MissionCard, List<MissionType>> _missionsSolved = new HashMap<>();
 
     @JsonProperty("pointsBonus")
@@ -147,11 +144,7 @@ public class Player {
 
     public void addCardGroup(Zone zone) throws InvalidGameOperationException {
         PhysicalCardGroup<PhysicalCard> group = switch(zone) {
-            case SEED_DECK -> {
-                _seedDeck = new PhysicalCardGroup<>();
-                yield _seedDeck;
-            }
-            case CORE, HAND -> new PhysicalCardGroup<>();
+            case CORE, HAND, SEED_DECK_FOR_DILEMMA_PHASE, SEED_DECK_OTHER -> new PhysicalCardGroup<>();
             case DRAW_DECK -> {
                 _drawDeck = new DrawDeck();
                 yield _drawDeck;
@@ -247,4 +240,13 @@ public class Player {
         return getPointsThatCountTowardWinning() >= getPointsRequiredToWin();
     }
 
+    public Collection<PhysicalCard> getSeedDeckCards() {
+        Collection<PhysicalCard> result = new ArrayList<>();
+        for (Zone seedZone : List.of(Zone.SEED_DECK_OTHER, Zone.SEED_DECK_FOR_DILEMMA_PHASE)) {
+            if (_cardGroups.get(seedZone) != null && _cardGroups.get(seedZone).isEmpty()) {
+                result.addAll(_cardGroups.get(seedZone).getCards());
+            }
+        }
+        return result;
+    }
 }

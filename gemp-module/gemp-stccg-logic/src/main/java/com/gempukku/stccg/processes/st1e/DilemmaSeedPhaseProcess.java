@@ -54,7 +54,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
             Player player = gameState.getPlayer(playerId);
             List<MissionLocation> availableMissions = getAvailableMissions(cardGame, playerId);
             for (MissionLocation mission : availableMissions) {
-                if (!player.getCardsInGroup(Zone.SEED_DECK).isEmpty()) {
+                if (!player.getCardsInGroup(Zone.SEED_DECK_FOR_DILEMMA_PHASE).isEmpty()) {
                     Action seedCardsAction = new AddCardsToPreseedStackAction(cardGame, player, mission);
                     seedActions.add(seedCardsAction);
                 }
@@ -92,7 +92,7 @@ public abstract class DilemmaSeedPhaseProcess extends SimultaneousGameProcess {
 
     private void selectCardsToSeed(Player player, ST1EGame cardGame, AddCardsToPreseedStackAction seedCardsAction)
             throws InvalidGameLogicException {
-        Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK);
+        Collection<PhysicalCard> availableCards = player.getCardsInGroup(Zone.SEED_DECK_FOR_DILEMMA_PHASE);
         cardGame.sendAwaitingDecision(
                 new CardsSelectionDecision(player, "Select cards to seed under " + seedCardsAction.getLocationName(cardGame),
                         availableCards, cardGame) {

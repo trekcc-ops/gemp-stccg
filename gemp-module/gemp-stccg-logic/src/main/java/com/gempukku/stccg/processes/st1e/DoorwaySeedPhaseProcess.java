@@ -8,7 +8,6 @@ import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
@@ -33,7 +32,7 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
         for (Player player : cardGame.getPlayers()) {
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
-            for (PhysicalCard seedCard : player.getCardsInGroup(Zone.SEED_DECK)) {
+            for (PhysicalCard seedCard : player.getSeedDeckCards()) {
                 if (seedCard.getCardType() == CardType.DOORWAY) {
                     List<SeedCardAction> seedActions = seedCard.createSeedCardActions(cardGame);
                     if (seedActions.size() == 1) {

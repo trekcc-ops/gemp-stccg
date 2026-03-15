@@ -60,4 +60,6 @@ public interface GameFormat extends AbstractGameFormat {
 
     int getMinPlanetMissions();
     int getMinSpaceMissions();
+
+    boolean misSeedsAllowed();
 }
