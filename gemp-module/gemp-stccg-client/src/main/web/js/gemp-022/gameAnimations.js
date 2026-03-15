@@ -886,8 +886,8 @@ export default class GameAnimations {
                 let newPhaseName = getFriendlyPhaseName(newPhase);
                 let uiPlayer = that.game.bottomPlayerId;
                 let currentPhaseName = $("#currentPhase").text();
-                if (that.game.allPlayerIds.includes(uiPlayer)) {
-                    if (newPhase === "SEED_MISSION" && newPhaseName != currentPhaseName) {
+                if (that.game.allPlayerIds.includes(uiPlayer) && newPhaseName != currentPhaseName) {
+                    if (newPhase === "SEED_MISSION") {
                         // if initializing mission seed phase
                         for (const playerData of Object.values(gameState.playerMap)) {
                             if (playerData.playerId === uiPlayer) {
@@ -898,21 +898,27 @@ export default class GameAnimations {
                                 }
                             }
                         }
-                    } else if ((newPhase === "SEED_DILEMMA" || newPhase === "SEED_FACILITY") &&
-                            currentPhaseName != "Facility seed phase" && currentPhaseName != "Dilemma seed phase") {
-                            /* All dilemma and facility phase cards are put in the hand group at the beginning of
-                                the dilemma seed phase, so this shouldn't be run again when the phase moves from
-                                dilemma phase to facility phase. */
+                    } else if (newPhase === "SEED_DILEMMA") {
                         for (const playerData of Object.values(gameState.playerMap)) {
                             if (playerData.playerId === uiPlayer) {
-                                let seedDeckCardIds = playerData.cardGroups["SEED_DECK"].cardIds;
+                                let seedDeckCardIds = playerData.cardGroups["SEED_DECK_FOR_DILEMMA_PHASE"].cardIds;
                                 for (const cardId of seedDeckCardIds) {
                                     let card = gameState.visibleCardsInGame[cardId];
                                     that.addCardToHiddenZone(card, "SEED_DECK", uiPlayer);
                                 }
                             }
                         }
-                    }
+                    } else if (newPhase === "SEED_FACILITY") {
+                         for (const playerData of Object.values(gameState.playerMap)) {
+                             if (playerData.playerId === uiPlayer) {
+                                 let seedDeckCardIds = playerData.cardGroups["SEED_DECK_OTHER"].cardIds;
+                                 for (const cardId of seedDeckCardIds) {
+                                     let card = gameState.visibleCardsInGame[cardId];
+                                     that.addCardToHiddenZone(card, "SEED_DECK", uiPlayer);
+                                 }
+                             }
+                         }
+                     }
                 }
                 $("#currentPhase").text(newPhaseName);
                 next();
