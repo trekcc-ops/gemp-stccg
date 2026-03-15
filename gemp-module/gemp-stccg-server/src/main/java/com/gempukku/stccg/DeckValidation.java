@@ -150,6 +150,8 @@ public class DeckValidation {
                 String result = "Seed deck contains more than maximum number of cards: " +
                         seedDeckSize + ">" + _maximumSeedDeckSize + ".";
                 _errors.add(result);
+            } else if (seedDeckSize < _maximumSeedDeckSize) {
+                _warnings.add("Seed deck has " + seedDeckSize + " cards.");
             } else {
                 _info.add("Seed deck has " + seedDeckSize + " cards.");
             }
