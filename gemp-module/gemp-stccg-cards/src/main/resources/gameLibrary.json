@@ -1,6 +1,7 @@
 [
   {
     "gameName": "Seed Action Test",
+    "format": "velara1e",
     "players": ["asdf", "qwer"],
     "phase": "SEED_DOORWAY",
     "seedDeck": [

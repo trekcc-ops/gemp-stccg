@@ -51,6 +51,7 @@ public class GameTestBuilder {
                             @JsonProperty("core") List<List<String>> cores,
                             @JsonProperty("hand") List<List<String>> hands,
                             @JsonProperty("discard") List<List<String>> discards,
+                            @JsonProperty("format") String formatCode,
                             @JacksonInject FormatLibrary formatLibrary,
                             @JacksonInject CardBlueprintLibrary cardLibrary
                             ) throws InvalidGameOperationException, CardNotFoundException {
@@ -58,7 +59,7 @@ public class GameTestBuilder {
         if (players == null || players.size() < 2) {
             throw new InvalidGameOperationException("Cannot build game with less than two players specified");
         }
-        GameFormat format = formatLibrary.get("st1emoderncomplete");
+        GameFormat format = formatLibrary.get(Objects.requireNonNullElse(formatCode, "st1emoderncomplete"));
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "105_018");
