@@ -2,7 +2,9 @@ package com.gempukku.stccg.actions.placecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
@@ -86,5 +88,14 @@ public class AddCardsToPreseedStackAction extends ActionyAction implements CardP
     }
 
     public int getLocationId() { return _locationId; }
+
+    public MissionLocation getLocation(ST1EGame cardGame) {
+        GameLocation location = cardGame.getGameState().getLocationById(_locationId);
+        if (location instanceof MissionLocation missionLocation) {
+            return missionLocation;
+        } else {
+            return null;
+        }
+    }
 
 }

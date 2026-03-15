@@ -9,10 +9,7 @@ import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.game.DefaultGame;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class SelectValidCardCombinationFromDialogToDownloadAction extends ActionyAction implements SelectCardsAction {
     private final Collection<? extends PhysicalCard> _selectableCards;
@@ -44,8 +41,14 @@ public class SelectValidCardCombinationFromDialogToDownloadAction extends Action
 
     @Override
     protected void processEffect(DefaultGame cardGame) {
+        Map<PhysicalCard, List<PhysicalCard>> betterMap = new HashMap<>();
+        for (PersonnelCard personnel : _validCombinations.keySet()) {
+            List<PhysicalCard> value = new ArrayList<>();
+            value.addAll(_validCombinations.get(personnel));
+            betterMap.put(personnel, value);
+        }
         AwaitingDecision decision = new ArbitraryCardsSelectionDecision(_performingPlayerId, _choiceText,
-                _selectableCards, _validCombinations, MINIMUM, _maximum, cardGame) {
+                _selectableCards, betterMap, MINIMUM, _maximum, cardGame) {
             @Override
             public void decisionMade(String result) throws DecisionResultInvalidException {
                 _selectedCards = getSelectedCardsByResponse(result);

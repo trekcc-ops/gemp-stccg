@@ -2,7 +2,6 @@ package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
@@ -62,7 +61,7 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
 
     public ArbitraryCardsSelectionDecision(String playerName, String text,
                                            Collection<? extends PhysicalCard> physicalCards,
-                                           Map<PersonnelCard, List<PersonnelCard>> validCombinations,
+                                           Map<PhysicalCard, List<PhysicalCard>> validCombinations,
                                            int minimum, int maximum, DefaultGame cardGame) {
         super(playerName, text, cardGame);
         _physicalCards.addAll(physicalCards);
@@ -71,9 +70,9 @@ public abstract class ArbitraryCardsSelectionDecision extends AbstractAwaitingDe
         _maximum = maximum;
         _validCombinations = new HashMap<>();
 
-        for (PersonnelCard personnel : validCombinations.keySet()) {
+        for (PhysicalCard personnel : validCombinations.keySet()) {
             List<Integer> pairingsList = new LinkedList<>();
-            for (PersonnelCard pairing : validCombinations.get(personnel)) {
+            for (PhysicalCard pairing : validCombinations.get(personnel)) {
                 pairingsList.add(pairing.getCardId());
             }
             _validCombinations.put(personnel, pairingsList);
