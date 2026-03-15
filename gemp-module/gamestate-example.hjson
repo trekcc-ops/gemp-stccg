@@ -39,7 +39,14 @@
         // Information specific to a player. Map using the "playerId" field as a key.
         "player2": {
             "playerId": "player2",
-            "score": 0, // Player score. As of 1/25/25, no distinction between bonus and non-bonus points.
+            "score": 0, // Player score. Being deprecated in favor of "points" property.
+            "points": {
+                "bonus": 0,
+                "nonBonus": 0,
+                "total": 0,
+                "towardWinning": 0,
+                "requiredToWin": 140
+            },
             "decked": false, // Tribbles only
             "cardGroups": {
                     /* Cards that are organized in a certain way on the table. Mostly important for piles like

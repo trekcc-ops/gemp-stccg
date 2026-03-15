@@ -77,6 +77,28 @@ public class GameStateSerializerTest extends AbstractAtTest {
     }
 
     @Test
+    public void playerMapTest() throws Exception {
+        GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
+        _game = builder.getGame();
+        builder.addOutpost(Affiliation.FEDERATION, P1);
+        builder.setPhase(Phase.EXECUTE_ORDERS);
+        builder.startGame();
+
+        JsonNode gameStateJson = new ObjectMapper().readTree(_game.getGameState().serializeForPlayer(P1));
+        JsonNode playerMapJson = gameStateJson.get("playerMap");
+
+        JsonNode yourPointsNode = playerMapJson.get(P1).get("points");
+        assertEquals(5, yourPointsNode.size());
+        assertEquals(0, yourPointsNode.get("bonus").intValue());
+        assertEquals(0, yourPointsNode.get("nonBonus").intValue());
+        assertEquals(0, yourPointsNode.get("total").intValue());
+        assertEquals(140, yourPointsNode.get("requiredToWin").intValue());
+        assertEquals(0, yourPointsNode.get("towardWinning").intValue());
+
+        assertEquals(VERSION_NUMBER, gameStateJson.get("versionNumber").textValue());
+    }
+
+    @Test
     public void spacelineElementsTest() throws Exception {
         GameTestBuilder builder = new GameTestBuilder(_cardLibrary, formatLibrary, _players);
         builder.addMission("101_154", "Excavation", P1);

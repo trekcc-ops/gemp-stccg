@@ -20,8 +20,10 @@ import com.gempukku.stccg.game.InvalidGameOperationException;
 import java.util.*;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIncludeProperties({ "playerId", "score", "decked", "cardGroups" })
-@JsonPropertyOrder({ "playerId", "score", "decked", "cardGroups" })
+@JsonIncludeProperties({ "playerId", "score", "decked", "cardGroups", "pointsBonus", "pointsNonBonus",
+    "pointsTowardWinning", "pointsRequiredToWin" })
+@JsonPropertyOrder({ "playerId", "score", "decked", "cardGroups", "pointsBonus", "pointsNonBonus",
+    "pointsTowardWinning", "pointsRequiredToWin" })
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="playerId")
 public class Player {
     @JsonProperty("playerId")
@@ -45,7 +47,10 @@ public class Player {
 
     Map<MissionCard, List<MissionType>> _missionsSolved = new HashMap<>();
 
+    @JsonProperty("pointsBonus")
     int _bonusPoints;
+
+    @JsonProperty("pointsNonBonus")
     int _nonBonusPoints;
 
 /*    @JsonCreator
@@ -106,11 +111,11 @@ public class Player {
             return false;
     }
 
-    private int getBonusPoints() {
+    public int getBonusPoints() {
         return _bonusPoints;
     }
 
-    private int getNonBonusPoints() {
+    public int getNonBonusPoints() {
         return _nonBonusPoints;
     }
 
@@ -119,7 +124,8 @@ public class Player {
         return _bonusPoints + _nonBonusPoints;
     }
 
-    private int getPointsThatCountTowardWinning() {
+    @JsonProperty("pointsTowardWinning")
+    public int getPointsThatCountTowardWinning() {
         return _nonBonusPoints + Math.min(_bonusPoints, _nonBonusPoints);
     }
 
@@ -228,12 +234,17 @@ public class Player {
         _missionsSolved.put(missionCard, missionCard.getMissionTypes());
     }
 
-    public boolean hasMetVictoryConditions() {
+    @JsonProperty("pointsRequiredToWin")
+    public int getPointsRequiredToWin() {
         int pointsRequired = 100;
         if (!hasSolvedMission(MissionType.PLANET) || !hasSolvedMission(MissionType.SPACE)) {
             pointsRequired += 40;
         }
-        return getPointsThatCountTowardWinning() >= pointsRequired;
+        return pointsRequired;
+    }
+
+    public boolean hasMetVictoryConditions() {
+        return getPointsThatCountTowardWinning() >= getPointsRequiredToWin();
     }
 
 }

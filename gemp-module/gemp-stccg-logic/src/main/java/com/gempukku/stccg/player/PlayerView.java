@@ -7,8 +7,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.*;
 
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
-@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
+@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups", "points" })
+@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups", "points" })
 public class PlayerView {
 
     private final String _requestingPlayerId;
@@ -27,6 +27,17 @@ public class PlayerView {
     @JsonProperty("score")
     private int getScore() {
         return _playerRequested.getScore();
+    }
+
+    @JsonProperty("points")
+    private Map<String, Integer> getPoints() {
+        Map<String, Integer> result = new HashMap<>();
+        result.put("bonus", _playerRequested.getBonusPoints());
+        result.put("nonBonus", _playerRequested.getNonBonusPoints());
+        result.put("total", _playerRequested.getScore());
+        result.put("towardWinning", _playerRequested.getPointsThatCountTowardWinning());
+        result.put("requiredToWin", _playerRequested.getPointsRequiredToWin());
+        return result;
     }
 
     @JsonProperty("decked")
