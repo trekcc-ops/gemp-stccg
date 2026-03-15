@@ -16,7 +16,8 @@ import java.util.*;
 })
 public class DefaultGameFormat implements GameFormat {
 
-    private static final int DEFAULT_MIN_VALUE = 999;
+    private static final int DEFAULT_MAX_VALUE = 999;
+    private static final int DEFAULT_MIN_VALUE = 0;
 
     @JsonProperty("name")
     private final String _name;
@@ -78,7 +79,7 @@ public class DefaultGameFormat implements GameFormat {
         _minPlanetMissions = Objects.requireNonNullElse(minPlanetMissions, DEFAULT_MIN_VALUE);
         _minSpaceMissions = Objects.requireNonNullElse(minSpaceMissions, DEFAULT_MIN_VALUE);
         _misSeedsAllowed = Objects.requireNonNullElse(misSeedsAllowed, true);
-        _maximumSameName = DEFAULT_MIN_VALUE;
+        _maximumSameName = DEFAULT_MAX_VALUE;
         _discardPileIsPublic = false;
         _isPlaytest = false;
         _hallVisible = Objects.requireNonNullElse(hallVisible, true);
@@ -278,6 +279,16 @@ public class DefaultGameFormat implements GameFormat {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int getMinPlanetMissions() {
+        return _minPlanetMissions;
+    }
+
+    @Override
+    public int getMinSpaceMissions() {
+        return _minSpaceMissions;
     }
 
     @Override

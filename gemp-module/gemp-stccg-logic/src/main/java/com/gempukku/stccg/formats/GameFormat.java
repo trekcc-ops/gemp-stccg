@@ -58,4 +58,6 @@ public interface GameFormat extends AbstractGameFormat {
 
     boolean isCardAllowedInFormat(CardBlueprint blueprint, CardBlueprintLibrary library);
 
+    int getMinPlanetMissions();
+    int getMinSpaceMissions();
 }
