@@ -1,13 +1,13 @@
-# gemp-stccg
-GEMP is a platform for running a rules-enforced CCG in a web-hosted fashion, so players can play in their browser.  This instance of GEMP is for the Star Trek CCG.
+# Velara
+Velara is a platform for running a rules-enforced Star Trek CCG in a web-hosted fashion, so players can play in their browser. Velara is a fork of the [GEMP-LOTR server](https://github.com/PlayersCouncil/gemp-lotr).
 
 The engine is adaptable to other games, but essentially requires forking and ripping out all the Star Trek-based stuff and replacing it with context specific to the game of your choice.
 
 # Overview
 
-GEMP is a server written for Java 21, using MariaDB for a MySQL database instance, and serving raw Javascript and barebones HTML/CSS for the client front-end.
+Velara is a server written for Java 21, using MariaDB for a MySQL database instance, and serving HTML/CSS/JS for the client front-end.
 
-GEMP is divided into several modules which each handle a different aspect of the game:
+Velara is divided into several modules which each handle a different aspect of the game:
 
 ## gemp-stccg-client
 This module manages the interface for the Javascript clients.  Each JS operation that contacts the server will eventually terminate in a call to [communication.js](./gemp-module/gemp-stccg-client/src/main/web/js/gemp-022/communication.js), which is ultimately just a wrapper for calls to [RootUriRequestHandler](./gemp-module/gemp-stccg-server/src/main/java/com/gempukku/stccg/async/handler/RootUriRequestHandler.java), which routes each endpoint to the appropriate handler within gemp-stccg-server.  From there the action could go anywhere depending on context.
@@ -34,8 +34,8 @@ This is also the home for the unit tests for the server, which will fail compila
 
 # Hosting
 
-GEMP includes tools for hosting within [Docker](https://docker-curriculum.com/), which makes setting up a local host a breeze (assuming the maintainers have kept the database scripts up-to-date).  See the readme in the [/docker](/gemp-module/docker) subfolder for more advanced details and instructions on the organization.
+Velara is meant to be hosted within [Docker](hhttps://www.docker.com/), which makes setting up a local host a breeze. See the readme in the [/docker](/gemp-module/docker) subfolder for more advanced details and instructions on the organization.
 
 # Editing and Contributing
 
-Several GEMP editors recommend editing the code in [IntelliJ IDEA](https://www.jetbrains.com/idea/), but you should be able to use any Java IDE.
+Several Velara editors recommend editing the code in [IntelliJ IDEA](https://www.jetbrains.com/idea/), but you should be able to use any Java IDE.
