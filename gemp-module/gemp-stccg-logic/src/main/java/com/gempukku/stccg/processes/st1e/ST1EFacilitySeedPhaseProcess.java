@@ -6,7 +6,6 @@ import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
 import com.gempukku.stccg.actions.draw.DrawStartingHandAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ActionSelectionDecision;
 import com.gempukku.stccg.decisions.DecisionContext;
 import com.gempukku.stccg.game.DefaultGame;
@@ -67,7 +66,7 @@ public class ST1EFacilitySeedPhaseProcess extends ST1EGameProcess {
             Collection<Player> players = cardGame.getPlayers();
 
             for (Player player : players) {
-                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getCardsInGroup(Zone.SEED_DECK));
+                Iterable<PhysicalCard> remainingSeedCards = new LinkedList<>(player.getSeedDeckCards());
                 for (PhysicalCard card : remainingSeedCards) {
                     RemoveCardFromGameAction removeAction =
                             new RemoveCardFromGameAction(cardGame, card.getOwnerName(), card);

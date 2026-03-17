@@ -8,6 +8,7 @@ import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.GameType;
+import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 import com.gempukku.stccg.formats.GameFormat;
 
@@ -149,6 +150,8 @@ public class DeckValidation {
                 String result = "Seed deck contains more than maximum number of cards: " +
                         seedDeckSize + ">" + _maximumSeedDeckSize + ".";
                 _errors.add(result);
+            } else if (seedDeckSize < _maximumSeedDeckSize) {
+                _warnings.add("Seed deck has " + seedDeckSize + " cards.");
             } else {
                 _info.add("Seed deck has " + seedDeckSize + " cards.");
             }
@@ -167,22 +170,40 @@ public class DeckValidation {
 
     private void validateMissionsPile(CardBlueprintLibrary library, CardDeck deck) {
         List<String> missionsPile = deck.getSubDeck(SubDeck.MISSIONS);
+        List<String> uniqueLocations = new LinkedList<>();
+        int planetMissions = 0;
+        int spaceMissions = 0;
+
         if (_format.getMissions() > 0 && missionsPile.size() != _format.getMissions()) {
             _errors.add("Deck must contain exactly " + _format.getMissions() + " missions.");
         }
-        List<String> uniqueLocations = new LinkedList<>();
         for (String blueprintId : missionsPile) {
             try {
                 CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
                 if (blueprint.getCardType() != CardType.MISSION) {
                     _errors.add("Missions pile contains non-mission card: " + blueprint.getTitle());
-                } else if (!blueprint.isUniversal()) {
-                    uniqueLocations.add(blueprint.getLocation());
+                } else {
+                    if (blueprint.hasMissionType(MissionType.PLANET)) {
+                        planetMissions++;
+                    }
+                    if (blueprint.hasMissionType(MissionType.SPACE)) {
+                        spaceMissions++;
+                    }
+                    if (!blueprint.isUniversal()) {
+                        uniqueLocations.add(blueprint.getLocation());
+                    }
                 }
             } catch(CardNotFoundException ignored) {
                 _invalidBlueprintIds.add(blueprintId);
             }
         }
+        if (planetMissions < _format.getMinPlanetMissions()) {
+            _errors.add("Deck must contain at least " + _format.getMinPlanetMissions() + " planet missions.");
+        }
+        if (spaceMissions < _format.getMinSpaceMissions()) {
+            _errors.add("Deck must contain at least " + _format.getMinSpaceMissions() + " space missions.");
+        }
+
         List<String> distinctUniqueLocations = uniqueLocations.stream().distinct().toList();
         for (String location : distinctUniqueLocations) {
             int locationCount = Collections.frequency(uniqueLocations, location);

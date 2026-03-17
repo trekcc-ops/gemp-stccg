@@ -10,8 +10,8 @@ import com.gempukku.stccg.cards.physicalcard.FacilityCard;
 import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.ST1EGame;
@@ -38,14 +38,14 @@ public class ST1EPlayCardInPhaseRule extends ST1ERule {
                     result.add(new SeedMissionCardAction(cardGame, missionCard));
                 }
             } else if (phase == Phase.SEED_FACILITY) {
-                for (PhysicalCard card : player.getCardsInGroup(Zone.SEED_DECK)) {
-                    if (isCurrentPlayer) {
-                        if (canCardBeSeeded(card, stGame)) {
-                            ST1EPhysicalCard stCard = (ST1EPhysicalCard) card;
-                            for (SeedCardAction action : stCard.createSeedCardActions(cardGame)) {
-                                if (action != null && action.canBeInitiated(cardGame)) {
-                                    result.add(action);
-                                }
+                for (PhysicalCard card : player.getSeedDeckCards()) {
+                    if (isCurrentPlayer && canCardBeSeeded(card, stGame) &&
+                            card instanceof ST1EPhysicalCard stCard &&
+                            card.getCardType() != CardType.DOORWAY
+                    ) {
+                        for (SeedCardAction action : stCard.createSeedCardActions(cardGame)) {
+                            if (action != null && action.canBeInitiated(cardGame)) {
+                                result.add(action);
                             }
                         }
                     }

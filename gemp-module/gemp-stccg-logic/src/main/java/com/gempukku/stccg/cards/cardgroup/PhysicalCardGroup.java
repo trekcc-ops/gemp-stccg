@@ -50,4 +50,6 @@ public class PhysicalCardGroup<T extends PhysicalCard> {
         return _cards.contains(card);
     }
 
+    public boolean isEmpty() { return _cards.isEmpty(); }
+
 }

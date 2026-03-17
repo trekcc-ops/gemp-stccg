@@ -32,6 +32,7 @@ Every game is populated with 30 copies of Barber Pole in each player's draw deck
 ### Basic properties ###
 * <b>gameName</b> (string) - title of the game that will show up in the hall
 * <b>players</b> (string array) - Player names that will be playing the game. The first name in the list will be the starting player.
+* <b>format</b> (string) - Code for the game format to be used. If not provided, game builder assumes "st1emoderncomplete".
 * <b>phase</b> (enumerated string, see Phase.java for options) - When the game loads, it will be at the start of the phase you specify here.
 If not provided, the game builder assumes SEED_DOORWAY.
 

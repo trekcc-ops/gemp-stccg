@@ -10,8 +10,15 @@ export function getUserMessage(decision, gameState) {
     if (decision.elementType === "ACTION") {
         let context = decision.context;
         switch(context) {
-            case "SELECT_MISSION_FOR_SEED_CARDS":
-                return "Select a mission to seed cards under or remove seed cards from";
+            case "SELECT_YOUR_MISSION_FOR_SEED_CARDS": {
+                return "Select your mission to seed cards under or remove seed cards from";
+            }
+            case "SELECT_SHARED_MISSION_FOR_SEED_CARDS": {
+                return "Select shared mission to seed cards under or remove seed cards from";
+            }
+            case "SELECT_OPPONENT_MISSION_FOR_SEED_CARDS": {
+                return "Select opponent's mission to seed cards under or remove seed cards from";
+            }
             case "SELECT_OPTIONAL_RESPONSE_ACTION":
                 return "Optional responses";
             case "SELECT_PHASE_ACTION": {

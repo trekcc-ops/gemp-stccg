@@ -16,11 +16,11 @@ import java.util.List;
 public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess {
 
     DilemmaSeedPhaseYourMissionsProcess(ST1EGame game) {
-        super(game.getPlayerIds());
+        super(game.getPlayerIds(), DilemmaSeedPhaseType.YOUR_MISSION);
     }
     @ConstructorProperties({"playersParticipating"})
     public DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting) {
-        super(playersSelecting);
+        super(playersSelecting, DilemmaSeedPhaseType.YOUR_MISSION);
     }
 
     @Override

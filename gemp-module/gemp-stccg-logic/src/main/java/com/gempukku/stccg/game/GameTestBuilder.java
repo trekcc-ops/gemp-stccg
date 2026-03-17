@@ -51,6 +51,7 @@ public class GameTestBuilder {
                             @JsonProperty("core") List<List<String>> cores,
                             @JsonProperty("hand") List<List<String>> hands,
                             @JsonProperty("discard") List<List<String>> discards,
+                            @JsonProperty("format") String formatCode,
                             @JacksonInject FormatLibrary formatLibrary,
                             @JacksonInject CardBlueprintLibrary cardLibrary
                             ) throws InvalidGameOperationException, CardNotFoundException {
@@ -58,7 +59,7 @@ public class GameTestBuilder {
         if (players == null || players.size() < 2) {
             throw new InvalidGameOperationException("Cannot build game with less than two players specified");
         }
-        GameFormat format = formatLibrary.get("st1emoderncomplete");
+        GameFormat format = formatLibrary.get(Objects.requireNonNullElse(formatCode, "st1emoderncomplete"));
         CardDeck testDeck = new CardDeck("Test", format);
         for (int i = 0; i < 30; i++) {
             testDeck.addCard(SubDeck.DRAW_DECK, "105_018");
@@ -499,15 +500,18 @@ public class GameTestBuilder {
 
     public PhysicalCard addSeedDeckCard(String blueprintId, String cardTitle, String ownerName)
             throws CardNotFoundException {
-        PhysicalCard cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
-        return cardToAdd;
+        return addSeedDeckCard(blueprintId, cardTitle, ownerName, PhysicalCard.class);
     }
 
     public <T extends PhysicalCard> T addSeedDeckCard(String blueprintId, String cardTitle, String ownerName, Class<T> clazz)
             throws CardNotFoundException {
         T cardToAdd = addCardToGame(blueprintId, cardTitle, ownerName, clazz);
-        _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK);
+        if (cardToAdd.getCardType() == CardType.DILEMMA || cardToAdd.getCardType() == CardType.ARTIFACT ||
+                _game.getFormat().misSeedsAllowed()) {
+            _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK_FOR_DILEMMA_PHASE);
+        } else {
+            _game.getGameState().addCardToZone(_game, cardToAdd, Zone.SEED_DECK_OTHER);
+        }
         return cardToAdd;
     }
 

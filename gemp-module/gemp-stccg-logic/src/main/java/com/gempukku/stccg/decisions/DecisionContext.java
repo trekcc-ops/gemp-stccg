@@ -3,7 +3,9 @@ package com.gempukku.stccg.decisions;
 public enum DecisionContext {
 
     // Action selections
-    SELECT_MISSION_FOR_SEED_CARDS("Select a mission to seed cards under or remove seed cards from"),
+    SELECT_YOUR_MISSION_FOR_SEED_CARDS(""),
+    SELECT_OPPONENT_MISSION_FOR_SEED_CARDS(""),
+    SELECT_SHARED_MISSION_FOR_SEED_CARDS(""),
     SELECT_OPTIONAL_RESPONSE_ACTION("Optional responses"),
     SELECT_PHASE_ACTION("Play current phase action or pass"),
     SELECT_REQUIRED_RESPONSE_ACTION("Required responses"),
