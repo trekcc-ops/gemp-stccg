@@ -39,6 +39,11 @@ public class DbPlayerDAO implements PlayerDAO {
         if (getAllPlayers().isEmpty()) {
             registerInitialPlayers();
         }
+        try {
+            getPlayer(AppConfig.getLibrarianUsername());
+        } catch(UserNotFoundException exp) {
+            throw new RuntimeException("Unable to identify player account for deck librarian", exp);
+        }
     }
 
     private void registerInitialPlayers() {
