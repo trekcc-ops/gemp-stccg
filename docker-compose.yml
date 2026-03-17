@@ -36,6 +36,7 @@ services:
     secrets:
       - mariadb_client_username
       - mariadb_client_password
+      - initial_player_accounts
 
   db:
     container_name: ${DB_CONTAINER_NAME}
@@ -84,3 +85,5 @@ secrets:
     file: mariadb_client_username.txt
   mariadb_client_password:
     file: mariadb_client_password.txt
+  initial_player_accounts:
+    file: initial_player_accounts.json

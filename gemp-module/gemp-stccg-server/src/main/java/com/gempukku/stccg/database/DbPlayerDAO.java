@@ -1,5 +1,7 @@
 package com.gempukku.stccg.database;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.TextUtils;
 import com.gempukku.stccg.common.AppConfig;
 import org.sql2o.Sql2o;
@@ -27,11 +29,40 @@ public class DbPlayerDAO implements PlayerDAO {
         FROM player
         """;
 
+    private static final String GENERIC_IP = "192.168.1.1";
+
 
     private final DbAccess _dbAccess;
 
     public DbPlayerDAO(DbAccess dbAccess) {
         _dbAccess = dbAccess;
+        if (getAllPlayers().isEmpty()) {
+            registerInitialPlayers();
+        }
+    }
+
+    private void registerInitialPlayers() {
+        try {
+            String initialPlayers = AppConfig.getInitialUsersJson();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode playerJson = mapper.readTree(initialPlayers);
+            for (JsonNode node : playerJson) {
+                registerUser(
+                    node.get("name").textValue(),
+                    node.get("password").textValue(),
+                    GENERIC_IP,
+                    false
+                );
+                if (node.get("password").textValue().isEmpty()) {
+                    resetUserPassword(node.get("name").textValue());
+                }
+                if (node.get("isAdmin").booleanValue()) {
+                    addPlayerFlag(node.get("name").textValue(), User.Type.ADMIN);
+                }
+            }
+        } catch(Exception exp) {
+            throw new RuntimeException("Unable to register initial players for database", exp);
+        }
     }
 
     @Override
@@ -284,7 +315,13 @@ public class DbPlayerDAO implements PlayerDAO {
     @Override
     public final synchronized boolean registerUser(String login, String password, String remoteAddress)
             throws LoginInvalidException {
-        if (!validLoginName(login))
+        return registerUser(login, password, remoteAddress, true);
+    }
+
+    private synchronized boolean registerUser(String login, String password, String remoteAddress,
+                                              boolean checkForValidUsername)
+            throws LoginInvalidException {
+        if (checkForValidUsername && !validLoginName(login))
             return false;
 
         if(loginExists(login)) {

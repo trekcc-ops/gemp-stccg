@@ -97,7 +97,7 @@ public class AppConfig {
     }
 
     public static List<String> getForbiddenUsernames() {
-        return List.of(getLibrarianUsername(), "admin", "system", "bye");
+        return List.of(getLibrarianUsername(), "admin", "asdf", "qwer", "system", "bye");
     }
 
     private static String readDockerSecret(String secretName) throws IOException {
@@ -118,6 +118,14 @@ public class AppConfig {
             return readDockerSecret("mariadb_client_password");
         } catch(IOException exp) {
             throw new RuntimeException("Unable to identify property 'mariadb_client_password'");
+        }
+    }
+
+    public static String getInitialUsersJson() {
+        try {
+            return readDockerSecret("initial_player_accounts");
+        } catch(IOException exp) {
+            throw new RuntimeException("Unable to identify property 'initial_player_accounts'");
         }
     }
 

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "asdf",
+    "password": "asdf",
+    "isAdmin": true
+  },
+  {
+    "name": "qwer",
+    "password": "qwer",
+    "isAdmin": true
+  },
+  {
+    "name": "Librarian",
+    "password": "qwer",
+    "isAdmin": false
+  },
+  {
+    "name": "NoPass",
+    "password": "",
+    "isAdmin": true
+  }
+]
