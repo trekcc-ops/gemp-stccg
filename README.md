@@ -34,7 +34,7 @@ This is also the home for the unit tests for the server, which will fail compila
 
 # Hosting
 
-Velara is meant to be hosted within [Docker](hhttps://www.docker.com/), which makes setting up a local host a breeze. See the readme in the [/docker](/gemp-module/docker) subfolder for more advanced details and instructions on the organization.
+Velara is meant to be hosted within [Docker](https://www.docker.com/), which makes setting up a local host a breeze. See the readme in the [/docker](/gemp-module/docker) subfolder for instructions.
 
 # Editing and Contributing
 
