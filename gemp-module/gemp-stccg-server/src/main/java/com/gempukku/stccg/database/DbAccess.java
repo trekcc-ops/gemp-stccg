@@ -15,8 +15,6 @@ import java.util.Properties;
 public class DbAccess extends PoolingDataSource {
     private static final Logger LOGGER = LogManager.getLogger(DbAccess.class);
     private static final String CONNECTION_URL = AppConfig.getProperty("db.connection.url");
-    private static final String CONNECTION_USERNAME = AppConfig.getProperty("db.connection.username");
-    private static final String CONNECTION_PASSWORD = AppConfig.getProperty("db.connection.password");
     private static final String VALIDATION_QUERY = AppConfig.getProperty("db.connection.validateQuery");
     private static final boolean REWRITE_BATCHED_STATEMENTS = false;
     private static final int INNODB_AUTOINC_LOCK_MODE = 2;
@@ -41,8 +39,8 @@ public class DbAccess extends PoolingDataSource {
 
     private static GenericObjectPool createConnectionPool() {
         Properties props = new Properties() {{
-            setProperty("user", CONNECTION_USERNAME);
-            setProperty("password", CONNECTION_PASSWORD);
+            setProperty("user", AppConfig.getDatabaseUserName());
+            setProperty("password", AppConfig.getDatabasePassword());
             setProperty("rewriteBatchedStatements", String.valueOf(REWRITE_BATCHED_STATEMENTS));
             setProperty("innodb_autoinc_lock_mode", String.valueOf(INNODB_AUTOINC_LOCK_MODE));
         }};
