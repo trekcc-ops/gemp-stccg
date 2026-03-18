@@ -124,7 +124,6 @@ export function openSizeDialog(dialog) {
     dialog.dialog("open");
 }
 
-// All possible zones, per stccg/common/filterable/Zone.java
 export const zones_all = [
     "DRAW_DECK",
     "MISSIONS_PILE",
@@ -135,6 +134,7 @@ export const zones_all = [
     "ATTACHED",
     "PLACED_ON_MISSION",
     "REMOVED",
+    "POINT_AREA",
     "PLAY_PILE",
     "HAND",
     "DISCARD",
