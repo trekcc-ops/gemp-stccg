@@ -26,3 +26,9 @@ logs/nohup.out
 # GEMP-STCCG-Client
 node_modules/
 coverage/
+
+# Secrets
+initial_player_accounts.json
+mariadb_client_password.txt
+mariadb_client_username.txt
+mariadb_root_password.txt

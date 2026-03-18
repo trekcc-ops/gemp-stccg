@@ -4,13 +4,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
 public class AppConfig {
     private static final Logger LOGGER = LogManager.getLogger(AppConfig.class);
+    private static final String SECRETS_DIR = "/run/secrets";
     private static Properties _properties;
 
     private synchronized static Properties getProperties() {
@@ -93,6 +97,36 @@ public class AppConfig {
     }
 
     public static List<String> getForbiddenUsernames() {
-        return List.of(getLibrarianUsername(), "admin", "system", "bye");
+        return List.of(getLibrarianUsername(), "admin", "asdf", "qwer", "system", "bye");
     }
+
+    private static String readDockerSecret(String secretName) throws IOException {
+        Path secretPath = Paths.get(SECRETS_DIR, secretName);
+        return new String(Files.readAllBytes(secretPath)).trim();
+    }
+
+    public static String getDatabaseUserName() {
+        try {
+            return readDockerSecret("mariadb_client_username");
+        } catch(IOException exp) {
+            throw new RuntimeException("Unable to identify property 'mariadb_client_username'");
+        }
+    }
+
+    public static String getDatabasePassword() {
+        try {
+            return readDockerSecret("mariadb_client_password");
+        } catch(IOException exp) {
+            throw new RuntimeException("Unable to identify property 'mariadb_client_password'");
+        }
+    }
+
+    public static String getInitialUsersJson() {
+        try {
+            return readDockerSecret("initial_player_accounts");
+        } catch(IOException exp) {
+            throw new RuntimeException("Unable to identify property 'initial_player_accounts'");
+        }
+    }
+
 }

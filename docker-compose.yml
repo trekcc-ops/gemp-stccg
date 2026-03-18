@@ -1,11 +1,10 @@
-#version: "3.4"
-#
+name: velara
 services:
 
   build:
+    container_name: ${APP_CONTAINER_NAME}
     env_file:
       - .env
-    container_name: ${APP_CONTAINER_NAME}
     build: 
       context: .
       dockerfile: gemp-module/docker/gemp_app.Dockerfile
@@ -24,27 +23,31 @@ services:
         published: 8052
     volumes:
        - type: bind
-         source: gemp-module
-         target: /etc/gemp-module
-       - type: bind
          source: logs
          target: /logs
        - type: bind
          source: replay
          target: /replay
-       - type: bind
-         source: .
-         target: /gemp-src
     networks:
       gemp_net_1:
         ipv4_address: ${APP_IP}
     tty: true
     command: java -jar -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n -Dlog4j2.configurationFile=/src/gemp-module/gemp-stccg-client/target/log4j2.xml /src/gemp-module/gemp-stccg-client/target/web.jar &
+    secrets:
+      - mariadb_client_username
+      - mariadb_client_password
+      - initial_player_accounts
 
   db:
+    container_name: ${DB_CONTAINER_NAME}
     env_file:
       - .env
-    container_name: ${DB_CONTAINER_NAME}
+    environment:
+      MARIADB_ROOT_PASSWORD_FILE: /run/secrets/mariadb_root_password
+      MARIADB_DATABASE: gemp_db
+      MARIADB_USER_FILE: /run/secrets/mariadb_client_username
+      MARIADB_PASSWORD_FILE: /run/secrets/mariadb_client_password
+      MARIADB_AUTO_UPGRADE: true
     build: 
       context: .
       dockerfile: gemp-module/docker/gemp_db.Dockerfile
@@ -62,7 +65,10 @@ services:
     networks:
       gemp_net_1:
         ipv4_address: ${DB_IP}
-
+    secrets:
+      - mariadb_root_password
+      - mariadb_client_username
+      - mariadb_client_password
 
 networks:
   gemp_net_1:
@@ -71,3 +77,13 @@ networks:
       config:
         - subnet: 172.28.1.0/24
     attachable: true
+
+secrets:
+  mariadb_root_password:
+    file: mariadb_root_password.txt
+  mariadb_client_username:
+    file: mariadb_client_username.txt
+  mariadb_client_password:
+    file: mariadb_client_password.txt
+  initial_player_accounts:
+    file: initial_player_accounts.json
