@@ -38,6 +38,8 @@ export default class GempLotrDeckBuildingUI {
         this.deckDiv = $("#deckDiv");
         this.manageDecksDiv = $("#manageDecks");
         this.formatSelect = $("#formatSelect");
+        let formatDefault = $("<option/>").attr("value", "velara1e").text("1E Velara");
+        this.formatSelect.append(formatDefault);
 
 
         this.cardFilter = new CardFilter(
@@ -758,6 +760,7 @@ export default class GempLotrDeckBuildingUI {
         this.comm.getFormats(false,
             function (json) 
             {
+                console.log(json);
                 that.formatSelect.empty();
                 //var formats = JSON.parse(json);
                 $(json).each(function (index, o) {    
