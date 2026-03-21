@@ -918,6 +918,9 @@ export default class GameAnimations {
                                  }
                              }
                          }
+                         // Forcibly update seed card badge count after all dilemmas are seeded
+                         // so players have the latest info when playing facilities
+                         that.updateSeedCardCountBadge(gameState);
                      }
                 }
                 $("#currentPhase").text(newPhaseName);
@@ -1039,4 +1042,18 @@ export default class GameAnimations {
         }
     }
 
+    updateSeedCardCountBadge(jsonGameState) {
+        for (const location of jsonGameState.spacelineLocations) {
+            if (location.seedCardCount === 0) {
+                for (const missionId of location.missionCardIds) {
+                    getCardDivFromId(missionId).removeClass("seedCardCountBadge").removeAttr("seedCardCount");
+                }
+            }
+            else {
+                for (const missionId of location.missionCardIds) {
+                    getCardDivFromId(missionId).addClass("seedCardCountBadge").attr("seedCardCount", location.seedCardCount);
+                }
+            }
+        }
+    }
 }
