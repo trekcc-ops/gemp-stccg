@@ -7,18 +7,7 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
     let targetCard;
     let spacelineIndex;
 
-    for (const location of jsonGameState.spacelineLocations) {
-        if (location.seedCardCount === 0) {
-            for (const missionId of location.missionCardIds) {
-                getCardDivFromId(missionId).removeClass("seedCardCountBadge").removeAttr("seedCardCount");
-            }
-        }
-        else {
-            for (const missionId of location.missionCardIds) {
-                getCardDivFromId(missionId).addClass("seedCardCountBadge").attr("seedCardCount", location.seedCardCount);
-            }
-        }
-    }
+    gameAnimations.updateSeedCardCountBadge(jsonGameState);
 
     switch(actionType) {
         case "ADDED_PRESEEDS": // preparing for dilemma seeds; only animation is to remove from "hand"

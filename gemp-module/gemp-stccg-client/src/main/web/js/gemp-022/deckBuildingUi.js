@@ -38,6 +38,8 @@ export default class GempLotrDeckBuildingUI {
         this.deckDiv = $("#deckDiv");
         this.manageDecksDiv = $("#manageDecks");
         this.formatSelect = $("#formatSelect");
+        let formatDefault = $("<option/>").attr("value", "velara1e").text("1E Velara");
+        this.formatSelect.append(formatDefault);
 
 
         this.cardFilter = new CardFilter(
@@ -519,33 +521,47 @@ export default class GempLotrDeckBuildingUI {
             var selectedCardElem = tar.closest(".card");
             if (event.which >= 1) {
                 if (!this.successfulDrag) {
+                    // right-click, card details
                     if (event.shiftKey || event.which > 1) {
                         selectedCardElem.data("card").displayCardInfo(that.infoDialog);
                         return false;
-                    } else if (selectedCardElem.hasClass("cardInCollection")) {
-                        this.selectionFunc(selectedCardElem, selectedCardElem.data("card").imageUrl, "DRAW_DECK");
-                        // TODO: Refers to packs in collection
-                    } else if (selectedCardElem.hasClass("packInCollection")) {
-                        // if (confirm("Would you like to open this pack?")) {
-                            this.comm.openPack(this.getCollectionType(), selectedCardElem.data("card").blueprintId, function () {
+                    }
+                    // left-click on card in right-hand pane
+                    /* Disabling for MVP
+                    else if (selectedCardElem.hasClass("cardInCollection")) {
+                        this.selectionFunc(selectedCardElem, selectedCardElem.data("card").imageUrl, "DRAW_DECK")
+                    }
+                    */
+                    // left-click on pack in right-hand pane
+                    else if (selectedCardElem.hasClass("packInCollection")) {
+                        this.comm.openPack(
+                            this.getCollectionType(),
+                            selectedCardElem.data("card").blueprintId,
+                            function () {
                                 that.cardFilter.getCollection();
-                            }, {
-                                "404":function () {
-                                    alert("You have no pack of this type in your collection.");
-                                }
-                            });
-                        //}
-                    } else if (selectedCardElem.hasClass("cardToSelect")) {
-                        this.comm.openSelectionPack(this.getCollectionType(), this.packSelectionId,
-                                selectedCardElem.data("card").blueprintId, function () {
-                            that.cardFilter.getCollection();
-                        }, {
-                            "404":function () {
+                            },
+                            { "404":function () {
+                                alert("You have no pack of this type in your collection.");
+                            }
+                        });
+                    }
+                    // more pack stuff
+                    else if (selectedCardElem.hasClass("cardToSelect")) {
+                        this.comm.openSelectionPack(
+                            this.getCollectionType(),
+                            this.packSelectionId,
+                            selectedCardElem.data("card").blueprintId,
+                            function () {
+                                that.cardFilter.getCollection();
+                            },
+                            { "404":function () {
                                 alert("You have no pack of this type in your collection or that selection is not available for this pack.");
                             }
                         });
                         this.selectionDialog.dialog("close");
-                    } else if (selectedCardElem.hasClass("selectionInCollection")) {
+                    }
+                    // more pack stuff
+                    else if (selectedCardElem.hasClass("selectionInCollection")) {
                         var selectionDialogResize = function () {
                             let width = that.selectionDialog.width() + 10;
                             let height = that.selectionDialog.height() + 10;
@@ -553,8 +569,7 @@ export default class GempLotrDeckBuildingUI {
                         };
 
                         if (this.selectionDialog == null) {
-                            this.selectionDialog = $("<div></div>")
-                                    .dialog({
+                            this.selectionDialog = $("<div></div>").dialog({
                                 title:"Choose one",
                                 autoOpen:false,
                                 closeOnEscape:true,
@@ -598,9 +613,13 @@ export default class GempLotrDeckBuildingUI {
                         }
                         openSizeDialog(that.selectionDialog);
                         selectionDialogResize();
-                    } else if (selectedCardElem.hasClass("cardInDeck")) {
+                    }
+                    // left-click to remove card from deck
+                    /* Disabling for MVP
+                    else if (selectedCardElem.hasClass("cardInDeck")) {
                         this.removeCardFromDeck(selectedCardElem);
                     }
+                    */
                     event.stopPropagation();
                 }
             }
@@ -758,6 +777,7 @@ export default class GempLotrDeckBuildingUI {
         this.comm.getFormats(false,
             function (json) 
             {
+                console.log(json);
                 that.formatSelect.empty();
                 //var formats = JSON.parse(json);
                 $(json).each(function (index, o) {    
