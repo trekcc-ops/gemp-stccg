@@ -527,9 +527,11 @@ export default class GempLotrDeckBuildingUI {
                         return false;
                     }
                     // left-click on card in right-hand pane
+                    /* Disabling for MVP
                     else if (selectedCardElem.hasClass("cardInCollection")) {
                         this.selectionFunc(selectedCardElem, selectedCardElem.data("card").imageUrl, "DRAW_DECK")
                     }
+                    */
                     // left-click on pack in right-hand pane
                     else if (selectedCardElem.hasClass("packInCollection")) {
                         this.comm.openPack(
@@ -613,9 +615,11 @@ export default class GempLotrDeckBuildingUI {
                         selectionDialogResize();
                     }
                     // left-click to remove card from deck
+                    /* Disabling for MVP
                     else if (selectedCardElem.hasClass("cardInDeck")) {
                         this.removeCardFromDeck(selectedCardElem);
                     }
+                    */
                     event.stopPropagation();
                 }
             }
