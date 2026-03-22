@@ -1,27 +1,26 @@
 package com.gempukku.stccg.evaluator;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.game.DefaultGame;
 
-@JsonDeserialize(using = ValueSourceDeserializer.class)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type",
+    defaultImpl = BasicValueSource.class)
+@JsonSubTypes({@JsonSubTypes.Type(value = VariableRangeValueSource.class, name = "range"),
+        @JsonSubTypes.Type(value = ConditionalValueSource.class, names = {"conditional", "if"}),
+        @JsonSubTypes.Type(value = ForEachInMemoryValueSource.class, name = "forEachInMemory"),
+        @JsonSubTypes.Type(value = PersonnelCountValueSource.class, name = "personnelCount"),
+        @JsonSubTypes.Type(value = PrintedIntegrityValueSource.class, name = "printedIntegrity"),
+        @JsonSubTypes.Type(value = MaximumValueSource.class, name = "max"),
+        @JsonSubTypes.Type(value = MinimumValueSource.class, name = "min"),
+        @JsonSubTypes.Type(value = SkillDotCountValueSource.class, name = "skillDotCount"),
+        @JsonSubTypes.Type(value = ThisCardPointBoxValueSource.class, name = "thisCardPointBoxValue")
+})
 public interface ValueSource {
-    Evaluator getEvaluator(ActionContext actionContext);
 
-    default int getMinimum(ActionContext actionContext) {
-        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-    }
+    int getMinimum(DefaultGame cardGame, GameTextContext actionContext);
 
-    default int getMaximum(ActionContext actionContext) {
-        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), null);
-    }
-
-    default int evaluateExpression(ActionContext actionContext) {
-        return evaluateExpression(actionContext, actionContext.getSource());
-    }
-
-    default int evaluateExpression(ActionContext actionContext, PhysicalCard cardAffected) {
-        return getEvaluator(actionContext).evaluateExpression(actionContext.getGame(), cardAffected);
-    }
+    int getMaximum(DefaultGame cardGame, GameTextContext actionContext);
 
 }

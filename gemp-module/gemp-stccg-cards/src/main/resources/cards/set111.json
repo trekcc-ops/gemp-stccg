@@ -1,0 +1,87 @@
+{
+    "setId": "111",
+    "setName": "Official Tournament Sealed Deck",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "111_002",
+            "title": "Armus: Sticky Situation",
+            "type": "dilemma",
+            "property-logo": "tng-logo",
+            "mission-type": "planet",
+            "lore": "Armus, a remnant of the Vagrans, engulfed William T. Riker in his skin of evil. Only the finesse and skillful negotiation of Jean-Luc Picard resulted in his release.",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "selectCard",
+                            "selectingPlayer": "opponent",
+                            "filter": "highestStrength(personnel + encounteringThisCard)",
+                            "saveToMemoryId": "selectedPersonnel"
+                        },
+                        {
+                            "type": "if",
+                            "ifCondition": {
+                                "type": "cardInPlay",
+                                "filter": "Diplomacy + CUNNING>7 + personnel + presentWithThisCard + not(memoryId=selectedPersonnel)"
+                            },
+                            "actionIfTrue": {
+                                "type": "stop",
+                                "target": {
+                                    "type": "memory",
+                                    "memoryId": "selectedPersonnel"
+                                }
+                            },
+                            "actionIfFalse": {
+                                "type": "kill",
+                                "target": {
+                                    "type": "memory",
+                                    "memoryId": "selectedPersonnel"
+                                }
+                            }
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "anyPersonnel"
+                        }
+                    ]
+                }
+            ],
+            "image-url": "https://www.trekcc.org/1e/cardimages/otsdr/2.jpg",
+            "rarity": "P"
+        },
+        {
+            "blueprintId": "111_009",
+            "title": "Husnock Outpost",
+            "type": "facility",
+            "property-logo": "tng-logo",
+            "facility-type": "outpost",
+            "affiliation": "non-aligned",
+            "uniqueness": "universal",
+            "lore": "The sudden eradication of the entire Husnock race left its many outposts vacant. Various affiliations take advantage of these available facilities.",
+            "shields": 40,
+            "extended-shields-percentage": 0.25,
+            "actions": [
+                {
+                    "type": "seedThis",
+                    "destination": {
+                        "type": "atLocation",
+                        "affiliation": "non-aligned"
+                    }
+                },
+                {
+                    "type": "seedCardIntoPlay",
+                    "seededCard": "universal + name(Husnock Ship)",
+                    "destination": "thisCard",
+                    "limit": {
+                        "type": "perGamePerCopy",
+                        "count": 1
+                    }
+                }
+            ],
+            "image-url": "https://www.trekcc.org/1e/cardimages/otsdr/9.jpg",
+            "rarity": "P"
+        }
+    ]
+}

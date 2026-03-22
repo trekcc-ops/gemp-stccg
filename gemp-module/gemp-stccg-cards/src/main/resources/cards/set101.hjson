@@ -1,31 +1,84 @@
-// Set 101: Premiere [1E]
-
 {
     setId: "101"
     setName: Premiere
     gameType: First Edition
     cards: [
-    /*    {
+        {
             blueprintId: 101_012
             title: Anaphasic Organism
             type: dilemma
             mission-type: planet
             lore: "A male non-corporeal life-form that lives inside a female host which he enchants, as in the case of Dr. Beverly Crusher's late grandmother."
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR12.jpg
             rarity: C
-        } */
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "MEDICAL + SECURITY",
+                        "discardDilemma": true,
+                        "failEffect": {
+                            "type": "discard",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestTotalAttributes(personnel + female + encounteringThisCard)",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
+        }
         {
-            blueprintId: 101_014
-            title: Archer
-            type: dilemma
-            mission-type: planet
-            lore: Indigenous inhabitants, such as the Mintakan bowman, often attack an Away Team out of fear.
-            property-logo: tng-logo
-            java-blueprint: true
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR14.jpg
-            rarity: C
+            "blueprintId": "101_013",
+            "title": "Ancient Computer",
+            "type": "dilemma",
+            "mission-type": "space",
+            "lore": "Vital information can be retrieved from old or damaged computer systems like this one aboard a derelict Promellian battlecruiser.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR13.jpg",
+            "rarity": "R",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "Computer Skill x2 OR SCIENCE x3 OR ENGINEER x3"
+                    }
+                }
+            ]
+        }
+        {
+            "blueprintId": "101_014",
+            "title": "Archer",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Indigenous inhabitants, such as this Mintakan bowman, often attack an Away Team out of fear.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR14.jpg",
+            "rarity": "C",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "MEDICAL + SECURITY",
+                        "discardDilemma": true,
+                        "failEffect": {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestTotalAttributes(personnel + encounteringThisCard)",
+                                "count": 1
+                            }
+                        }
+                    }
+                }
+            ]
         }
         {
             blueprintId: 101_015
@@ -40,12 +93,12 @@
                 {
                     type: encounter
                     effect: {
-                        type: kill
-                        target: {
-                            type: select
-                            random: true
-                            filter: personnel + encounteringThisCard
-                            count: 1
+                        "type": "kill",
+                        "target": {
+                            "type": "select",
+                            "random": true,
+                            "filter": "personnel + encounteringThisCard",
+                            "count": 1
                         }
                     }
                 }
@@ -58,7 +111,6 @@
             mission-type: planet
             lore: A genetically-engineered leader. Once romantically involved with Deanna Troi.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR24.jpg
             rarity: C
         } */
@@ -88,10 +140,28 @@
             mission-type: planet
             lore: One of the many beautiful women who reside on the paradise planet of Risa.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR32.jpg
             rarity: C
         } */
+        {
+            blueprintId: 101_033
+            "title": "Matriarchal Society",
+            type: dilemma
+            mission-type: planet
+            lore: "The planet Angel One was dominated by its women who were intolerant of dealing with men.",
+            property-logo: tng-logo
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR33.jpg
+            rarity: U
+            actions: [
+                {
+                    type: encounter
+                    effect: {
+                        type: overcomeCondition
+                        requires: personnelWith(female) x2
+                    }
+                }
+            ]
+        }
     /*    {
             blueprintId: 101_036
             title: Microvirus
@@ -99,39 +169,84 @@
             mission-type: planet
             lore: Genetic weapon designed to attack humanoids who have specific DNA sequences.
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR36.jpg
             rarity: C
         } */
         {
-            blueprintId: 101_054
-            title: Wind Dancer
-            type: dilemma
-            mission-type: planet
-            property-logo: tng-logo
-            java-blueprint: true
-            lore: Sentry of the Parallax Colony. Only allows those whose hearts are joyous to pass.
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR54.jpg
-            rarity: R
+            "blueprintId": "101_054",
+            "title": "Wind Dancer",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "lore": "Sentry of the Parallax Colony. Only allows those whose hearts are joyous to pass.",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR54.jpg",
+            "rarity": "R",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "name(Lwaxana Troi) OR personnelWith(Youth OR Music OR STRENGTH>9)"
+                        }
+                    ]
+                }
+            ]
         }
         {
             blueprintId: 101_055
             title: Engineering Kit
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of specialized engineering instruments. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR55.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: engineer
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=officer
+                }
+            ]
+        }
+        {
+            blueprintId: 101_056
+            title: Engineering PADD
+            type: equipment
+            property-logo: tng-logo
+            characteristic: padd
+            lore: Representative of Personal Access Display Devices designed specifically for engineering functions. Such equipment has been developed by many races.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR56.jpg
+            rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: engineer
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=science
+                }
+            ]
         }
         {
             blueprintId: 101_057
             title: Federation PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            characteristic: padd
+            lore: Standard Federation Personal Access Display Device for computerized information.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR57.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + personnel + affiliation=federation
+                    }
+                    cumulative: true
+                }
+            ]
         }
         {
             blueprintId: 101_058
@@ -139,79 +254,181 @@
             lore: Phase-disruptor used by Klingons and other races. Similar to a phaser.
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR58.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (affiliation=klingon OR affiliation=non-aligned) + personnel
+                    }
+                    cumulative: true
+                }
+            ]
         }
         {
             blueprintId: 101_059
             title: Klingon PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            characteristic: padd
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR59.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + personnel + affiliation=klingon
+                    }
+                    cumulative: true
+                }
+            ]
         }
         {
             blueprintId: 101_060
-            title: Medical Kit
+            "title": "Medical Kit",
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of specialized medical equipment. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR60.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: medical
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=officer
+                }
+            ]
         }
         {
             blueprintId: 101_061
             title: Medical Tricorder
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             lore: Representative of a specialized tricorder optimized for medical use. Such equipment has been developed by many races.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR61.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: medical
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=science
+                }
+            ]
         }
         {
             blueprintId: 101_062
             title: Romulan Disruptor
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Directed-energy weapon used by Romulans and other races. Disruptor fire can be identified by a high residue of antiprotons that linger for several hours.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR62.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (affiliation=romulan OR affiliation=non-aligned) + personnel
+                    }
+                    cumulative: true
+                }
+            ]
         }
         {
             blueprintId: 101_063
             title: Romulan PADD
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            characteristic: padd
+            lore: Standard Romulan Personal Access Display Device for computerized information.
             rarity: C
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR63.jpg
+            modifiers: [
+                {
+                    type: addCunning
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + personnel + affiliation=romulan
+                    }
+                    cumulative: true
+                }
+            ]
         }
         {
             blueprintId: 101_064
-            title: Starfleet Type II Phaser
+            "title": "Starfleet Type II Phaser",
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
+            lore: Handheld weapon can be set for stun, heat and disruption. PHASER is an acronym for PHASed Energy Rectification.
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR64.jpg
             rarity: C
+            modifiers: [
+                {
+                    type: addStrength
+                    modifiedCards: yours + presentWithThisCard + personnel
+                    amount: 2
+                    ifCondition: {
+                        type: thisCardPresentWithCard
+                        otherCardFilter: yours + (affiliation=federation OR affiliation=non-aligned) + personnel
+                    }
+                    cumulative: true
+                }
+            ]
         }
         {
             blueprintId: 101_065
             title: Tricorder
             type: equipment
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg
             lore: Representative of a multipurpose handheld device combining sensors, computers, and recorders. Such equipment has been developed by many races.
             rarity: C
-        }
+            modifiers: [
+                {
+                    type: gainSkill
+                    skills: science
+                    modifiedCards: yours + presentWithThisCard + personnel + classification=engineer
+                }
+            ]
+        },
+        {
+            "blueprintId": "101_083",
+            "title": "Metaphasic Shields",
+            "type": "event",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR83.jpg",
+            "lore": "Revolutionary shields using overlapping subspace fields. Invented by Ferengi Dr. Reyga.",
+            "rarity": "U",
+            "playThisCardAction": {
+                "type": "playThis",
+                "destination": "your + ship"
+            },
+            "modifiers": [
+                {
+                    "type": "addShields",
+                    "modifiedCards": "thisShip",
+                    "amount": {
+                        "type": "countCardsMatchingFilter",
+                        "forEach": 2,
+                        "filter": "your + classification=SCIENCE + personnel + presentWithThisCard"
+                    }
+                }
+            ]
+        },
         {
             blueprintId: 101_104
-            title: Federation Outpost
+            "title": "Federation Outpost",
             type: facility
             property-logo: tng-logo
             facility-type: outpost
@@ -221,18 +438,16 @@
             shields: 30
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg
             rarity: C
-/*            actions: [
+            actions: [
                 {
                     type: seedThis
                     limit: 1
                 }
-                {
-                    type: playThis
-                    targetLocation: {
-                        filter: whereYouControl(federation engineer)
-                    }
-                }
-            ] */
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(affiliation=federation)
+            }
         }
         {
             blueprintId: 101_105
@@ -245,6 +460,16 @@
             lore: "The Klingon Homeworld is Qo'noS. The Klingon Empire establishes outposts throughout its territory."
             shields: 32
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR105.jpg
+            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(affiliation=klingon)
+            }
             rarity: C
        }
         {
@@ -259,6 +484,66 @@
             shields: 32
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR106.jpg
             rarity: C
+            actions: [
+                {
+                    type: seedThis
+                    limit: 1
+                }
+            ]
+            playThisCardAction: {
+                type: playThis
+                destination: facilityEngineerRequirement(affiliation=romulan)
+            }
+        }
+        {
+            blueprintId: 101_108
+            title: Amanda Rogers
+            type: interrupt
+            property-logo: tng-logo
+            lore: Female Q raised as a human on Earth. Was taken to the Q continuum by Q after she could not resist the benevolent use of her powers.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR108.jpg
+            rarity: U
+            actions: [
+                {
+                    type: playThisAsResponse
+                    trigger: {
+                        type: played
+                        filter: interrupt
+                        saveToMemoryId: playedInterrupt
+                    }
+                    immediateEffect: {
+                        type: nullify
+                        target: {
+                            type: memory
+                            memoryId: playedInterrupt
+                        }
+                    }
+                    discardAfter: true
+                }
+            ]
+        }
+        {
+            blueprintId: 101_125
+            title: Klingon Death Yell
+            type: interrupt
+            property-logo: tng-logo
+            lore: Warning for the dead to beware; a Klingon warrior is about to arrive. In Klingon myth, killed warriors with honor go to Sto-Vo-Kor. Dishonored dead go to Gre-thor.
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR125.jpg
+            rarity: R
+            actions: [
+                {
+                    type: playThisAsResponse
+                    trigger: {
+                        type: killed
+                        filter: Klingon + personnel + Honor
+                    }
+                    immediateEffect: {
+                        type: scorePoints
+                        points: 5
+                    }
+                    discardAfter: true
+                }
+            ]
         }
         {
             blueprintId: 101_146
@@ -340,7 +625,21 @@
             point-box: 30
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR151.jpg
-        }
+        },
+        {
+            "blueprintId": "101_152",
+            "title": "Evacuation",
+            "type": "mission",
+            "mission-type": "planet",
+            "region": "Demilitarized Zone",
+            "location": "Dorvan V",
+            "lore": "Evacuate American Indian colony.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "Diplomacy x3 + STRENGTH>35",
+            "point-box": 30,
+            "span": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR152.jpg"
+        },
         {
             blueprintId: 101_153
             title: Evaluate Terraforming
@@ -379,7 +678,20 @@
             point-box: 35
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR155.jpg
-        }
+        },
+        {
+            "blueprintId": "101_156",
+            "title": "Explore Dyson Sphere",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Norpin V",
+            "lore": "Study gigantic structure completely enclosing a star.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "ENGINEER x3 + Navigation + Computer Skill + Physics",
+            "point-box": 35,
+            "span": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR156.jpg"
+        },
         {
             blueprintId: 101_157
             title: Explore Typhon Expanse
@@ -405,7 +717,20 @@
             point-box: 30
             span: 4
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR158.jpg
-        }
+        },
+        {
+            "blueprintId": "101_159",
+            "title": "Extraction",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Cerberus II",
+            "lore": "Secretly acquire age-reversal drug reportedly under development.",
+            "affiliation-icons": "romulan",
+            "mission-requirements": "Treachery + Biology + MEDICAL",
+            "point-box": 35,
+            "span": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR159.jpg"
+        },
         {
             blueprintId: 101_160
             title: Fever Emergency
@@ -418,7 +743,33 @@
             point-box: 35
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR160.jpg
-        }
+        },
+        {
+            "blueprintId": "101_161",
+            "title": "First Contact",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Malcor III",
+            "lore": "Make initial contact with advancing civilization.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "Diplomacy + Empathy",
+            "point-box": 30,
+            "span": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR161.jpg"
+        },
+        {
+            "blueprintId": "101_162",
+            "title": "Hunt for DNA Program",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Vilmor II",
+            "lore": "Seek and secure last strand of DNA program on this desert planet.",
+            "affiliation-icons": "federation,romulan,klingon",
+            "mission-requirements": "Archaeology x3 + Computer Skill + Biology + Leadership + STRENGTH>40",
+            "point-box": 55,
+            "span": 5,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR162.jpg"
+        },
         {
             blueprintId: 101_163
             title: Iconia Investigation
@@ -459,7 +810,33 @@
             point-box: 40
             span: 2
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR165.jpg
-        }
+        },
+        {
+            "blueprintId": "101_166",
+            "title": "Investigate Anomaly",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Gamma Arigulon II",
+            "lore": "Trace radiation anomalies reported at this location.",
+            "affiliation-icons": ["federation","romulan","klingon"],
+            "mission-requirements": "Exobiology + STRENGTH>35",
+            "point-box": 30,
+            "span": 4,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR166.jpg"
+        },
+        {
+            "blueprintId": "101_167",
+            "title": "Investigate Disappearance",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Hekaras Corridor",
+            "lore": "Trace disappearance of a medical transport ship.",
+            "affiliation-icons": "federation",
+            "mission-requirements": "Physics + Navigation + CUNNING>40 OR Astrophysics x3",
+            "point-box": 35,
+            "span": 5,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR167.jpg"
+        },
         {
             blueprintId: 101_168
             title: Investigate Disturbance
@@ -497,7 +874,7 @@
             mission-requirements: Exobiology + Diplomacy
             point-box: 35
             span: 2
-            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR170.jp
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR170.jpg
         }
         {
             blueprintId: 101_171
@@ -511,7 +888,20 @@
             point-box: 30
             span: 3
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR171.jpg
-        }
+        },
+        {
+            "blueprintId": "101_172",
+            "title": "Investigate Sighting",
+            "type": "mission",
+            "mission-type": "space",
+            "location": "Beta Stromgren",
+            "lore": "Investigate sighting of Gomtuu, an interstellar creature code-named <i>Tin Man</i>.",
+            "affiliation-icons": "federation,romulan",
+            "mission-requirements": "Empathy x3 OR Treachery + Exobiology + CUNNING>40",
+            "point-box": 35,
+            "span": 4,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR172.jpg"
+        },
         {
             blueprintId: 101_174
             title: Khitomer Research
@@ -578,6 +968,33 @@
             span: 2
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR179.jpg
             rarity: U
+        },
+        {
+            "blueprintId": "101_180",
+            "title": "Relief Mission",
+            "type": "mission",
+            "mission-type": "planet",
+            "location": "Penthara IV",
+            "lore": "Alleviate planet of ice age conditions following type-C asteroid impact.",
+            "affiliation-icons": ["romulan","klingon"],
+            "mission-requirements": "Geology OR Physics",
+            "point-box": 20,
+            "span": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR180.jpg"
+        },
+        {
+            blueprintId: 101_193
+            title: Test Mission
+            type: mission
+            mission-type: space
+            location: Praxillus System
+            lore: Provide aid for a helium ignition project attempting to revitalize dying sun.
+            affiliation-icons: federation,klingon
+            mission-requirements: Physics + INTEGRITY>28
+            point-box: 25
+            span: 3
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR193.jpg
+            rarity: C
         }
         {
             blueprintId: 101_194
@@ -600,6 +1017,8 @@
             property-logo: tng-logo
             classification: CIVILIAN
             lore: "3/4 Klingon, 1/4 human son of Worf and K'Ehleyr. He was born on the 43rd day of Maktag."
+            species: human,klingon
+            gender: male
             skill-box: "[*] Honor [*] Youth"
             integrity: 6
             cunning: 4
@@ -617,6 +1036,8 @@
             icons: command
             characteristic: admiral
             lore: Vice-Admiral Alynna Nechayev is an antagonistic superior of Captain Jean-Luc Picard. Responsible for liaison with the Cardassians and the Maquis.
+            species: human
+            gender: female
             skill-box: "[*] Diplomacy [*] Leadership"
             integrity: 7
             cunning: 8
@@ -632,6 +1053,8 @@
             classification: MEDICAL
             icons: staff
             lore: Nurse Alyssa Ogawa is a medical assistant and friend to Dr. Beverly Crusher.
+            species: human
+            gender: female
             skill-box: "[*] Biology"
             integrity: 7
             cunning: 6
@@ -648,6 +1071,8 @@
             classification: OFFICER
             icons: command
             lore: Captain Benjamin Maxwell of the U.S.S. Phoenix is a bitter enemy of the Cardassians.
+            species: human
+            gender: male
             skill-box: "[*] Leadership"
             integrity: 9
             cunning: 7
@@ -664,6 +1089,8 @@
             classification: MEDICAL
             icons: command
             lore: Dr. Beverly Crusher is the chief medical officer of the U.S.S. Enterprise. Dancer and thespian. Widow of Jack Crusher. Mother of Ensign Wesley Crusher.
+            species: human
+            gender: female
             skill-box: "[*] MEDICAL [*] Biology [*] Exobiology"
             integrity: 8
             cunning: 8
@@ -679,6 +1106,8 @@
             property-logo: tng-logo
             classification: MEDICAL
             lore: Ensign Calloway is representative of Starfleet medical technicians. Served aboard the U.S.S. Enterprise in 2370.
+            species: human
+            gender: female
             skill-box: "[*] Youth"
             integrity: 7
             cunning: 5
@@ -695,6 +1124,8 @@
             classification: OFFICER
             icons: command
             lore: Lt. Commander Christopher Hobson is representative of staff officers in Starfleet. Served aboard the U.S.S. Sutherland in 2368.
+            species: human
+            gender: male
             skill-box: "[*] Computer Skill"
             integrity: 6
             cunning: 7
@@ -710,6 +1141,8 @@
             property-logo: tng-logo
             classification: SECURITY
             lore: Ensign Darian Wallace is representative of Starfleet security officers. Held numerous positions aboard the U.S.S. Enterprise.
+            species: human
+            gender: male
             skill-box: "[*] Anthropology"
             integrity: 7
             cunning: 5
@@ -718,13 +1151,15 @@
         }
         {
             blueprintId: 101_204
-            title: Data
+            "title": "Data",
             type: personnel
             affiliation: federation
             property-logo: tng-logo
             classification: OFFICER
             icons: command
             lore: Lt. Commander Data is a sentient android created by Dr. Noonien Soong. Has positronic brain. Desires to be human. Once left his head in San Francisco.
+            species: android
+            gender: male
             skill-box: "[*] ENGINEER [*] Computer Skill x2 [*] Music [*] Astrophysics [*] Exobiology"
             integrity: 8
             cunning: 12
@@ -740,6 +1175,8 @@
             classification: OFFICER
             icons: command
             lore: Lt. Commander Deanna Troi is a 1/2 Betazoid, 1/2 Human empath. Counselor for U.S.S. Enterprise. Imzadi to William T. Riker. Loves chocolate.
+            species: human,betazoid
+            gender: female
             skill-box: "[*] Empathy [*] Diplomacy"
             integrity: 8
             cunning: 7
@@ -755,6 +1192,8 @@
             classification: SCIENCE
             icons: staff
             lore: Dr. La Forge is a Starfleet specialist in xenology and exobiology. Father of Lt. Commander Geordi La Forge. Husband of Captain Silva La Forge.
+            species: human
+            gender: male
             skill-box: "[*] Exobiology"
             integrity: 7
             cunning: 7
@@ -771,6 +1210,8 @@
             classification: MEDICAL
             icons: staff
             lore: Dr. Selar is a female Vulcan medical doctor. Served aboard the U.S.S. Enterprise for many years.
+            species: vulcan
+            gender: female
             skill-box: "[*] Computer Skill [*] Mindmeld"
             integrity: 7
             cunning: 8
@@ -786,7 +1227,10 @@
             property-logo: tng-logo
             classification: OFFICER
             icons: command
-            lore: Captain Eric Pressman commanded the U.S.S. Pegasus before it was lost in space following a failed experiment.
+            characteristic: admiral
+            lore: Human admiral and former captain of the U.S.S. Pegasus, which was lost in space following a failed experiment he oversaw.
+            species: human
+            gender: male
             skill-box: "[*] ENGINEER [*] Treachery"
             integrity: 5
             cunning: 6
@@ -803,6 +1247,8 @@
             icons: command
             characteristic: admiral
             lore: Fleet Admiral Shanthi authorized the blockade of Romulan forces covertly supporting the Klingon Civil War in 2368.
+            species: human
+            gender: female
             skill-box: "[*] Leadership [*] Diplomacy"
             integrity: 9
             cunning: 6
@@ -819,6 +1265,8 @@
             classification: ENGINEER
             icons: command
             lore: Lt. Commander Geordi La Forge is chief engineer aboard the U.S.S. Enterprise. Great sense of humor. Fortuitous holodeck programmer.
+            species: human
+            gender: male
             skill-box: "[*] ENGINEER [*] Navigation [*] Physics [*] Computer Skill"
             integrity: 8
             cunning: 8
@@ -836,6 +1284,8 @@
             classification: OFFICER
             icons: staff
             lore: Ensign Giusti is representative of staff officers in Starfleet. Served at the Ops console aboard the U.S.S. Enterprise in 2370.
+            species: human
+            gender: female
             skill-box: "[*] Youth"
             integrity: 7
             cunning: 6
@@ -851,6 +1301,8 @@
             property-logo: tng-logo
             classification: SCIENCE
             lore: Genetically engineered scientist from Moab IV. Granted asylum aboard U.S.S. Enterprise in 2368.
+            species: human
+            gender: female
             skill-box: "[*] Physics"
             integrity: 6
             cunning: 8
@@ -860,13 +1312,15 @@
         }
         {
             blueprintId: 101_215
-            title: Jean-Luc Picard
+            "title": "Jean-Luc Picard",
             type: personnel
             affiliation: federation
             property-logo: tng-logo
             classification: OFFICER
             icons: command
             lore: Captain Jean-Luc Picard of the U.S.S. Enterprise. Born in LaBarre, France. Has an artificial heart. Reads Shakespeare. Something of a Renaissance man.
+            species: human
+            gender: male
             skill-box: "[*] Diplomacy x2 [*] Leadership [*] Honor [*] Archaeology [*] Navigation [*] Music"
             integrity: 9
             cunning: 8
@@ -882,6 +1336,8 @@
             classification: SECURITY
             icons: staff
             lore: "Lieutenant Jenna D'Sora had a brief, unsuccessful romantic relationship with Lt. Commander Data. Wooed by crystillia flowers from Telemarius III."
+            species: human
+            gender: female
             skill-box: "[*] Stellar Cartography [*] Music"
             integrity: 7
             cunning: 6
@@ -898,6 +1354,8 @@
             icons: staff
             characteristic: "k'ehleyr"
             lore: "1/2 Klingon, 1/2 Human female. Federation Ambassador to the K'mpec government. Mate of Lieutenant Worf. Mother of Alexander."
+            species: human,klingon
+            gender: female
             skill-box: "[*] Diplomacy [*] Honor"
             integrity: 8
             cunning: 7
@@ -912,6 +1370,8 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: Famous Trill Ambassador Kareel Odan. Romantically involved with Dr. Beverly Crusher. Symbiont transplant from male to female host in 2367.
+            species: trill
+            gender: female
             skill-box: "[*] Diplomacy [*] Computer Skill"
             integrity: 9
             cunning: 7
@@ -928,6 +1388,8 @@
             classification: ENGINEER
             icons: staff
             lore: Dr. Leah Brahms was responsible for much of the warp engine design for Galaxy-class starships.
+            species: human
+            gender: female
             skill-box: "[*] ENGINEER"
             integrity: 8
             cunning: 9
@@ -945,6 +1407,8 @@
             classification: ENGINEER
             icons: staff
             lore: Lieutenant Linda Larson is representative of staff engineers serving in Starfleet.
+            species: human
+            gender: female
             skill-box: "[*] Youth"
             integrity: 7
             cunning: 5
@@ -960,6 +1424,8 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: Betazoid mother of Deanna Troi. Daughter of the Fifth House, Holder of the Sacred Chalice of Rixx, Heir to the Holy Rings of Betazed.
+            species: betazoid
+            gender: female
             skill-box: "[*] Empathy x2"
             integrity: 7
             cunning: 8
@@ -977,6 +1443,8 @@
             icons: staff
             uniqueness: universal
             lore: Ensign McKnight is one of many helm officers serving aboard the <i>U.S.S. Enterprise</i>. Distant relative of a famous 20th century game designer.
+            species: human
+            gender: female
             skill-box: "[*] Navigation [*] Youth [*] Music"
             integrity: 5
             cunning: 6
@@ -994,6 +1462,8 @@
             icons: staff
             uniqueness: universal
             lore: Ensign Mendon is a Benzite male representative of science specialists within Starfleet. Served aboard the <i>U.S.S. Enterprise</i> in 2365. Looks like Mordock.
+            species: benzite
+            gender: male
             skill-box: "[*] Physics"
             integrity: 7
             cunning: 5
@@ -1009,6 +1479,8 @@
             property-logo: tng-logo
             classification: CIVILIAN
             lore: Bolian male. Convivial barber aboard the U.S.S. Enterprise. Snappy conversationalist.
+            species: bolian
+            gender: male
             skill-box: "[*] Barbering"
             integrity: 6
             cunning: 4
@@ -1024,6 +1496,8 @@
             classification: SCIENCE
             icons: staff
             lore: Human specializing in stellar cartography. She is an accomplished pianist. Lieutenant commander who became romantically involved with Jean-Luc Picard.
+            species: human
+            gender: female
             skill-box: "[*] Astrophysics [*] Stellar Cartography [*] Music"
             integrity: 8
             cunning: 8
@@ -1039,11 +1513,29 @@
             classification: ENGINEER
             icons: staff
             lore: Lieutenant Reginald Barclay is a talented but socially shy systems diagnostic engineer. Former victim of holodiction. Has phobia of traveling by transporter.
+            species: human
+            gender: male
             skill-box: "[*] Computer Skill"
             integrity: 7
             cunning: 7
             strength: 5
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR229.jpg
+        }
+        {
+            blueprintId: 101_231
+            title: Riva
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: V.I.P.
+            lore: Deaf mute Ramatin. Famed mediator from Ramatis III. He spoke with a chorus of three telepaths.
+            species: ramatin
+            gender: male
+            skill-box: "[*] Diplomacy x2"
+            integrity: 6
+            cunning: 8
+            strength: 3
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR231.jpg
         }
         {
             blueprintId: 101_232
@@ -1054,6 +1546,8 @@
             classification: OFFICER
             icons: staff
             lore: Ensign Ro Laren is a Bajoran female. Protege of Captain Jean-Luc Picard. Sympathetic to the Maquis. A bit of a renegade.
+            species: bajoran
+            gender: female
             skill-box: "[*] Computer Skill [*] Navigation [*] Treachery"
             integrity: 4
             cunning: 7
@@ -1062,13 +1556,15 @@
         }
         {
             blueprintId: 101_233
-            title: Sarek
+            "title": "Sarek",
             type: personnel
             affiliation: federation
             property-logo: tng-logo
             classification: V.I.P.
             icons: command
             lore: Illustrious Vulcan Federation ambassador. Over 200 years old. Married at least three times: to a Vulcan princess, to Amanda, and to Perrin. Father of Spock.
+            species: vulcan
+            gender: male
             skill-box: "[*] Diplomacy x3 [*] Mindmeld"
             integrity: 9
             cunning: 10
@@ -1084,6 +1580,8 @@
             classification: OFFICER
             icons: command
             lore: "Captain Satelk is the Vulcan Starfleet officer who presided over the inquiry into Cadet Joshua Albert's death at the Academy Flight Range in 2368."
+            species: vulcan
+            gender: male
             skill-box: "[*] Leadership [*] Mindmeld [*] Diplomacy"
             integrity: 8
             cunning: 9
@@ -1099,6 +1597,8 @@
             classification: OFFICER
             icons: command
             lore: Lt. Commander Shelby is an ambitious Starfleet officer. Assigned to the <i>U.S.S. Enterprise</i> as a specialist on the Borg.
+            species: human
+            gender: female
             skill-box: "[*] Leadership [*] Exobiology"
             integrity: 6
             cunning: 7
@@ -1107,18 +1607,37 @@
         }
         {
             blueprintId: 101_236
-            title: Simon Tarses
+            "title": "Simon Tarses",
             type: personnel
             affiliation: federation
             uniqueness: universal
             property-logo: tng-logo
             classification: MEDICAL
             lore: Crewman First Class Simon Tarses is representative of Starfleet medical technicians. He is 1/4 Romulan, 3/4 Human.
+            species: human,romulan
+            gender: male
             skill-box: "[*] Youth"
             integrity: 6
             cunning: 5
             strength: 5
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR236.jpg
+        }
+        {
+            blueprintId: 101_238
+            title: Sirna Kolrami
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: V.I.P.
+            icons: command
+            lore: Famed Zakdorn strategist. He is a grandmaster of the game Strategema.
+            species: zakdorn
+            gender: male
+            skill-box: "[*] Leadership"
+            integrity: 7
+            cunning: 9
+            strength: 2
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR238.jpg
         }
         {
             blueprintId: 101_239
@@ -1130,11 +1649,30 @@
             classification: SECURITY
             icons: staff
             lore: Ensign Sito Jaxa, a Bajoran, is one of a number of navigation officers aboard the <i>U.S.S. Enterprise</i>.
+            species: bajoran
+            gender: female
             skill-box: "[*] Navigation [*] Youth"
             integrity: 8
             cunning: 6
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR239.jpg
+        }
+        {
+            blueprintId: 101_241
+            title: "T'Pan",
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: SCIENCE
+            icons: staff
+            lore: Vulcan director of the prestigious Vulcan Science Academy. She is a doctor of astrophysical sciences and a preeminent expert in subspace morphology.
+            species: vulcan
+            gender: female
+            skill-box: "[*] SCIENCE [*] Mindmeld"
+            integrity: 8
+            cunning: 9
+            strength: 4
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR241.jpg
         }
         {
             blueprintId: 101_242
@@ -1146,6 +1684,8 @@
             icons: staff
             uniqueness: universal
             lore: Ensign Taitt is representative of science specialists from Starfleet Academy. Helped the U.S.S. Enterprise destroy a Borg ship in 2370.
+            species: human
+            gender: female
             skill-box: "[*] Stellar Cartography [*] Geology"
             integrity: 6
             cunning: 7
@@ -1153,6 +1693,39 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR242.jpg
             rarity: C
         }
+        {
+            "blueprintId": "101_243",
+            "title": "Tam Elbrun",
+            "type": "personnel",
+            "affiliation": "federation",
+            "property-logo": "tng-logo",
+            "classification": "V.I.P.",
+            "lore": "Betazoid male with exceptional empathic abilities. Participated in the notorious Ghorusda disaster. Specialist in first contact with new life-forms.",
+            "species": "betazoid",
+            "gender": "male",
+            "skill-box": "[*] Empathy x2 [*] Honor",
+            "integrity": 5,
+            "cunning": 7,
+            "strength": 3,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR243.jpg"
+        },
+        {
+            "blueprintId": "101_244",
+            "title": "Tasha Yar",
+            "type": "personnel",
+            "affiliation": "federation",
+            "property-logo": "tng-logo",
+            "classification": "SECURITY",
+            "icons": "staff",
+            "lore": "Lieutenant who served as chief of security on the <i>U.S.S. Enterprise</i>. Courageous human orphan from Turkana IV. She proved Data fully functional.",
+            "species": "human",
+            "gender": "female",
+            "skill-box": "[*] Honor [*] Leadership",
+            "integrity": 8,
+            "cunning": 7,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR244.jpg"
+        },
         {
             blueprintId: 101_245
             title: Taurik
@@ -1163,6 +1736,8 @@
             icons: staff
             uniqueness: universal
             lore: Lieutenant Taurik is a Vulcan male representative of engineering junior officers serving in Starfleet.
+            species: vulcan
+            gender: male
             skill-box: "[*] Mindmeld"
             integrity: 7
             cunning: 7
@@ -1179,6 +1754,8 @@
             classification: OFFICER
             icons: command
             lore: "Lt. Commander Thomas Riker is William Riker's double. Created during a transporter accident in 2361."
+            species: human
+            gender: male
             skill-box: "[*] Leadership [*] Navigation [*] Geology [*] Music"
             integrity: 8
             cunning: 7
@@ -1194,11 +1771,29 @@
             classification: MEDICAL
             icons: staff
             lore: Dr. Toby Russell is a controversial neurogeneticist. Creator of the genetronic replicator therapy for spinal injury that saved Lieutenant Worf.
+            species: human
+            gender: female
             skill-box: "[*] Physics"
             integrity: 6
             cunning: 7
             strength: 4
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR247.jpg
+        }
+        {
+            blueprintId: 101_248
+            title: Vash
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: CIVILIAN
+            lore: "Extraordinary archaeology treasure hunter. Traveled with Q. Human romantically involved with Jean-Luc Picard. Lovable character, but she's not to be trusted.",
+            species: human
+            gender: female
+            skill-box: "[*] Archaeology x2 [*] Treachery [*] Anthropology"
+            integrity: 3
+            cunning: 8
+            strength: 4
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR248.jpg
         }
         {
             blueprintId: 101_249
@@ -1209,6 +1804,8 @@
             classification: OFFICER
             icons: staff
             lore: Ensign Wesley Crusher was a child prodigy. Protégé of the Traveler. Son of Dr. Beverly Crusher. Saved the U.S.S. Enterprise 3 1/2 times as a teenager.
+            species: human
+            gender: male
             skill-box: "[*] Youth [*] Computer Skill [*] Navigation [*] ENGINEER [*] Astrophysics"
             integrity: 6
             cunning: 8
@@ -1216,14 +1813,34 @@
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR249.jpg
         }
         {
+            blueprintId: 101_250
+            title: William T. Riker
+            type: personnel
+            affiliation: federation
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Commander, gourmet cook, and jazz musician. Human executive officer of the <i>U.S.S. Enterprise</i>. He is <i>imzadi</i> to Deanna Troi, his beloved.
+            species: human
+            gender: male
+            skill-box: "[*] Diplomacy [*] Leadership [*] Navigation [*] Honor [*] Music"
+            integrity: 8
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR250.jpg
+        }
+        {
             blueprintId: 101_251
-            title: Worf
+            "title": "Worf",
             type: personnel
             affiliation: federation
             property-logo: tng-logo
             classification: SECURITY
             icons: command
+            species: klingon
             lore: Lieutenant Worf is chief of security on the U.S.S. Enterprise. Klingon warrior and Starfleet officer. Son of Mogh. Raised on Earth by foster parents.
+            species: klingon
+            gender: male
             skill-box: "[*] Honor x2 [*] Navigation [*] Diplomacy"
             integrity: 8
             cunning: 6
@@ -1239,6 +1856,8 @@
             classification: V.I.P.
             icons: command
             lore: Plotted with Lursa to seize power from Gowron with the support of the Romulans. Younger of the two Duras sisters. The pretty one.
+            species: klingon
+            gender: female
             skill-box: "[*] Treachery [*] Leadership [*] Physics [*] Youth [*] Greed"
             integrity: 2
             cunning: 8
@@ -1255,6 +1874,8 @@
             classification: OFFICER
             icons: staff
             lore: Klingon male trained as an officer for the Klingon Defense Force. Served as junior adjutant to the diplomatic delegation for Gowron.
+            species: klingon
+            gender: male
             skill-box: "[*] Navigation"
             integrity: 4
             cunning: 6
@@ -1270,6 +1891,8 @@
             property-logo: tng-logo
             classification: CIVILIAN
             lore: 1/2 Klingon, 1/2 Romulan. Briefly romantically involved with Worf. She was born in a Romulan prison camp on Carraya IV.
+            species: klingon,romulan
+            gender: female
             skill-box: "[*] Anthropology [*] Youth"
             integrity: 6
             cunning: 6
@@ -1291,6 +1914,8 @@
             classification: OFFICER
             icons: command
             lore: Klingon trained as an officer for the Klingon Defense Force. Formerly in command of Narendra III outpost.
+            species: klingon
+            gender: male
             skill-box: "[*] Honor"
             integrity: 7
             cunning: 3
@@ -1307,6 +1932,8 @@
             uniqueness: universal
             icons: staff
             lore: Male trained in Klingon anatomy and medicine. Studied the effects of Tribbles on the Klingon nervous system.
+            species: klingon
+            gender: male
             skill-box: "[*] Biology [*] Youth"
             integrity: 6
             cunning: 6
@@ -1324,6 +1951,8 @@
             uniqueness: universal
             icons: staff
             lore: Klingon trained in the field of science. Studied the effects of Berthold rays on plant life. Served aboard the I.K.C. Pagh.
+            species: klingon
+            gender: male
             skill-box: "[*] Archaeology"
             integrity: 5
             cunning: 6
@@ -1333,13 +1962,15 @@
         }
         {
             blueprintId: 101_258
-            title: Duras
+            "title": "Duras",
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
             classification: V.I.P.
             icons: command
             lore: "Son of Ja'rod. Contender for leadership of the Klingon High Council. Member of a powerful political family."
+            species: klingon
+            gender: male
             skill-box: "[*] Leadership [*] Computer Skill [*] Treachery [*] Greed"
             integrity: 4
             cunning: 6
@@ -1357,6 +1988,8 @@
             uniqueness: universal
             icons: staff
             lore: "Klingon trained in the field of security. Guarded the Klingon High Council chamber in the year of Maktag. Served as security chief for the Hegh'bat division."
+            species: klingon
+            gender: male
             skill-box: "[*] Honor"
             integrity: 6
             cunning: 4
@@ -1366,13 +1999,15 @@
         }
         {
             blueprintId: 101_261
-            title: Gowron
+            "title": "Gowron",
             type: personnel
             affiliation: klingon
             property-logo: tng-logo
             classification: V.I.P.
             icons: command
             lore: "Son of M'Rel. Leader of the Klingon High Council after defeating the Duras forces in the Klingon Civil War of 2367-2368."
+            species: klingon
+            gender: male
             skill-box: "[*] Leadership x2 [*] Diplomacy [*] Honor"
             integrity: 8
             cunning: 7
@@ -1390,6 +2025,8 @@
             uniqueness: universal
             icons: staff
             lore: Klingon trained in the field of science. Smuggled Federation secrets to the Romulans in the form of amino acid codes.
+            species: klingon
+            gender: male
             skill-box: "[*] Exobiology [*] Treachery"
             integrity: 2
             cunning: 6
@@ -1406,6 +2043,8 @@
             classification: V.I.P.
             icons: command
             lore: Klingon High Council Leader prior to Gowron. Appointed Jean-Luc Picard as Arbiter of Succession in 2367.
+            species: klingon
+            gender: male
             skill-box: "[*] Leadership [*] Diplomacy"
             integrity: 7
             cunning: 8
@@ -1422,6 +2061,8 @@
             classification: OFFICER
             icons: command
             lore: Captain of the <i>I.K.S. Pagh</i> when Commander William T. Riker served as an exchange officer.
+            species: klingon
+            gender: male
             skill-box: "[*] Honor [*] Computer Skill"
             integrity: 7
             cunning: 5
@@ -1437,6 +2078,8 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: Male High Council emissary. Covert Romulan agent. Attempted to use Lt. Commander Geordi La Forge to assassinate Klingon Governor Vagh.
+            species: klingon
+            gender: male
             skill-box: "[*] Treachery"
             integrity: 2
             cunning: 6
@@ -1454,13 +2097,15 @@
             classification: OFFICER
             icons: command
             lore: Second Officer Klag, of the <i>I.K.C. Pagh</i>, is representative of Klingon warriors throughout the Klingon Empire.
+            species: klingon
+            gender: male
             skill-box: "[*] Navigation"
             integrity: 6
             cunning: 5
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR270.jpg
             rarity: C
-        }
+        },
         {
             blueprintId: 101_271
             title: "Kle'eg"
@@ -1471,13 +2116,49 @@
             classification: SECURITY
             icons: staff
             lore: "Klingon trained in the specific field of security. Guarded the House of K'mpec when K'mpec was poisoned in 2367."
+            species: klingon
+            gender: male
             skill-box: "[*] Honor"
             integrity: 6
             cunning: 4
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR271.jpg
             rarity: C
-        }
+        },
+        {
+            "blueprintId": "101_272",
+            "title": "Konmel",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "staff",
+            "lore": "Klingon warrior. He destroyed the cruiser <i>I.K.S. T'Acog</i> and hijacked the Talarian ship <i>Batris</i> with Korris.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": "[*] Navigation",
+            "integrity": 8,
+            "cunning": 5,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR272.jpg"
+        },
+        {
+            "blueprintId": "101_275",
+            "title": "Korris",
+            "type": "personnel",
+            "affiliation": "klingon",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "command",
+            "lore": "Klingon warrior. He destroyed the cruiser <i>I.K.S. T'Acog</i> and hijacked the Talarian ship <i>Batris</i> with Konmel.",
+            "species": "klingon",
+            "gender": "male",
+            "skill-box": "[*] Honor",
+            "integrity": 8,
+            "cunning": 6,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR275.jpg"
+        },
         {
             blueprintId: 101_276
             title: Kromm
@@ -1488,6 +2169,8 @@
             classification: ENGINEER
             icons: staff
             lore: Klingon trained in the field of engineering. Reputed to have consumed fifteen rokeg blood pies at one sitting.
+            species: klingon
+            gender: male
             skill-box: "[*] Physics"
             integrity: 5
             cunning: 6
@@ -1504,11 +2187,46 @@
             classification: SCIENCE
             icons: staff
             lore: Famed female Klingon scientist and warp-field specialist who evaluated the metaphasic shield.
+            species: klingon
+            gender: female
             skill-box: "[*] Astrophysics [*] Computer Skill [*] Physics [*] Honor"
             integrity: 6
             cunning: 7
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR277.jpg
+        }
+        {
+            blueprintId: 101_280
+            "title": "Lursa",
+            type: personnel
+            affiliation: klingon
+            property-logo: tng-logo
+            classification: V.I.P.
+            icons: command
+            lore: "Elder of the two Duras sisters. Plotted with Sela, a Romulan, to start the Klingon Civil War of 2367-68."
+            species: klingon
+            gender: female
+            skill-box: "[*] Treachery [*] Leadership [*] Geology [*] Greed"
+            integrity: 2
+            cunning: 8
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR280.jpg
+        }
+        {
+            blueprintId: 101_283
+            title: Toq
+            type: personnel
+            affiliation: klingon
+            property-logo: tng-logo
+            classification: CIVILIAN
+            lore: "Klingon male, born in a Romulan prison camp on Carraya IV. Protege of Worf.",
+            species: klingon
+            gender: male
+            skill-box: "[*] Leadership [*] Computer Skill [*] Youth",
+            integrity: 6,
+            cunning: 5,
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR283.jpg
         }
         {
             blueprintId: 101_284
@@ -1518,6 +2236,8 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: Governor Torak served near the Federation border commanding Sector 2520 in 2369.
+            species: klingon
+            gender: male
             skill-box: "[*] Diplomacy [*] Geology"
             integrity: 5
             cunning: 4
@@ -1533,6 +2253,8 @@
             property-logo: tng-logo
             classification: SCIENCE
             lore: Klingon trained in the field of science. Studied the effects of warp propulsion on subspace.
+            species: klingon
+            gender: male
             skill-box: "[*] Astrophysics"
             integrity: 7
             cunning: 6
@@ -1550,6 +2272,8 @@
             icons: staff
             uniqueness: universal
             lore: Klingon female trained in Klingon anatomy and medicine. Propositioned Commander William T. Riker on the <i>I.K.S. Pagh</i> in 2365.
+            species: klingon
+            gender: female
             skill-box: "[*] Honor"
             integrity: 6
             cunning: 5
@@ -1565,6 +2289,8 @@
             property-logo: tng-logo
             classification: CIVILIAN
             lore: Four-armed pianist. Information broker. Ex-wife of arms smuggler. Four times widowed. Qualor II lounge performer. Knows Aktuh and Melota. Salt sucker.
+            species: humanoid
+            gender: female
             skill-box: "[*] Music"
             integrity: 5
             cunning: 9
@@ -1580,6 +2306,8 @@
             classification: OFFICER
             icons: command
             lore: Male captain of a mercenary ship raiding archaeological sites to find the Stone of Gol.
+            species: humanoid
+            gender: male
             skill-box: "[*] Greed [*] Archaeology [*] Exobiology [*] Computer Skill"
             integrity: 3
             cunning: 8
@@ -1594,6 +2322,8 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: 1/4 Betazoid, 3/4 Human. Skilled negotiator. Abused his empathic powers to gain advantage. Had a dangerous liaison with Counselor Deanna Troi.
+            species: human,betazoid
+            gender: male
             skill-box: "[*] Empathy [*] Diplomacy [*] Treachery"
             integrity: 3
             cunning: 9
@@ -1610,6 +2340,8 @@
             uniqueness: universal
             icons: command
             lore: "Dr. Farek is representative of male Ferengi trained in medicine. Seized control of the <i>D'Kora</i> class Ferengi Marauder, <i>Krayton</i>, in 2366."
+            species: ferengi
+            gender: male
             skill-box: "[*] Greed"
             integrity: 2
             cunning: 8
@@ -1619,13 +2351,15 @@
         }
         {
             blueprintId: 101_297
-            title: Gorta
+            "title": "Gorta",
             type: personnel
             affiliation: non-aligned
             property-logo: tng-logo
             classification: ENGINEER
             uniqueness: universal
             lore: Male of Dopterian race. Representative of non-aligned agents. An opportunist. Had an encounter with the sisters of Duras in 2370.
+            species: dopterian
+            gender: male
             skill-box: "[*] Physics [*] Greed"
             integrity: 3
             cunning: 7
@@ -1641,6 +2375,8 @@
             classification: SCIENCE
             icons: command
             lore: "Takaran male. Attempted to steal Dr. Reyga's metaphasic shield technology to claim as his own."
+            species: takaran
+            gender: male
             skill-box: "[*] Treachery [*] Astrophysics [*] Physics [*] Greed"
             integrity: 3
             cunning: 8
@@ -1656,13 +2392,33 @@
             property-logo: tng-logo
             classification: ENGINEER
             icons: staff
-            lore: Representative of male mercenaries operating throughout the galaxy. Worked with Baran to find the Stone of Gol.
+            lore: Representative of male mercenaries operating throughout the galaxy. Boslic who worked with Baran to find the Stone of Gol.
+            species: boslic
+            gender: male
             skill-box: "[*] Computer Skill"
             integrity: 2
             cunning: 7
             strength: 6
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg
             rarity: C
+        }
+        {
+            blueprintId: 101_301
+            title: Ocett
+            type: personnel
+            affiliation: non-aligned
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Cardassian female officer. Commander of the <i>Bralek</i>. Gul who pursued the DNA program."
+            species: cardassian
+            gender: female
+            skill-box: "[*] Archaeology [*] Navigation [*] Honor"
+            integrity: 6
+            cunning: 8
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR301.jpg
+            rarity: U
         }
         {
             blueprintId: 101_303
@@ -1674,6 +2430,8 @@
             uniqueness: universal
             icons: command
             lore: Representative of female mercenaries operating throughout the galaxy. Worked with Baran to find the Stone of Gol.
+            species: humanoid
+            gender: female
             skill-box: "[*] MEDICAL [*] Navigation [*] Geology"
             integrity: 2
             cunning: 7
@@ -1688,12 +2446,33 @@
             property-logo: tng-logo
             classification: OFFICER
             icons: command
+            characteristic: admiral
             lore: Conscientious admiral who questioned Romulan policy. Eventually stole a scout ship and defected to the Federation in 2366.
+            species: romulan
+            gender: male
             skill-box: "[*] Navigation [*] Leadership"
             integrity: 2
             cunning: 8
             strength: 8
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR304.jpg
+        }
+        {
+            blueprintId: 101_305
+            title: Bochra
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: staff
+            lore: "Centurion serving the Romulan Star Empire. He was once marooned on Galorndon Core with Geordi La Forge."
+            species: romulan
+            gender: male
+            skill-box: "[*] Navigation [*] Youth"
+            integrity: 7
+            cunning: 7
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR305.jpg
+            rarity: U
         }
         {
             blueprintId: 101_310
@@ -1704,6 +2483,8 @@
             classification: SCIENCE
             icons: staff
             lore: Scientist in charge of developing and testing the interphase generator in 2368.
+            species: romulan
+            gender: male
             skill-box: "[*] ENGINEER [*] Astrophysics [*] Physics"
             integrity: 3
             cunning: 8
@@ -1719,6 +2500,8 @@
             classification: SCIENCE
             icons: command
             lore: "Member of the Romulan underground. Spearheaded defection of Vice-Proconsul M'ret to the Federation."
+            species: romulan
+            gender: male
             skill-box: "[*] Honor [*] Biology [*] Computer Skill"
             integrity: 6
             cunning: 8
@@ -1735,12 +2518,47 @@
             uniqueness: universal
             icons: staff
             lore: Romulan trained in the field of engineering. A specialist in artificial quantum singularity. Served aboard the <i>Khazara</i> in 2369.
+            species: romulan
+            gender: male
             skill-box: "[*] Computer Skill"
             integrity: 3
             cunning: 8
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR314.jpg
         }
+        {
+            blueprintId: 101_315
+            title: Pardek
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: V.I.P.
+            lore: "Male senator from the Krocton Segment of Romulus. Delegate at the 2293 Khitomer conference. Betrayer of Ambassador Spock."
+            species: romulan
+            gender: male
+            skill-box: "[*] Diplomacy x2 [*] Treachery"
+            integrity: 4
+            cunning: 8
+            strength: 6
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR315.jpg
+        }
+        {
+            "blueprintId": "101_316",
+            "title": "Parem",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "staff",
+            "lore": "Male Romulan officer accidentally phased by an interphase generator experiment.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Treachery",
+            "integrity": 4,
+            "cunning": 8,
+            "strength": 9,
+            "image-url": "https://www.trekcc.org/1e/cardimages/premiere/PR316.jpg"
+        },
         {
             blueprintId: 101_320
             title: Takket
@@ -1751,11 +2569,104 @@
             classification: MEDICAL
             icons: command
             lore: Romulan male trained in Romulan anatomy and medicine. Extensively trained in exobiology.
+            species: romulan
+            gender: male
             skill-box: "[*] Exobiology"
             integrity: 4
             cunning: 7
             strength: 7
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg
+        }
+        {
+            blueprintId: 101_321
+            title: Tallus
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: "Romulan officer representative of those serving the Romulan Star Empire. He is a former commander of private forces under Sela.",
+            species: romulan
+            gender: male
+            skill-box: "[*] Leadership"
+            integrity: 3
+            cunning: 7
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR321.jpg
+        }
+        {
+            blueprintId: 101_322
+            "title": "Tarus",
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SCIENCE
+            icons: staff
+            lore: "Representative of male Romulans trained in the field of science. Specialist in the study of extra-dimensional life-forms.",
+            species: romulan
+            gender: male
+            skill-box: "[*] Stellar Cartography"
+            integrity: 4
+            cunning: 8
+            strength: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR322.jpg
+        }
+        {
+            blueprintId: 101_323
+            title: Taul
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: SECURITY
+            icons: staff
+            lore: Typical Romulan male trained in the field of security. Assistant to Commander Konsab of the Romulan Intelligence Academy.
+            species: romulan
+            gender: male
+            skill-box: "[*] Treachery [*] Archaeology"
+            integrity: 4
+            cunning: 7
+            strength: 8
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR323.jpg
+        }
+        {
+            blueprintId: 101_324
+            "title": "Thei",
+            type: personnel
+            affiliation: romulan
+            uniqueness: universal
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: command
+            lore: Subcommander representative of officers serving in the Romulan Star Empire. He was an ally of the Sisters of Duras during the Klingon Civil War.
+            species: romulan
+            gender: male
+            skill-box: "[*] Geology [*] Physics"
+            integrity: 4
+            cunning: 6
+            strength: 8
+            rarity: C
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR325.jpg
+        }
+        {
+            blueprintId: 101_326
+            title: Tokath
+            type: personnel
+            affiliation: romulan
+            property-logo: tng-logo
+            classification: OFFICER
+            icons: staff
+            lore: "Romulan commandant. He established a secret prison camp in the Carraya system for dishonored Klingon survivors of the Khitomer massacre.",
+            species: romulan
+            gender: male
+            skill-box: "[*] Anthropology [*] Honor",
+            integrity: 6
+            cunning: 7
+            strength: 6
+            rarity: U
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR326.jpg
         }
         {
             blueprintId: 101_329
@@ -1766,6 +2677,8 @@
             classification: OFFICER
             icons: command
             lore: "Female captain of Imperial Romulan warbird, Khazara. Father killed by Tal Shiar. Uncovered M'ret defection plot."
+            species: romulan
+            gender: female
             skill-box: "[*] Leadership [*] Honor [*] Navigation"
             integrity: 5
             cunning: 8
@@ -1782,6 +2695,8 @@
             classification: SCIENCE
             icons: staff
             lore: Representative of female Romulans trained in the field of science. Assigned to assist with interphase generator project.
+            species: romulan
+            gender: female
             skill-box: "[*] Physics [*] Computer Skill [*] Youth"
             integrity: 4
             cunning: 7
@@ -1790,7 +2705,7 @@
         }
         {
             blueprintId: 101_331
-            title: Runabout
+            title: "Runabout",
             type: ship
             affiliation: federation
             uniqueness: universal
@@ -1847,6 +2762,21 @@
             weapons: 7
             shields: 9
             image-url: https://www.trekcc.org/1e/cardimages/premiere/PR336.jpg
+        }
+        {
+            blueprintId: 101_337
+            title: U.S.S. Hood
+            type: ship
+            affiliation: federation
+            property-logo: tng-logo
+            ship-class: EXCELSIOR CLASS
+            lore: Registry number NCC-42296. Named for the 20th century admiral, Sir Horace Hood. Commanded by Robert DeSoto.
+            staffing: staff,staff
+            gametext: Tractor Beam
+            range: 7
+            weapons: 6
+            shields: 7
+            image-url: https://www.trekcc.org/1e/cardimages/premiere/PR337.jpg
         }
         {
             blueprintId: 101_339

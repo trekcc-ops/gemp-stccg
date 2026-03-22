@@ -37,14 +37,22 @@ public class CardDeck {
         _targetFormat = deck.getTargetFormat();
     }
 
-
-    public CardDeck(String deckName, String contents, AbstractGameFormat format, String notes) {
+    public CardDeck(String deckName, String contents, String formatName, String notes) {
         _deckName = deckName;
-        _targetFormat = format.getName();
+        _targetFormat = formatName;
         _notes = Objects.requireNonNullElse(notes, "");
         parseContents(contents);
     }
 
+
+
+    public CardDeck(String deckName, String contents, AbstractGameFormat format, String notes) {
+        this(deckName, contents, format.getName(), notes);
+    }
+
+    public CardDeck(String deckName, String contents, String formatName) {
+        this(deckName, contents, formatName, "");
+    }
 
     public CardDeck(String deckName, String contents, AbstractGameFormat format) {
         this(deckName, contents, format, "");

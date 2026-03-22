@@ -3,7 +3,6 @@ package com.gempukku.stccg.async.handler;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.account.GameHistoryRequestHandler;
 import com.gempukku.stccg.async.handler.account.PlayerStatsRequestHandler;
 import com.gempukku.stccg.async.handler.account.PlaytestReplaysRequestHandler;
@@ -19,6 +18,7 @@ import com.gempukku.stccg.async.handler.hall.*;
 import com.gempukku.stccg.async.handler.login.LoginRequestHandler;
 import com.gempukku.stccg.async.handler.login.RegisterRequestHandler;
 import com.gempukku.stccg.async.handler.server.ServerStatsRequestHandler;
+import com.gempukku.stccg.service.AdminService;
 import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -99,7 +99,7 @@ import static io.netty.handler.codec.http.HttpHeaderNames.SET_COOKIE;
         @JsonSubTypes.Type(value = UpdateHallRequestHandler.class, name = "updateHall")
 })
 public interface UriRequestHandler {
-    void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception;
 
     default void logHttpError(Logger log, int code, String uri, Exception exp) {
@@ -113,14 +113,16 @@ public interface UriRequestHandler {
             log.error("HTTP code {} response for {}", code, uri, exp);
     }
 
-    default Map<String, String> logUserReturningHeaders(String remoteIp, String login, ServerObjects objects)
+    default Map<String, String> logUserReturningHeaders(String remoteIp, String login,
+                                                        AdminService adminService)
             throws SQLException {
-        objects.getPlayerDAO().updateLastLoginIp(login, remoteIp);
+        adminService.updateLastLoginIp(login, remoteIp);
 
-        String sessionId = objects.getLoggedUserHolder().logUser(login);
+        String sessionId = adminService.logUser(login);
         return Collections.singletonMap(
                 SET_COOKIE.toString(), ServerCookieEncoder.STRICT.encode("loggedUser", sessionId));
     }
+
 
     default Document createNewDoc() throws ParserConfigurationException {
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();

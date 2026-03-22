@@ -1,48 +1,83 @@
 package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.blueprints.UseNormalCardPlayBlueprint;
+import com.gempukku.stccg.actions.targetresolver.ActionTargetResolver;
+import com.gempukku.stccg.actions.targetresolver.ReportCardResolver;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.util.Collection;
 import java.util.List;
 
-public abstract class PlayCardAction extends ActionyAction implements TopLevelSelectableAction {
+public abstract class PlayCardAction extends ActionWithSubActions implements CardPerformedAction {
+    protected final PhysicalCard _performingCard;
+    protected PhysicalCard _cardEnteringPlay;
+    private final EnterPlayActionType _type;
+    @JsonProperty("destinationZone")
+    protected Zone _destinationZone;
+    protected boolean _isDownload;
 
-    final PhysicalCard _performingCard;
-    protected final PhysicalCard _cardEnteringPlay;
-    final Zone _destinationZone;
-
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
-                          Zone toZone, ActionType actionType) {
-        super(actionSource.getGame(), performingPlayer, actionType);
+    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+                          String performingPlayerName, Zone toZone, ActionType actionType, GameTextContext context) {
+        super(cardGame, performingPlayerName, actionType, context);
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
+        _type = switch(actionType) {
+            case DOWNLOAD_CARD -> EnterPlayActionType.DOWNLOAD;
+            case PLAY_CARD -> EnterPlayActionType.PLAY;
+            case SEED_CARD -> EnterPlayActionType.SEED;
+            default -> null;
+        };
     }
 
-
-    public PlayCardAction(PhysicalCard actionSource, PhysicalCard cardEnteringPlay, Player performingPlayer,
-                          Zone toZone, ActionType actionType, Enum<?>[] progressValues) {
-        super(actionSource.getGame(), performingPlayer, actionType, progressValues);
+    protected PlayCardAction(int actionId, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+                             String performingPlayerName, Zone toZone, ActionType actionType,
+                             ActionStatus status) {
+        super(actionId, actionType, performingPlayerName, status, new GameTextContext(actionSource, performingPlayerName));
         _performingCard = actionSource;
         _cardEnteringPlay = cardEnteringPlay;
         _destinationZone = toZone;
+        _type = switch(actionType) {
+            case DOWNLOAD_CARD -> EnterPlayActionType.DOWNLOAD;
+            case PLAY_CARD -> EnterPlayActionType.PLAY;
+            case SEED_CARD -> EnterPlayActionType.SEED;
+            default -> null;
+        };
     }
 
+    protected PlayCardAction(DefaultGame cardGame, PhysicalCard actionSource, PhysicalCard cardEnteringPlay,
+                          String performingPlayerName, Zone toZone, ActionType actionType) {
+        super(cardGame, performingPlayerName, actionType, new GameTextContext(actionSource, performingPlayerName));
+        _performingCard = actionSource;
+        _cardEnteringPlay = cardEnteringPlay;
+        _destinationZone = toZone;
+        _type = switch(actionType) {
+            case DOWNLOAD_CARD -> EnterPlayActionType.DOWNLOAD;
+            case PLAY_CARD -> EnterPlayActionType.PLAY;
+            case SEED_CARD -> EnterPlayActionType.SEED;
+            default -> null;
+        };
+    }
 
 
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return _cardEnteringPlay.canBePlayed(cardGame);
+        if (_cardEnteringPlay != null) {
+            return cardGame.getRules().cardCanEnterPlay(cardGame, _cardEnteringPlay, _type);
+        } else {
+            for (ActionTargetResolver resolver : _cardTargets) {
+                if (resolver.cannotBeResolved(cardGame)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -50,40 +85,27 @@ public abstract class PlayCardAction extends ActionyAction implements TopLevelSe
         return _performingCard;
     }
 
-    public int getCardIdForActionSelection() {
-        return _cardEnteringPlay.getCardId();
-    }
-
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
     public PhysicalCard getCardEnteringPlay() { return _cardEnteringPlay; }
 
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        Action cost = getNextCost();
-        if (cost != null)
-            return cost;
-
-        Player performingPlayer = cardGame.getPlayer(_performingPlayerId);
-
-        if (performingPlayer.getCardsInDrawDeck().contains(_cardEnteringPlay)) {
-            cardGame.sendMessage(_cardEnteringPlay.getOwnerName() + " shuffles their deck");
-            _cardEnteringPlay.getOwner().shuffleDrawDeck(cardGame);
+    @JsonIgnore
+    public Collection<? extends PhysicalCard> getSelectableCardsToPlayForTesting(DefaultGame cardGame) {
+        if (_cardEnteringPlay != null) {
+            return List.of(_cardEnteringPlay);
+        } else if (_cardTargets.size() == 1 && _cardTargets.getFirst() instanceof ReportCardResolver resolver) {
+            return resolver.getSelectableCardsToEnterPlay();
+        } else {
+            return null;
         }
-        putCardIntoPlay(cardGame);
-        _wasCarriedOut = true;
-        return null;
-    }
-    
-    protected void putCardIntoPlay(DefaultGame game) {
-        GameState gameState = game.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
-        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
-        setAsSuccessful();
     }
 
-    public boolean wasCarriedOut() {
-        return _wasCarriedOut;
+    public void removeNormalCardPlayCost() {
+        _queuedCosts.removeIf(cost -> cost instanceof UseNormalCardPlayBlueprint);
+    }
+
+    public void setIsDownload() {
+        _isDownload = true;
     }
 
 }

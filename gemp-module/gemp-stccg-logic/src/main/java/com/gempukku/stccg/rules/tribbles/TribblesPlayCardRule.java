@@ -1,26 +1,22 @@
 package com.gempukku.stccg.rules.tribbles;
 
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.playcard.EnterPlayActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.game.TribblesGame;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class TribblesPlayCardRule extends TribblesRule {
-    public TribblesPlayCardRule(TribblesGame game) {
-        super(game);
-    }
-
-    @Override
-    public List<TopLevelSelectableAction> getPhaseActions(Player player) {
-        if (_game.getGameState().getCurrentPlayerId().equals(player.getPlayerId())) {
-            List<TopLevelSelectableAction> result = new LinkedList<>();
+    public List<Action> getPhaseActions(DefaultGame cardGame, Player player) {
+        if (cardGame.getGameState().getCurrentPlayerId().equals(player.getPlayerId())) {
+            List<Action> result = new LinkedList<>();
             for (PhysicalCard card : player.getCardsInHand()) {
-                if (card.canBePlayed(_game)) {
-                    TopLevelSelectableAction action = card.getPlayCardAction();
-                    if (action.canBeInitiated(_game))
+                if (cardGame.getRules().cardCanEnterPlay(cardGame, card, EnterPlayActionType.PLAY)) {
+                    Action action = card.getNormalPlayCardAction(cardGame);
+                    if (action.canBeInitiated(cardGame))
                         result.add(action);
                 }
             }

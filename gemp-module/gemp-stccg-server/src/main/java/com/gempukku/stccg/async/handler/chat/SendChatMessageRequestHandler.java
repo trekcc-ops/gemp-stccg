@@ -1,14 +1,15 @@
 package com.gempukku.stccg.async.handler.chat;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.HTMLUtils;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.chat.ChatCommandErrorException;
 import com.gempukku.stccg.chat.ChatRoomMediator;
+import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.chat.PrivateInformationException;
 import com.gempukku.stccg.database.User;
 import org.apache.logging.log4j.LogManager;
@@ -43,10 +44,11 @@ public class SendChatMessageRequestHandler implements UriRequestHandler {
             .softbreak(HTMLUtils.NEWLINE)
             .build();
     final private static Parser _parser = Parser.builder().extensions(_adminExt).build();
-    private final String _roomName;
     private final String _message;
     private final Pattern QuoteExtender =
             Pattern.compile("^([ \t]*>[ \t]*.+)(?=\n[ \t]*[^>])", Pattern.MULTILINE);
+
+    private final ChatRoomMediator _chatRoom;
 
     private static final Logger LOGGER = LogManager.getLogger(SendChatMessageRequestHandler.class);
 
@@ -54,10 +56,13 @@ public class SendChatMessageRequestHandler implements UriRequestHandler {
             @JsonProperty("roomName")
             String roomName,
             @JsonProperty("message")
-            String message
-    ) {
-        _roomName = roomName;
+            String message,
+            @JacksonInject ChatServer chatServer
+            ) throws HttpProcessingException {
         _message = message;
+        _chatRoom = chatServer.getChatRoom(roomName);
+        if (_chatRoom == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
     }
 
     private static String parseChatMessage(String message) {
@@ -71,13 +76,11 @@ public class SendChatMessageRequestHandler implements UriRequestHandler {
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException {
 
         User resourceOwner = request.user();
-        ChatRoomMediator chatRoom = serverObjects.getChatServer().getChatRoom(_roomName);
-        if (chatRoom == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+        String uri = request.uri();
 
         try {
             if (_message != null && !_message.trim().isEmpty()) {
@@ -91,14 +94,14 @@ public class SendChatMessageRequestHandler implements UriRequestHandler {
                 //Need to preserve any commands being made
                 if (!newMsg.startsWith("/"))
                     newMsg = parseChatMessage(newMsg);
-                chatRoom.sendChatMessage(resourceOwner, newMsg);
+                _chatRoom.sendChatMessage(resourceOwner, newMsg);
                 responseWriter.writeXmlOkResponse();
             }
         } catch (PrivateInformationException exp) {
-            logHttpError(LOGGER, HttpURLConnection.HTTP_FORBIDDEN, request.uri(), exp);
+            logHttpError(LOGGER, HttpURLConnection.HTTP_FORBIDDEN, uri, exp);
             throw new HttpProcessingException(HttpURLConnection.HTTP_FORBIDDEN); // 403
         } catch (ChatCommandErrorException exp) {
-            logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);
+            logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, uri, exp);
             throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
         }
     }

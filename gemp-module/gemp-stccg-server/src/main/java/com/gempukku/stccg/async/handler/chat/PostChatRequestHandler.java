@@ -1,16 +1,18 @@
 package com.gempukku.stccg.async.handler.chat;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.SubscriptionExpiredException;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
-import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.chat.ChatCommunicationChannel;
 import com.gempukku.stccg.chat.ChatRoomMediator;
+import com.gempukku.stccg.chat.ChatServer;
 import com.gempukku.stccg.database.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,30 +22,34 @@ import java.net.HttpURLConnection;
 public class PostChatRequestHandler implements UriRequestHandler {
 
     private final String _roomName;
+    private final ChatRoomMediator _chatRoom;
+    private final LongPollingSystem _longPollingSystem;
 
     private static final Logger LOGGER = LogManager.getLogger(PostChatRequestHandler.class);
 
     PostChatRequestHandler(
             @JsonProperty(value = "roomName", required = true)
-            String roomName
-    ) {
+            String roomName,
+            @JacksonInject ChatServer chatServer,
+            @JacksonInject LongPollingSystem longPollingSystem) throws HttpProcessingException {
         _roomName = roomName;
+        _chatRoom = chatServer.getChatRoom(roomName);
+        if (_chatRoom == null)
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
+        _longPollingSystem = longPollingSystem;
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws HttpProcessingException {
 
         User resourceOwner = request.user();
-        ChatRoomMediator chatRoom = serverObjects.getChatServer().getChatRoom(_roomName);
-        if (chatRoom == null)
-            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND); // 404
 
         try {
-            ChatCommunicationChannel listener = chatRoom.getChatRoomListener(resourceOwner);
+            ChatCommunicationChannel listener = _chatRoom.getChatRoomListener(resourceOwner);
             LongPollingResource pollingResource =
-                    new ChatUpdateLongPollingResource(chatRoom, resourceOwner, responseWriter);
-            serverObjects.getLongPollingSystem().processLongPollingResource(pollingResource, listener);
+                    new ChatUpdateLongPollingResource(_chatRoom, resourceOwner, responseWriter, listener);
+            pollingResource.processInSystem(_longPollingSystem);
         } catch (SubscriptionExpiredException exp) {
             logHttpError(LOGGER, HttpURLConnection.HTTP_GONE, request.uri(), exp);
             throw new HttpProcessingException(HttpURLConnection.HTTP_GONE); // 410
@@ -56,12 +62,15 @@ public class PostChatRequestHandler implements UriRequestHandler {
         private final ResponseWriter responseWriter;
         private boolean processed;
         private final User user;
+        private final ChatCommunicationChannel listener;
 
         private ChatUpdateLongPollingResource(ChatRoomMediator chatRoom, User user,
-                                              ResponseWriter responseWriter) {
+                                              ResponseWriter responseWriter,
+                                              ChatCommunicationChannel listener) {
             this.chatRoom = chatRoom;
             this.user = user;
             this.responseWriter = responseWriter;
+            this.listener = listener;
         }
 
 
@@ -88,6 +97,11 @@ public class PostChatRequestHandler implements UriRequestHandler {
         private void logAndWriteError(int connectionResult, Exception exp) {
             logHttpError(LOGGER, connectionResult, "chat poller", exp);
             responseWriter.writeError(connectionResult);
+        }
+
+        @Override
+        public void processInSystem(LongPollingSystem system) {
+            system.processLongPollingResource(this, this.listener);
         }
     }
 

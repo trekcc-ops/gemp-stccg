@@ -1,13 +1,35 @@
 package com.gempukku.stccg.decisions;
 
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.GameState;
+
 import java.util.Set;
 
 public interface UserFeedback {
-    void sendAwaitingDecision(AwaitingDecision awaitingDecision);
-    boolean hasNoPendingDecisions();
-    AwaitingDecision getAwaitingDecision(String playerName);
-    void removeDecision(String playerId);
-    Set<String> getUsersPendingDecision();
+    DefaultGame getGame();
+    GameState getGameState();
 
-    int getNextDecisionIdAndIncrement();
+    default void removeDecision(String playerName) {
+        getGameState().removeDecision(playerName);
+    }
+    default AwaitingDecision getAwaitingDecision(String playerName) {
+        return getGameState().getDecision(playerName);
+    }
+    default void addPendingDecision(AwaitingDecision decision) {
+        getGameState().addPendingDecision(decision);
+    }
+
+    default void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
+        addPendingDecision(awaitingDecision);
+        getGame().sendActionResultToClient();
+    }
+
+    default Set<String> getUsersPendingDecision() {
+        return getGameState().getUsersPendingDecision();
+    }
+
+    default int getNextDecisionIdAndIncrement() {
+        return getGameState().getAndIncrementNextDecisionId();
+    }
+
 }

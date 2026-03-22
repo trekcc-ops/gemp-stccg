@@ -1,6 +1,8 @@
 package com.gempukku.stccg.cards;
 
-public class CardNotFoundException extends Exception {
+import java.io.IOException;
+
+public class CardNotFoundException extends IOException {
     public CardNotFoundException(String blueprint) {
         super(blueprint);
     }

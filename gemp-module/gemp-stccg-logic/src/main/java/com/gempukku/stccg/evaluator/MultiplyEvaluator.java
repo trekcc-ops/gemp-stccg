@@ -1,27 +1,34 @@
 package com.gempukku.stccg.evaluator;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.game.DefaultGame;
 
-public class MultiplyEvaluator extends Evaluator {
-    private final Evaluator _source;
-    private final Evaluator _multiplier;
-    private final DefaultGame _game;
+import java.util.ArrayList;
+import java.util.List;
 
-    public MultiplyEvaluator(ActionContext context, Evaluator multiplier, Evaluator source) {
-        super();
-        _multiplier = multiplier;
-        _game = context.getGame();
-        _source = source;
+public class MultiplyEvaluator extends Evaluator {
+
+    @JsonProperty("evaluators")
+    private final List<Evaluator> _evaluators;
+
+    @JsonCreator()
+    private MultiplyEvaluator(@JsonProperty(value = "evaluators", required = true) List<Evaluator> evaluators) {
+        _evaluators = evaluators;
     }
 
-    public MultiplyEvaluator(ActionContext context, int multiplier, Evaluator source) {
-        this(context, new ConstantValueSource(multiplier).getEvaluator(context), source);
+    public MultiplyEvaluator(float multiplier, Evaluator... evaluators) {
+        _evaluators = new ArrayList<>();
+        _evaluators.addAll(List.of(evaluators));
+        _evaluators.add(new ConstantEvaluator(multiplier));
     }
 
     @Override
-    public int evaluateExpression(DefaultGame game, PhysicalCard self) {
-        return _multiplier.evaluateExpression(_game, self) * _source.evaluateExpression(_game, self);
+    public float evaluateExpression(DefaultGame game) {
+        float subtotal = 1;
+        for (Evaluator evaluator : _evaluators) {
+            subtotal = subtotal * evaluator.evaluateExpression(game);
+        }
+        return (float) Math.floor(subtotal);
     }
 }

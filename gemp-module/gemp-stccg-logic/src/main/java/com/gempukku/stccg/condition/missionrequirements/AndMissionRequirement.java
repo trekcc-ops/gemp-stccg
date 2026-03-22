@@ -1,7 +1,10 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.game.DefaultGame;
+import com.google.common.collect.Lists;
 
 import java.util.*;
 
@@ -23,8 +26,8 @@ public class AndMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
-        return _requirements.stream().allMatch(requirement -> requirement.canBeMetBy(personnel));
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context) {
+        return _requirements.stream().allMatch(requirement -> requirement.canBeMetBy(personnel, cardGame, context));
     }
 
     public String toString() {
@@ -37,5 +40,29 @@ public class AndMissionRequirement implements MissionRequirement {
             }
         }
         return sj.toString();
+    }
+
+    @Override
+    public boolean requiresSkill(SkillName skillName, DefaultGame cardGame, GameTextContext context) {
+        for (MissionRequirement requirement : _requirements) {
+            if (requirement.requiresSkill(skillName, cardGame, context)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public List<MissionRequirement> getRequirementOptionsWithoutOr() {
+        List<List<MissionRequirement>> allRequirements = new ArrayList<>();
+        for (MissionRequirement requirement : _requirements) {
+            allRequirements.add(requirement.getRequirementOptionsWithoutOr());
+        }
+        List<List<MissionRequirement>> cartesian = Lists.cartesianProduct(allRequirements);
+        List<MissionRequirement> result = new ArrayList<>();
+        for (List<MissionRequirement> reqList : cartesian) {
+            result.add(new AndMissionRequirement(reqList));
+        }
+        return result;
     }
 }

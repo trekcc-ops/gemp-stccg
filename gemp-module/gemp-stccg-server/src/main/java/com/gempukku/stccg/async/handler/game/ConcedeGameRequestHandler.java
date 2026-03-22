@@ -1,28 +1,31 @@
 package com.gempukku.stccg.async.handler.game;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
-import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
+import com.gempukku.stccg.game.GameServer;
 
-public class ConcedeGameRequestHandler extends GameRequestHandlerNew implements UriRequestHandler {
+public class ConcedeGameRequestHandler implements UriRequestHandler {
+
+    private final CardGameMediator _mediator;
 
     ConcedeGameRequestHandler(
             @JsonProperty("gameId")
-            String gameId
-    ) {
-        super(gameId);
+            String gameId,
+            @JacksonInject GameServer gameServer
+            ) throws HttpProcessingException {
+        _mediator = gameServer.getGameById(gameId);
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
-        User resourceOwner = request.user();
-        CardGameMediator gameMediator = serverObjects.getGameServer().getGameById(_gameId);
-        gameMediator.concede(resourceOwner);
+        String userName = request.userName();
+        _mediator.concede(userName);
         responseWriter.writeJsonOkResponse();
     }
 

@@ -1,75 +1,8 @@
 package com.gempukku.stccg.cardparsing;
 
-import java.io.IOException;
 import java.util.*;
 
 public class StripSentencesTest extends NewLibraryTest {
-
-    public void sentenceTest() throws IOException {
-        Map<String, CardData> _newLibraryMap = LibraryFunctions.createLibrary();
-        int canBeParsed = 0;
-        int cannotBeParsed = 0;
-
-        List<String> includedTypes = new LinkedList<>();
-        includedTypes.add("Event");
-        includedTypes.add("Incident");
-        includedTypes.add("Interrupt");
-
-        for (CardData card : _newLibraryMap.values()) {
-            if (includedTypes.contains(card._type) && Objects.equals(card._set, "TNG")) {
-                for (Sentence sentence : card._gameText.getSentences()) {
-                    String strippedSentence = stripSentence(sentence.toString());
-                    if (strippedSentence.isEmpty()) {
-                        canBeParsed++;
-                    } else {
-                        System.out.println(strippedSentence);
-                        cannotBeParsed++;
-                    }
-                }
-            }
-        }
-        System.out.println("Can be parsed: " + canBeParsed);
-        System.out.println("Cannot be parsed: " + cannotBeParsed);
-    }
-
-    private String stripSentence(String originalSentence) {
-        String modifiedSentence = originalSentence.toLowerCase();
-        modifiedSentence = stripUsageLimitPhrases(modifiedSentence);
-        modifiedSentence = stripIcons(modifiedSentence);
-        modifiedSentence = stripLocations(modifiedSentence);
-        modifiedSentence = stripVerbs(modifiedSentence);
-
-        String[] sentencePieces = modifiedSentence.split("\\s+");
-        String[] dumbWords = {"on", "or", "and", "."};
-        boolean result = true;
-        for (String string : sentencePieces) {
-            String strippedString = string.strip();
-            if (!Arrays.stream(dumbWords).toList().contains(strippedString))
-                result = false;
-        }
-
-        if (result == true)
-            return "";
-        else
-            return modifiedSentence;
-    }
-
-    private String stripUsageLimitPhrases(String originalSentence) {
-        String modifiedSentence = originalSentence;
-        List<String> usageLimits = new ArrayList();
-        usageLimits.add("once per game");
-        usageLimits.add("once each turn");
-        usageLimits.add("once every turn");
-        usageLimits.add("in place of your normal card play");
-
-        for (String string : usageLimits) {
-            String withComma = string + ",";
-            modifiedSentence = modifiedSentence.replace(withComma, "").strip();
-            modifiedSentence = modifiedSentence.replace(string, "").strip();
-        }
-
-        return modifiedSentence;
-    }
 
     private String stripIcons(String originalSentence) {
         String modifiedSentence = originalSentence;

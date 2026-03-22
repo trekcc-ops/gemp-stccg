@@ -4,8 +4,6 @@ import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.common.AppConfig;
 import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpMessage;
-import io.netty.handler.codec.http.HttpRequest;
 
 import java.io.File;
 import java.net.HttpURLConnection;

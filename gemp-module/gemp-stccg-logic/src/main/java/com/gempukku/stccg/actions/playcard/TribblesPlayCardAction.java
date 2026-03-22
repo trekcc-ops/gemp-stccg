@@ -1,6 +1,5 @@
 package com.gempukku.stccg.actions.playcard;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.TribblesPhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
@@ -12,13 +11,12 @@ import java.util.Collections;
 
 public class TribblesPlayCardAction extends PlayCardAction {
 
-    public TribblesPlayCardAction(TribblesPhysicalCard card) {
-        super(card, card, card.getOwner(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
-        setText("Play " + card.getFullName());
+    public TribblesPlayCardAction(DefaultGame cardGame, TribblesPhysicalCard card) {
+        super(cardGame, card, card, card.getOwnerName(), Zone.PLAY_PILE, ActionType.PLAY_CARD);
     }
 
     @Override
-    public boolean canBeInitiated(DefaultGame cardGame) {
+    public boolean requirementsAreMet(DefaultGame cardGame) {
         TribblesGame tribblesGame = (TribblesGame) cardGame;
         if (_cardEnteringPlay instanceof TribblesPhysicalCard tribblesCard) {
             if (!tribblesCard.canBePlayed(tribblesGame))
@@ -29,12 +27,11 @@ public class TribblesPlayCardAction extends PlayCardAction {
         }
     }
 
-    @Override
-    public Action nextAction(DefaultGame cardGame) {
+    protected void processEffect(DefaultGame cardGame) {
         TribblesGameState gameState = (TribblesGameState) cardGame.getGameState();
 
         gameState.removeCardsFromZoneWithoutSendingToClient(cardGame, Collections.singleton(_cardEnteringPlay));
-        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, Zone.PLAY_PILE);
+        gameState.addCardToZone(cardGame, _cardEnteringPlay, Zone.PLAY_PILE);
 
         int tribbleValue = _cardEnteringPlay.getBlueprint().getTribbleValue();
         gameState.setLastTribblePlayed(tribbleValue);
@@ -43,9 +40,7 @@ public class TribblesPlayCardAction extends PlayCardAction {
         gameState.setNextTribbleInSequence(nextTribble);
 
         gameState.setChainBroken(false);
-        cardGame.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
-        _wasCarriedOut = true;
+        saveResult(new PlayCardResult(cardGame, this, _cardEnteringPlay, _performingCard), cardGame);
         setAsSuccessful();
-        return null;
     }
 }

@@ -1,8 +1,6 @@
 package com.gempukku.stccg.database;
 
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.formats.GameFormat;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,11 +13,9 @@ import java.util.Set;
 
 public class DbDeckDAO implements DeckDAO {
     private final DbAccess _dbAccess;
-    private final ServerObjects _serverObjects;
 
-    public DbDeckDAO(ServerObjects serverObjects, DbAccess dbAccess) {
+    public DbDeckDAO(DbAccess dbAccess) {
         _dbAccess = dbAccess;
-        _serverObjects = serverObjects;
     }
 
     public final synchronized CardDeck getDeckForUser(User user, String name) {
@@ -94,9 +90,7 @@ public class DbDeckDAO implements DeckDAO {
                     try (ResultSet rs = statement.executeQuery()) {
                         if (rs.next()) {
                             String formatName = rs.getString(2);
-                            GameFormat format = _serverObjects.getFormatLibrary().getFormatByName(formatName);
-                            return new CardDeck(name, rs.getString(1), format,
-                                    rs.getString(3));
+                            return new CardDeck(name, rs.getString(1), formatName, rs.getString(3));
                         }
                         return null;
                     }

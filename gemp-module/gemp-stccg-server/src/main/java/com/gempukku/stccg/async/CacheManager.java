@@ -11,7 +11,7 @@ public class CacheManager {
             addCache(cachedObject);
     }
 
-    private void addCache(Cached cached) {
+    public void addCache(Cached cached) {
         _caches.add(cached);
     }
 

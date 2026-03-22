@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.RegularSkill;
-import com.gempukku.stccg.cards.Skill;
-import com.gempukku.stccg.cards.SpecialDownloadSkill;
-import com.gempukku.stccg.common.filterable.CardAttribute;
-import com.gempukku.stccg.common.filterable.PersonnelName;
-import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.common.filterable.*;
 import com.gempukku.stccg.condition.missionrequirements.*;
+import com.gempukku.stccg.filters.FilterBlueprint;
+import com.gempukku.stccg.filters.FilterBlueprintDeserializer;
 
 import java.io.IOException;
 import java.util.*;
@@ -22,18 +19,23 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
     final String multiplierSplit2e = "(?<=\\d).*(?=\\s\\w)";
     final Map<String, SkillName> _skillMap = new HashMap<>();
     final Map<String, PersonnelName> _personnelNameMap = new HashMap<>();
+    final Map<String, Species> _speciesMap = new HashMap<>();
+    private final FilterBlueprintDeserializer _filterDeserializer;
 
 
-    public MissionRequirementDeserializer() {
+    public MissionRequirementDeserializer() throws InvalidCardDefinitionException {
         this(null);
     }
 
-    public MissionRequirementDeserializer(Class<?> vc) {
+    public MissionRequirementDeserializer(Class<?> vc) throws InvalidCardDefinitionException {
         super(vc);
+        _filterDeserializer = new FilterBlueprintDeserializer();
         new ArrayList<>(Arrays.asList(SkillName.values()))
                 .forEach(regularSkill -> _skillMap.put(regularSkill.get_humanReadable().toUpperCase(), regularSkill));
         new ArrayList<>(Arrays.asList(PersonnelName.values()))
                 .forEach(name -> _personnelNameMap.put(name.getHumanReadable(), name));
+        new ArrayList<>(Arrays.asList(Species.values()))
+                .forEach(species -> _speciesMap.put(species.getHumanReadable(), species));
     }
 
     @Override
@@ -94,7 +96,7 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
             if (stringSplit[0].startsWith("personnelWith(") && stringSplit[0].endsWith(")")) {
                 int numberOfPersonnelNeeded = Integer.parseInt(stringSplit[1].substring(1));
                 String requirement = stringSplit[0].substring(14,stringSplit[0].length()-1);
-                MissionRequirement personnelRequirement = createRequirement(requirement);
+                FilterBlueprint personnelRequirement = _filterDeserializer.createFilterBlueprint(requirement);
                 return new FromOnePersonnelMissionRequirement(personnelRequirement, numberOfPersonnelNeeded);
             }
         }
@@ -107,7 +109,10 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
                 return new RegularSkillMissionRequirement(
                         _skillMap.get(stringSplit[1].toUpperCase()), Integer.parseInt(stringSplit[0]));
         }
-        if (text.split(attributeSplit).length > 1) {
+        String upperText = text.toUpperCase();
+        if ((upperText.startsWith("INTEGRITY") || upperText.startsWith("CUNNING") || upperText.startsWith("STRENGTH") ||
+                upperText.startsWith("RANGE") || upperText.startsWith("WEAPONS") || upperText.startsWith("SHIELDS")) &&
+                text.split(attributeSplit).length > 1) {
             String[] stringSplit = text.split(attributeSplit);
             if (stringSplit[1].charAt(0) == '>') {
                 String attributeName = stringSplit[0].trim().toUpperCase(Locale.ROOT);
@@ -118,11 +123,44 @@ public class MissionRequirementDeserializer extends StdDeserializer<MissionRequi
             }
             else throw new InvalidCardDefinitionException("Unable to process attribute mission requirement");
         }
+        if (upperText.startsWith("(CUNNING+STRENGTH)") && text.split(attributeSplit).length == 2) {
+            String[] stringSplit = text.split(attributeSplit);
+            if (stringSplit[1].charAt(0) == '>') {
+                return new MultipleAttributeMissionRequirement(List.of(CardAttribute.CUNNING, CardAttribute.STRENGTH),
+                        Integer.parseInt(stringSplit[1].substring(1))
+                );
+            }
+            else throw new InvalidCardDefinitionException("Unable to process attribute mission requirement");
+        }
         if (_skillMap.get(text.toUpperCase()) != null) {
             return new RegularSkillMissionRequirement(_skillMap.get(text.toUpperCase()));
         }
         if (_personnelNameMap.get(text) != null) {
             return new PersonnelNameMissionRequirement(_personnelNameMap.get(text));
+        }
+        if (_speciesMap.get(text) != null) {
+            return new SpeciesMissionRequirement(_speciesMap.get(text));
+        }
+        if (text.equals("anyPersonnel")) {
+            return new AnyPersonnelMissionRequirement();
+        }
+        if (text.startsWith("name(") && text.endsWith(")")) {
+            String name = text.substring("name(".length(), text.length() - 1);
+            return new PersonnelNameMissionRequirement(name);
+        }
+        if (text.startsWith("name=") && !text.contains(" ")) {
+            String name = text.substring("name=".length());
+            return new PersonnelNameMissionRequirement(name);
+        }
+        if (text.startsWith("personnelWith(") && text.endsWith(")")) {
+            String requirement = text.substring(14,text.length()-1);
+            FilterBlueprint personnelRequirement = _filterDeserializer.createFilterBlueprint(requirement);
+            return new FromOnePersonnelMissionRequirement(personnelRequirement);
+        }
+        if (text.startsWith("characteristic(") && text.endsWith(")")) {
+            String characteristicText = text.substring("characteristic(".length(),text.length()-1);
+            Characteristic characteristic = Characteristic.findCharacteristic(characteristicText);
+            return new CharacteristicMissionRequirement(characteristic);
         }
         // If none of these worked, throw an exception
         throw new InvalidCardDefinitionException("Unable to process mission requirement: " + text);

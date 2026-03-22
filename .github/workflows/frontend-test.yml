@@ -18,14 +18,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [22.x, 24.x, 25.x]
         # Latest 3 supported versions
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         cache-dependency-path: ./gemp-module/gemp-stccg-client/package-lock.json
         node-version: ${{ matrix.node-version }}

@@ -1,9 +1,11 @@
 package com.gempukku.stccg.database;
 
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.common.JSONData;
 import org.sql2o.Query;
 import org.sql2o.Sql2o;
 
+import java.net.HttpURLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,7 +69,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
     }
 
     @SuppressWarnings("TrailingWhitespacesInTextBlock")
-    public final List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) {
+    public final List<DBData.GameHistory> getGameHistoryForPlayer(User player, int start, int count) throws HttpProcessingException {
 
         try {
 
@@ -91,7 +93,7 @@ public class DbGameHistoryDAO implements GameHistoryDAO {
                         .executeAndFetch(DBData.GameHistory.class);
             }
         } catch (Exception ex) {
-            throw new RuntimeException("Unable to retrieve game history for player", ex);
+            throw new HttpProcessingException(HttpURLConnection.HTTP_NOT_FOUND);
         }
 
     }

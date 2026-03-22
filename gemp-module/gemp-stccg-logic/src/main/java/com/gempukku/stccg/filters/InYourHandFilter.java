@@ -1,0 +1,27 @@
+package com.gempukku.stccg.filters;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
+
+public class InYourHandFilter implements CardFilter {
+
+    @JsonProperty("playerName")
+    private final String _playerName;
+
+    public InYourHandFilter(String playerName) {
+        _playerName = playerName;
+    }
+    @Override
+    public boolean accepts(DefaultGame game, PhysicalCard physicalCard) {
+        try {
+            Player performingPlayer = game.getPlayer(_playerName);
+            return performingPlayer.getCardsInHand().contains(physicalCard);
+        } catch(PlayerNotFoundException exp) {
+            game.sendErrorMessage(exp);
+            return false;
+        }
+    }
+}

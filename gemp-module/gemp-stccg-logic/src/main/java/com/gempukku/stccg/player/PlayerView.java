@@ -7,8 +7,8 @@ import com.gempukku.stccg.common.filterable.Zone;
 
 import java.util.*;
 
-@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
-@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups" })
+@JsonIncludeProperties({ "playerId", "score", "turnNumber", "decked", "cardGroups", "points" })
+@JsonPropertyOrder({ "playerId", "score", "turnNumber", "decked", "cardGroups", "points" })
 public class PlayerView {
 
     private final String _requestingPlayerId;
@@ -29,6 +29,17 @@ public class PlayerView {
         return _playerRequested.getScore();
     }
 
+    @JsonProperty("points")
+    private Map<String, Integer> getPoints() {
+        Map<String, Integer> result = new HashMap<>();
+        result.put("bonus", _playerRequested.getBonusPoints());
+        result.put("nonBonus", _playerRequested.getNonBonusPoints());
+        result.put("total", _playerRequested.getScore());
+        result.put("towardWinning", _playerRequested.getPointsThatCountTowardWinning());
+        result.put("requiredToWin", _playerRequested.getPointsRequiredToWin());
+        return result;
+    }
+
     @JsonProperty("decked")
     private boolean getDecked() {
         return _playerRequested.isDecked();
@@ -38,7 +49,7 @@ public class PlayerView {
     private Map<Zone, CardGroupView> getCardGroups() {
         Map<Zone, CardGroupView> result = new HashMap<>();
         for (Zone zone : _playerRequested.getCardGroupZones()) {
-            PhysicalCardGroup cardGroup = _playerRequested.getCardGroup(zone);
+            PhysicalCardGroup<? extends PhysicalCard> cardGroup = _playerRequested.getCardGroup(zone);
             if (zone.isPublic() ||
                     (_playerRequested.getPlayerId().equals(_requestingPlayerId) && zone.isVisibleByOwner())) {
                 result.put(zone, new PublicCardGroupView(cardGroup));
@@ -64,7 +75,7 @@ public class PlayerView {
         @JsonProperty("cardIds")
         final Collection<Integer> _cardIds;
 
-        PrivateCardGroupView(PhysicalCardGroup group) {
+        PrivateCardGroupView(PhysicalCardGroup<? extends PhysicalCard> group) {
             _cardCount = group.size();
             _cardIds = Collections.nCopies(_cardCount, ANONYMOUS_CARD_ID);
         }
@@ -75,9 +86,9 @@ public class PlayerView {
         int _cardCount;
         @JsonProperty("cardIds")
         @JsonIdentityReference(alwaysAsId=true)
-        List<PhysicalCard> _cards;
+        List<? extends PhysicalCard> _cards;
 
-        PublicCardGroupView(PhysicalCardGroup group) {
+        PublicCardGroupView(PhysicalCardGroup<? extends PhysicalCard> group) {
             _cardCount = group.size();
             _cards = group.getCards();
         }

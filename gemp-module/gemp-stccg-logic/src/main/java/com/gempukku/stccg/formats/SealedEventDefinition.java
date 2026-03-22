@@ -1,14 +1,11 @@
 package com.gempukku.stccg.formats;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.GenericCardItem;
-import com.gempukku.stccg.common.JSONData;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class SealedEventDefinition {
     private final String _name;
@@ -50,7 +47,9 @@ public class SealedEventDefinition {
     public GameFormat getFormat() { return _format; }
     @JsonProperty("format")
     public String getFormatId() { return _formatId; }
-    public List<GenericCardItem> GetProductForSeries(int serie) { return Collections.unmodifiableList(_seriesProduct.get(serie)); }
+    public List<GenericCardItem> GetProductForSeries(int serie) {
+        return Collections.unmodifiableList(_seriesProduct.get(serie));
+    }
 
     @JsonProperty("seriesProduct")
     public List<List<String>> getSeriesProductForSerialization() {

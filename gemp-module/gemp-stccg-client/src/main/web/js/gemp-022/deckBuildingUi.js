@@ -38,16 +38,25 @@ export default class GempLotrDeckBuildingUI {
         this.deckDiv = $("#deckDiv");
         this.manageDecksDiv = $("#manageDecks");
         this.formatSelect = $("#formatSelect");
+        let formatDefault = $("<option/>").attr("value", "velara1e").text("1E Velara");
+        this.formatSelect.append(formatDefault);
 
 
-        this.cardFilter = new CardFilter($("#collectionDiv"),
+        this.cardFilter = new CardFilter(
+                $("#collectionDiv"),
                 this.collectionType,
                 function () {
                     that.clearCollection();
                 },
-                function (elem, type, blueprintId, count, imageUrl) {
-                    that.addCardToCollection(type, blueprintId, count,
-                        elem.getAttribute("contents"), elem.getAttribute("imageUrl"));
+                function (elem, type, blueprintId, count, imageUrl, title) {
+                    that.addCardToCollection(
+                        type,
+                        blueprintId,
+                        count,
+                        elem.getAttribute("contents"), // Only sent with packs?
+                        imageUrl,
+                        title
+                    );
                 },
                 function () {
                     that.finishCollection();
@@ -414,6 +423,18 @@ export default class GempLotrDeckBuildingUI {
                                                 }
 
                                                 that.loadDeckList();
+                                            },
+                                            {
+                                                "200":function () {
+                                                    // work around server sending 200 but invalid XML
+                                                    if (that.deckName === deckNames[i]) {
+                                                        that.deckName = null;
+                                                        $("#editingDeck").text("New deck");
+                                                        that.clearDeck();
+                                                    }
+
+                                                    that.loadDeckList();
+                                                }
                                             });
                                 }
                             };
@@ -500,33 +521,47 @@ export default class GempLotrDeckBuildingUI {
             var selectedCardElem = tar.closest(".card");
             if (event.which >= 1) {
                 if (!this.successfulDrag) {
+                    // right-click, card details
                     if (event.shiftKey || event.which > 1) {
                         selectedCardElem.data("card").displayCardInfo(that.infoDialog);
                         return false;
-                    } else if (selectedCardElem.hasClass("cardInCollection")) {
-                        this.selectionFunc(selectedCardElem, selectedCardElem.data("card").imageUrl, "DRAW_DECK");
-                        // TODO: Refers to packs in collection
-                    } else if (selectedCardElem.hasClass("packInCollection")) {
-                        // if (confirm("Would you like to open this pack?")) {
-                            this.comm.openPack(this.getCollectionType(), selectedCardElem.data("card").blueprintId, function () {
+                    }
+                    // left-click on card in right-hand pane
+                    /* Disabling for MVP
+                    else if (selectedCardElem.hasClass("cardInCollection")) {
+                        this.selectionFunc(selectedCardElem, selectedCardElem.data("card").imageUrl, "DRAW_DECK")
+                    }
+                    */
+                    // left-click on pack in right-hand pane
+                    else if (selectedCardElem.hasClass("packInCollection")) {
+                        this.comm.openPack(
+                            this.getCollectionType(),
+                            selectedCardElem.data("card").blueprintId,
+                            function () {
                                 that.cardFilter.getCollection();
-                            }, {
-                                "404":function () {
-                                    alert("You have no pack of this type in your collection.");
-                                }
-                            });
-                        //}
-                    } else if (selectedCardElem.hasClass("cardToSelect")) {
-                        this.comm.openSelectionPack(this.getCollectionType(), this.packSelectionId,
-                                selectedCardElem.data("card").blueprintId, function () {
-                            that.cardFilter.getCollection();
-                        }, {
-                            "404":function () {
+                            },
+                            { "404":function () {
+                                alert("You have no pack of this type in your collection.");
+                            }
+                        });
+                    }
+                    // more pack stuff
+                    else if (selectedCardElem.hasClass("cardToSelect")) {
+                        this.comm.openSelectionPack(
+                            this.getCollectionType(),
+                            this.packSelectionId,
+                            selectedCardElem.data("card").blueprintId,
+                            function () {
+                                that.cardFilter.getCollection();
+                            },
+                            { "404":function () {
                                 alert("You have no pack of this type in your collection or that selection is not available for this pack.");
                             }
                         });
                         this.selectionDialog.dialog("close");
-                    } else if (selectedCardElem.hasClass("selectionInCollection")) {
+                    }
+                    // more pack stuff
+                    else if (selectedCardElem.hasClass("selectionInCollection")) {
                         var selectionDialogResize = function () {
                             let width = that.selectionDialog.width() + 10;
                             let height = that.selectionDialog.height() + 10;
@@ -534,8 +569,7 @@ export default class GempLotrDeckBuildingUI {
                         };
 
                         if (this.selectionDialog == null) {
-                            this.selectionDialog = $("<div></div>")
-                                    .dialog({
+                            this.selectionDialog = $("<div></div>").dialog({
                                 title:"Choose one",
                                 autoOpen:false,
                                 closeOnEscape:true,
@@ -557,12 +591,20 @@ export default class GempLotrDeckBuildingUI {
                         let selection = selectedCardElem.data("selection");
                         let blueprintIds = selection.split("|");
                         for (let i = 0; i < blueprintIds.length; i++) {
+                            let title = (cardData.title) ? cardData.title : "";
                             let emptyImageUrl = "";
                             let emptyLocationIndex = "";
                             let upsideDown = false;
-                            let card = new Card(blueprintIds[i], "selection", "selection" + i, "player", emptyImageUrl, emptyLocationIndex, upsideDown);
+                            let card = new Card(blueprintIds[i], "selection", "selection" + i, "player", title, emptyImageUrl, emptyLocationIndex, upsideDown);
                             let baseCardDiv = createCardDiv(
-                                card.imageUrl, null, card.isFoil(), false, card.isPack(), card.hasErrata()
+                                card.imageUrl,
+                                card.title, //text
+                                card.isFoil(), //foil
+                                card.status_tokens, //tokens
+                                card.isPack(), //border
+                                card.hasErrata(), //errata
+                                card.upsideDown, // upside down
+                                card.cardId // id
                             );
                             let cardDiv = $(baseCardDiv); // convert to jQuery object
                             cardDiv.data("card", card);
@@ -571,9 +613,13 @@ export default class GempLotrDeckBuildingUI {
                         }
                         openSizeDialog(that.selectionDialog);
                         selectionDialogResize();
-                    } else if (selectedCardElem.hasClass("cardInDeck")) {
+                    }
+                    // left-click to remove card from deck
+                    /* Disabling for MVP
+                    else if (selectedCardElem.hasClass("cardInDeck")) {
                         this.removeCardFromDeck(selectedCardElem);
                     }
+                    */
                     event.stopPropagation();
                 }
             }
@@ -594,6 +640,11 @@ export default class GempLotrDeckBuildingUI {
                 that.deckModified(false);
                 alert("Deck was saved.  Refresh the Game Hall to see it!");
             }, {
+                "200":function () {
+                    // work around server sending 200 but invalid XML
+                    that.deckModified(false);
+                    alert("Deck was saved.  Refresh the Game Hall to see it!");
+                },
                 "400":function () {
                     alert("Invalid deck format.");
                 }
@@ -601,27 +652,23 @@ export default class GempLotrDeckBuildingUI {
         }
     }
 
-    addCardToContainer(blueprintId, imageUrl, subDeck, container, tokens) {
+    addCardToContainer(blueprintId, title, imageUrl, subDeck, container, tokens) {
         let emptyLocationIndex = "";
         let upsideDown = false;
-        let card = new Card(blueprintId, subDeck, "deck", "player", imageUrl, emptyLocationIndex, upsideDown);
-        let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), tokens, card.isPack(), card.hasErrata());
+        let card = new Card(blueprintId, subDeck, "deck", "player", title, imageUrl, emptyLocationIndex, upsideDown);
+        let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), tokens, card.isPack(), card.hasErrata());
         let cardDiv = $(baseCardDiv); // convert to jQuery object
         cardDiv.data("card", card);
         container.append(cardDiv);
         return cardDiv;
     }
-
-    addCardToDeckDontLayout(blueprintId, imageUrl, zone) {
-        var that = this;
-        this.addCardToDeck(blueprintId, imageUrl, zone);
-    }
-
+    
     addCardToDeckAndLayout(cardElem, imageUrl, zone) {
         var that = this;
         let cardData = cardElem.data("card");
         let blueprintId = cardData.blueprintId;
-        this.addCardToDeck(blueprintId, imageUrl, zone);
+        let title = cardData.title;
+        this.addCardToDeck(blueprintId, title, imageUrl, zone);
         that.layoutDeck();
         that.deckModified(true);
         cardData.tokens = {count:(parseInt(cardData.tokens["count"]) + 1)};
@@ -645,20 +692,20 @@ export default class GempLotrDeckBuildingUI {
         }
     }
 
-    addCardToDeck(blueprintId, imageUrl, subDeck) {
+    addCardToDeck(blueprintId, title, imageUrl, subDeck) {
         var that = this;
         let added = false;
         $(".card.cardInDeck", this.drawDeckDiv).each(
                 function () {
                     let cardData = $(this).data("card");
                     if (cardData.blueprintId === blueprintId) {
-                        let attDiv = that.addCardToContainer(blueprintId, imageUrl, "ATTACHED", that.drawDeckDiv, false);
+                        let attDiv = that.addCardToContainer(blueprintId, title, imageUrl, "ATTACHED", that.drawDeckDiv, false);
                         cardData.attachedCards.push(attDiv);
                         added = true;
                     }
                 });
         if (!added) {
-            let div = this.addCardToContainer(blueprintId, imageUrl, subDeck, this.drawDeckDiv, false)
+            let div = this.addCardToContainer(blueprintId, title, imageUrl, subDeck, this.drawDeckDiv, false)
             div.addClass("cardInDeck");
             div.draggable({
                 helper: "clone",
@@ -677,10 +724,39 @@ export default class GempLotrDeckBuildingUI {
         {
             this.comm.getDeckStats(deckContents, 
                    that.formatSelect.val(),
-                    function (html) 
+                    function (json)
                     {
                         let deckStatsDiv = document.getElementById("deckStats");
-                        deckStatsDiv.innerHTML = html;
+                        let htmlText = "";
+                        for (const error of json.errors) {
+                            htmlText = htmlText + "<font color='red'>" + error + "</font></br>";
+                        }
+                        for (const blueprintId of json.invalidBlueprintIds) {
+                            htmlText = htmlText + "<font color='red'>Cannot find blueprint id '" + blueprintId + "'</font></br>";
+                        }
+                        for (const cardTitle of json.notAllowedCards) {
+                             htmlText = htmlText + "<font color='red'>Card '" + cardTitle + "' not allowed in this format</font></br>";
+                         }
+                        for (const infoText of json.info) {
+                            // Information that doesn't indicate a problem, like number of cards in a subdeck
+                            htmlText = htmlText + "<font color='green'>" + infoText + "</font></br>";
+                        }
+                         for (const warning of json.warnings) {
+                            htmlText = htmlText + "<font color='yellow'>" + warning + "</font></br>";
+                        }
+                         for (const cardTitle of json.unplayableDrawDeckCards) {
+                            // These cards may be playable by interacting with other cards in the deck
+                            htmlText = htmlText + "<font color='yellow'>Card '" + cardTitle + "' in draw deck typically cannot be played during the game.</font></br>";
+                        }
+                         for (const cardTitle of json.unseedableSeedDeckCards) {
+                            // These cards may be seedable by interacting with other cards in the deck
+                            htmlText = htmlText + "<font color='yellow'>Card '" + cardTitle + "' in seed deck typically cannot be seeded.</font></br>";
+                        }
+                        if (json.includesFacilityInSeedDeck === false) {
+                            // There are deck designs that don't use facilities
+                            htmlText = htmlText + "<font color='yellow'>Your seed deck does not include a facility.</font></br>";
+                        }
+                        deckStatsDiv.innerHTML = htmlText;
                     }, 
                     {
                         "400":function () 
@@ -701,6 +777,7 @@ export default class GempLotrDeckBuildingUI {
         this.comm.getFormats(false,
             function (json) 
             {
+                console.log(json);
                 that.formatSelect.empty();
                 //var formats = JSON.parse(json);
                 $(json).each(function (index, o) {    
@@ -780,15 +857,16 @@ export default class GempLotrDeckBuildingUI {
 
     addAllCardsToDeck(deckJson) {
         for (const key in deckJson.cards) {
-            if (deckJson.cards.hasOwnProperty(key)) {
+            if (Object.prototype.hasOwnProperty.call(deckJson.cards, key)) {
                 let subDeck = key;
                 let value = deckJson.cards[key];
                 for (const card of value) {
                     let blueprintId = card.blueprintId;
                     let imageUrl = card.imageUrl;
                     let count = card.count;
+                    let title = card.cardTitle;
                     for (let i = 0; i < count; i++) {
-                        this.addCardToDeck(blueprintId, imageUrl, subDeck);
+                        this.addCardToDeck(blueprintId, title, imageUrl, subDeck);
                     }
                 }
             }
@@ -799,12 +877,13 @@ export default class GempLotrDeckBuildingUI {
         $(".card", this.normalCollectionDiv).remove();
     }
 
-    addCardToCollection(type, blueprintId, count, contents, imageUrl) {
+    addCardToCollection(type, blueprintId, count, contents, imageUrl, title) {
         if (type === "pack") {
             let cardDiv;
             if (blueprintId.substr(0, 3) === "(S)") {
                 let emptyLocationIndex = "";
-                let card = new Card(blueprintId, "pack", "collection", "player", imageUrl, emptyLocationIndex, false);
+                let title=""; // Do packs have titles? Are we keeping packs?
+                let card = new Card(blueprintId, "pack", "collection", "player", title, imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv = $(baseCardDiv); // convert to jQuery object
@@ -813,7 +892,8 @@ export default class GempLotrDeckBuildingUI {
                 cardDiv.addClass("selectionInCollection");
             } else {
                 let emptyLocationIndex = "";
-                let card = new Card(blueprintId, "pack", "collection", "player", imageUrl, emptyLocationIndex, false);
+                let title=""; // Do packs have titles? Are we keeping packs?
+                let card = new Card(blueprintId, "pack", "collection", "player", title, imageUrl, emptyLocationIndex, false);
                 card.tokens = {"count":count};
                 let baseCardDiv = createCardDiv(card.imageUrl, null, false, true, true, false);
                 cardDiv = $(baseCardDiv); // convert to jQuery object
@@ -825,7 +905,7 @@ export default class GempLotrDeckBuildingUI {
         } else if (type === "card") {
             let locationIndex = "";
             let upsideDown = false;
-            let card = new Card(blueprintId, "VOID", "collection", "player", imageUrl, locationIndex, upsideDown);
+            let card = new Card(blueprintId, "VOID", "collection", "player", title, imageUrl, locationIndex, upsideDown);
             let countInDeck = 0;
             $(".card", this.deckDiv).each(
                     function () {
@@ -834,7 +914,7 @@ export default class GempLotrDeckBuildingUI {
                             countInDeck++;
                     });
             card.tokens = {"count":countInDeck};
-            let baseCardDiv = createCardDiv(card.imageUrl, null, card.isFoil(), true, false, card.hasErrata());
+            let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), true, false, card.hasErrata());
             let cardDiv = $(baseCardDiv); // convert to jQuery object
             cardDiv.data("card", card);
             cardDiv.addClass("cardInCollection");
@@ -1092,7 +1172,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
         this.drawDeckGroup.layoutCards();
     }
 
-    addCardToDeck(blueprintId, imageUrl, subDeck) {
+    addCardToDeck(blueprintId, title, imageUrl, subDeck) {
         var that = this;
         let added = false;
         let container = null;
@@ -1107,13 +1187,13 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
                 function () {
                     let cardData = $(this).data("card");
                     if (cardData.blueprintId === blueprintId) {
-                        let attDiv = that.addCardToContainer(blueprintId, imageUrl, "ATTACHED", container, false);
+                        let attDiv = that.addCardToContainer(blueprintId, title, imageUrl, "ATTACHED", container, false);
                         cardData.attachedCards.push(attDiv);
                         added = true;
                     }
                 });
         if (!added) {
-            let div = this.addCardToContainer(blueprintId, imageUrl, subDeck, container, false)
+            let div = this.addCardToContainer(blueprintId, title, imageUrl, subDeck, container, false)
             div.addClass("cardInDeck");
             div.draggable({
                 helper: "clone",
@@ -1126,7 +1206,7 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
     }
 
     showLibraryDeckInHtml(deckJson) {
-        let deckDetailsDialog = $('<div class="deckDetailsDialog"></div>')
+        let deckDetailsDialog = $('<div id="deckDetailsDialog"></div>')
             .dialog({
                 title:"Details for '" + deckJson.deckName + "' Deck",
                 autoOpen:false,
@@ -1137,6 +1217,8 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
                 modal:true
             });
 
+        deckDetailsDialog.on("dialogbeforeclose", this.discardDeckHtml);
+
         let htmlText = this.getDeckHtml(deckJson);
         deckDetailsDialog.append(htmlText);
         deckDetailsDialog.dialog("open");
@@ -1144,26 +1226,110 @@ export class ST1EDeckBuildingUI extends GempLotrDeckBuildingUI {
 
 
     getDeckHtml(deckJson) {
-        let html = "";
-        html = html + "<h2>Format: " + deckJson.targetFormat.formatName + "</h2><br/>";
+        let cardListDiv = document.createElement("div");
+        
+        let formatDiv = document.createElement("div");
+        let formatH2 = document.createElement("h2");
+        formatH2.append(`Format: ${deckJson.targetFormat.formatName}`);
+        formatDiv.append(formatH2);
+        cardListDiv.append(formatDiv);
+
         for (const key in deckJson.cards) {
-            if (deckJson.cards.hasOwnProperty(key)) {
-                let subDeck = key;
-                html = html + "<br/><b>" + subDeck + "</b><br/>";
-                let value = deckJson.cards[key];
-                for (const card of value) {
-                    let cardTitle = card.cardTitle;
-                    let imageUrl = card.imageUrl;
-                    let count = card.count;
-                    html = html + "<span class='tooltip'>" + cardTitle;
-                    html = html + "<span><img class='ttimage' src='" + imageUrl + "'></span></span>"
-                    html = html + " x" + count + "<br/>"
+            if (Object.prototype.hasOwnProperty.call(deckJson.cards, key)) {
+                let subDeckName = key;
+
+                let subDeckNameHeader = document.createElement("div");
+                let subDeckNameBold = document.createElement("b");
+                subDeckNameBold.append(`${subDeckName}`);
+                subDeckNameHeader.append(subDeckNameBold);
+                cardListDiv.append(subDeckNameHeader);
+
+                // TODO: Spans here is pretty terrible and a relic of passing raw html.
+                // We need an absolute positioned block item probably.
+                
+                let cardsInSubDeck = deckJson.cards[key];
+                for (const card of cardsInSubDeck) {
+                    let cardDiv = document.createElement("div");
+                    let cardTitleAndCountSpan = document.createElement("span");
+                    cardTitleAndCountSpan.classList.add("tooltip");
+                    cardTitleAndCountSpan.append(`${card.cardTitle}`);
+
+                    let cardImageSpan = document.createElement("span");
+                    let cardDivTag = createCardDiv(card.imageUrl, card.cardTitle, false, false, false, false, false, null);
+                    cardDivTag.classList.add("ttimage");
+                    cardImageSpan.append(cardDivTag);
+                    cardTitleAndCountSpan.append(cardImageSpan);
+
+                    cardTitleAndCountSpan.append(` x${card.count}`);
+                    
+                    cardDiv.append(cardTitleAndCountSpan)
+                    cardListDiv.append(cardDiv);
                 }
             }
         }
+        
         if (deckJson.notes != null && deckJson.notes != "null") {
-            html = html + "<h3>Notes:<br/>" + deckJson.notes.replaceAll("\n", "<br/>");
+            let notesDiv = document.createElement("div");
+            let notesH3 = document.createElement("h3");
+            notesH3.append("Notes:")
+            notesDiv.append(notesH3);
+
+            let notesText = document.createElement("div");
+            notesText.append(`${deckJson.notes.replaceAll("\n", "<br/>")}`); // TODO: Improve somewhat
+            notesDiv.append(notesText);
+
+            cardListDiv.append(notesDiv);
         }
-        return html;
+
+        let cardListDivJQ = $(cardListDiv);
+
+        return cardListDivJQ;
+    }
+
+    discardDeckHtml(event, _ui) {
+        // This function removes the in-memory result of URLs that were stored as blobs via fetch(),
+        // returning their memory to the browser. On Firefox, this would correctly only remove
+        // the image loaded in the dialog box, but on Chrome, all graphics sharing the same URL are
+        // removed.
+        //
+        // If a card is shown in the dialog and in the loaded deck or in the search
+        // results, that image would accidentally be removed too, which we don't want.
+        // So, search for any duplicates and leave those in memory.
+        //
+        // See reasoning and examples of behavior at https://stackoverflow.com/a/73498140
+
+        let deckDetailsDialog = event.target;
+        let notDialogSrcURLs = new Set();
+
+        // Collect image urls from deck pane, in background
+        let deckPane = document.querySelector("#deckDiv");
+        let deckPaneImageMatches = deckPane.querySelectorAll('img[class="card_img"]');
+        for (const deckPaneCard of deckPaneImageMatches) {
+            let srcAttribute = deckPaneCard.getAttribute("src");
+            if (srcAttribute != null && srcAttribute !== "") {
+                notDialogSrcURLs.add(srcAttribute);
+            }
+        }
+
+        // Collect image urls from search pane, in background
+        let searchPane = document.querySelector("#collection-display");
+        let searchPaneImageMatches = searchPane.querySelectorAll('img[class="card_img"]');
+        for (const searchPaneCard of searchPaneImageMatches) {
+            let srcAttribute = searchPaneCard.getAttribute("src");
+            if (srcAttribute != null && srcAttribute !== "") {
+                notDialogSrcURLs.add(srcAttribute);
+            }
+        }
+
+        // Determine if we can safely remove the image URL used in the dialog, then do so.
+        let dialogImageMatches = deckDetailsDialog.querySelectorAll('img[class="card_img"]');
+        for (const dialogCard of dialogImageMatches) {
+            let srcAttribute = dialogCard.getAttribute("src");
+            if (srcAttribute != null && // not undefined
+                srcAttribute !== "" && // not empty string
+                notDialogSrcURLs.has(srcAttribute) == false) { // and not used elsewhere on the page
+                URL.revokeObjectURL(srcAttribute);
+            }
+        }
     }
 }

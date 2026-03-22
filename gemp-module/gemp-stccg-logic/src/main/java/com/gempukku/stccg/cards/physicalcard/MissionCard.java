@@ -1,61 +1,140 @@
 package com.gempukku.stccg.cards.physicalcard;
 
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.actions.battle.ShipBattleAction;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.Affiliation;
+import com.gempukku.stccg.common.filterable.MissionType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.InvalidGameLogicException;
+import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.MissionLocation;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
-public class MissionCard extends ST1EPhysicalCard {
-    public MissionCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(game, cardId, owner, blueprint);
+@JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
+        allowGetters = true)
+public class MissionCard extends ST1EPhysicalCard implements CardWithAffiliations {
+
+    @JsonCreator
+    public MissionCard(
+            @JsonProperty("cardId")
+            int cardId,
+            @JsonProperty("owner")
+            String ownerName,
+            @JsonProperty("blueprintId")
+            String blueprintId,
+            @JacksonInject
+            CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
+        super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
+    }
+
+
+    public MissionCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
     }
 
     public int getPointsShown() { return _blueprint.getPointsShown(); }
 
     public boolean isHomeworld() { return _blueprint.isHomeworld(); }
-    @Override
-    public boolean canBeSeeded(DefaultGame game) { return true; }
 
-    public boolean wasSeededBy(Player player) { return _owner == player; } // TODO - Does not address shared missions
+    public boolean wasSeededBy(Player player) {
+        return Objects.equals(_ownerName, player.getPlayerId());
+    } // TODO - Does not address shared missions
 
     public String getMissionRequirements() {
         return _blueprint.getMissionRequirementsText();
     }
 
     @Override
-    public List<TopLevelSelectableAction> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
-        List<TopLevelSelectableAction> actions = new LinkedList<>();
-        try {
-            if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
-                try {
-                    if (_currentGameLocation instanceof MissionLocation mission) {
-                        actions.add(new AttemptMissionAction(
-                                cardGame, player, mission.getCardForActionSelection(player), mission));
-                        actions.add(new ShipBattleAction(cardGame, this, player, mission));
-                    }
-                } catch (InvalidGameLogicException exp) {
-                    cardGame.sendErrorMessage(exp);
+    public List<? extends Action> getRulesActionsWhileInPlay(Player player, DefaultGame cardGame) {
+        List<Action> actions = new LinkedList<>();
+        if (cardGame.getGameState().getCurrentPhase() == Phase.EXECUTE_ORDERS) {
+            try {
+                if (cardGame instanceof ST1EGame stGame &&
+                        stGame.getGameState().getLocationById(_currentLocationId) instanceof MissionLocation mission &&
+                            this == mission.getMissionForPlayer(player.getPlayerId())
+                ) {
+                    actions.add(new AttemptMissionAction(
+                            cardGame, player, mission.getMissionForPlayer(player.getPlayerId()), mission));
                 }
+            } catch (InvalidGameLogicException exp) {
+                cardGame.sendErrorMessage(exp);
             }
-            actions.removeIf(action -> !action.canBeInitiated(cardGame));
-        } catch(PlayerNotFoundException exp) {
-            cardGame.sendErrorMessage(exp);
         }
+        actions.removeIf(action -> !action.canBeInitiated(cardGame));
         return actions;
     }
 
-    public int getPoints() { return _blueprint.getPointsShown(); }
+    public int getPoints() {
+        return _blueprint.getPointsShown();
+    }
 
-    public boolean hasAffiliationIconForOwner(Affiliation affiliation) {
-        return _blueprint.getOwnerAffiliationIcons().contains(affiliation);
+    @Override
+    public boolean hasAffiliation(DefaultGame stGame, Affiliation affiliation, String requestingPlayerName) {
+        return getAffiliationIcons(stGame, requestingPlayerName).contains(affiliation);
+    }
+
+    @Override
+    public boolean matchesAffiliationOfCard(ST1EGame stGame, CardWithAffiliations otherCard,
+                                            String requestingPlayerName) {
+        Set<Affiliation> affiliations = getAffiliationIcons(stGame, requestingPlayerName);
+        for (Affiliation affiliation : affiliations) {
+            if (otherCard.hasAffiliation(stGame, affiliation, requestingPlayerName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private MissionCard getMissionCardForPlayer(String playerId) {
+        if (_parentCard == null) {
+            return this;
+        } else if (_parentCard.isOwnedBy(playerId) && _parentCard instanceof MissionCard mission) {
+            return mission;
+        } else {
+            return this;
+        }
+    }
+
+    public Set<Affiliation> getAffiliationIcons(DefaultGame cardGame, String playerId) {
+        MissionCard relevantMission = getMissionCardForPlayer(playerId);
+        boolean isOwner = relevantMission.isOwnedBy(playerId);
+        Set<Affiliation> result = new HashSet<>(relevantMission.getBlueprint().getMissionAffiliationIcons(isOwner));
+        result.addAll(cardGame.getAffiliationsAddedToMissionForPlayer(this, playerId));
+        return result;
+    }
+
+    public boolean isPlanet() {
+        return _blueprint.hasMissionType(MissionType.PLANET);
+    }
+
+    @JsonProperty("missionTypes")
+    public List<MissionType> getMissionTypes() {
+        return List.of(_blueprint.getMissionType());
+    }
+
+    public MissionCard getBottomMission() {
+        if (_parentCard != null && _parentCard instanceof MissionCard missionParent) {
+            return missionParent;
+        } else {
+            return this;
+        }
+    }
+
+    public boolean isCompleted(ST1EGame stGame) {
+        if (getGameLocation(stGame) instanceof MissionLocation mission) {
+            return mission.isCompleted();
+        } else {
+            return false;
+        }
     }
 }

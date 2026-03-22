@@ -16,7 +16,7 @@ public class LongPollingSystem {
             60L, TimeUnit.SECONDS,
             new SynchronousQueue<>());
 
-    public final void start() {
+    public LongPollingSystem() {
         ProcessingRunnable _timeoutRunnable = new ProcessingRunnable();
         Thread thr = new Thread(_timeoutRunnable);
         thr.start();

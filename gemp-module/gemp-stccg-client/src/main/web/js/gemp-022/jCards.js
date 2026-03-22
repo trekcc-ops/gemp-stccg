@@ -1,4 +1,5 @@
 import { zones_all } from "./common.js";
+import { fetchImage } from "./communication.js";
 import Cookies from "js-cookie";
 import special01Img from "../../images/boosters/special-01.png";
 import rulesImg from "../../images/rules.png";
@@ -31,12 +32,13 @@ export default class Card {
     zone;
     cardId;
     owner;
+    title;
     siteNumber = 1;
     attachedCards;
     errata;
     status_tokens;
 
-    constructor(blueprintId, zone, cardId, owner, imageUrl, locationIndex, upsideDown, tokens) {
+    constructor(blueprintId, zone, cardId, owner, title, imageUrl, locationIndex, upsideDown, tokens) {
         if (typeof(blueprintId) != 'string') {
             throw new TypeError(`blueprintId '${blueprintId}' must be a string.`);
         }
@@ -51,6 +53,10 @@ export default class Card {
 
         if (typeof(owner) != 'string') {
             throw new TypeError(`owner '${owner}' must be a string.`);
+        }
+
+        if (typeof(title) != 'string') {
+            throw new TypeError(`title '${title}' must be a string.`);
         }
 
         if (typeof(imageUrl) != 'string') {
@@ -81,6 +87,7 @@ export default class Card {
         this.status_tokens = (tokens instanceof Set) ? tokens : new Set();
 
         this.blueprintId = blueprintId;
+        this.title = title;
         this.imageUrl = imageUrl;
         this.upsideDown = upsideDown;
 
@@ -304,7 +311,9 @@ export default class Card {
         let that = this;
         container.html("");
         container.html("<div style='scroll: auto'></div>");
-        container.append(createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack()));
+        let cardDiv = createFullCardDiv(that.imageUrl, that.foil, that.horizontal, that.isPack(), that.title);
+        let jqCardDiv = $(cardDiv);
+        container.append(jqCardDiv);
 //        if (that.hasWikiInfo())
 //            container.append("<div><a href='" + that.getWikiLink() + "' target='_blank'>Wiki</a></div>");
 
@@ -349,7 +358,10 @@ export default class Card {
 export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsideDown, cardId) {
     let baseCardDiv = document.createElement("div");
     baseCardDiv.classList.add("card");
-    baseCardDiv.textContent = (text) ? text : "";
+    if (cardId != null) {
+        baseCardDiv.id = cardId.toString(); // coerce to string just in case
+    }
+    baseCardDiv.title = (text) ? text : "";
 
     let threeDScene = document.createElement("div");
     threeDScene.classList.add("three-d-card-scene");
@@ -385,9 +397,23 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
         imageTag.classList.add("upside-down");
     }
 
-    imageTag.src = image;
+    let loadingSpinner = document.createElement("div");
+    loadingSpinner.classList.add("card-load-spinner");
+    front_face.appendChild(loadingSpinner);
+
+    fetchImage(image).then((url) => {
+        front_face.removeChild(loadingSpinner);
+        if (url == null) {
+            imageTag.src = "";
+        }
+        else {
+            imageTag.src = url;
+        }
+    });
+    
     imageTag.style.width = "100%";
     imageTag.style.height = "100%";
+    imageTag.alt = (text) ? text : "";
 
     front_face.appendChild(imageTag);
 
@@ -468,7 +494,6 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     borderDiv.appendChild(borderImageTag);
     front_face.appendChild(borderDiv);
 
-    //threeDScene.appendChild(baseCardDiv);
     threeDCardObject.appendChild(front_face);
     threeDScene.appendChild(threeDCardObject);
     baseCardDiv.appendChild(threeDScene);
@@ -483,36 +508,41 @@ export function getFoilPresentation() {
     return "static";
 }
 
-export function createFullCardDiv(image, foil, horizontal, noBorder) {
-    var orientation;
-    if (horizontal) orientation = "Horizontal";
-    else orientation = "Vertical";
-
-    var borderClass;
-    if (noBorder) borderClass = "noBorderOverlay";
-    else borderClass = "borderOverlay";
-
-    var cardDiv = $("<div class='fullCardDiv" + orientation + "'></div>");
-    cardDiv.append($("<div class='fullCardWrapper'>" +
-        "<img class='fullCardImg" + orientation + "' src='" + image + "'></div>"));
-    cardDiv.append($("<div class='" + borderClass + orientation + "'>" +
-        `<img class='actionArea' src='${pixelImg}' width='100%' height='100%'></div>`));
-
-    if (foil && getFoilPresentation() !== 'none') {
-        var foilImage = (getFoilPresentation() === 'animated') ? "foil.gif" : "holo.jpg";
-        cardDiv.append($("<div class='foilOverlay" + orientation + "'>" +
-            "<img src='/gemp-module/images/" + foilImage + "' width='100%' height='100%'></div>"));
+export function createFullCardDiv(image, foil, horizontal, noBorder, text) {
+    let alt = (text) ? text : "";
+    let tokens = false;
+    let errata = false;
+    let upsideDown = false;
+    let cardId;
+    let fullCardDiv = createCardDiv(image, alt, foil, tokens, noBorder, errata, upsideDown, cardId);
+    if (horizontal) {
+        fullCardDiv.classList.add("fullCardDivHorizontal");
+    }
+    else {
+        fullCardDiv.classList.add("fullCardDivVertical");
     }
 
-    return cardDiv;
+    return fullCardDiv;
 }
 
-export function createSimpleCardDiv(image) {
-    var cardDiv = $("<div class='card'><img src='" + image + "' width='100%' height='100%'></div>");
+export function createSimpleCardDiv(image, alt_text="") {
+    let cardDiv = document.createElement("div");
+    cardDiv.classList.add("card");
 
-    return cardDiv;
+    let imageElem = document.createElement("img");
+    imageElem.src = image;
+    imageElem.alt = alt_text;
+    imageElem.width = "100%";
+    imageElem.height = "100%";
+
+    cardDiv.appendChild(imageElem);
+
+    let jqCardDiv = $(cardDiv);
+
+    return jqCardDiv;
 }
 
+// TODO: Work on replacing this with standard DOM ID lookups.
 export function getCardDivFromId(cardId) {
     // This depends on the $.expr[':'].cardId variable set in gameUi.js
     return $(".card:cardId(" + cardId + ")");

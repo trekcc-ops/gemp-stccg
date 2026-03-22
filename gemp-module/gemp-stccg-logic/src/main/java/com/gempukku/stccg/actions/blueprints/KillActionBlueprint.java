@@ -1,30 +1,30 @@
 package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.modifiers.KillSinglePersonnelAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-
-import java.util.List;
+import com.gempukku.stccg.actions.discard.KillAction;
+import com.gempukku.stccg.actions.targetresolver.TargetResolverBlueprint;
+import com.gempukku.stccg.cards.DilemmaEncounterGameTextContext;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class KillActionBlueprint implements SubActionBlueprint {
 
-    private final CardTargetBlueprint _targetResolver;
+    private final TargetResolverBlueprint _targetResolver;
 
-    KillActionBlueprint(@JsonProperty(value = "target")
-                        CardTargetBlueprint target) {
+    public KillActionBlueprint(@JsonProperty(value = "target")
+                               TargetResolverBlueprint target) {
         _targetResolver = target;
     }
 
-    @Override
-    public List<Action> createActions(CardPerformedAction action, ActionContext context)
-            throws InvalidGameLogicException, InvalidCardDefinitionException, PlayerNotFoundException {
-        return List.of(
-                new KillSinglePersonnelAction(context.getPerformingPlayer(), context.getSource(),
-                        _targetResolver.getTargetResolver(context)));
+    public KillAction createAction(DefaultGame cardGame, GameTextContext context) {
+        String performingPlayerId = (context instanceof DilemmaEncounterGameTextContext) ?
+            context.card().getOwnerName() : context.yourName();
+        if (_targetResolver.canBeResolved(cardGame, context)) {
+            return new KillAction(cardGame, performingPlayerId, context.card(),
+                    _targetResolver.getTargetResolver(cardGame, context));
+        } else {
+            return null;
+        }
     }
 
 }

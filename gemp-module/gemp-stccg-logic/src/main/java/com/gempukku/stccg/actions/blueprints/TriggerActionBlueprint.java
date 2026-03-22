@@ -1,28 +1,39 @@
 package com.gempukku.stccg.actions.blueprints;
 
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.RequiredType;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.PlayerSource;
+import com.gempukku.stccg.requirement.PlayPhaseRequirement;
 import com.gempukku.stccg.requirement.Requirement;
-import com.gempukku.stccg.requirement.trigger.TriggerChecker;
 
 import java.util.List;
 
 public abstract class TriggerActionBlueprint extends DefaultActionBlueprint {
 
-    private final RequiredType _requiredType;
-
-    protected TriggerActionBlueprint(RequiredType requiredType, String text, int limitPerTurn, Phase phase,
-                                     TriggerChecker triggerChecker, List<Requirement> requirements,
-                                     List<SubActionBlueprint> costs, List<SubActionBlueprint> effects)
-            throws InvalidCardDefinitionException {
-        super(text, limitPerTurn, phase);
-        _requiredType = requiredType;
-        addRequirement(triggerChecker);
-        processRequirementsCostsAndEffects(requirements, costs, effects);
+    protected TriggerActionBlueprint(Requirement triggerChecker, List<Requirement> requirements,
+                                     List<SubActionBlueprint> costs, List<SubActionBlueprint> effects,
+                                     boolean triggerDuringSeed, PlayerSource player) {
+        super(costs, effects, player);
+        if (requirements != null) {
+            _requirements.addAll(requirements);
+        }
+        if (triggerChecker != null) {
+            _requirements.add(triggerChecker);
+        }
+        if (!triggerDuringSeed) {
+            _requirements.add(new PlayPhaseRequirement());
+        }
     }
 
-
-    public RequiredType getRequiredType() { return _requiredType; }
+    @Override
+    public UseGameTextAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (context.acceptsAllRequirements(cardGame, _requirements)) {
+            UseGameTextAction action = new UseGameTextAction(cardGame, context.card(), context);
+            appendSubActions(action);
+            return action;
+        }
+        return null;
+    }
 
 }

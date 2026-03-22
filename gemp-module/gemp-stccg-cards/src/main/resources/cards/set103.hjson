@@ -3,38 +3,26 @@
     setName: Alternate Universe
     gameType: First Edition
     cards: [
-    /*    {
-            blueprintId: 103_008
-            title: Alien Labyrinth
-            type: dilemma
-            mission-type: planet
-            property-logo: tng-logo
-            java-blueprint: true
-            lore: Many planets, such as Mordan IV, have convoluted underground installations which require Away Teams to have specific technology or skills.
-            image-url: https://www.trekcc.org/1e/cardimages/au/alienlabyrinth.gif
-            rarity: C
-        } */
         {
             blueprintId: 103_014
             title: Ferengi Attack
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: 'Ferengi attacked a Federation Away Team on a planet in the Delphi Ardu system using "whips" which fire discharges of high-energy plasma.'
             image-url: https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif
             rarity: C
-/*            actions: [
+            actions: [
                 {
                     type: encounter
                     effect: {
                         type: overcomeCondition
-                        requires: CUNNING+STRENGTH>68 OR Greed
+                        requires: (CUNNING+STRENGTH)>68 OR Greed
                         failEffect: {
-                            type: kill
+                            "type": "kill",
                             target: {
                                 type: select
-                                choice: opponent
+                                selectingPlayer: opponent
                                 filter: personnel + encounteringThisCard
                                 count: 1
                             }
@@ -42,15 +30,14 @@
                         discardDilemma: true
                     }
                 }
-            ] */
+            ]
         }
-    /*    {
+/*        {
             blueprint: 103_016
             title: Hidden Entrance
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: Using his visor, Geordi La Forge discovered a doorway to an underground android laboratory hidden in a rock wall on Omicron Theta in 2364.
             image-url: https://www.trekcc.org/1e/cardimages/au/hiddenentrance.gif
             rarity: C
@@ -61,7 +48,6 @@
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: On some planets, civilization has devolved into a bitter struggle for survival. Violent gangs search for prey, such as those which chased Natasha Yar on Turkana IV.
             image-url: https://www.trekcc.org/1e/cardimages/au/huntergangs.gif
             rarity: C
@@ -72,7 +58,6 @@
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: At times, Away Teams must open obstructed doors in confined passageways by hand, as did Data on stardate 41503.7.
             image-url: https://www.trekcc.org/1e/cardimages/errata/MalfunctioningDoor.jpg
             rarity: C
@@ -83,24 +68,49 @@
             type: dilemma
             mission-type: planet
             property-logo: tng-logo
-            java-blueprint: true
             lore: 'Nomadic marauders and thieves from Acamar III. "We Gatherers value our freedom. We do what we want and we answer to no creature."'
             image-url: https://www.trekcc.org/1e/cardimages/au/thegatherers.gif
             rarity: C
         } */
         {
             blueprintId: 103_032
-            title: Alternate Universe Door
+            "title": "Alternate Universe Door",
             type: doorway
             property-logo: tng-logo
-            java-blueprint: true
             image-url: https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg
             rarity: C
             actions: [
                 {
                     type: seedThis
                     limit: 1
-                    where: core
+                    toCore: true
+                }
+            ]
+            modifiers: [
+                {
+                    type: youCanPlayAUCards
+                }
+                {
+                    type: youCanSeedAUCards
+                }
+            ]
+        }
+        {
+            blueprintId: 103_042
+            title: Lower Decks
+            type: event
+            property-logo: tng-logo
+            characteristic: captains-order
+            image-url: https://www.trekcc.org/1e/cardimages/errata/Lower-Decks.jpg
+            rarity: U
+            playThisCardAction: {
+                type: playThis
+            }
+            modifiers: [
+                {
+                    type: addToAllAttributes
+                    modifiedCards: yours + universal + personnel + not(hologram) + inPlay
+                    amount: 2
                 }
             ]
         }
@@ -114,6 +124,8 @@
             classification: ENGINEER
             characteristic: scotty
             lore: Chief Engineer of the Starship Enterprise. Scotty was rescued by the U.S.S. Enterprise after he spent 75 years in the pattern buffer of the U.S.S. Jenolen.
+            species: human
+            gender: male
             skill-box: "[*] ENGINEER [*] Astrophysics [*] Honor [*] Miracle Worker [*] Transporter Skill"
             integrity: 7
             cunning: 8
@@ -129,6 +141,8 @@
             icons: staff,au-icon
             classification: SECURITY
             lore: Traveled to 2344 and helped prevent a disastrous war. Survivor of the Battle of Narendra III. Consort of Romulan general. Mother of Sela.
+            species: human
+            gender: female
             skill-box: "[*] Honor [*] Leadership [DL] Starfleet Type II Phaser"
             integrity: 8
             cunning: 7
@@ -143,6 +157,8 @@
             property-logo: tng-logo
             classification: V.I.P.
             lore: Male leader of the Cairn, a telepathic species who had no concept of spoken language until Federation contact was initiated by Lwaxana Troi in 2370.
+            species: cairn
+            gender: male
             skill-box: "[*] Empathy x2 [*] Diplomacy"
             integrity: 8
             cunning: 7

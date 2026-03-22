@@ -1,0 +1,61 @@
+{
+    "setId": "165",
+    "setName": "Homefront IV",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "165_012",
+            "title": "Genesis Planet",
+            "type": "mission",
+            "mission-type": "planet",
+            "region": "Mutara",
+            "point-box": 35,
+            "span": 4,
+            "affiliation-icons": ["federation","romulan","klingon"],
+            "location": "Genesis",
+            "lore": "Study final collapse of unstable and formerly forbidden planet.",
+            "mission-requirements": "Geology + CUNNING>42 + (Biology + Exobiology + SCIENCE OR SECURITY + Transporter Skill + Treachery)",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront4/12.jpg"
+        },
+        {
+            "blueprintId": "165_015",
+            "title": "Navigate Argolis Cluster",
+            "type": "mission",
+            "mission-type": "space",
+            "region": "Argolis Cluster",
+            "point-box": 35,
+            "span": 4,
+            "affiliation-icons": ["federation","klingon","dominion"],
+            "location": "Protostar cluster",
+            "lore": "Engage enemy near vital sensor array.",
+            "mission-requirements": "Stellar Cartography + Navigation x2 + Physics OR OFFICER + Leadership + SECURITY + STRENGTH>36",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront4/15.jpg"
+        },
+        {
+            "blueprintId": "165_020",
+            "title": "Signal for Rescue",
+            "type": "mission",
+            "mission-type": "planet",
+            "point-box": 40,
+            "span": 3,
+            "affiliation-icons": ["federation","klingon","dominion"],
+            "location": "Desolate world",
+            "lore": "Quickly repair damaged communication system; call for help.",
+            "mission-requirements": "Biology + ENGINEER + Computer Skill + SECURITY + STRENGTH>42",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront4/20.jpg"
+        },
+        {
+            "blueprintId": "165_023",
+            "title": "Surgery Under Fire",
+            "type": "mission",
+            "mission-type": "planet",
+            "point-box": 35,
+            "span": 3,
+            "affiliation-icons": ["federation","klingon"],
+            "location": "Ajilon Prime",
+            "lore": "Assist with triage of heavy combat casualties.",
+            "mission-requirements": "Biology + MEDICAL + OFFICER + STRENGTH>36",
+            "image-url": "https://www.trekcc.org/1e/cardimages/homefront4/23.jpg"
+        }
+    ]
+}

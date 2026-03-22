@@ -2,23 +2,18 @@ package com.gempukku.stccg.actions.blueprints;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.turn.ActivateCardAction;
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.cards.InvalidCardDefinitionException;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.actions.turn.UseGameTextAction;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.player.YouPlayerSource;
 import com.gempukku.stccg.requirement.Requirement;
 
 import java.util.List;
 
 public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
 
-    public ActivateCardActionBlueprint(@JsonProperty("text")
-                                    String text,
-                                       @JsonProperty(value="limitPerTurn", defaultValue="0")
-                                    int limitPerTurn,
-                                       @JsonProperty("phase")
-                                    Phase phase,
+    protected ActivateCardActionBlueprint(@JsonProperty(value="limit")
+                                        UsageLimitBlueprint usageLimit,
                                        @JsonProperty("requires")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
                                     List<Requirement> requirements,
@@ -27,21 +22,24 @@ public class ActivateCardActionBlueprint extends DefaultActionBlueprint {
                                        List<SubActionBlueprint> costs,
                                        @JsonProperty("effect")
                                        @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                                    List<SubActionBlueprint> effects) throws InvalidCardDefinitionException {
-            super(text, limitPerTurn, phase);
-            processRequirementsCostsAndEffects(requirements, costs, effects);
+                                    List<SubActionBlueprint> effects) {
+            super(costs, effects, new YouPlayerSource());
+            if (requirements != null && !requirements.isEmpty()) {
+                _requirements.addAll(requirements);
+            }
+            if (usageLimit != null) {
+                usageLimit.applyLimitToActionBlueprint(this);
+            }
     }
 
-    public ActivateCardAction createAction(PhysicalCard card) { return new ActivateCardAction(card.getGame(), card); }
-
-    @Override
-    protected ActivateCardAction createActionAndAppendToContext(PhysicalCard card, ActionContext actionContext) {
-        if (isValid(actionContext)) {
-            ActivateCardAction action = createAction(card);
-            appendActionToContext(action, actionContext);
+    public UseGameTextAction createAction(DefaultGame cardGame, GameTextContext context) {
+        if (context.acceptsAllRequirements(cardGame, _requirements)) {
+            UseGameTextAction action = new UseGameTextAction(cardGame, context.card(), context);
+            appendSubActions(action);
             return action;
         }
         return null;
     }
+
 
 }

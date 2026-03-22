@@ -2,89 +2,95 @@ package com.gempukku.stccg.actions.playcard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
-import com.gempukku.stccg.actions.choose.SelectCardsFromDialogAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionWithSubActions;
+import com.gempukku.stccg.actions.targetresolver.EnterPlayAtDestinationResolver;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.filterable.Filterable;
-import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.cards.physicalcard.ProxyCoreCard;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.google.common.collect.Iterables;
 
-public class DownloadCardAction extends ActionyAction implements CardPerformedAction {
+import java.util.Collection;
+import java.util.List;
 
-    @JsonProperty("playCardAction")
-    @JsonIdentityReference(alwaysAsId = true)
-    private Action _playCardAction;
+public class DownloadCardAction extends ActionWithSubActions implements DownloadAction {
 
     private final PhysicalCard _performingCard;
 
-    private final ActionCardResolver _cardToDownloadTarget;
+    private final EnterPlayAtDestinationResolver _targetResolver;
 
-    public DownloadCardAction(DefaultGame cardGame, Zone fromZone, Player player, Filterable playableCardFilter,
-                              PhysicalCard performingCard) {
-        super(cardGame, player, "Download card from " + fromZone.getHumanReadable(),
-                ActionType.DOWNLOAD_CARD);
-        _cardToDownloadTarget = new SelectCardsResolver(
-                new SelectCardsFromDialogAction(cardGame, player, "Select a card to download",
-                        Filters.and(playableCardFilter, fromZone)));
+    public DownloadCardAction(DefaultGame cardGame, String performingPlayerName,
+                              EnterPlayAtDestinationResolver cardTarget, PhysicalCard performingCard,
+                              GameTextContext context) {
+        super(cardGame, performingPlayerName, ActionType.DOWNLOAD_CARD, context);
+        _targetResolver = cardTarget;
         _performingCard = performingCard;
-    }
-
-    public DownloadCardAction(DefaultGame cardGame, Player player, ActionCardResolver cardTarget,
-                              PhysicalCard performingCard) {
-        super(cardGame, player, "Download card", ActionType.DOWNLOAD_CARD);
-        _cardToDownloadTarget = cardTarget;
-        _performingCard = performingCard;
-    }
-
-
-    protected void playCard(final PhysicalCard selectedCard) throws InvalidGameLogicException {
-        _playCardAction = selectedCard.getPlayCardAction(true);
-        selectedCard.getGame().getActionsEnvironment().addActionToStack(_playCardAction);
-    }
-
-    @Override
-    public boolean wasCarriedOut() {
-        if (_playCardAction == null)
-            return false;
-        if (_playCardAction instanceof PlayCardAction)
-            return _playCardAction.wasCarriedOut();
-        return true;
+        _cardTargets.add(cardTarget);
     }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
-        return !_cardToDownloadTarget.willProbablyBeEmpty(cardGame);
+        return !_targetResolver.cannotBeResolved(cardGame);
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException, PlayerNotFoundException {
-        if (!_cardToDownloadTarget.isResolved()) {
-            if (_cardToDownloadTarget instanceof SelectCardsResolver selectTarget) {
-                if (selectTarget.getSelectionAction().wasCompleted()) {
-                    _cardToDownloadTarget.resolve(cardGame);
-                } else {
-                    return selectTarget.getSelectionAction();
-                }
-            } else {
-                _cardToDownloadTarget.resolve(cardGame);
-            }
+    protected void processEffect(DefaultGame cardGame) {
+        PhysicalCard cardEnteringPlay = _targetResolver.getCardEnteringPlay();
+        PhysicalCard destinationCard = _targetResolver.getDestination();
+        Player performingPlayer = null;
+        try {
+            performingPlayer = cardGame.getPlayer(_performingPlayerId);
+        } catch(PlayerNotFoundException ignored) {
+
         }
-
-        // The playCard method determines valid destinations
-        playCard(Iterables.getOnlyElement(_cardToDownloadTarget.getCards(cardGame)));
-        setAsSuccessful();
-        return null;
+        if (cardEnteringPlay == null || destinationCard == null || performingPlayer == null) {
+            cardGame.sendErrorMessage("Unable to resolve download card action");
+            setAsFailed();
+        } else {
+            boolean isFromDrawDeck = cardEnteringPlay.isInDrawDeck(cardGame);
+            cardGame.removeCardsFromZone(List.of(cardEnteringPlay));
+            if (isFromDrawDeck) {
+                cardGame.shuffleCardPile(performingPlayer.getDrawDeck());
+            }
+            if (destinationCard instanceof ProxyCoreCard) {
+                cardGame.getGameState()
+                        .addCardToZone(cardGame, cardEnteringPlay, destinationCard.getZone());
+            } else {
+                cardEnteringPlay.setAsAtop(destinationCard);
+            }
+            saveResult(new PlayCardResult(cardGame, this, cardEnteringPlay, destinationCard, ActionType.DOWNLOAD_CARD,
+                    _performingCard), cardGame);
+            setAsSuccessful();
+        }
     }
-
-    protected Action getPlayCardAction() { return _playCardAction; }
-    protected void setPlayCardAction(Action action) { _playCardAction = action; }
 
     @Override
     public PhysicalCard getPerformingCard() {
         return _performingCard;
     }
+
+    @Override
+    public Collection<? extends PhysicalCard> getDownloadableTargets(DefaultGame cardGame) {
+        return _targetResolver.getSelectableOptions();
+    }
+
+    @Override
+    public void selectCardToDownload(PhysicalCard cardToDownload) throws DecisionResultInvalidException {
+        if (_targetResolver.getSelectableOptions().contains(cardToDownload)) {
+            _targetResolver.setCardEnteringPlay(cardToDownload);
+        } else {
+            throw new DecisionResultInvalidException("Cannot download selected card");
+        }
+    }
+
+    @JsonProperty("playCardAction")
+    @JsonIdentityReference(alwaysAsId = true)
+    private Action getPlayCardAction() {
+        return this;
+    }
+
 }

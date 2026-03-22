@@ -5,6 +5,8 @@ import com.gempukku.stccg.actions.turn.EndTurnAction;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
 public class TribblesEndOfTurnGameProcess extends TribblesGameProcess {
@@ -13,8 +15,13 @@ public class TribblesEndOfTurnGameProcess extends TribblesGameProcess {
     }
     @Override
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
-        Action action = new EndTurnAction(_game);
-        _game.getActionsEnvironment().addActionToStack(action);
+        try {
+            Player currentPlayer = _game.getCurrentPlayer();
+            Action action = new EndTurnAction(_game, currentPlayer);
+            _game.getActionsEnvironment().addActionToStack(action);
+        } catch(PlayerNotFoundException exp) {
+            throw new InvalidGameLogicException(exp.getMessage());
+        }
     }
 
     @Override

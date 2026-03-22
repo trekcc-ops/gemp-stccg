@@ -1,23 +1,22 @@
 package com.gempukku.stccg.processes.st1e;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.playcard.SeedCardAction;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.Phase;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.ArbitraryCardsSelectionDecision;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.gamestate.GameState;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.processes.GameProcess;
 import com.google.common.collect.Iterables;
 
 import java.beans.ConstructorProperties;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,13 +32,24 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
     public void process(DefaultGame cardGame) throws InvalidGameLogicException {
         for (Player player : cardGame.getPlayers()) {
             Collection<PhysicalCard> doorwaySeeds = new LinkedList<>();
-            for (PhysicalCard seedCard : player.getCardsInGroup(Zone.SEED_DECK)) {
-                if (seedCard.getCardType() == CardType.DOORWAY)
-                    doorwaySeeds.add(seedCard);
+            for (PhysicalCard seedCard : player.getSeedDeckCards()) {
+                if (seedCard.getCardType() == CardType.DOORWAY) {
+                    List<SeedCardAction> seedActions = seedCard.createSeedCardActions(cardGame);
+                    if (seedActions.size() == 1) {
+                        if (alreadyHasACopyInSeedList(seedCard, doorwaySeeds)) {
+                            if (!seedActions.getFirst().hasOncePerGameLimit()) {
+                                doorwaySeeds.add(seedCard);
+                            }
+                        } else {
+                            doorwaySeeds.add(seedCard);
+                        }
+                    }
+                }
             }
+
             if (!doorwaySeeds.isEmpty()) {
                 String message = "Select cards to seed during doorway phase";
-                cardGame.getUserFeedback().sendAwaitingDecision(
+                cardGame.sendAwaitingDecision(
                         new ArbitraryCardsSelectionDecision(player, message, doorwaySeeds,
                                 cardGame) {
                             @Override
@@ -47,11 +57,12 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
                                 try {
                                     List<PhysicalCard> cards = getSelectedCardsByResponse(result);
                                     for (PhysicalCard card : cards) {
-                                        List<TopLevelSelectableAction> seedActions = card.createSeedCardActions();
+                                        List<SeedCardAction> seedActions =
+                                                card.createSeedCardActions(cardGame);
                                         if (seedActions.size() != 1) {
                                             throw new InvalidGameLogicException("Could not create a seed action");
                                         } else {
-                                            TopLevelSelectableAction action = Iterables.getOnlyElement(seedActions);
+                                            Action action = Iterables.getOnlyElement(seedActions);
                                             cardGame.getActionsEnvironment().addActionToStack(action);
                                         }
                                     }
@@ -66,13 +77,20 @@ public class DoorwaySeedPhaseProcess extends SimultaneousGameProcess {
 
     @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
-        GameState cardGameState = cardGame.getGameState();
         cardGame.setCurrentPhase(Phase.SEED_MISSION);
         for (Player player : cardGame.getPlayers()) {
-            List<PhysicalCard> missionSeeds = new LinkedList<>(cardGameState.getZoneCards(player, Zone.MISSIONS_PILE));
-            if (!cardGame.getFormat().isNoShuffle())
-                Collections.shuffle(missionSeeds);
+            CardPile<PhysicalCard> missionsPile = player.getMissionsPile();
+            cardGame.shuffleCardPile(missionsPile);
         }
         return new ST1EMissionSeedPhaseProcess();
+    }
+
+    private boolean alreadyHasACopyInSeedList(PhysicalCard cardToAdd, Collection<PhysicalCard> seedList) {
+        for (PhysicalCard card : seedList) {
+            if (card.isCopyOf(cardToAdd)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

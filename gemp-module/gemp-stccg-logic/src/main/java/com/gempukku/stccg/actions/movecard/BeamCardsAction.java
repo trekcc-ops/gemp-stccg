@@ -1,12 +1,13 @@
 package com.gempukku.stccg.actions.movecard;
 
 import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.cards.physicalcard.CardWithCrew;
+import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalNounCard1E;
 import com.gempukku.stccg.filters.Filters;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,24 +16,26 @@ import java.util.List;
 
 public class BeamCardsAction extends BeamOrWalkAction {
 
-    public BeamCardsAction(DefaultGame cardGame, Player player, PhysicalNounCard1E cardUsingTransporters) {
+    public BeamCardsAction(DefaultGame cardGame, Player player, CardWithCrew cardUsingTransporters) {
         super(cardGame, player, cardUsingTransporters, ActionType.BEAM_CARDS);
     }
 
     @Override
     protected Collection<PhysicalCard> getDestinationOptions(ST1EGame game) {
         // Includes your ships and facilities at card source's location, as well as planet locations at card source's location
-        return Filters.filterActive(
+        Collection<PhysicalCard> destinations = Filters.filterCardsInPlay(
                 game,
-                Filters.atLocation(_cardSource.getGameLocation()),
+                Filters.atLocation(_cardSource.getLocationId()),
                 Filters.or(
                         Filters.planetLocation,
                         Filters.and(
                                 Filters.or(Filters.ship, Filters.facility), // TODO - How does this work with sites?
-                                Filters.or(Filters.your(_performingPlayer)) // TODO - Add unshielded
+                                Filters.or(Filters.your(_performingPlayerId)) // TODO - Add unshielded
                         )
                 )
         );
+        destinations.removeIf(card -> card instanceof MissionCard missionCard && missionCard.getBottomMission() != missionCard);
+        return destinations;
     }
 
     @Override
@@ -40,12 +43,17 @@ public class BeamCardsAction extends BeamOrWalkAction {
             // Destination options filtered to remove cards with none of your personnel or equipment aboard
         List<PhysicalCard> cards = new ArrayList<>();
         for (PhysicalCard destinationCard : _destinationOptions) {
-            if (!Filters.filter(destinationCard.getAttachedCards(game),
-                    Filters.your(_performingPlayer), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
+            if (!Filters.filter(destinationCard.getAttachedCards(game), game,
+                    Filters.your(_performingPlayerId), Filters.or(Filters.equipment, Filters.personnel)).isEmpty())
                 // TODO - Doesn't do a compatibility or beamable check, does it need to?
                 cards.add(destinationCard);
         }
         return cards;
+    }
+
+    @Override
+    protected void saveResult(DefaultGame cardGame) {
+        saveResult(new BeamCardsResult(cardGame, _performingPlayerId, this, _cardsToMove, _origin, _destination), cardGame);
     }
 
     protected String actionVerb() { return "beam"; }

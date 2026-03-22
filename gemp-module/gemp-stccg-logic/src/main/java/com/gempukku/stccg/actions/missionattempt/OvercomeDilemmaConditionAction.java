@@ -1,58 +1,53 @@
 package com.gempukku.stccg.actions.missionattempt;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
-import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.discard.RemoveDilemmaFromGameAction;
+import com.gempukku.stccg.actions.ActionWithSubActions;
+import com.gempukku.stccg.actions.blueprints.SubActionBlueprint;
+import com.gempukku.stccg.actions.discard.RemoveCardFromGameAction;
 import com.gempukku.stccg.actions.modifiers.StopCardsAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.cards.physicalcard.StoppableCard;
 import com.gempukku.stccg.condition.missionrequirements.MissionRequirement;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameLogicException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class OvercomeDilemmaConditionAction extends ActionyAction {
+public class OvercomeDilemmaConditionAction extends ActionWithSubActions {
 
     private final AttemptingUnit _attemptingUnit;
-    private final Action _failAction;
-    private final int _succeedActionId;
-    private final EncounterSeedCardAction _encounterAction;
-    private enum Progress { conditionsChecked }
+    private final ActionWithSubActions _parentAction; // typically an encounter, but sometimes an attempt
     private final MissionRequirement _conditions;
-    private boolean _failed;
-    private boolean _succeeded;
+    private boolean _conditionsChecked;
+    private boolean _conditionsMet;
+    private final boolean _discardDilemma;
+    private final PhysicalCard _dilemma;
+    private final List<SubActionBlueprint> _additionalFailActions = new ArrayList<>();
+    private final List<SubActionBlueprint> _additionalSuccessActions = new ArrayList<>();
 
-    public OvercomeDilemmaConditionAction(PhysicalCard dilemma, EncounterSeedCardAction encounterAction,
-                                          MissionRequirement conditions, AttemptingUnit attemptingUnit,
-                                          Action failDilemmaAction) {
-        super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
+
+    public OvercomeDilemmaConditionAction(DefaultGame cardGame, PhysicalCard dilemma,
+                                          ActionWithSubActions parentAction, MissionRequirement conditions,
+                                          AttemptingUnit attemptingUnit, List<SubActionBlueprint> failDilemmaActions,
+                                          List<SubActionBlueprint> successActions, boolean discardDilemma,
+                                          GameTextContext context) {
+        super(cardGame, attemptingUnit.getControllerName(), ActionType.OVERCOME_DILEMMA, context);
+        _dilemma = dilemma;
         _attemptingUnit = attemptingUnit;
-        _failAction =
-                new FailDilemmaAction(dilemma.getGame(), attemptingUnit, dilemma, failDilemmaAction, encounterAction);
-        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma
-        );
-        _succeedActionId = succeedAction.getActionId();
+        _additionalFailActions.addAll(failDilemmaActions);
         _conditions = conditions;
-        _encounterAction = encounterAction;
+        _parentAction = parentAction;
+        _discardDilemma = discardDilemma;
+        _additionalSuccessActions.addAll(successActions);
     }
-
-    public OvercomeDilemmaConditionAction(PhysicalCard dilemma, EncounterSeedCardAction action,
-                                          MissionRequirement conditions, AttemptingUnit attemptingUnit) {
-        super(dilemma.getGame(), attemptingUnit.getPlayer(), ActionType.OVERCOME_DILEMMA, Progress.values());
-        _attemptingUnit = attemptingUnit;
-        _failAction = new FailDilemmaAction(attemptingUnit, dilemma, action);
-        Action succeedAction = new RemoveDilemmaFromGameAction(attemptingUnit.getPlayer(), dilemma);
-        _succeedActionId = succeedAction.getActionId();
-        _conditions = conditions;
-        _encounterAction = action;
-    }
-
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -60,31 +55,65 @@ public class OvercomeDilemmaConditionAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (isBeingInitiated())
-            setAsInitiated();
-
-        if (!getProgress(Progress.conditionsChecked)) {
-            Action result;
-            if (_conditions.canBeMetBy(_attemptingUnit)) {
-                result = cardGame.getActionById(_succeedActionId);
-                _succeeded = true;
+    protected void processEffect(DefaultGame cardGame) {
+        if (!_conditionsChecked) {
+            _conditionsChecked = true;
+            if (_conditions != null) {
+                _conditionsMet =
+                        _conditions.canBeMetBy(_attemptingUnit.getAttemptingPersonnel(cardGame), cardGame, _actionContext);
             } else {
-                result = _failAction;
-                _encounterAction.setAsFailed();
-                _encounterAction.getAttemptAction().setAsFailed();
-                _failed = true;
+                _conditionsMet = true;
             }
-            setProgress(Progress.conditionsChecked);
-            return result;
-        }
-
-        Action nextAction = getNextAction();
-        if (nextAction == null) {
-            if (_succeeded)
+        } else {
+            if (_conditionsMet) {
+                _parentAction.insertSubActions(_additionalSuccessActions);
                 setAsSuccessful();
-            else setAsFailed();
+            } else {
+                setAsFailed();
+            }
         }
-        return nextAction;
+    }
+
+    @Override
+    public PhysicalCard getPerformingCard() {
+        return _dilemma;
+    }
+
+    @Override
+    public void setAsFailed() {
+        _parentAction.removeRemainingSubActions();
+        _parentAction.insertSubActions(_additionalFailActions);
+        _parentAction.appendSubAction(new SubActionBlueprint() {
+            @Override
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
+                Collection<StoppableCard> cardsToStop =
+                        new LinkedList<>(_attemptingUnit.getAttemptingPersonnel(cardGame));
+                if (_attemptingUnit instanceof ShipCard ship) {
+                    cardsToStop.add(ship);
+                }
+                return new StopCardsAction(cardGame, _performingPlayerId, cardsToStop);
+            }
+        });
+        _parentAction.appendSubAction(new SubActionBlueprint() {
+            @Override
+            public Action createAction(DefaultGame cardGame, GameTextContext context) {
+                if (_discardDilemma && _dilemma.getParentCard() == null) {
+                    return new RemoveCardFromGameAction(cardGame, _performingPlayerId, _dilemma);
+                } else {
+                    return null;
+                }
+            }
+        });
+
+        if (_parentAction instanceof AttemptMissionAction attemptAction) {
+            attemptAction.setAsConditionFailed();
+        }
+        super.setAsFailed();
+    }
+
+    @JsonProperty("targetCardId")
+    @JsonIdentityReference(alwaysAsId=true)
+    private PhysicalCard getTargetCard() {
+        return _dilemma;
     }
 }

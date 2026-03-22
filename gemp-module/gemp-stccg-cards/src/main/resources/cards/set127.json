@@ -1,0 +1,106 @@
+{
+    "setId" : "127",
+    "setName" : "All Good Things",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "127_023",
+            "title" : "Robert DeSoto",
+            "type" : "personnel",
+            "affiliation" : "federation",
+            "property-logo" : "tng-logo",
+            "classification" : "OFFICER",
+            "icons" : "command",
+            "lore" : "Captain of the <i>U.S.S. Hood</i> and former commanding officer of William T. Riker. Years ago, he and Jean-Luc Picard served together as lieutenants on the same ship.",
+            "species" : "human",
+            "gender" : "male",
+            "integrity" : 8,
+            "cunning" : 7,
+            "strength" : 5,
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "specialModifier",
+                        "text": "If on <i>U.S.S. Hood</i>, your compatible V.I.P.s may report aboard.",
+                        "modifier": {
+                            "type": "addCardPlayDestination",
+                            "ifCondition": {
+                                "type": "thisCardAboardCard",
+                                "aboardCardFilter": "name(U.S.S. Hood)"
+                            },
+                            "cardsPlayedFilter": "yours + V.I.P. + compatibleWithThisCard",
+                            "destinationFilter": "thisShip"
+                        }
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Leadership"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Honor"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Exobiology"
+                    }
+                ]
+            },
+            "image-url" : "https://www.trekcc.org/1e/cardimages/agt/ST1E-ENAGT023.jpg",
+            "rarity" : "P"
+        },
+        {
+            "blueprintId" : "127_026",
+            "title" : "K'Temoc",
+            "type" : "personnel",
+            "affiliation" : "klingon",
+            "property-logo" : "tng-logo",
+            "classification" : "OFFICER",
+            "icons" : "command",
+            "lore" : "Captain of the sleeper ship <i>I.K.S. T'Ong</i>, on a crucial mission ordered by the High Command in the late 23rd century. Awoke 75 years later in a much-changed galaxy.",
+            "species" : "klingon",
+            "gender" : "male",
+            "skill-box" : "[*] Astrophysics [*] Transporter Skill [*] Geology [DL] Engage Cloak",
+            "integrity" : 6,
+            "cunning" : 7,
+            "strength" : 8,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/errata/KTemoc.jpg",
+            "rarity" : "P"
+        },
+        {
+            "blueprintId" : "127_031",
+            "title" : "Sunad",
+            "type" : "personnel",
+            "affiliation" : "non-aligned",
+            "property-logo" : "tng-logo",
+            "classification" : "OFFICER",
+            "icons" : "command",
+            "lore" : "Zalkonian captain. Sought to capture criminals undergoing a dangerous mutation before they could further disrupt society.",
+            "species" : "zalkonian",
+            "gender" : "male",
+            "skill-box" : "[*] SECURITY [*] Leadership [*] Physics [*] Law",
+            "integrity" : 5,
+            "cunning" : 8,
+            "strength" : 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/errata/Sunad.jpg",
+            "rarity" : "P"
+        },
+        {
+            "blueprintId" : "127_035",
+            "title" : "U.S.S. Drake",
+            "type" : "ship",
+            "affiliation" : "federation",
+            "property-logo" : "tng-logo",
+            "ship-class" : "WAMBUNDU CLASS",
+            "lore" : "Starfleet vessel, registry NCC-20381. In 2364, was assigned a routine mission of exploration in and around the Lorenze Cluster under the command of Paul Rice.",
+            "staffing" : "command,staff",
+            "gametext" : "Holodeck, Tractor Beam",
+            "range" : 7,
+            "weapons" : 8,
+            "shields" : 7,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/agt/ST1E-ENAGT035.jpg",
+            "rarity" : "P"
+        }
+    ]
+}

@@ -1,20 +1,30 @@
 package com.gempukku.stccg.actions.turn;
 
 import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.gamestate.GameState;
+import com.gempukku.stccg.player.Player;
 
-public class EndTurnAction extends SystemQueueAction {
+public class EndTurnAction extends ActionyAction {
 
-    public EndTurnAction(DefaultGame cardGame) {
-        super(cardGame);
-        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.END_OF_TURN));
+    public EndTurnAction(DefaultGame cardGame, Player currentPlayer) {
+        super(cardGame, currentPlayer.getPlayerId(), ActionType.END_TURN);
+        saveResult(new ActionResult(cardGame, ActionResultType.ENDED_TURN, currentPlayer.getPlayerId(), this), cardGame);
     }
+
+    @Override
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return true;
+    }
+
     @Override
     protected void processEffect(DefaultGame cardGame) {
-        cardGame.getModifiersEnvironment().signalEndOfTurn();
-        cardGame.getActionsEnvironment().signalEndOfTurn();
+        GameState gameState = cardGame.getGameState();
+        gameState.signalEndOfTurn();
 
         if (cardGame instanceof TribblesGame tribblesGame) {
             boolean playerWentOut = false;

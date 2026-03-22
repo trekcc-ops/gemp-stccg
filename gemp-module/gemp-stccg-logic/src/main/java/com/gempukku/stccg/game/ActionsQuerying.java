@@ -1,0 +1,29 @@
+package com.gempukku.stccg.game;
+
+import com.gempukku.stccg.actions.Action;
+import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionResultType;
+import com.gempukku.stccg.gamestate.ActionProxy;
+
+import java.util.Collection;
+
+public interface ActionsQuerying {
+
+    Action getCurrentAction();
+
+    default ActionResult getCurrentActionResult() {
+        Action currentAction = getCurrentAction();
+        return (currentAction == null) ? null : currentAction.getResult();
+    }
+
+    default boolean isCurrentActionResultType(ActionResultType type) {
+        return getCurrentActionResult() != null && getCurrentActionResult().hasType(type);
+    }
+
+    Collection<ActionProxy> getAllActionProxies();
+    DefaultGame getGame();
+
+    default void addActionToStack(Action action) {
+        getGame().getActionsEnvironment().addActionToStack(action);
+    }
+}

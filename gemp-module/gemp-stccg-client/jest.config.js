@@ -29,8 +29,7 @@ const config = {
   // An array of regexp pattern strings used to skip coverage collection
   coveragePathIgnorePatterns: [
     "/node_modules/",
-    "/src/main/web/js/jquery/",
-    "/src/main/web/js/lib/"
+    "/src/main/web/js/jquery/"
   ],
 
   // Indicates which provider should be used to instrument code for coverage
@@ -94,8 +93,8 @@ const config = {
     moduleNameMapper: {
       '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
         '<rootDir>/src/main/web/__mocks__/fileMock.js',
-      '\\.(jpg\\?url|jpeg\\?url|png\\?url|svg\\?url)$': '<rootDir>/src/main/web/__mocks__/fileMock.js',
-      '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
+      '\\.(jpg\\?url|jpeg\\?url|png\\?url|svg\\?url|svg\\?no-inline)$': '<rootDir>/src/main/web/__mocks__/fileMock.js',
+      '\\.(css|less)$': '<rootDir>/src/main/web/__mocks__/styleMock.js',
     },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
@@ -190,6 +189,9 @@ const config = {
   //   "/node_modules/",
   //   "\\.pnp\\.[^\\/]+$"
   // ],
+    transformIgnorePatterns: [
+      "node_modules/(?!(jsonpath-plus))"
+    ],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

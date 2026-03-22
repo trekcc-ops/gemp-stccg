@@ -9,4 +9,5 @@ public interface CardPerformedAction extends Action {
     @JsonIdentityReference(alwaysAsId=true)
     @JsonProperty("performingCardId")
     PhysicalCard getPerformingCard();
+
 }

@@ -2,47 +2,47 @@ package com.gempukku.stccg.actions.modifiers;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.*;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
 import com.gempukku.stccg.actions.choose.SelectCardsAction;
+import com.gempukku.stccg.actions.targetresolver.ActionCardResolver;
+import com.gempukku.stccg.actions.targetresolver.FixedCardsResolver;
+import com.gempukku.stccg.actions.targetresolver.SelectCardsResolver;
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.ST1EPhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.StoppableCard;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.google.common.collect.Iterables;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 public class StopCardsAction extends ActionyAction {
     private final ActionCardResolver _cardTarget;
-
-    @JsonProperty("targetCardIds")
-    @JsonIdentityReference(alwaysAsId=true)
+    private final String _saveToMemoryId;
     private Collection<PhysicalCard> _stoppedCards;
 
-    public StopCardsAction(DefaultGame cardGame, Player performingPlayer,
-                           Collection<? extends ST1EPhysicalCard> cardsToStop) {
-        super(cardGame, performingPlayer, "Stop cards", ActionType.STOP_CARDS);
-        _cardTarget = new FixedCardsResolver(cardsToStop);
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
+                           ActionCardResolver cardTarget, GameTextContext context, String saveToMemoryId) {
+        super(cardGame, performingPlayerName, ActionType.STOP_CARDS, context);
+        _cardTarget = cardTarget;
+        _cardTargets.add(cardTarget);
+        _saveToMemoryId = saveToMemoryId;
+    }
+
+    private StopCardsAction(DefaultGame cardGame, String performingPlayerName, ActionCardResolver cardResolver) {
+        this(cardGame, performingPlayerName, cardResolver, null, null);
+    }
+
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName,
+                           Collection<? extends StoppableCard> cardsToStop) {
+        this(cardGame, performingPlayerName, new FixedCardsResolver(cardsToStop));
+    }
+
+    public StopCardsAction(DefaultGame cardGame, String performingPlayerName, SelectCardsAction selectionAction) {
+        this(cardGame, performingPlayerName, new SelectCardsResolver(selectionAction));
     }
 
 
-    public StopCardsAction(DefaultGame cardGame, Player performingPlayer, SelectCardsAction selectionAction) {
-        super(cardGame, performingPlayer, "Stop cards", ActionType.STOP_CARDS);
-        _cardTarget = new SelectCardsResolver(selectionAction);
-    }
-
-
-    @Override
-    public String getActionSelectionText(DefaultGame game) throws InvalidGameLogicException {
-        if (_cardTarget.isResolved() && _cardTarget.getCards(game).size() == 1) {
-            return "Stop" + Iterables.getOnlyElement(_cardTarget.getCards(game)).getTitle();
-        } else {
-            return "Stop personnel";
-        }
-    }
 
     @Override
     public boolean requirementsAreMet(DefaultGame cardGame) {
@@ -50,39 +50,34 @@ public class StopCardsAction extends ActionyAction {
     }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameLogicException {
-        if (!_cardTarget.isResolved()) {
-            Action selectionAction = _cardTarget.getSelectionAction();
-            if (selectionAction != null) {
-                if (selectionAction.wasCarriedOut()) {
-                    _cardTarget.resolve(cardGame);
-                } else {
-                    return selectionAction;
-                }
-            } else {
-                _cardTarget.resolve(cardGame);
-            }
-        }
-
-        if (!wasCompleted()) {
+    protected void processEffect(DefaultGame cardGame) {
+        try {
             _stoppedCards = _cardTarget.getCards(cardGame);
-            Collection<ST1EPhysicalCard> cardsToStop = new LinkedList<>();
-            for (PhysicalCard card : _cardTarget.getCards(cardGame)) {
-                if (card instanceof ST1EPhysicalCard stCard) {
-                    cardsToStop.add(stCard);
+            for (PhysicalCard card : _stoppedCards) {
+                if (card instanceof StoppableCard stCard) {
+                    stCard.stop();
                 } else {
                     setAsFailed();
-                    throw new InvalidGameLogicException(
-                            "Tried to \"stop\" a card from a game with no \"stop\" action");
+                    throw new InvalidGameLogicException("Tried to \"stop\" a card from a game with no \"stop\" action");
                 }
             }
-            for (ST1EPhysicalCard card : cardsToStop) {
-                card.stop();
+            if (!wasFailed()) {
+                if (_actionContext != null && _saveToMemoryId != null) {
+                    _actionContext.setCardMemory(_saveToMemoryId, _stoppedCards);
+                }
+                saveResult(new StopCardsActionResult(cardGame, _performingPlayerId, this, _stoppedCards), cardGame);
+                setAsSuccessful();
             }
-            setAsSuccessful();
+        } catch(InvalidGameLogicException exp) {
+            cardGame.sendErrorMessage(exp);
+            setAsFailed();
         }
+    }
 
-        return getNextAction();
+    @JsonProperty("targetCardIds")
+    @JsonIdentityReference(alwaysAsId=true)
+    public Collection<PhysicalCard> getStoppedCards() {
+        return _stoppedCards;
     }
 
 }

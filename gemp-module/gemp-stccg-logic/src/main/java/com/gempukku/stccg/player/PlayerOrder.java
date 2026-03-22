@@ -1,13 +1,13 @@
 package com.gempukku.stccg.player;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.gempukku.stccg.game.ActionOrder;
 
 import java.beans.ConstructorProperties;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @JsonIncludeProperties({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })
 @JsonPropertyOrder({ "turnOrder", "firstPlayer", "currentPlayer", "isReversed" })

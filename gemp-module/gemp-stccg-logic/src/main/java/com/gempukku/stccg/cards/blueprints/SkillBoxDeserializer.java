@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.gempukku.stccg.cards.RegularSkill;
 import com.gempukku.stccg.cards.Skill;
 import com.gempukku.stccg.cards.SpecialDownloadSkill;
-import com.gempukku.stccg.common.filterable.*;
+import com.gempukku.stccg.common.filterable.SkillName;
 
 import java.io.IOException;
 import java.util.*;
@@ -32,20 +32,34 @@ public class SkillBoxDeserializer extends StdDeserializer<SkillBox> {
     @Override
     public SkillBox deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         JsonNode node = jp.getCodec().readTree(jp);
-        String[] skillArray = node.textValue().split("(?=\\[\\*])|(?=\\[DL])");
-        List<Skill> skillList = new LinkedList<>();
-        int skillDots = 0;
-        int sdIcons = 0;
-        for (String string : skillArray) {
-            if (string.trim().startsWith("[*]"))
-                skillDots++;
-            if (string.trim().startsWith("[DL]"))
-                sdIcons++;
+        if (node.isTextual()) {
+            String[] skillArray = node.textValue().split("(?=\\[\\*])|(?=\\[DL])");
+            List<Skill> skillList = new LinkedList<>();
+            int skillDots = 0;
+            int sdIcons = 0;
+            for (String string : skillArray) {
+                if (string.trim().startsWith("[*]"))
+                    skillDots++;
+                if (string.trim().startsWith("[DL]"))
+                    sdIcons++;
+            }
+            for (String string : skillArray) {
+                skillList.add(getSkill(string));
+            }
+            return new SkillBox(skillDots, sdIcons, skillList);
+        } else {
+            int skillDots = (node.has("skill-dots")) ? node.get("skill-dots").asInt() : 0;
+            int sdIcons = 0;
+            List<Skill> skillList = new ArrayList<>();
+            for (JsonNode skillNode : node.get("skills")) {
+                Skill skillToAdd = jp.getCodec().treeToValue(skillNode, Skill.class);
+                if (skillToAdd instanceof SpecialDownloadSkill) {
+                    sdIcons++;
+                }
+                skillList.add(skillToAdd);
+            }
+            return new SkillBox(skillDots, sdIcons, skillList);
         }
-        for (String string : skillArray) {
-            skillList.add(getSkill(string));
-        }
-        return new SkillBox(skillDots, sdIcons, skillList);
     }
 
     public Skill getSkill(String string) throws IOException {

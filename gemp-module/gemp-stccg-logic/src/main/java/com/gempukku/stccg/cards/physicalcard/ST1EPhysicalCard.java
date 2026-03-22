@@ -1,43 +1,65 @@
 package com.gempukku.stccg.cards.physicalcard;
 
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
 import com.gempukku.stccg.actions.missionattempt.AttemptMissionAction;
 import com.gempukku.stccg.actions.missionattempt.RevealSeedCardAction;
-import com.gempukku.stccg.actions.playcard.STCCGPlayCardAction;
+import com.gempukku.stccg.actions.playcard.PlayCardAction;
+import com.gempukku.stccg.actions.playcard.ReportCardAction;
 import com.gempukku.stccg.cards.AttemptingUnit;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.filterable.CardIcon;
 import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.common.filterable.MissionType;
-import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.game.ST1EGame;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 import com.gempukku.stccg.gamestate.MissionLocation;
 
 import java.util.List;
+import java.util.Objects;
 
-public class ST1EPhysicalCard extends AbstractPhysicalCard {
-    protected final ST1EGame _game;
+@JsonIgnoreProperties(value = { "cardType", "hasUniversalIcon", "imageUrl", "isInPlay", "title", "uniqueness" },
+        allowGetters = true)
+public class ST1EPhysicalCard extends AbstractPhysicalCard implements StoppableCard {
+
+    @JsonProperty("isStopped")
     protected boolean _isStopped;
-    public ST1EPhysicalCard(ST1EGame game, int cardId, Player owner, CardBlueprint blueprint) {
-        super(cardId, owner, blueprint);
-        _game = game;
+
+    @JsonCreator
+    public ST1EPhysicalCard(
+            @JsonProperty("cardId")
+            int cardId,
+            @JsonProperty("owner")
+            String ownerName,
+            @JsonProperty("blueprintId")
+            String blueprintId,
+            @JacksonInject
+            CardBlueprintLibrary blueprintLibrary) throws CardNotFoundException {
+        super(cardId, ownerName, blueprintLibrary.getCardBlueprint(blueprintId));
     }
 
-    @Override
-    public ST1EGame getGame() { return _game; }
+    public ST1EPhysicalCard(int cardId, String ownerName, CardBlueprint blueprint) {
+        super(cardId, ownerName, blueprint);
+    }
 
-    public List<CardIcon> getIcons() { return _blueprint.getIcons(); }
 
-    public TopLevelSelectableAction getPlayCardAction(boolean forFree) {
-        // TODO - Assuming default is play to table. Long-term this should pull from the blueprint.
-        STCCGPlayCardAction action = new STCCGPlayCardAction(this, Zone.CORE, getOwner(), forFree);
-        _game.getGameState().getModifiersQuerying().appendExtraCosts(action, this);
+    public PlayCardAction getPlayCardAction(DefaultGame cardGame, boolean forFree, boolean isDownload) {
+        PlayCardAction action = (this instanceof ReportableCard reportable) ?
+            new ReportCardAction(cardGame, reportable, forFree, isDownload) :
+            _blueprint.getPlayThisCardAction(cardGame, _ownerName, this);
+        if (forFree) {
+            action.removeNormalCardPlayCost();
+        }
+        if (isDownload) {
+            action.setIsDownload();
+        }
+        if (action != null) {
+            action.appendExtraCostsFromModifiers(this, cardGame);
+        }
         return action;
     }
 
@@ -53,12 +75,12 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         List<Action> performedActions = cardGame.getActionsEnvironment().getPerformedActions();
         for (Action action : performedActions) {
             if (action instanceof RevealSeedCardAction revealAction) {
-                if (_blueprint.getCardType() == CardType.ARTIFACT) {
+                if (getCardType() == CardType.ARTIFACT) {
                     // TODO - Artifact misseeding is a pain
                 } else {
                     int olderCardId = revealAction.getRevealedCardId();
                     PhysicalCard olderCard = cardGame.getCardFromCardId(olderCardId);
-                    if (this.isCopyOf(olderCard) && this != olderCard && _owner == olderCard.getOwner())
+                    if (this.isCopyOf(olderCard) && this != olderCard && Objects.equals(_ownerName, olderCard.getOwnerName()))
                         return true;
                 }
             }
@@ -74,6 +96,7 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
         _isStopped = false;
     }
 
+    @JsonIgnore
     public boolean isStopped() {
         return _isStopped;
     }
@@ -81,17 +104,41 @@ public class ST1EPhysicalCard extends AbstractPhysicalCard {
     @Override
     public List<Action> getEncounterActions(DefaultGame cardGame, AttemptMissionAction attemptAction,
                                             AttemptingUnit attemptingUnit, MissionLocation missionLocation)
-            throws InvalidGameLogicException, PlayerNotFoundException {
-        return _blueprint.getEncounterSeedCardActions(this, attemptAction, cardGame, attemptingUnit,
-                missionLocation);
+            throws InvalidGameLogicException {
+        return _blueprint.getEncounterSeedCardActions(this, attemptAction, cardGame, attemptingUnit
+        );
     }
 
     @Override
-    public boolean isPresentWith(PhysicalCard card) {
-        return card.getGameLocation() == this.getGameLocation() &&
-                card.getAttachedTo() == this.getAttachedTo() &&
-                _game.getGameState().getSpacelineLocations().contains(card.getGameLocation());
+    public boolean isActive() {
+        // TODO - account for other inactive states
+        return !_isStopped;
     }
 
+    public boolean isOnPlanetSurface(DefaultGame cardGame) {
+        if (cardGame instanceof ST1EGame stGame &&
+                getAttachedTo(cardGame) instanceof MissionCard mission &&
+                mission.getGameLocation(stGame) instanceof MissionLocation missionLocation) {
+            return missionLocation.isPlanet();
+        } else {
+            return false;
+        }
+    }
+
+    public boolean isOnPlanet(DefaultGame cardGame) {
+        if (getAttachedTo(cardGame) instanceof CardWithCrew cardWithCrew) {
+            return cardWithCrew.isOnPlanet(cardGame);
+        } else {
+            return isOnPlanetSurface(cardGame);
+        }
+    }
+
+    public void setAsAboard(PhysicalCard destination) {
+        setParentCardRelationship(destination, ChildCardRelationshipType.ABOARD);
+    }
+
+    public void setAsOnPlanet(PhysicalCard destination) {
+        setParentCardRelationship(destination, ChildCardRelationshipType.ON_PLANET);
+    }
 
 }

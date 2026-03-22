@@ -3,7 +3,8 @@ package com.gempukku.stccg.modifiers;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Filterable;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.condition.Condition;
+import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.requirement.Condition;
 import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.LinkedList;
@@ -14,10 +15,15 @@ public class GainSkillModifier extends AbstractModifier implements SkillAffectin
     private final List<SkillName> _skills = new LinkedList<>();
 
     public GainSkillModifier(PhysicalCard actionSource, Filterable affectFilter, Condition condition,
+                             SkillName skill, ModifierTimingType timingType) {
+        super(actionSource, Filters.changeToFilter(affectFilter), condition, ModifierEffect.GAIN_SKILL_MODIFIER, false);
+        _skills.add(skill);
+    }
+
+
+    public GainSkillModifier(PhysicalCard actionSource, Filterable affectFilter, Condition condition,
                              SkillName... skills) {
-                // TODO - Need to set cumulative = false as the default, and implement what that means
-                // TODO - This method doesn't really do anything right now
-        super(actionSource, null, affectFilter, condition, ModifierEffect.GAIN_SKILL_MODIFIER);
+        super(actionSource, Filters.changeToFilter(affectFilter), condition, ModifierEffect.GAIN_SKILL_MODIFIER, false);
         for (SkillName skill : skills)
             _skills.add(skill);
     }
@@ -27,7 +33,11 @@ public class GainSkillModifier extends AbstractModifier implements SkillAffectin
         StringJoiner sj = new StringJoiner(", ");
         for (SkillName skill : _skills)
             sj.add(skill.get_humanReadable());
-        return "Gains " + sj + " from " + _cardSource.getCardLink();
+        String message = "Gains " + sj;
+        if (_cardSource != null) {
+            message = message + " from " + _cardSource.getCardLink();
+        }
+        return message;
     }
 
     public List<SkillName> getSkills() {

@@ -5,8 +5,6 @@ import com.gempukku.stccg.cards.physicalcard.MissionCard;
 import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.*;
 import com.gempukku.stccg.gamestate.MissionLocation;
-import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
 import java.beans.ConstructorProperties;
@@ -18,40 +16,31 @@ import java.util.List;
 public class DilemmaSeedPhaseYourMissionsProcess extends DilemmaSeedPhaseProcess {
 
     DilemmaSeedPhaseYourMissionsProcess(ST1EGame game) {
-        super(game.getPlayerIds());
+        super(game.getPlayerIds(), DilemmaSeedPhaseType.YOUR_MISSION);
     }
     @ConstructorProperties({"playersParticipating"})
     public DilemmaSeedPhaseYourMissionsProcess(Collection<String> playersSelecting) {
-        super(playersSelecting);
+        super(playersSelecting, DilemmaSeedPhaseType.YOUR_MISSION);
     }
 
     @Override
-    List<MissionCard> getAvailableMissions(ST1EGame stGame, String playerId) {
-        List<MissionCard> result = new ArrayList<>();
-        try {
-            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                MissionCard mission = location.getMissionCards().getFirst();
-                if (location.getMissionCards().size() == 1 && mission.getOwner() == stGame.getPlayer(playerId))
-                    result.add(mission);
-            }
-        } catch(PlayerNotFoundException exp) {
-            stGame.sendErrorMessage(exp);
+    List<MissionLocation> getAvailableMissions(ST1EGame stGame, String playerId) {
+        List<MissionLocation> result = new ArrayList<>();
+        for (MissionLocation location : stGame.getGameState().getUnorderedMissionLocations()) {
+            MissionCard mission = location.getMissionCards().getFirst();
+            if (location.getMissionCards().size() == 1 && mission.isOwnedBy(playerId))
+                result.add(location);
         }
         return result;
     }
 
 
     @Override
-    protected String getDecisionText(DefaultGame cardGame, Player player) {
-        return "Select your mission to seed cards under or remove cards from";
-    }
-
-    @Override
     public GameProcess getNextProcess(DefaultGame cardGame) throws InvalidGameLogicException {
         ST1EGame stGame = getST1EGame(cardGame);
         if (_playersParticipating.isEmpty()) {
-            for (MissionLocation location : stGame.getGameState().getSpacelineLocations()) {
-                location.seedPreSeedsForYourMissions();
+            for (MissionLocation location : stGame.getGameState().getUnorderedMissionLocations()) {
+                location.seedPreSeedsForYourMissions(cardGame);
             }
             cardGame.setCurrentPhase(Phase.SEED_FACILITY);
             return new ST1EFacilitySeedPhaseProcess(0);

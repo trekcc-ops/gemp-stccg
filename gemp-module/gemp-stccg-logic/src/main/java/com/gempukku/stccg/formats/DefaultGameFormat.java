@@ -1,25 +1,23 @@
 package com.gempukku.stccg.formats;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.*;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
-import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.cards.blueprints.CardBlueprint;
 import com.gempukku.stccg.common.CardDeck;
-import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @JsonPropertyOrder({ "gameType", "code", "name", "order", "discardPileIsPublic", "playtest", "minimumDrawDeckSize",
-        "maximumSeedDeckSize", "missions", "maximumSameName", "hall", "noShuffle", "firstPlayerFixed"
+        "maximumSeedDeckSize", "missions", "maximumSameName", "hall"
 })
 public class DefaultGameFormat implements GameFormat {
+
+    private static final int DEFAULT_MAX_VALUE = 999;
+    private static final int DEFAULT_MIN_VALUE = 0;
 
     @JsonProperty("name")
     private final String _name;
@@ -40,7 +38,6 @@ public class DefaultGameFormat implements GameFormat {
     private final boolean _discardPileIsPublic;
     @JsonProperty("minimumDrawDeckSize")
     private final int _minimumDrawDeckSize;
-
     @JsonProperty("maximumSeedDeckSize")
     private final int _maximumSeedDeckSize;
     private final int _missions; // If missions is -1, there is no restriction on the number of missions
@@ -51,61 +48,53 @@ public class DefaultGameFormat implements GameFormat {
     private final List<String> _restrictedCardNames = new ArrayList<>();
 
     private final boolean _isPlaytest;
-    private final boolean _noShuffle;
     private final List<String> _limit2Cards = new ArrayList<>();
     private final List<String> _limit3Cards = new ArrayList<>();
     private final Map<String,String> _errataCardMap = new TreeMap<>();
-
-    @JsonProperty("firstPlayerFixed")
-    private final boolean _firstPlayerFixed;
-
     private final GameType _gameType;
+    private final int _minPlanetMissions;
+    private final int _minSpaceMissions;
+    private final boolean _misSeedsAllowed;
 
-    DefaultGameFormat(CardBlueprintLibrary library, JSONData.Format def)
-            throws InvalidPropertiesFormatException {
-        _name = def.name;
-        _code = def.code;
-        _order = def.order;
-        _minimumDrawDeckSize = def.minimumDrawDeckSize;
-        _maximumSameName = def.maximumSameName;
-        _discardPileIsPublic = def.discardPileIsPublic;
-        _isPlaytest = def.playtest;
-        _hallVisible = def.hall;
-        _missions = def.missions;
-        _maximumSeedDeckSize = def.maximumSeedDeckSize;
-        _noShuffle = def.noShuffle;
-        _firstPlayerFixed = def.firstPlayerFixed;
+    @JsonCreator
+    private DefaultGameFormat(@JacksonInject CardBlueprintLibrary blueprintLibrary,
+                              @JsonProperty("gameType") String gameType,
+                              @JsonProperty("excludedSets") @JsonSetter(nulls = Nulls.AS_EMPTY)
+                                  @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                                  List<String> excludedSets,
+                              @JsonProperty("name") String name,
+                              @JsonProperty("code") String code,
+                              @JsonProperty("minimumDrawDeckSize") Integer minDrawDeck,
+                              @JsonProperty("maximumSeedDeckSize") Integer maxSeedDeck,
+                              @JsonProperty("bannedCards") @JsonSetter(nulls = Nulls.AS_EMPTY) List<String> bannedCards,
+                              @JsonProperty("missions") Integer missions,
+                              @JsonProperty("hall") Boolean hallVisible,
+                              @JsonProperty("minPlanetMissions") Integer minPlanetMissions,
+                              @JsonProperty("minSpaceMissions") Integer minSpaceMissions,
+                              @JsonProperty("misSeedsAllowed") Boolean misSeedsAllowed) {
+        _name = name;
+        _code = code;
+        _order = 1000;
+        _minimumDrawDeckSize = Objects.requireNonNullElse(minDrawDeck, 60);
+        _minPlanetMissions = Objects.requireNonNullElse(minPlanetMissions, DEFAULT_MIN_VALUE);
+        _minSpaceMissions = Objects.requireNonNullElse(minSpaceMissions, DEFAULT_MIN_VALUE);
+        _misSeedsAllowed = Objects.requireNonNullElse(misSeedsAllowed, true);
+        _maximumSameName = DEFAULT_MAX_VALUE;
+        _discardPileIsPublic = false;
+        _isPlaytest = false;
+        _hallVisible = Objects.requireNonNullElse(hallVisible, true);
+        _missions = Objects.requireNonNullElse(missions, 6);
+        _maximumSeedDeckSize = Objects.requireNonNullElse(maxSeedDeck, 30);
         _gameType =
-                Enum.valueOf(GameType.class, def.gameType.toUpperCase().replaceAll("[ '\\-.]", "_"));
-        if (def.set == null) {
-            for (SetDefinition set : library.getSetDefinitions().values()) {
-                if (set.getGameType() == _gameType) {
-                    addValidSet(Integer.parseInt(set.getSetId()));
-                }
-            }
-        } else {
-            def.set.forEach(this::addValidSet);
-        }
-
-        if(def.banned != null)
-            def.banned.forEach(this::addBannedCard);
-        if(def.restricted != null)
-            def.restricted.forEach(this::addRestrictedCard);
-        if(def.valid != null)
-            def.valid.forEach(this::addValidCard);
-        if(def.limit2 != null)
-            def.limit2.forEach(this::addLimit2Card);
-        if(def.limit3 != null)
-            def.limit3.forEach(this::addLimit3Card);
-        if(def.restrictedName != null)
-            def.restrictedName.forEach(this::addRestrictedCardName);
-        if(def.errataSets != null) {
-            for (Integer errataSet : def.errataSets) {
-                addErrataSet(library, errataSet);
+                Enum.valueOf(GameType.class, gameType.toUpperCase().replaceAll("[ '\\-.]", "_"));
+        for (SetDefinition set : blueprintLibrary.getSetDefinitions().values()) {
+            if (set.getGameType() == _gameType && !excludedSets.contains(set.getSetId())) {
+                addValidSet(Integer.parseInt(set.getSetId()));
             }
         }
-        if(def.errata != null)
-            def.errata.forEach(this::addCardErrata);
+        if (!bannedCards.isEmpty()) {
+            bannedCards.forEach(this::addBannedCard);
+        }
     }
 
     @Override
@@ -259,6 +248,54 @@ public class DefaultGameFormat implements GameFormat {
         _errataCardMap.put(baseBlueprintId, errataBaseBlueprint);
     }
 
+    public boolean isCardAllowedInFormat(CardBlueprint blueprint, CardBlueprintLibrary library) {
+        String blueprintId = library.getBaseBlueprintId(blueprint.getBlueprintId());
+        try {
+            library.getCardBlueprint(blueprintId);
+            if (_validCards.contains(blueprintId) || _errataCardMap.containsValue(blueprintId)) {
+                return true;
+            } else if (!_validSets.isEmpty() && !isValidInSets(library, blueprintId)) {
+                return false;
+            }
+
+            // Banned cards
+            Set<String> allAlternates = library.getAllAlternates(blueprintId);
+            for (String bannedBlueprintId : _bannedCards) {
+                if (bannedBlueprintId.equals(blueprintId) ||
+                        (allAlternates != null && allAlternates.contains(bannedBlueprintId))) {
+                    return false;
+                }
+            }
+
+            // Errata
+            for (String originalBlueprintId : _errataCardMap.keySet()) {
+                if (originalBlueprintId.equals(blueprintId) ||
+                        (allAlternates != null && allAlternates.contains(originalBlueprintId))) {
+                    return false;
+                }
+            }
+
+        } catch (CardNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int getMinPlanetMissions() {
+        return _minPlanetMissions;
+    }
+
+    @Override
+    public int getMinSpaceMissions() {
+        return _minSpaceMissions;
+    }
+
+    @Override
+    public boolean misSeedsAllowed() {
+        return _misSeedsAllowed;
+    }
+
     @Override
     public String validateCard(CardBlueprintLibrary library, String blueprintId) {
         blueprintId = library.getBaseBlueprintId(blueprintId);
@@ -304,92 +341,6 @@ public class DefaultGameFormat implements GameFormat {
     }
 
     @Override
-    public List<String> validateDeck(CardBlueprintLibrary library, CardDeck deck) {
-        ArrayList<String> result = new ArrayList<>();
-        ArrayList<String> errataResult = new ArrayList<>();
-        String valid;
-
-        // Additional deck checks in validateDeckStructure
-        valid = validateDeckStructure(library, deck);
-        if(!valid.isEmpty()) {
-            result.add(valid);
-        }
-
-        String newLine;
-        for (String card : deck.getAllCards()){
-            newLine = validateCard(library, card);
-            if(newLine == null || newLine.isEmpty())
-                continue;
-
-            if (newLine.toLowerCase().contains("errata")) {
-                errataResult.add(newLine);
-            } else {
-                result.add(newLine);
-            }
-        }
-
-        // Card count in deck
-        Map<String, Integer> cardCountByName = new HashMap<>();
-        Map<String, Integer> cardCountByBaseBlueprintId = new HashMap<>();
-
-        for (String blueprintId : deck.getAllCards())
-            try {
-                processCardCounts(library, blueprintId, cardCountByName, cardCountByBaseBlueprintId);
-            } catch(CardNotFoundException exp) {
-                result.add("Deck contains card of invalid blueprintId '" + blueprintId + "'");
-            }
-
-        for (Map.Entry<String, Integer> count : cardCountByName.entrySet()) {
-            if (count.getValue() > _maximumSameName) {
-                result.add("Deck contains more of the same card than allowed - " + count.getKey() + " (" + count.getValue() + ">" + _maximumSameName + "): " + count.getKey());
-            }
-        }
-
-        try {
-            // Restricted cards
-            for (String blueprintId : _restrictedCards) {
-                Integer count = cardCountByBaseBlueprintId.get(blueprintId);
-                if (count != null && count > 1) {
-                    result.add("Deck contains more than one copy of an R-listed card: " +
-                            library.getCardFullName(blueprintId));
-                }
-            }
-
-            // New Hobbit Draft restrictions
-            for (String blueprintId : _limit2Cards) {
-                Integer count = cardCountByBaseBlueprintId.get(blueprintId);
-                if (count != null && count > 2)
-                    result.add("Deck contains more than two copies of a 2x limited card: " +
-                            library.getCardFullName(blueprintId));
-            }
-            for (String blueprintId : _limit3Cards) {
-                Integer count = cardCountByBaseBlueprintId.get(blueprintId);
-                if (count != null && count > 3)
-                    result.add("Deck contains more than three copies of a 3x limited card: " +
-                            library.getCardFullName(blueprintId));
-            }
-        }
-        catch(CardNotFoundException ex)
-        {
-            //By this point all the cards in the deck have been pulled from the blueprint library multiple times, and
-            // adding the error to the list is just going to add more spam for no reason.
-        }
-
-        for (String restrictedCardName : _restrictedCardNames) {
-            Integer count = cardCountByName.get(restrictedCardName);
-            if (count != null && count > 1)
-                result.add("Deck contains more than one copy of a card restricted by name: " + restrictedCardName);
-        }
-
-        result.addAll(errataResult);
-
-        return result.stream()
-                .filter(x -> x != null && !x.isEmpty())
-                .collect(Collectors.toList());
-
-    }
-    
-    @Override
     public CardDeck applyErrata(CardBlueprintLibrary library, CardDeck deck) {
         CardDeck deckWithErrata = new CardDeck(deck);
         Map<SubDeck, List<String>> newSubDecks = deckWithErrata.getSubDecks();
@@ -418,81 +369,34 @@ public class DefaultGameFormat implements GameFormat {
         return errata;
     }
 
-    private String validateDeckStructure(CardBlueprintLibrary library, CardDeck deck) {
-        StringBuilder result = new StringBuilder();
-        int drawDeckSize = deck.getSubDeck(SubDeck.DRAW_DECK).size();
-        if (drawDeckSize < _minimumDrawDeckSize) {
-            result.append("Draw deck contains below minimum number of cards: ")
-                    .append(drawDeckSize).append("<").append(_minimumDrawDeckSize).append(".\n");
-        }
-        if (_gameType == GameType.FIRST_EDITION) {
-            int seedDeckSize = deck.getSubDeck(SubDeck.SEED_DECK).size();
-            if (seedDeckSize > _maximumSeedDeckSize) {
-                result.append("Seed deck contains more than maximum number of cards: ")
-                        .append(seedDeckSize).append(">").append(".\n");
-            }
-            result.append(validateMissionsPile(library, deck));
-        }
-        return result.toString();
-    }
-
-    private String validateMissionsPile(CardBlueprintLibrary library, CardDeck deck) {
-        StringBuilder result = new StringBuilder();
-        List<String> missionsPile = deck.getSubDeck(SubDeck.MISSIONS);
-        if (_missions > 0 && missionsPile.size() != _missions) {
-            result.append("Deck must contain exactly ").append(_missions).append(" missions").append(".\n");
-        }
-        List<String> uniqueLocations = new LinkedList<>();
-        for (String blueprintId : missionsPile) {
-            try {
-                CardBlueprint blueprint = library.getCardBlueprint(blueprintId);
-                if (blueprint.getCardType() != CardType.MISSION)
-                    result.append("Missions pile contains non-mission card: ").append(blueprint.getTitle()).append(".\n");
-                else if (!blueprint.isUniversal()) {
-                    uniqueLocations.add(blueprint.getLocation());
-                }
-            } catch(CardNotFoundException exp) {
-                result.append("Deck contains card with no valid blueprint: ").append(blueprintId);
-            }
-        }
-        List<String> distinctUniqueLocations = uniqueLocations.stream().distinct().toList();
-        for (String location : distinctUniqueLocations) {
-            int locationCount = Collections.frequency(uniqueLocations, location);
-            if (locationCount > 1)
-                result.append("Deck has ").append(locationCount).append(" unique missions at location: ").append(location);
-        }
-        return result.toString();
-    }
-
-
-    private void processCardCounts(CardBlueprintLibrary library, String blueprintId, Map<String, Integer> cardCountByName,
-                                   Map<String, Integer> cardCountByBaseBlueprintId) throws CardNotFoundException {
-        increaseCount(cardCountByName, library.getCardBlueprint(blueprintId).getTitle());
-        increaseCount(cardCountByBaseBlueprintId, library.getBaseBlueprintId(blueprintId));
-    }
 
     public GameType getGameType() { return _gameType; }
 
     @JsonProperty("gameType")
     private String getGameTypeName() { return _gameType.getHumanReadable(); }
 
-    private void increaseCount(Map<String, Integer> counts, String name) {
-        counts.merge(name, 1, Integer::sum);
-    }
-
     @Override
     public int getMissions() {
         return _missions;
     }
 
-    @Override
-    public boolean hasFixedPlayerOrder() {
-        return _firstPlayerFixed;
+    public String toString() {
+        return getName();
+    }
+
+    @JsonIgnore
+    public int getMinimumDrawDeckSize() {
+        return _minimumDrawDeckSize;
+    }
+
+    @JsonIgnore
+    public int getMaximumSeedDeckSize() {
+        return _maximumSeedDeckSize;
     }
 
     @Override
-    public boolean isNoShuffle() {
-        return _noShuffle;
+    public Integer getSameNameLimit() {
+        return _maximumSameName;
     }
 
 }

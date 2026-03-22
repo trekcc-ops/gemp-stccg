@@ -1,0 +1,96 @@
+{
+    "setId": "991",
+    "setName": "1E Debug Cards",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "991_001",
+            "title": "Fake Dilemma",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "icons": "au-icon",
+            "property-logo": "ccg-logo",
+            "image-url": "../../images/cardart/991_001_FakeDilemma.jpg"
+        },
+        {
+            "blueprintId": "991_003",
+            "title": "Dummy 1E AU Warp Core Event",
+            "type": "event",
+            "icons": "au-icon,warp-core",
+            "property-logo": "tng-logo",
+            "playThisCardAction": {
+                "type": "playThis"
+            }
+        },
+        {
+            "blueprintId": "991_004",
+            "title": "Dummy 1E Unique Warp Core Event",
+            "type": "event",
+            "icons": "warp-core",
+            "uniqueness": "unique",
+            "property-logo": "tng-logo",
+            "playThisCardAction": {
+                "type": "playThis"
+            }
+        },
+        {
+            "blueprintId": "991_005",
+            "title": "Dummy 1E Hologram Personnel",
+            "type": "personnel",
+            "affiliation": "federation",
+            "classification": "SCIENCE",
+            "skill-box": "[*] SCIENCE",
+            "species": "hologram",
+            "icons": "holographic",
+            "lore": "blork",
+            "gender": "male",
+            "uniqueness": "universal",
+            "integrity": 6,
+            "cunning": 6,
+            "strength": 6,
+            "property-logo": "tng-logo"
+        },
+        {
+            "blueprintId": "991_006",
+            "title": "Dummy 1E Q Card",
+            "type": "event",
+            "icons": "q-icon",
+            "property-logo": "tng-logo",
+            "playThisCardAction": {
+                "type": "playThis"
+            }
+        },
+        {
+            "blueprintId": "991_007",
+            "title": "Dummy 1E Multi-Affiliation Klingon",
+            "type": "personnel",
+            "affiliation": "klingon,non-aligned",
+            "classification": "SCIENCE",
+            "skill-box": "[*] SCIENCE",
+            "species": "klingon",
+            "lore": "blork",
+            "gender": "male",
+            "uniqueness": "universal",
+            "integrity": 6,
+            "cunning": 6,
+            "strength": 6,
+            "property-logo": "tng-logo"
+        },
+        {
+            "blueprintId": "991_008",
+            "title": "V.I.P. for DeSoto Test",
+            "type": "personnel",
+            "affiliation": "federation,romulan",
+            "classification": "V.I.P.",
+            "skill-box": "[*] Diplomacy",
+            "species": "human",
+            "lore": "blork",
+            "gender": "male",
+            "uniqueness": "universal",
+            "integrity": 6,
+            "cunning": 6,
+            "strength": 6,
+            "property-logo": "tng-logo"
+        }
+    ]
+}

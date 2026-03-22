@@ -1,10 +1,11 @@
 package com.gempukku.stccg.processes.tribbles;
 
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
-import com.gempukku.stccg.decisions.CardActionSelectionDecision;
-import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.game.*;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.decisions.DecisionContext;
+import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
@@ -20,32 +21,24 @@ public class TribblesPlayerPlaysOrDraws extends TribblesGameProcess {
     @Override
     public void process(DefaultGame cardGame) throws PlayerNotFoundException {
         Player currentPlayer = _game.getCurrentPlayer();
-        final List<TopLevelSelectableAction> playableActions =
+        final List<? extends Action> playableActions =
                 _game.getActionsEnvironment().getPhaseActions(_game, currentPlayer);
 
-        if (playableActions.isEmpty() && _game.shouldAutoPass(_game.getGameState().getCurrentPhase())) {
+        if (playableActions.isEmpty() &&
+                _game.shouldAutoPass(_game.getGameState().getCurrentPhase(), currentPlayer.getPlayerId())) {
             _consecutivePasses++;
         } else {
             TribblesGame thisGame = _game; // to avoid conflicts when decision calls "_game"
-            String userMessage;
-            if (playableActions.isEmpty()) {
-                userMessage = "No Tribbles can be played. Click 'Pass' to draw a card.";
-            } else {
-                userMessage = "Select Tribble to play or click 'Pass' to draw a card.";
-            }
-            _game.getUserFeedback().sendAwaitingDecision(
-                    new CardActionSelectionDecision(currentPlayer, userMessage, playableActions, cardGame) {
+            cardGame.sendAwaitingDecision(
+                    new ActionSelectionDecision(currentPlayer, DecisionContext.SELECT_TRIBBLES_ACTION, playableActions,
+                            cardGame, false) {
                         @Override
                         public void decisionMade(String result) throws DecisionResultInvalidException {
-                            try {
-                                Action action = getSelectedAction(result);
-                                if (action != null) {
-                                    thisGame.getActionsEnvironment().addActionToStack(action);
-                                } else
-                                    _consecutivePasses++;
-                            } catch(InvalidGameLogicException exp) {
-                                throw new DecisionResultInvalidException(exp.getMessage());
-                            }
+                            Action action = getSelectedAction(result);
+                            if (action != null) {
+                                thisGame.getActionsEnvironment().addActionToStack(action);
+                            } else
+                                _consecutivePasses++;
                         }
                     });
         }

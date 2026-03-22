@@ -2,18 +2,20 @@ package com.gempukku.stccg.rules.st1e;
 
 import com.gempukku.stccg.actions.playcard.PlayCardAction;
 import com.gempukku.stccg.actions.playcard.SeedCardAction;
-import com.gempukku.stccg.cards.physicalcard.FacilityCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
+import com.gempukku.stccg.cards.physicalcard.*;
 import com.gempukku.stccg.common.filterable.Affiliation;
 import com.gempukku.stccg.common.filterable.CardType;
+import com.gempukku.stccg.common.filterable.FacilityType;
+import com.gempukku.stccg.filters.CardFilter;
 import com.gempukku.stccg.filters.Filters;
-import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.game.InvalidGameLogicException;
 import com.gempukku.stccg.game.ST1EGame;
 import com.gempukku.stccg.gamestate.GameLocation;
 import com.gempukku.stccg.gamestate.MissionLocation;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.rules.UndefinedRuleException;
 
-import java.util.Collection;
+import java.util.*;
 
 public class PlayCardDestinationRules {
 
@@ -53,10 +55,163 @@ public class PlayCardDestinationRules {
             // (No need to check for native quadrant again; that was performed above)
             // TODO - This may not be a sufficient check for multi-affiliation cards under special reporting
             return location instanceof MissionLocation mission &&
-                    mission.hasMatchingAffiliationIcon(performingPlayer, affiliationOptions);
+                    mission.hasMatchingAffiliationIcon(cardGame, performingPlayer.getPlayerId(), affiliationOptions);
         } else {
-            // TODO - No specific rules for where outposts can be played, because this is on the gametext
-            throw new UndefinedRuleException("No rule defined yet for where outposts can be played");
+            return location instanceof MissionLocation missionLocation && !missionLocation.isHomeworld();
         }
     }
+
+    private static boolean canReportableBePlayedToFacilityOrShip(CardWithCrew destination,
+                                                                ReportableCard reportingCard,
+                                                                boolean specialReporting,
+                                                                ST1EGame cardGame) {
+        String performingPlayerName = reportingCard.getOwnerName();
+        if (reportingCard instanceof PersonnelCard affilCard &&
+                !canPersonnelBoardShipOrFacility(affilCard, destination, cardGame)) {
+            return false;
+        } else if (reportingCard instanceof ShipCard shipCard && !shipCard.isCompatibleWith(cardGame, destination)) {
+            return false;
+        } else if (specialReporting) {
+            return true;
+        } else if (destination instanceof FacilityCard facility) {
+            if (List.of(FacilityType.OUTPOST, FacilityType.HEADQUARTERS).contains(facility.getFacilityType()) &&
+                    facility.isUsableBy(performingPlayerName)) {
+                if (reportingCard instanceof EquipmentCard) {
+                    return true;
+                } else return reportingCard instanceof AffiliatedCard affilCard &&
+                        facility.isInQuadrant(cardGame, affilCard.getNativeQuadrant());
+            }
+        }
+        return false;
+    }
+
+    private static boolean canPersonnelBoardShipOrFacility(PersonnelCard reportingCard,
+                                                           CardWithCrew destination, ST1EGame cardGame) {
+        String performingPlayerName = reportingCard.getOwnerName();
+        for (PersonnelCard cardAboard : destination.getPersonnelAboard(cardGame)) {
+            if (cardAboard.isControlledBy(performingPlayerName) && !cardAboard.isCompatibleWith(cardGame, reportingCard)) {
+                return false;
+            }
+        }
+        return !destination.isControlledBy(reportingCard.getOwnerName()) ||
+                reportingCard.isCompatibleWith(cardGame, destination);
+    }
+
+    public static Map<PhysicalCard, List<Affiliation>> getDestinationAndAffiliationMapForReportingCards(
+            ReportableCard reportingCard, ST1EGame cardGame, Collection<PhysicalCard> eligibleDestinations,
+            boolean specialReporting, CardFilter applicableFilterForReportingCard
+    ) {
+        Map<PhysicalCard, List<Affiliation>> result = new HashMap<>();
+        String performingPlayerName = reportingCard.getOwnerName();
+        List<Affiliation> currentAffiliationOptions = new ArrayList<>();
+        if (reportingCard instanceof AffiliatedCard affiliatedCard) {
+            currentAffiliationOptions.addAll(affiliatedCard.getCurrentAffiliations());
+        }
+        for (PhysicalCard destinationOption : eligibleDestinations) {
+            try {
+                if (destinationOption instanceof MissionCard missionCard &&
+                        missionCard.getGameLocation(cardGame) instanceof MissionLocation missionLocation &&
+                        missionLocation.getMissionForPlayer(performingPlayerName) == missionCard &&
+                        specialReporting) {
+
+                    List<Affiliation> allowedAffiliations = new ArrayList<>();
+                    if (reportingCard instanceof AffiliatedCard affiliatedCard) {
+                        for (Affiliation affiliation : currentAffiliationOptions) {
+                            affiliatedCard.setProxyAffiliation(affiliation);
+                            if (applicableFilterForReportingCard.accepts(cardGame, affiliatedCard)) {
+                                allowedAffiliations.add(affiliation);
+                            }
+                        }
+                    }
+
+                    if (reportingCard instanceof ShipCard && missionLocation.isSpace()) {
+                        result.put(destinationOption, allowedAffiliations);
+                    } else if (missionCard.isPlanet()) {
+                        result.put(destinationOption, allowedAffiliations);
+                    }
+                } else if (destinationOption instanceof CardWithCrew cardWithCrew) {
+
+                    if(reportingCard instanceof AffiliatedCard affilCard) {
+                        List<Affiliation> affiliationOptions = new ArrayList<>();
+                        for (Affiliation selectedAffiliation : currentAffiliationOptions) {
+                            affilCard.setProxyAffiliation(selectedAffiliation);
+                            if (applicableFilterForReportingCard.accepts(cardGame, affilCard) &&
+                                    canReportableBePlayedToFacilityOrShip(cardWithCrew, reportingCard, specialReporting, cardGame)) {
+                                affiliationOptions.add(selectedAffiliation);
+                            }
+                        }
+                        if (!affiliationOptions.isEmpty()) {
+                            result.put(destinationOption, affiliationOptions);
+                        }
+                    } else {
+                        if (canReportableBePlayedToFacilityOrShip(cardWithCrew, reportingCard, specialReporting, cardGame)) {
+                            result.put(destinationOption, currentAffiliationOptions);
+                        }
+                    }
+                }
+            } catch(InvalidGameLogicException ignored) {
+            }
+        }
+        if (reportingCard instanceof AffiliatedCard affilCard) {
+            affilCard.clearProxyAffiliation();
+        }
+        return result;
+    }
+
+    public static Map<PhysicalCard, List<Affiliation>> getReportCardTargetMapWithNoSpecifiedDestinations(
+            ReportableCard reportingCard, ST1EGame cardGame
+    ) {
+        Map<PhysicalCard, List<Affiliation>> result = new HashMap<>();
+
+        if (reportingCard instanceof AffiliatedCard affiliatedCard) {
+            List<Affiliation> currentAffiliationOptions = new ArrayList<>(affiliatedCard.getCurrentAffiliations());
+            for (PhysicalCard destinationOption : cardGame.getAllCardsInPlay()) {
+                List<Affiliation> affiliationOptions = new ArrayList<>();
+                for (Affiliation selectedAffiliation : currentAffiliationOptions) {
+                    affiliatedCard.setProxyAffiliation(selectedAffiliation);
+                    Collection<PhysicalCard> additionalDestinationsFromModifiers =
+                            cardGame.getAdditionalDestinationOptionsForPlayingCard(reportingCard);
+                    if (destinationOption instanceof CardWithCrew cardWithCrew &&
+                            additionalDestinationsFromModifiers.contains(destinationOption)) {
+                        if (canReportableBePlayedToFacilityOrShip(cardWithCrew, reportingCard, true, cardGame)) {
+                            affiliationOptions.add(selectedAffiliation);
+                        }
+                    } else if (destinationOption instanceof CardWithCrew cardWithCrew) {
+                        if (canReportableBePlayedToFacilityOrShip(cardWithCrew, reportingCard, false, cardGame)) {
+                            affiliationOptions.add(selectedAffiliation);
+                        }
+                    } else if (destinationOption instanceof MissionCard missionCard &&
+                        missionCard.getBottomMission() == missionCard &&
+                            additionalDestinationsFromModifiers.contains(destinationOption)
+                    ) {
+                        affiliationOptions.add(selectedAffiliation);
+                    }
+                    if (!affiliationOptions.isEmpty()) {
+                        result.put(destinationOption, affiliationOptions);
+                    }
+                    affiliatedCard.clearProxyAffiliation();
+                }
+            }
+        } else {
+            for (PhysicalCard destinationOption : cardGame.getAllCardsInPlay()) {
+                Collection<PhysicalCard> additionalDestinationsFromModifiers =
+                        cardGame.getAdditionalDestinationOptionsForPlayingCard(reportingCard);
+                if (destinationOption instanceof MissionCard mission &&
+                        additionalDestinationsFromModifiers.contains(destinationOption) &&
+                        mission.getBottomMission() == mission
+                ) {
+                    result.put(mission, new ArrayList<>());
+                } else if (destinationOption instanceof CardWithCrew &&
+                        additionalDestinationsFromModifiers.contains(destinationOption)) {
+                    result.put(destinationOption, new ArrayList<>());
+                }  else if (destinationOption instanceof CardWithCrew cardWithCrew) {
+                    if (canReportableBePlayedToFacilityOrShip(cardWithCrew, reportingCard, false, cardGame)) {
+                        result.put(destinationOption, new ArrayList<>());
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
 }

@@ -1,16 +1,16 @@
 package com.gempukku.stccg.async.handler.account;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.database.DBData;
-import com.gempukku.stccg.database.GameHistoryDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.game.GameHistoryService;
 
 import java.net.HttpURLConnection;
 import java.time.format.DateTimeFormatter;
@@ -24,30 +24,31 @@ public class GameHistoryRequestHandler implements UriRequestHandler {
 
     private final int _start;
     private final int _count;
+    private final GameHistoryService _gameHistoryService;
     GameHistoryRequestHandler(
             @JsonProperty(value = "start", required = true)
             int start,
             @JsonProperty(value = "count", required = true)
-            int count
-    ) {
+            int count,
+            @JacksonInject GameHistoryService gameHistoryService) {
         _start = start;
         _count = count;
+        _gameHistoryService = gameHistoryService;
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
 
         if (_start < 0 || _count < 1 || _count > 100)
             throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
 
         User resourceOwner = request.user();
-        String userId = resourceOwner.getName();
-        GameHistoryDAO gameHistoryDAO = serverObjects.getGameHistoryDAO();
+        String userId = request.userName();
 
         final List<DBData.GameHistory> playerGameHistory =
-                gameHistoryDAO.getGameHistoryForPlayer(resourceOwner, _start, _count);
-        int recordCount = serverObjects.getGameHistoryService().getGameHistoryForPlayerCount(resourceOwner);
+                _gameHistoryService.getGameHistoryForPlayer(resourceOwner, _start, _count);
+        int recordCount = _gameHistoryService.getGameHistoryForPlayerCount(resourceOwner);
 
         Map<Object, Object> response = new HashMap<>();
         response.put("count", recordCount);

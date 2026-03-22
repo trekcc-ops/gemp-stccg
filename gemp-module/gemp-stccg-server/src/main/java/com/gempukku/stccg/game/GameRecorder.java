@@ -49,7 +49,7 @@ public class GameRecorder {
         _playerDAO = playerDAO;
     }
 
-    public static String getPlayTestMessage(Map<String, String> playerRecordingId, String winnerName,
+    private static String getPlayTestMessage(Map<String, String> playerRecordingId, String winnerName,
                                             String loserName) {
         String url = AppConfig.getPlaytestUrl() +
                 AppConfig.getPlaytestPrefixUrl() + winnerName + "$" +
@@ -68,7 +68,7 @@ public class GameRecorder {
         final Map<String, GameCommunicationChannel> recordingChannels = new HashMap<>();
         for (String playerId : game.getPlayersPlaying()) {
             var recordChannel = new GameCommunicationChannel(game.getGame(), playerId, 0);
-            game.addGameStateListener(recordChannel);
+            game.getGame().addGameStateListener(recordChannel);
             recordingChannels.put(playerId, recordChannel);
         }
 
@@ -83,21 +83,13 @@ public class GameRecorder {
                 var gameInfo = new MyGameHistory(game, winner, loser, winReason, loseReason, startDate, endDate,
                         format, decks, tournamentName, time, clocks);
 
-                Map<String, String> playerRecordingId = saveRecordedChannels(recordingChannels, gameInfo, decks);
                 gameInfo.id = _gameHistoryService.addGameHistory(gameInfo);
 
-                if (format.isPlaytest()) {
-                    game.sendMessageToPlayers(getPlayTestMessage(playerRecordingId, winnerName, loserName));
-                }
             } catch(UserNotFoundException exp) {
                 LOGGER.error(exp.getMessage());
             }
 
         };
-    }
-
-    public interface GameRecordingInProgress {
-        void finishRecording(String winner, String winReason, String loser, String loseReason);
     }
 
     private static File getRecordingFileVersion0(String playerId, String gameId) {

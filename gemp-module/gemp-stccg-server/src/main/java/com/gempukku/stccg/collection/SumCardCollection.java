@@ -54,4 +54,5 @@ public class SumCardCollection implements CardCollection {
 
         return sum;
     }
+
 }

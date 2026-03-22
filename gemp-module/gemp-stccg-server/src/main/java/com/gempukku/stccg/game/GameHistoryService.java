@@ -1,12 +1,16 @@
 package com.gempukku.stccg.game;
 
-import com.gempukku.stccg.database.DBData;
-import com.gempukku.stccg.common.JSONData;
-import com.gempukku.stccg.database.GameHistoryDAO;
-import com.gempukku.stccg.database.PlayerStatistic;
-import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.async.HttpProcessingException;
+import com.gempukku.stccg.async.LoggingProxy;
+import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.database.*;
+import com.gempukku.stccg.formats.GameFormat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,9 +18,29 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameHistoryService {
     private final GameHistoryDAO _gameHistoryDAO;
     private final Map<String, Integer> _playerGameCount = new ConcurrentHashMap<>();
+    private final GameRecorder _gameRecorder;
 
-    public GameHistoryService(GameHistoryDAO gameHistoryDAO) {
-        _gameHistoryDAO = gameHistoryDAO;
+    public GameHistoryService(PlayerDAO playerDAO, DbAccess dbAccess) {
+        _gameHistoryDAO =
+                LoggingProxy.createLoggingProxy(GameHistoryDAO.class, new DbGameHistoryDAO(dbAccess));
+        _gameRecorder = new GameRecorder(this, playerDAO);
+    }
+
+    public final GameRecordingInProgress recordGame(CardGameMediator game,
+                                                    final String tournamentName,
+                                                    final Map<String, ? extends CardDeck> decks) {
+        return _gameRecorder.recordGame(game, game.getGame().getFormat(), tournamentName, decks);
+    }
+
+
+    public final GameRecordingInProgress recordGame(CardGameMediator game, GameFormat format,
+                                                    final String tournamentName,
+                                                    final Map<String, ? extends CardDeck> decks) {
+        return _gameRecorder.recordGame(game, format, tournamentName, decks);
+    }
+
+    public final InputStream getRecordedGame(String playerId, String recordId) throws IOException {
+        return _gameRecorder.getRecordedGame(playerId, recordId);
     }
 
     public final int addGameHistory(DBData.GameHistory gh) {
@@ -40,6 +64,11 @@ public class GameHistoryService {
         return _gameHistoryDAO.getGameHistory(recordID);
     }
 
+    public final List<DBData.GameHistory> getGameHistoryForPlayer(User user, int start, int count)
+            throws HttpProcessingException {
+        return _gameHistoryDAO.getGameHistoryForPlayer(user, start, count);
+    }
+
     public final int getGameHistoryForPlayerCount(User player) {
         Integer result = _playerGameCount.get(player.getName());
         if (result != null)
@@ -61,15 +90,21 @@ public class GameHistoryService {
         return _gameHistoryDAO.getGamesPlayedCount(from, duration);
     }
 
-    public final List<JSONData.FormatStats> getGameHistoryStatistics(ZonedDateTime from, ZonedDateTime to) {
-        return _gameHistoryDAO.GetAllGameFormatData(from, to);
-    }
-
     public final List<PlayerStatistic> getCasualPlayerStatistics(User player) {
         return _gameHistoryDAO.getCasualPlayerStatistics(player);
     }
 
     public final List<PlayerStatistic> getCompetitivePlayerStatistics(User player) {
         return _gameHistoryDAO.getCompetitivePlayerStatistics(player);
+    }
+
+    public Map<String, Object> serializeForServerStats(ZonedDateTime from, ZonedDateTime to) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("ActivePlayers", getActivePlayersCount(from, to));
+        result.put("GamesCount", getGamesPlayedCount(from, to));
+        result.put("StartDate", from.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        result.put("EndDate", to.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        result.put("Stats", _gameHistoryDAO.GetAllGameFormatData(from, to));
+        return result;
     }
 }

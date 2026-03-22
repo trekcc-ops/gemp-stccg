@@ -1,0 +1,163 @@
+{
+    "setId" : "159",
+    "setName" : "Homefront III",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "159_004",
+            "title" : "El-Aurian Phaser",
+            "type" : "equipment",
+            "property-logo" : "generations-logo",
+            "lore" : "Unusual, easily concealed weapon carried by Dr. Tolian Soran. Capable of producing powerful bursts of phased energy. Targeting scope increases accuracy, in the right hands.",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/4.jpg",
+            "rarity" : "V",
+            "modifiers" : [
+                {
+                    "type" : "addStrength",
+                    "modifiedCards" : "yours + presentWithThisCard + personnel + not(SCIENCE + Treachery)",
+                    "amount" : 1
+                },
+                {
+                    "type" : "addStrength",
+                    "modifiedCards" : "yours + presentWithThisCard + personnel + SCIENCE + Treachery",
+                    "amount" : 3
+                }
+            ]
+        },
+        {
+            "blueprintId" : "159_006",
+            "title" : "Trilithium Weapon Control PADD",
+            "type" : "equipment",
+            "property-logo" : "generations-logo",
+            "characteristic" : "padd",
+            "lore" : "PADD used by Dr. Tolian Soran to remotely control his solar probe and its trilithium-based nuclear inhibitor. Modified programming also governs launch and cloak functions.",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/6.jpg",
+            "rarity" : "V",
+            "modifiers" : [
+                {
+                    "type" : "addCunning",
+                    "modifiedCards" : "yours + presentWithThisCard + personnel + Astrophysics + Stellar Cartography + not(Treachery)",
+                    "amount" : 1
+                },
+                {
+                    "type" : "addCunning",
+                    "modifiedCards" : "yours + presentWithThisCard + personnel + Astrophysics + Stellar Cartography + Treachery",
+                    "amount" : 3
+                }
+            ]
+        },
+        {
+            "blueprintId" : "159_020",
+            "title" : "T'Lara",
+            "type" : "personnel",
+            "affiliation" : "federation",
+            "uniqueness" : "universal",
+            "property-logo" : "ds9-logo",
+            "classification" : "V.I.P.",
+            "icons" : "command",
+            "characteristic" : "admiral",
+            "lore" : "Typical Vulcan admiral. She presided over Worf's extradition hearing in 2372. Threatened to hold both Worf and Ch'Pok in contempt of court.",
+            "species" : "vulcan",
+            "gender" : "female",
+            "skill-box" : "[*] Leadership [*] Law [*] Exobiology [*] Mindmeld",
+            "integrity" : 7,
+            "cunning" : 8,
+            "strength" : 5,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/20.jpg"
+        },
+        {
+            "blueprintId" : "159_026",
+            "title" : "Jaglom Shrek",
+            "type" : "personnel",
+            "affiliation" : "non-aligned",
+            "property-logo" : "tng-logo",
+            "classification" : "CIVILIAN",
+            "icons" : "staff",
+            "lore" : "Yridian informant. Told Worf of the secret prison camp in the Carraya system. Likes to tinker with his warp drive. Commanded a Yridian Shuttle.",
+            "species" : "yridian",
+            "gender" : "male",
+            "skill-box" : "[*] Navigation [*] Physics [*] Transporter Skill [*] Greed [DL] Jaglom Shrek: Information Broker",
+            "integrity" : 4,
+            "cunning" : 7,
+            "strength" : 3,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/26.jpg"
+        },
+        {
+            "blueprintId" : "159_029",
+            "title" : "Sabrun",
+            "type" : "personnel",
+            "affiliation" : "romulan",
+            "uniqueness" : "universal",
+            "property-logo" : "nemesis-logo",
+            "classification" : "V.I.P.",
+            "lore" : "Representative of the many senators navigating the perilous and delicate political landscape on Romulus. Seeks to better the Star Empire for his two sons.",
+            "species" : "romulan",
+            "gender" : "male",
+            "skill-box" : "[*] Law [*] Diplomacy [*] Exobiology",
+            "integrity" : 5,
+            "cunning" : 7,
+            "strength" : 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/29.jpg"
+        },
+        {
+            "blueprintId" : "159_031",
+            "title" : "Tomalak",
+            "type" : "personnel",
+            "affiliation" : "romulan",
+            "property-logo" : "tng-logo",
+            "classification" : "OFFICER",
+            "icons" : "command",
+            "lore" : "Beguiling adversary of the <i>U.S.S. Enterprise</i>. Plotted to display its broken hull on Romulus as a symbol of victory. Commanded the <i>Deranas</i>.",
+            "species" : "romulan",
+            "gender" : "male",
+            "integrity" : 4,
+            "cunning" : 7,
+            "strength" : 9,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/31.jpg",
+            "skill-box" : {
+                "skill-dots" : 5,
+                "skills" : [
+                    {
+                        "type" : "regular",
+                        "name" : "Diplomacy"
+                    },
+                    {
+                        "type" : "regular",
+                        "name" : "Leadership"
+                    },
+                    {
+                        "type" : "regular",
+                        "name" : "Navigation"
+                    },
+                    {
+                        "type" : "regular",
+                        "name" : "Law"
+                    },
+                    {
+                        "type" : "regular",
+                        "name" : "Treachery"
+                    },
+                    {
+                        "type" : "specialDownload",
+                        "text" : "Any Captain's Order card",
+                        "downloadCardFilter" : "captains-order"
+                    }
+                ]
+            }
+        },
+        {
+            "blueprintId" : "159_035",
+            "title" : "Trolarak",
+            "type" : "ship",
+            "affiliation" : "romulan",
+            "property-logo" : "tng-logo",
+            "ship-class": "D'DERIDEX CLASS",
+            "lore" : "Warbird involved in the 2369 race to unravel the DNA puzzle discovered by Richard Galen. Commanded by Galathon.",
+            "gametext": ["Cloaking Device","Holodeck","Tractor Beam"],
+            "range" : 8,
+            "weapons" : 8,
+            "shields" : 8,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/homefront3/35.jpg"
+        }
+    ]
+}

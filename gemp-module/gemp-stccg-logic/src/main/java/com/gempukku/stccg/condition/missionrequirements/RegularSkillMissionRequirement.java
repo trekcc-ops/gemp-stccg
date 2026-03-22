@@ -1,7 +1,9 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.SkillName;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 
@@ -19,10 +21,10 @@ public class RegularSkillMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context) {
         int totalSkillLevel = 0;
         for (PersonnelCard card : personnel) {
-            totalSkillLevel += card.getSkillLevel(_skill);
+            totalSkillLevel += card.getSkillLevel(cardGame, _skill);
         }
         return totalSkillLevel >= _count;
     }
@@ -33,6 +35,11 @@ public class RegularSkillMissionRequirement implements MissionRequirement {
         if (_count > 1)
             result = result + " x" + _count;
         return result;
+    }
+
+    @Override
+    public boolean requiresSkill(SkillName skillName, DefaultGame cardGame, GameTextContext context) {
+        return _skill == skillName;
     }
 
 }

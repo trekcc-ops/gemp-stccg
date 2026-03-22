@@ -1,116 +1,70 @@
 package com.gempukku.stccg.async.handler.admin;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.DateUtils;
 import com.gempukku.stccg.async.GempHttpRequest;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
-import com.gempukku.stccg.async.handler.UriRequestHandler;
-import com.gempukku.stccg.league.LeagueData;
-import com.gempukku.stccg.league.LeagueSeriesData;
-import com.gempukku.stccg.league.SoloDraftLeagueData;
+import com.gempukku.stccg.cards.CardBlueprintLibrary;
+import com.gempukku.stccg.collection.CollectionType;
+import com.gempukku.stccg.draft.DraftFormatLibrary;
+import com.gempukku.stccg.formats.FormatLibrary;
+import com.gempukku.stccg.league.LeagueService;
+import com.gempukku.stccg.league.SoloDraftLeague;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import javax.xml.parsers.ParserConfigurationException;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class LeagueAdminDraftRequestHandler implements UriRequestHandler, AdminRequestHandler {
+public class LeagueAdminDraftRequestHandler implements AdminRequestHandler, NewLeagueHandler {
 
-    // TODO - This doesn't work
-
-    private final long _creationTime;
-    private final String _start;
-    private final String _maxMatches;
-    private final String _name;
-    private final String _seriesDuration;
-    private final String _costString;
-    private final String _format;
     private final boolean _preview;
+    private final LeagueService _leagueService;
+    private final SoloDraftLeague _league;
 
     LeagueAdminDraftRequestHandler(
-        @JsonProperty(value = "start", required = true)
+            @JsonProperty(value = "start", required = true)
         String start,
-        @JsonProperty(value = "name", required = true)
+            @JsonProperty(value = "name", required = true)
         String name,
-        @JsonProperty(value = "format", required = true)
-        String format,
-        @JsonProperty(value = "seriesDuration", required = true)
-        String seriesDuration,
-        @JsonProperty(value = "maxMatches", required = true)
-        String maxMatches,
-        @JsonProperty(value = "cost", required = true)
-        String costString,
-        @JsonProperty(value = "preview", required = true)
-        boolean preview
-    ) {
-        _creationTime = System.currentTimeMillis();
-        _start = start;
-        _seriesDuration = seriesDuration;
-        _maxMatches = maxMatches;
-        _name = name;
-        _costString = costString;
-        _format = format;
+            @JsonProperty(value = "draftType", required = true)
+        String draftType,
+            @JsonProperty(value = "seriesDuration", required = true)
+        int seriesDuration,
+            @JsonProperty(value = "maxMatches", required = true)
+        int maxMatches,
+            @JsonProperty(value = "cost", required = true)
+        int cost,
+            @JsonProperty(value = "preview", required = true)
+        boolean preview,
+            @JacksonInject CardBlueprintLibrary cardBlueprintLibrary,
+            @JacksonInject FormatLibrary formatLibrary,
+            @JacksonInject DraftFormatLibrary draftLibrary,
+            @JacksonInject LeagueService leagueService) {
         _preview = preview;
+        _leagueService = leagueService;
+        LocalDate startDate = LocalDate.parse(start, DateTimeFormatter.ofPattern("yyyyMMdd"));
+        ZonedDateTime startTime = startDate.atStartOfDay(ZoneId.of("UTC"));
+        _league = new SoloDraftLeague(cost, name, 0, CollectionType.ALL_CARDS, cardBlueprintLibrary,
+                startTime, seriesDuration, maxMatches, draftLibrary.getSoloDraft(draftType), System.currentTimeMillis(),
+                formatLibrary);
     }
 
     @Override
-    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter, ServerObjects serverObjects)
+    public void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
             throws Exception {
         validateLeagueAdmin(request);
-        String serializedParams = String.join(",", _format, _start, _seriesDuration, _maxMatches,
-                String.valueOf(_creationTime), _name);
-
-        LeagueData leagueData = new SoloDraftLeagueData(serverObjects.getCardBlueprintLibrary(),
-                serverObjects.getFormatLibrary(), serverObjects.getSoloDraftDefinitions(),
-                serializedParams);
-
         if (_preview) {
-            Document doc = serializeLeague(leagueData);
+            Document doc = serializeLeague(_league);
             responseWriter.writeXmlResponseWithNoHeaders(doc);
         } else {
-            List<LeagueSeriesData> series = leagueData.getSeries();
-            int leagueStart = series.getFirst().getStart();
-            int displayEnd = DateUtils.offsetDate(series.getLast().getEnd(), 2);
-            int cost = Integer.parseInt(_costString);
-
-            serverObjects.getLeagueDAO().addLeague(cost, _name, String.valueOf(_creationTime),
-                    leagueData.getClass().getName(), serializedParams, leagueStart, displayEnd);
-            serverObjects.getLeagueService().clearCache();
-
+            _leagueService.addLeague(_league);
+            _leagueService.clearCache();
             responseWriter.writeJsonOkResponse();
         }
-    }
-
-    private Document serializeLeague(LeagueData leagueData)
-            throws ParserConfigurationException {
-        Document doc = createNewDoc();
-
-        Element leagueElem = doc.createElement("league");
-        final List<LeagueSeriesData> allSeries = leagueData.getSeries();
-        int end = allSeries.getLast().getEnd();
-
-        leagueElem.setAttribute("name", _name);
-        leagueElem.setAttribute("cost", _costString);
-        leagueElem.setAttribute("start", String.valueOf(allSeries.getFirst().getStart()));
-        leagueElem.setAttribute("end", String.valueOf(end));
-
-        for (LeagueSeriesData series : allSeries) {
-            Element seriesElem = doc.createElement("series");
-            seriesElem.setAttribute("type", series.getName());
-            seriesElem.setAttribute("maxMatches", String.valueOf(series.getMaxMatches()));
-            seriesElem.setAttribute("start", String.valueOf(series.getStart()));
-            seriesElem.setAttribute("end", String.valueOf(series.getEnd()));
-            seriesElem.setAttribute("format", series.getFormat().getName());
-            seriesElem.setAttribute("collection", series.getCollectionType().getFullName());
-            seriesElem.setAttribute("limited", String.valueOf(series.isLimited()));
-
-            leagueElem.appendChild(seriesElem);
-        }
-        doc.appendChild(leagueElem);
-        return doc;
     }
 
 }

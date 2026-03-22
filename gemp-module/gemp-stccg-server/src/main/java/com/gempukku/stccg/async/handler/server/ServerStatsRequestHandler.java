@@ -1,10 +1,10 @@
 package com.gempukku.stccg.async.handler.server;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gempukku.stccg.async.GempHttpRequest;
 import com.gempukku.stccg.async.HttpProcessingException;
-import com.gempukku.stccg.async.ServerObjects;
 import com.gempukku.stccg.async.handler.ResponseWriter;
 import com.gempukku.stccg.async.handler.UriRequestHandler;
 import com.gempukku.stccg.game.GameHistoryService;
@@ -16,8 +16,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -25,12 +23,14 @@ public class ServerStatsRequestHandler implements UriRequestHandler {
     private static final Logger LOGGER = LogManager.getLogger(ServerStatsRequestHandler.class);
     private final ZonedDateTime _fromDate;
     private final ZonedDateTime _toDate;
+    private final GameHistoryService _gameHistoryService;
     
     ServerStatsRequestHandler(
             @JsonProperty("startDay")
             String startDayText,
             @JsonProperty("length")
-            String length
+            String length,
+            @JacksonInject GameHistoryService gameHistoryService
     ) throws ParseException, HttpProcessingException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -45,19 +45,13 @@ public class ServerStatsRequestHandler implements UriRequestHandler {
             case "day" -> _toDate = _fromDate.plusDays(1);
             default -> throw new HttpProcessingException(HttpURLConnection.HTTP_BAD_REQUEST); // 400
         }
+        _gameHistoryService = gameHistoryService;
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter,
-                                    ServerObjects serverObjects) throws Exception {
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter) throws Exception {
         try {
-            GameHistoryService gameHistoryService = serverObjects.getGameHistoryService();
-            Map<Object, Object> stats = new HashMap<>();
-            stats.put("ActivePlayers", gameHistoryService.getActivePlayersCount(_fromDate, _toDate));
-            stats.put("GamesCount", gameHistoryService.getGamesPlayedCount(_fromDate, _toDate));
-            stats.put("StartDate", _fromDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            stats.put("EndDate", _toDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-            stats.put("Stats", gameHistoryService.getGameHistoryStatistics(_fromDate, _toDate));
+            Map<String, Object> stats = _gameHistoryService.serializeForServerStats(_fromDate, _toDate);
             responseWriter.writeJsonResponse(new ObjectMapper().writeValueAsString(stats));
         } catch (Exception exp) {
             logHttpError(LOGGER, HttpURLConnection.HTTP_BAD_REQUEST, request.uri(), exp);

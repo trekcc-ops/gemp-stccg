@@ -1,0 +1,51 @@
+{
+    "setId" : "181",
+    "setName" : "Crossover",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "181_003",
+            "title" : "Climbing the Ranks",
+            "type" : "dilemma",
+            "mission-type" : "space",
+            "property-logo": "tos-logo",
+            "lore" : "Chief Navigator Chekov attempted to advance his standing on the <i>I.S.S. Enterprise</i> by assassinating James Tiberius Kirk, who had himself eliminated Captain Pike.",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "kill",
+                            "target": {
+                                "type": "select",
+                                "selectingPlayer": "opponent",
+                                "filter": "highestStrength(personnel + OFFICER + not(Leadership) + presentWithThisCard)",
+                                "count": 1
+                            }
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "STRENGTH>24"
+                        }
+                    ]
+                }
+            ],
+            "image-url" : "https://www.trekcc.org/1e/cardimages/crossover/3.jpg"
+        },
+        {
+            "blueprintId" : "181_037",
+            "title" : "Investigate Intrusion",
+            "type" : "mission",
+            "mission-type" : "space",
+            "region" : "Bajor",
+            "location" : "Denorios Belt",
+            "lore" : "Evaluate threat posed by ship after sudden appearance.",
+            "mission-requirements" : "Leadership + SECURITY + OFFICER + STRENGTH>30",
+            "affiliation-icons" : "klingon,cardassian",
+            "point-box" : 30,
+            "span" : 3,
+            "quadrant" : "mirror",
+            "image-url" : "https://www.trekcc.org/1e/cardimages/crossover/37.jpg"
+        }
+    ]
+}

@@ -2,15 +2,8 @@ package com.gempukku.stccg.competitive;
 
 import com.gempukku.stccg.common.DescComparator;
 import com.gempukku.stccg.common.MultipleComparator;
-import com.gempukku.stccg.database.User;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BestOfOneStandingsProducer {

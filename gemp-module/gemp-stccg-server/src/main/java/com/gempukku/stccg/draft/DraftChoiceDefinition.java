@@ -1,7 +1,6 @@
 package com.gempukku.stccg.draft;
 
 import com.fasterxml.jackson.annotation.*;
-import com.gempukku.stccg.actions.SelectCardsResolver;
 import com.gempukku.stccg.collection.CardCollection;
 import com.gempukku.stccg.collection.DefaultCardCollection;
 

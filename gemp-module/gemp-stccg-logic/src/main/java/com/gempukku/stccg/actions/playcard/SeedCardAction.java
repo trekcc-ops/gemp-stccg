@@ -1,31 +1,43 @@
 package com.gempukku.stccg.actions.playcard;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.actions.ActionStatus;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.gamestate.GameState;
 
-import java.util.List;
+public abstract class SeedCardAction extends PlayCardAction {
 
-public class SeedCardAction extends PlayCardAction {
-
-    public SeedCardAction(PhysicalCard cardToSeed) {
-        this(cardToSeed, null);
+    @JsonCreator
+    private SeedCardAction(@JsonProperty("actionId") int actionId,
+                           @JsonProperty("seededCardId") @JsonIdentityReference(alwaysAsId=true)
+                           PhysicalCard cardEnteringPlay,
+                           @JsonProperty("performingCardId") @JsonIdentityReference(alwaysAsId=true)
+                               PhysicalCard performingCard,
+                           @JsonProperty("performingPlayerId")
+                           String performingPlayerName,
+                           @JsonProperty("destinationZone")
+                           Zone destinationZone,
+                           @JsonProperty("status")
+                           ActionStatus status) {
+        super(actionId, performingCard, cardEnteringPlay, performingPlayerName, destinationZone, ActionType.SEED_CARD,
+                status);
     }
 
-    public SeedCardAction(PhysicalCard cardToSeed, Zone zone) {
-        super(cardToSeed, cardToSeed, cardToSeed.getOwner(), zone, ActionType.SEED_CARD);
-        setText("Seed " + cardToSeed.getFullName());
+    protected SeedCardAction(DefaultGame cardGame, PhysicalCard cardToSeed, Zone zone) {
+        super(cardGame, cardToSeed, cardToSeed, cardToSeed.getOwnerName(), zone, ActionType.SEED_CARD);
     }
 
-    @Override
-    protected void putCardIntoPlay(DefaultGame game) {
-        GameState gameState = game.getGameState();
-        gameState.removeCardsFromZoneWithoutSendingToClient(game, List.of(_cardEnteringPlay));
-        gameState.addCardToZoneWithoutSendingToClient(_cardEnteringPlay, _destinationZone);
-        setAsSuccessful();
-        game.getActionsEnvironment().emitEffectResult(new PlayCardResult(this, _cardEnteringPlay));
+    @JsonProperty("seededCardId")
+    protected int getSeededCardId() {
+        if (_cardEnteringPlay != null) {
+            return _cardEnteringPlay.getCardId();
+        } else {
+            return 0;
+        }
     }
 
 }

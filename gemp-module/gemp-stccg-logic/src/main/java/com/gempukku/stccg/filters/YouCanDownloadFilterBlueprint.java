@@ -1,11 +1,11 @@
 package com.gempukku.stccg.filters;
 
-import com.gempukku.stccg.cards.ActionContext;
-import com.gempukku.stccg.common.filterable.Filterable;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class YouCanDownloadFilterBlueprint implements FilterBlueprint {
-    public Filterable getFilterable(ActionContext actionContext) {
-        return Filters.cardsYouCanDownload(actionContext.getPerformingPlayer());
+    public CardFilter getFilterable(DefaultGame cardGame, GameTextContext actionContext) {
+        return Filters.cardsYouCanDownload(actionContext.yourName());
     }
 
 }

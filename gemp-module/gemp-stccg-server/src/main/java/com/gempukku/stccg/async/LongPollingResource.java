@@ -4,4 +4,5 @@ public interface LongPollingResource {
     boolean wasProcessed();
 
     void processIfNotProcessed();
+    void processInSystem(LongPollingSystem system);
 }

@@ -78,4 +78,14 @@ public class DbIpBanDAO implements IpBanDAO {
         }
     }
 
+    public boolean isIpBanned(String ip) {
+        if (getIpBans().contains(ip))
+            return true;
+        for (String bannedRange : getIpPrefixBans()) {
+            if (ip.startsWith(bannedRange))
+                return true;
+        }
+        return false;
+    }
+
 }

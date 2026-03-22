@@ -1,0 +1,31 @@
+package com.gempukku.stccg.evaluator;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.game.DefaultGame;
+
+public class VariableRangeValueSource implements ValueSource {
+
+    private final SingleValueSource _fromValue;
+    private final SingleValueSource _toValue;
+
+    public VariableRangeValueSource(
+            @JsonProperty(value = "from", required = true)
+            SingleValueSource fromValue,
+            @JsonProperty(value = "to", required = true)
+            SingleValueSource toValue) {
+        _fromValue = fromValue;
+        _toValue = toValue;
+    }
+
+    @Override
+    public int getMinimum(DefaultGame cardGame, GameTextContext actionContext) {
+        return _fromValue.evaluateExpression(cardGame, actionContext);
+    }
+
+    @Override
+    public int getMaximum(DefaultGame cardGame, GameTextContext actionContext) {
+        return _toValue.evaluateExpression(cardGame, actionContext);
+    }
+
+}

@@ -72,7 +72,8 @@ export default class GameAnimations {
                 let cardId = "anim";
                 let emptyLocationIndex = "";
                 let upsideDown = false;
-                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
+                let title = element.getAttribute("title");
+                let card = new Card(blueprintId, zone, cardId, participantId, title, imageUrl, emptyLocationIndex, upsideDown);
                 let cardDiv = createSimpleCardDiv(card.imageUrl);
 
                 $("#main").queue(
@@ -149,7 +150,8 @@ export default class GameAnimations {
                             let cardId = `anim${i}`;
                             let emptyLocationIndex = "";
                             let upsideDown = false;
-                            let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, emptyLocationIndex, upsideDown);
+                            let title = element.getAttribute("title");
+                            let card = new Card(blueprintId, zone, cardId, participantId, title, imageUrl, emptyLocationIndex, upsideDown);
                             let cardDiv = createSimpleCardDiv(card.imageUrl);
 
                             let targetCard = getCardDivFromId(targetCardId);
@@ -220,9 +222,9 @@ export default class GameAnimations {
 
     drawCard(performingPlayerId, gameState) {
         this.game.updateGameStats(gameState); // update card counts in draw decks
-        for (const player of gameState.players) {
-            if (player.playerId == performingPlayerId && player.playerId == this.game.bottomPlayerId) {
-                for (const cardId of player.cardGroups["HAND"].cardIds) {
+        for (const playerData of Object.values(gameState.playerMap)) {
+            if (playerData.playerId == performingPlayerId && playerData.playerId == this.game.bottomPlayerId) {
+                for (const cardId of playerData.cardGroups["HAND"].cardIds) {
                     let cardDiv = getCardDivFromId(cardId);
                     if (cardDiv.length == 0) {
                         let card = gameState.visibleCardsInGame[cardId];
@@ -234,6 +236,19 @@ export default class GameAnimations {
     }
 
     addCardToHiddenZone(cardJson, zone, zoneOwner) {
+        if (cardJson == null) {
+            console.warn(`addCardToHiddenZone: cardJson parameter was null or undefined.`);
+            return;
+        }
+        if (zone == null) {
+            console.warn(`addCardToHiddenZone: zone parameter was null or undefined.`);
+            return;
+        }
+        if (zoneOwner == null) {
+            console.warn(`addCardToHiddenZone: zoneOwner parameter was null or undefined.`);
+            return;
+        }
+
         // Adding card to discard, hand, removed, or draw deck
         // console.log("calling addCardToHiddenZone");
         var that = this;
@@ -243,21 +258,21 @@ export default class GameAnimations {
         let locationIndex = "-1";
         let upsideDown = false;
         let controllerId = zoneOwner;
+        let cardTitle = (cardJson.title) ? cardJson.title : "";
 
         $("#main").queue(
             function (next) {
 
-                let card = new Card(blueprintId, zone, cardId, controllerId, imageUrl, locationIndex, upsideDown);
-                let cardDiv = that.game.createCardDivWithData(card, null);
+                let card = new Card(blueprintId, zone, cardId, controllerId, cardTitle, imageUrl, locationIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card);
 
-                if (zone == "DISCARD")
-                    that.game.discardPileDialogs[controllerId].append(cardDiv);
-                else if (zone == "DRAW_DECK")
+                if (zone === "DRAW_DECK") {
                     that.game.miscPileDialogs[controllerId].append(cardDiv);
-                else if (zone == "REMOVED")
-                    that.game.removedPileDialogs[controllerId].append(cardDiv);
-                else
+                }
+                else {
+                    console.warn(`addCardToHiddenZone: Unknown zone ${zone}, appending to main.`);
                     $("#main").append(cardDiv);
+                }
                 next();
             });
 
@@ -285,6 +300,7 @@ export default class GameAnimations {
         let locationIndex = spacelineIndex.toString();
         let upsideDown = (participantId != that.game.bottomPlayerId);
         let thisGame = this.game;
+        let cardTitle = (cardJson.title) ? cardJson.title : "";
 
         $("#main").queue(
             function (next) {
@@ -297,8 +313,8 @@ export default class GameAnimations {
                     thisGame.addSharedMission(locationIndex, quadrant, region);
                 }
 
-                let card = new Card(blueprintId, zone, cardId, participantId, imageUrl, locationIndex, upsideDown);
-                let cardDiv = thisGame.createCardDivWithData(card, null);
+                let card = new Card(blueprintId, zone, cardId, participantId, cardTitle, imageUrl, locationIndex, upsideDown);
+                let cardDiv = thisGame.createCardDivWithData(card);
 
                 $("#main").append(cardDiv);
                 next();
@@ -322,11 +338,15 @@ export default class GameAnimations {
         let imageUrl = cardJson.imageUrl;
         let blueprintId = cardJson.blueprintId;
         let attachedToCardId = cardJson.attachedToCardId;
+        let isPlacedOnMission = cardJson.isPlacedOnMission
         let upsideDown = (performingPlayerId != that.game.bottomPlayerId);
+        let cardTitle = (cardJson.title) ? cardJson.title : "";
 
         let zone;
         if (attachedToCardId != null) {
             zone = "ATTACHED";
+        } else if (isPlacedOnMission) {
+            zone = "PLACED_ON_MISSION";
         } else if (spacelineIndex.toString() === "-1") {
             zone = "CORE";
         } else {
@@ -336,8 +356,8 @@ export default class GameAnimations {
         $("#main").queue(
             function (next) {
 
-                let card = new Card(blueprintId, zone, cardId, performingPlayerId, imageUrl, spacelineIndex, upsideDown);
-                let cardDiv = that.game.createCardDivWithData(card, null);
+                let card = new Card(blueprintId, zone, cardId, performingPlayerId, cardTitle, imageUrl, spacelineIndex, upsideDown);
+                let cardDiv = that.game.createCardDivWithData(card);
 
                 $("#main").append(cardDiv);
 
@@ -585,8 +605,10 @@ export default class GameAnimations {
             $("#main").queue(
                 function (next) {
                     that.game.layoutGroupWithCard(that.cardId);
-                    that.cardData.oldGroup.layoutCards();
-                    that.cardData.oldGroup = null;
+                    if (that.cardData.oldGroup != null) {
+                        that.cardData.oldGroup.layoutCards();
+                        that.cardData.oldGroup = null;
+                    }
                     next();
                 });
     }
@@ -603,13 +625,13 @@ export default class GameAnimations {
             let zone = "VOID";
             let cardId = card_json.cardId;
             let noOwner = "";
+            let title = (card_json.title) ? card_json.title : "";
             let imageUrl = card_json.imageUrl;
             let emptyLocationIndex = "";
             let upsideDown = false;
-            let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-            let text = "";
+            let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
 
-            let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+            let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
             let pageWidth = document.body.clientWidth;
             let oneSixthWidthVal = (pageWidth / 6);
@@ -693,11 +715,11 @@ export default class GameAnimations {
                 let zone = "VOID";
                 let cardId = card_json.cardId;
                 let noOwner = "";
+                let title = (card_json.title) ? card_json.title : "";
                 let imageUrl = card_json.imageUrl;
                 let emptyLocationIndex = "";
                 let upsideDown = false;
-                let card = new Card(blueprintId, zone, cardId, noOwner, imageUrl, emptyLocationIndex, upsideDown);
-                let text = "";
+                let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
 
                 if (card_json.isStopped) {
                     card.addStatusToken("STOPPED");
@@ -706,7 +728,7 @@ export default class GameAnimations {
                     card.removeStatusToken("STOPPED");
                 }
 
-                let baseCardDiv = createCardDiv(card.imageUrl, text, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+                let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
 
                 let pageWidth = document.body.clientWidth;
                 let oneSixthWidthVal = (pageWidth / 6);
@@ -864,33 +886,42 @@ export default class GameAnimations {
                 let newPhaseName = getFriendlyPhaseName(newPhase);
                 let uiPlayer = that.game.bottomPlayerId;
                 let currentPhaseName = $("#currentPhase").text();
-                if (that.game.allPlayerIds.includes(uiPlayer)) {
-                    if (newPhase === "SEED_MISSION" && newPhaseName != currentPhaseName) {
+                if (that.game.allPlayerIds.includes(uiPlayer) && newPhaseName != currentPhaseName) {
+                    if (newPhase === "SEED_MISSION") {
                         // if initializing mission seed phase
-                        for (const player of gameState.players) {
-                            if (player.playerId === uiPlayer) {
-                                let missionPileCardIds = player.cardGroups["MISSIONS_PILE"].cardIds;
+                        for (const playerData of Object.values(gameState.playerMap)) {
+                            if (playerData.playerId === uiPlayer) {
+                                let missionPileCardIds = playerData.cardGroups["MISSIONS_PILE"].cardIds;
                                 for (let i = missionPileCardIds.length - 1; i >= 0; i--) {
                                     let card = gameState.visibleCardsInGame[missionPileCardIds[i]];
                                     that.addCardToHiddenZone(card, "MISSIONS_PILE", uiPlayer);
                                 }
                             }
                         }
-                    } else if ((newPhase === "SEED_DILEMMA" || newPhase === "SEED_FACILITY") &&
-                            currentPhaseName != "Facility seed phase" && currentPhaseName != "Dilemma seed phase") {
-                            /* All dilemma and facility phase cards are put in the hand group at the beginning of
-                                the dilemma seed phase, so this shouldn't be run again when the phase moves from
-                                dilemma phase to facility phase. */
-                        for (const player of gameState.players) {
-                            if (player.playerId === uiPlayer) {
-                                let seedDeckCardIds = player.cardGroups["SEED_DECK"].cardIds;
+                    } else if (newPhase === "SEED_DILEMMA") {
+                        for (const playerData of Object.values(gameState.playerMap)) {
+                            if (playerData.playerId === uiPlayer) {
+                                let seedDeckCardIds = playerData.cardGroups["SEED_DECK_FOR_DILEMMA_PHASE"].cardIds;
                                 for (const cardId of seedDeckCardIds) {
                                     let card = gameState.visibleCardsInGame[cardId];
                                     that.addCardToHiddenZone(card, "SEED_DECK", uiPlayer);
                                 }
                             }
                         }
-                    }
+                    } else if (newPhase === "SEED_FACILITY") {
+                         for (const playerData of Object.values(gameState.playerMap)) {
+                             if (playerData.playerId === uiPlayer) {
+                                 let seedDeckCardIds = playerData.cardGroups["SEED_DECK_OTHER"].cardIds;
+                                 for (const cardId of seedDeckCardIds) {
+                                     let card = gameState.visibleCardsInGame[cardId];
+                                     that.addCardToHiddenZone(card, "SEED_DECK", uiPlayer);
+                                 }
+                             }
+                         }
+                         // Forcibly update seed card badge count after all dilemmas are seeded
+                         // so players have the latest info when playing facilities
+                         that.updateSeedCardCountBadge(gameState);
+                     }
                 }
                 $("#currentPhase").text(newPhaseName);
                 next();
@@ -957,45 +988,6 @@ export default class GameAnimations {
             });
     }
 
-    processDecision(decision, animate) {
-        var that = this;
-        $("#main").queue(
-            function (next) {
-                let decisionType = decision.decisionType;
-                if (decisionType === "INTEGER") {
-                    that.game.integerDecision(decision);
-                } else if (decisionType === "MULTIPLE_CHOICE") {
-                    that.game.multipleChoiceDecision(decision);
-                } else if (decisionType === "ARBITRARY_CARDS") {
-                    that.game.arbitraryCardsDecision(decision);
-                } else if (decisionType === "ACTION_CHOICE") {
-                    that.game.actionChoiceDecision(decision);
-                } else if (decisionType === "CARD_ACTION_CHOICE") {
-                    that.game.cardActionChoiceDecision(decision);
-                } else if (decisionType === "CARD_SELECTION") {
-                    that.game.cardSelectionDecision(decision);
-                } else if (decisionType === "CARD_SELECTION_FROM_COMBINATIONS") {
-                    that.game.cardSelectionFromCombinations(decision);
-                }
-                else {
-                    console.error(`Unknown decisionType: ${decisionType}`);
-                    next(); // bail out
-                }
-                
-
-                if (!animate)
-                    that.game.layoutUI(false);
-
-                next();
-            });
-        if (that.game.replayMode) {
-            $("#main").queue(
-                function (next) {
-                    setTimeout(next, that.getAnimationLength(that.decisionDuration));
-                });
-        }
-    }
-
     updateGameState(animate) {
         var that = this;
         $("#main").queue(
@@ -1027,23 +1019,41 @@ export default class GameAnimations {
             function () {
                 let cardData = $(this).data("card");
                 let index = -1;
-                for (let i = 0; i < cardData.attachedCards.length; i++)
+                if (cardData != null) {
+                    for (let i = 0; i < cardData.attachedCards.length; i++)
                     if (cardData.attachedCards[i].data("card").cardId == cardId) {
                         index = i;
                         break;
                     }
-                if (index != -1) {
-                    cardData.attachedCards.splice(index, 1);
-                    getCardDivFromId(cardId).data("card").attachedToCard = null;
+                    if (index != -1) {
+                        cardData.attachedCards.splice(index, 1);
+                        getCardDivFromId(cardId).data("card").attachedToCard = null;
+                    }
                 }
             }
         );
     }
 
     attachCardDivToTargetCardId(cardDiv, targetCardId) {
-        let targetCardData = getCardDivFromId(targetCardId).data("card");
-        targetCardData.attachedCards.push(cardDiv);
-        cardDiv.data("card").attachedToCard = targetCardData;
+        if ((cardDiv != null) && (targetCardId != null)) {
+            let targetCardData = getCardDivFromId(targetCardId).data("card");
+            targetCardData.attachedCards.push(cardDiv);
+            cardDiv.data("card").attachedToCard = targetCardData;
+        }
     }
 
+    updateSeedCardCountBadge(jsonGameState) {
+        for (const location of jsonGameState.spacelineLocations) {
+            if (location.seedCardCount === 0) {
+                for (const missionId of location.missionCardIds) {
+                    getCardDivFromId(missionId).removeClass("seedCardCountBadge").removeAttr("seedCardCount");
+                }
+            }
+            else {
+                for (const missionId of location.missionCardIds) {
+                    getCardDivFromId(missionId).addClass("seedCardCountBadge").attr("seedCardCount", location.seedCardCount);
+                }
+            }
+        }
+    }
 }

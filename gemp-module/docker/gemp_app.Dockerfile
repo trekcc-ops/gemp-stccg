@@ -25,7 +25,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn install -DskipTests
 #
 # Stage 1, Client build
 #
-FROM node:20-alpine AS client-build
+FROM node:lts-alpine AS client-build
 
 # Make and switch to a /gemp-client folder
 RUN mkdir -p /gemp-client
@@ -51,6 +51,7 @@ RUN --mount=type=cache,target=/root/.npm npm run build
 FROM amazoncorretto:21-alpine-jdk AS runtime
 
 RUN mkdir -p /src/gemp-module/gemp-stccg-client/target/
+COPY --from=server-build /gemp-module/gemp-stccg-cards/src/main/resources /etc/gemp-module/gemp-stccg-cards/src/main/resources
 COPY --from=server-build /gemp-module/gemp-stccg-server/src/main/resources/log4j2.xml /src/gemp-module/gemp-stccg-client/target/log4j2.xml
 COPY --from=server-build /gemp-module/gemp-stccg-server/target/gemp-stccg-server-jar-with-dependencies.jar /src/gemp-module/gemp-stccg-client/target/web.jar
 COPY --from=client-build /gemp-client/src/main/web/dist /src/gemp-module/web

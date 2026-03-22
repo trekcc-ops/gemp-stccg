@@ -1,7 +1,5 @@
 package com.gempukku.stccg.competitive;
 
-import com.gempukku.stccg.competitive.CompetitiveMatchResult;
-
 public class LeagueMatchResult implements CompetitiveMatchResult {
     private final String _winner;
     private final String _loser;

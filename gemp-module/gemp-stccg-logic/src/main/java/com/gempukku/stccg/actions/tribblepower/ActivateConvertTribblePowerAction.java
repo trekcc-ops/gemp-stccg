@@ -2,21 +2,20 @@ package com.gempukku.stccg.actions.tribblepower;
 
 import com.gempukku.stccg.actions.placecard.PlaceCardsOnBottomOfDrawDeckAction;
 import com.gempukku.stccg.actions.placecard.PlaceTopCardOfDrawDeckOnTopOfPlayPileAction;
-import com.gempukku.stccg.cards.TribblesActionContext;
-import com.gempukku.stccg.common.filterable.TribblePower;
-import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.game.TribblesGame;
+import com.gempukku.stccg.player.PlayerNotFoundException;
 
 import java.util.List;
 
 
 public class ActivateConvertTribblePowerAction extends ActivateTribblePowerAction {
-    public ActivateConvertTribblePowerAction(TribblesActionContext actionContext, TribblePower power)
+    public ActivateConvertTribblePowerAction(TribblesGame cardGame, PhysicalCard performingCard, GameTextContext actionContext)
             throws PlayerNotFoundException {
-        super(actionContext, power);
-        TribblesGame cardGame = actionContext.getGame();
-        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, actionContext.getPerformingPlayer(),
-                List.of(_performingCard)));
+        super(cardGame, actionContext, performingCard);
+        appendEffect(new PlaceCardsOnBottomOfDrawDeckAction(cardGame, actionContext.yourName(),
+                List.of(_performingCard), true));
         appendEffect(new PlaceTopCardOfDrawDeckOnTopOfPlayPileAction(cardGame,
                 cardGame.getPlayer(_performingPlayerId), 1));
     }

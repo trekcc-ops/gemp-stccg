@@ -3,11 +3,6 @@ package com.gempukku.stccg.service;
 import com.gempukku.stccg.TextUtils;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import io.netty.handler.codec.http.HttpHeaderNames;
-import io.netty.handler.codec.http.HttpHeaders;
-import io.netty.handler.codec.http.HttpMessage;
-import io.netty.handler.codec.http.cookie.Cookie;
-import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;

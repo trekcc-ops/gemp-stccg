@@ -156,17 +156,12 @@ DROP TABLE IF EXISTS `league`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `league` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) COLLATE utf8_bin NOT NULL,
-  `type` varchar(45) COLLATE utf8_bin NOT NULL,
-  `class` varchar(255) COLLATE utf8_bin NOT NULL,
-  `parameters` varchar(255) COLLATE utf8_bin NOT NULL,
-  `start` int(11) NOT NULL,
-  `end` int(11) NOT NULL,
-  `status` int(11) NOT NULL,
-  `cost` int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=478 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `league_id` int(11) NOT NULL AUTO_INCREMENT,
+  `properties` JSON COLLATE utf8_bin NOT NULL,
+  `start` TIMESTAMP NOT NULL,
+  `end` TIMESTAMP NOT NULL,
+  PRIMARY KEY (`league_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,13 +173,13 @@ DROP TABLE IF EXISTS `league_match`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `league_match` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `league_type` varchar(45) COLLATE utf8_bin NOT NULL,
-  `season_type` varchar(45) COLLATE utf8_bin NOT NULL,
+  `league_id` int(11) NOT NULL,
+  `series_name` varchar(45) COLLATE utf8_bin NOT NULL,
   `winner` varchar(45) COLLATE utf8_bin NOT NULL,
   `loser` varchar(45) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `league_match_type` (`league_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=174464 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `league_match_type` (`league_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,12 +191,12 @@ DROP TABLE IF EXISTS `league_participation`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `league_participation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `league_type` varchar(45) COLLATE utf8_bin NOT NULL,
+  `league_id` int(11) NOT NULL,
   `player_name` varchar(45) COLLATE utf8_bin NOT NULL,
   `join_ip` varchar(45) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `league_participation_type` (`league_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=43090 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  KEY `league_participation_type` (`league_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

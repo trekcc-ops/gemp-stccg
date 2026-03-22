@@ -1,16 +1,24 @@
 package com.gempukku.stccg.cards;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.common.filterable.SkillName;
-import com.gempukku.stccg.common.filterable.SkillType;
+
+import java.util.Objects;
 
 public class RegularSkill extends Skill {
     private final SkillName _SkillName;
     private final int _level;
 
-    public RegularSkill(SkillName skill, Integer level) {
-        super(SkillType.REGULAR, skill.get_humanReadable() + " x" + level);
+    @JsonCreator
+    public RegularSkill(
+            @JsonProperty("name")
+            SkillName skill,
+            @JsonProperty("level")
+            Integer level) {
+        super();
         _SkillName = skill;
-        _level = level;
+        _level = Objects.requireNonNullElse(level, 1);
     }
 
     public RegularSkill(SkillName skill) {

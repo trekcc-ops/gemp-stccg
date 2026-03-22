@@ -1,96 +1,208 @@
 package com.gempukku.stccg.actions;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
+import com.gempukku.stccg.decisions.ActionSelectionDecision;
+import com.gempukku.stccg.decisions.AwaitingDecision;
+import com.gempukku.stccg.decisions.DecisionContext;
+import com.gempukku.stccg.game.ActionOrder;
 import com.gempukku.stccg.game.DefaultGame;
+import com.gempukku.stccg.gamestate.ActionProxy;
+import com.gempukku.stccg.gamestate.ActionsEnvironment;
 import com.gempukku.stccg.player.Player;
-import com.gempukku.stccg.player.PlayerNotFoundException;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class ActionResult {
-    private final Set<Action> _optionalTriggersUsed = new HashSet<>();
 
-    public enum Type {
-        ACTIVATE,
-        ACTIVATE_TRIBBLE_POWER,
-        DRAW_CARD_OR_PUT_INTO_HAND,
-        END_OF_TURN,
-        FOR_EACH_DISCARDED_FROM_DECK,
-        FOR_EACH_DISCARDED_FROM_HAND,
-        FOR_EACH_DISCARDED_FROM_PLAY,
-        FOR_EACH_DISCARDED_FROM_PLAY_PILE,
-        FOR_EACH_RETURNED_TO_HAND,
-        FOR_EACH_REVEALED_FROM_HAND,
-        FOR_EACH_REVEALED_FROM_TOP_OF_DECK,
-        PLAY_CARD,
-        PLAYER_WENT_OUT,
-        START_OF_MISSION_ATTEMPT,
-        START_OF_PHASE,
-        START_OF_TURN,
-        DRAW_CARD, WHEN_MOVE_FROM
-    }
+    @JsonProperty("type")
+    private final ActionResultType _type;
+    private final Set<Integer> _triggerActionIdsUsed = new HashSet<>();
 
-    private final Type _type;
-    protected String _playerId;
-    protected final PhysicalCard _source;
-    private Map<Player, List<TopLevelSelectableAction>> _optionalAfterTriggerActions = new HashMap<>();
-        // TODO - In general this isn't doing a great job of assessing who actually performed the action
+    // Actions that can be initiated as optional responses. The key of this map is player name.
+    private final Map<String, List<Action>> _optionalAfterTriggerActions = new HashMap<>();
+
     protected final String _performingPlayerId;
+    private boolean _initialized;
+    private ActionOrder _optionalResponsePlayerOrder;
+    private final List<Action> _requiredResponses = new ArrayList<>();
+    private int _passCount;
+    protected final Action _action;
 
-    protected ActionResult(Type type, PhysicalCard source) {
+    protected final ZonedDateTime _timestamp;
+
+    @JsonProperty("resultId")
+    protected final int _resultId;
+
+    protected ActionResult(int resultId, ActionResultType type, String performingPlayerId, Action action,
+                        ZonedDateTime timestamp) {
+        // This is only used to create action results that have already been logged in the game
         _type = type;
-        _source = source;
-        _performingPlayerId = source.getOwnerName();
+        _performingPlayerId = performingPlayerId;
+        _action = action;
+        _passCount = 0;
+        _timestamp = timestamp;
+        _resultId = resultId;
     }
 
-    public ActionResult(Type type) {
+    public ActionResult(DefaultGame cardGame, ActionResultType type, String performingPlayerId, Action action) {
         _type = type;
-        _source = null;
-        _performingPlayerId = null;
+        _performingPlayerId = performingPlayerId;
+        _action = action;
+        _passCount = 0;
+        _timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
+        _resultId = cardGame.getActionsEnvironment().getNextResultIdAndIncrement();
+        cardGame.getActionsEnvironment().logActionResult(this);
     }
 
-    public ActionResult(Type type, Action action, PhysicalCard source) {
-        _type = type;
-        _source = source;
-        _performingPlayerId = action.getPerformingPlayerId();
+    public ActionResult(DefaultGame cardGame, ActionResultType type, Action action) {
+        this(cardGame, type, action.getPerformingPlayerId(), action);
     }
 
 
-    public Type getType() {
-        return _type;
-    }
-    public void optionalTriggerUsed(Action action) {
-        _optionalTriggersUsed.add(action);
-    }
-    public boolean wasOptionalTriggerUsed(Action action) {
-        return _optionalTriggersUsed.contains(action);
-    }
-    public String getPlayer() { return _playerId; }
-
-    public List<TopLevelSelectableAction> getOptionalAfterTriggerActions(Player player) {
-        if (_optionalAfterTriggerActions.get(player) == null)
-            return new LinkedList<>();
-        else return _optionalAfterTriggerActions.get(player);
+    public void initialize(DefaultGame cardGame) {
+        if (!_initialized) {
+            _initialized = true;
+            createOptionalAfterTriggerActions(cardGame);
+            _requiredResponses.addAll(getRequiredResponseActions(cardGame));
+            _optionalResponsePlayerOrder = cardGame.getRules().getPlayerOrderForActionResponse(this, cardGame);
+        }
     }
 
-    public void createOptionalAfterTriggerActions(DefaultGame game) throws PlayerNotFoundException {
-        Map<Player, List<TopLevelSelectableAction>> allActions = new HashMap<>();
+    public boolean hasType(ActionResultType type) {
+        return _type == type;
+    }
+    public boolean hasAnyType(List<ActionResultType> types) {
+        return types.contains(_type);
+    }
+
+    public void createOptionalAfterTriggerActions(DefaultGame game) {
         for (Player player : game.getPlayers()) {
-            List<TopLevelSelectableAction> playerActions = new LinkedList<>();
-            for (PhysicalCard card : Filters.filterActive(game)) {
-                if (!card.hasTextRemoved(game)) {
-                    final List<TopLevelSelectableAction> actions =
-                            card.getOptionalAfterTriggerActions(player, this);
-                    if (actions != null)
-                        playerActions.addAll(actions);
+            String playerName = player.getPlayerId();
+            List<Action> playerActions = new LinkedList<>();
+            for (PhysicalCard card : game.getAllCardsInPlay()) {
+                playerActions.addAll(card.getOptionalResponseActionsWhileInPlay(game, player));
+            }
+            for (PhysicalCard card : player.getCardsInHand()) {
+                playerActions.addAll(card.getOptionalResponseActionsWhileInHand(game, player));
+            }
+            _optionalAfterTriggerActions.put(playerName, playerActions);
+        }
+    }
+
+
+    @JsonProperty("performingPlayerId")
+    public String getPerformingPlayerId() { return _performingPlayerId; }
+
+    public List<Action> getRequiredResponseActions(DefaultGame cardGame) {
+        List<Action> gatheredActions = new LinkedList<>();
+        for (ActionProxy actionProxy : cardGame.getAllActionProxies()) {
+            List<Action> actions = actionProxy.getRequiredAfterTriggers(cardGame, this);
+            if (actions != null) {
+                gatheredActions.addAll(actions);
+            }
+        }
+        return gatheredActions;
+    }
+
+    @JsonIgnore
+    public boolean canBeRespondedTo() {
+        return !_requiredResponses.isEmpty() || _passCount < _optionalResponsePlayerOrder.getPlayerCount();
+    }
+
+
+    public List<Action> getOptionalAfterActions(DefaultGame cardGame, String playerName) {
+        List<Action> result = new LinkedList<>();
+        if (_optionalAfterTriggerActions.get(playerName) != null) {
+            for (Action action : _optionalAfterTriggerActions.get(playerName)) {
+                if (action.canBeInitiated(cardGame) && !_triggerActionIdsUsed.contains(action.getActionId())) {
+                    result.add(action);
                 }
             }
-            allActions.put(player, playerActions);
         }
-        _optionalAfterTriggerActions = allActions;
+        for (ActionProxy actionProxy : cardGame.getAllActionProxies()) {
+            actionProxy.getOptionalAfterActions(cardGame, playerName, this).forEach(action -> {
+                if (action.canBeInitiated(cardGame)) result.add(action);
+            });
+        }
+        return result;
     }
 
 
-    public String getPerformingPlayerId() { return _performingPlayerId; }
+    private AwaitingDecision selectOptionalResponseActionDecision(DefaultGame cardGame, List<Action> possibleActions,
+                                                                  String activePlayerName) {
+        return new ActionSelectionDecision(activePlayerName, DecisionContext.SELECT_OPTIONAL_RESPONSE_ACTION,
+                possibleActions, cardGame, false) {
+            @Override
+            public void decisionMade(String result) throws DecisionResultInvalidException {
+                Action action = getSelectedAction(result);
+                if (action != null) {
+                    _passCount = 0;
+                    cardGame.getActionsEnvironment().addActionToStack(action);
+                    _triggerActionIdsUsed.add(action.getActionId());
+                } else {
+                    _passCount++;
+                }
+            }
+        };
+    }
+
+    private void refreshActions(DefaultGame cardGame) {
+        for (List<Action> optionalActions : _optionalAfterTriggerActions.values()) {
+            optionalActions.removeIf(action -> !action.canBeInitiated(cardGame));
+        }
+        _requiredResponses.removeIf(nextAction -> !nextAction.canBeInitiated(cardGame));
+    }
+
+
+    public void addNextActionToStack(DefaultGame cardGame) {
+        refreshActions(cardGame);
+        if (!_requiredResponses.isEmpty()) {
+            ActionsEnvironment environment = cardGame.getActionsEnvironment();
+            if (_requiredResponses.size() == 1 && _requiredResponses.getFirst().canBeInitiated(cardGame)) {
+                cardGame.addActionToStack(_requiredResponses.getFirst());
+            } else {
+                String currentPlayerName = cardGame.getCurrentPlayerId();
+                cardGame.sendAwaitingDecision(
+                        new ActionSelectionDecision(currentPlayerName, DecisionContext.SELECT_REQUIRED_RESPONSE_ACTION,
+                                _requiredResponses, cardGame, true) {
+                            @Override
+                            public void decisionMade(String result) throws DecisionResultInvalidException {
+                                Action action = getSelectedAction(result);
+                                environment.addActionToStack(action);
+                                _requiredResponses.remove(action);
+                            }
+                        });
+            }
+        } else {
+            _optionalResponsePlayerOrder.advancePlayer();
+            final String activePlayerName = _optionalResponsePlayerOrder.getCurrentPlayerName();
+            List<Action> possibleActions = getOptionalAfterActions(cardGame, activePlayerName);
+            if (possibleActions.isEmpty()) {
+                _passCount++;
+            } else {
+                cardGame.sendAwaitingDecision(
+                        selectOptionalResponseActionDecision(cardGame, possibleActions, activePlayerName));
+            }
+        }
+    }
+
+    @JsonIgnore
+    public Action getAction() {
+        return _action;
+    }
+
+    @JsonProperty("timestamp")
+    public String getTimestamp() {
+        return _timestamp.toString();
+    }
+
+    public ActionResult getResultForPlayer(String playerName) {
+        return this;
+    }
+
 }

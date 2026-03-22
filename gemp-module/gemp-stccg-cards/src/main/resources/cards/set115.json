@@ -1,0 +1,88 @@
+{
+    "setId": "115",
+    "setName": "The Dominion",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "115_006",
+            "title": "Chula: The Chandra",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "ds9-logo",
+            "lore": "The Chandra is part of an elaborate Wadi game which requires players to advance through several <i>shaps,</i> or levels. To get past this <i>shap,</i> players must precisely mimic the Chandra.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/dom/chulathechandra.gif",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "randomSelection",
+                            "filter": "personnel + encounteringThisCard",
+                            "saveToMemoryId": "selectedPersonnel"
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "selectAll",
+                                "filter": "inCrewOrAwayTeamEncountering + not(memoryId=selectedPersonnel) + not(matchesAttributeOfPersonnel(memoryId=selectedPersonnel))"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "115_010",
+            "title": "Friendly Fire",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "ds9-logo",
+            "lore": "Ferengi lack of leadership resulted in the untimely demise of the Vorta Keevan aboard Empok Nor. His death was a major setback in Quark and Rom's mission to rescue their Moogie.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/dom/friendlyfire.gif",
+            "countdown": 2,
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": {
+                        "type": "overcomeCondition",
+                        "requires": "Leadership x2 + SECURITY x2",
+                        "failEffect": [
+                            {
+                                "type": "kill",
+                                "target": {
+                                    "type": "select",
+                                    "random": true,
+                                    "filter": "personnel + encounteringThisCard",
+                                    "count": 1
+                                }
+                            },
+                            {
+                                "type": "placeOnThisMission",
+                                "modifier": {
+                                    "type": "thisMissionCannotBeAttempted"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "blueprintId": "115_072",
+            "title": "Macet",
+            "type": "personnel",
+            "affiliation": "cardassian",
+            "classification": "OFFICER",
+            "lore": "Cardassian observer aboard the <i>U.S.S. Enterprise</i> during the <i>Phoenix</i> incident of 2367. High-ranking Gul in the Central Command. Strict disciplinarian.",
+            "property-logo": "tng-logo",
+            "icons": "command",
+            "skill-box": "[*] Diplomacy [*] Honor [*] MEDICAL",
+            "integrity": 8,
+            "cunning": 6,
+            "strength": 7,
+            "species": "cardassian",
+            "gender": "male",
+            "image-url": "https://www.trekcc.org/1e/cardimages/sfls/17.jpg"
+        }
+    ]
+}

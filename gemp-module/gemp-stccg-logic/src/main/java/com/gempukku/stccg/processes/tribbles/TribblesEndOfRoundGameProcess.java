@@ -1,18 +1,17 @@
 package com.gempukku.stccg.processes.tribbles;
 
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.placecard.ShuffleCardsIntoDrawDeckAction;
 import com.gempukku.stccg.actions.scorepoints.ScorePointsAction;
+import com.gempukku.stccg.game.EndGameResultType;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.filterable.Zone;
-import com.gempukku.stccg.filters.Filters;
+import com.gempukku.stccg.filters.InCardListFilter;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.game.InvalidGameLogicException;
-import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.game.TribblesGame;
 import com.gempukku.stccg.gamestate.TribblesGameState;
 import com.gempukku.stccg.modifiers.ModifiersLogic;
-import com.gempukku.stccg.actions.scorepoints.PlayerWentOutResult;
+import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
 import com.gempukku.stccg.processes.GameProcess;
 
@@ -35,16 +34,18 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
             if (player.getCardsInHand().isEmpty()) {
                 int score = calculateScore(gameState.getPlayPile(playerId));
                 pointsScored.put(playerId, score);
-                ScorePointsAction scorePointsAction = new ScorePointsAction(_game, null, player, score);
+                ScorePointsAction scorePointsAction = new ScorePointsAction(_game, null, player, score, false);
                 scorePointsAction.processEffect(_game);
                 _game.getActionsEnvironment().logCompletedActionNotInStack(scorePointsAction);
                 _game.sendActionResultToClient(); // for updated points
-                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId, _game));
+                    // TODO - This doesn't work because we removed emitEffectResult
+//                _game.getActionsEnvironment().emitEffectResult(new PlayerWentOutResult(playerId));
             }
 
             // Each player then shuffles their play pile into their decks.
-            ShuffleCardsIntoDrawDeckAction action = new ShuffleCardsIntoDrawDeckAction(null, player,
-                    Filters.in(player.getCardGroupCards(Zone.PLAY_PILE)));
+            ShuffleCardsIntoDrawDeckAction action =
+                    new ShuffleCardsIntoDrawDeckAction(_game, null, playerId,
+                            new InCardListFilter(player.getCardGroupCards(Zone.PLAY_PILE)));
             action.processEffect(cardGame);
             cardGame.getActionsEnvironment().logCompletedActionNotInStack(action);
             cardGame.sendActionResultToClient();
@@ -65,7 +66,7 @@ public class TribblesEndOfRoundGameProcess extends TribblesGameProcess {
                  */
             List<String> winningPlayerList = new ArrayList<>(finalPoints.keySet());
             String winningPlayer = winningPlayerList.get(new Random().nextInt(winningPlayerList.size()));
-            _game.playerWon(winningPlayer, "highest score after 5 rounds");
+            _game.playerWon(winningPlayer, EndGameResultType.WINNING_SCORE);
         } else {
             /* The player who "went out" this round will take the first turn in the next round.
                 If multiple players "went out" in the previous round, the player who "went out" with the

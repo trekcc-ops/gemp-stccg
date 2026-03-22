@@ -1,7 +1,10 @@
 package com.gempukku.stccg.async.handler.game;
 
+import com.gempukku.stccg.async.HttpProcessingException;
 import com.gempukku.stccg.async.LongPollingResource;
+import com.gempukku.stccg.async.LongPollingSystem;
 import com.gempukku.stccg.async.handler.ResponseWriter;
+import com.gempukku.stccg.database.User;
 import com.gempukku.stccg.game.CardGameMediator;
 import com.gempukku.stccg.game.GameCommunicationChannel;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +19,16 @@ public class GameUpdateLongPollingResource implements LongPollingResource {
     private final ResponseWriter _responseWriter;
     private boolean _processed;
     private static final Logger LOGGER = LogManager.getLogger(GameUpdateLongPollingResource.class);
+
+    public GameUpdateLongPollingResource(CardGameMediator gameMediator,
+                                         User user, ResponseWriter responseWriter,
+                                         int channelNumber)
+            throws HttpProcessingException {
+        _gameCommunicationChannel = gameMediator.getCommunicationChannel(user, channelNumber);
+        _gameMediator = gameMediator;
+        _responseWriter = responseWriter;
+    }
+
 
     public GameUpdateLongPollingResource(GameCommunicationChannel commChannel, CardGameMediator gameMediator,
                                          ResponseWriter responseWriter) {
@@ -52,6 +65,10 @@ public class GameUpdateLongPollingResource implements LongPollingResource {
             // record an HTTP 400 or 500 error
         else if((code < 600))
             LOGGER.error("HTTP code {} response for {}", code, uri, exp);
+    }
+
+    public void processInSystem(LongPollingSystem longPollingSystem) {
+        longPollingSystem.processLongPollingResource(this, _gameCommunicationChannel);
     }
 
 }

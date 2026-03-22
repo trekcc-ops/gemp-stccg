@@ -1,10 +1,8 @@
 package com.gempukku.stccg.chat;
 
 import com.gempukku.stccg.SubscriptionExpiredException;
-import com.gempukku.stccg.async.ServerObjects;
-import com.gempukku.stccg.database.IgnoreDAO;
-import com.gempukku.stccg.database.PlayerDAO;
 import com.gempukku.stccg.database.User;
+import com.gempukku.stccg.service.AdminService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,8 +12,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ChatRoomMediator {
-    private final IgnoreDAO _ignoreDAO;
-    private final PlayerDAO _playerDAO;
     private static final Logger LOGGER = LogManager.getLogger(ChatRoomMediator.class);
     private final ChatRoom _chatRoom;
     private final Map<String, ChatCommunicationChannel> _listeners = new HashMap<>();
@@ -25,12 +21,11 @@ public class ChatRoomMediator {
     final Map<String, ChatCommandCallback> _chatCommandCallbacks = new HashMap<>();
     private String _welcomeMessage;
     protected final String _roomName;
+    private boolean _destroyed;
 
-    public ChatRoomMediator(ServerObjects objects, boolean muteJoinPartMessages,
+    public ChatRoomMediator(boolean muteJoinPartMessages,
                             int secondsTimeoutPeriod, boolean allowIncognito, String welcomeMessage,
                             String roomName) {
-        _ignoreDAO = objects.getIgnoreDAO();
-        _playerDAO = objects.getPlayerDAO();
         _channelInactivityTimeoutPeriod = 1000 * secondsTimeoutPeriod;
         _chatRoom = new ChatRoom(muteJoinPartMessages, allowIncognito);
         _welcomeMessage = welcomeMessage;
@@ -38,25 +33,25 @@ public class ChatRoomMediator {
     }
 
 
-    public ChatRoomMediator(ServerObjects serverObjects, boolean muteJoinPartMessages, int secondsTimeoutPeriod,
+    public ChatRoomMediator(boolean muteJoinPartMessages, int secondsTimeoutPeriod,
                             Set<String> allowedPlayers, boolean allowIncognito, String roomName) {
-        _ignoreDAO = serverObjects.getIgnoreDAO();
-        _playerDAO = serverObjects.getPlayerDAO();
-        _allowedPlayers.addAll(allowedPlayers);
+        if (!allowedPlayers.isEmpty()) {
+            _allowedPlayers.addAll(allowedPlayers);
+        }
         _channelInactivityTimeoutPeriod = 1000 * secondsTimeoutPeriod;
         _chatRoom = new ChatRoom(muteJoinPartMessages, allowIncognito);
         _roomName = roomName;
     }
 
 
-    public final void joinUser(User user)
+    public final void joinUser(User user, AdminService adminService)
             throws PrivateInformationException, SQLException {
         _lock.writeLock().lock();
         try {
             String playerId = user.getName();
             if (user.isAdmin() || _allowedPlayers.isEmpty() || _allowedPlayers.contains(playerId)) {
-                Set<String> usersToIgnore = _playerDAO.getBannedUsernames();
-                Set<String> ignoredUsers = _ignoreDAO.getIgnoredUsers(playerId);
+                Set<String> usersToIgnore = adminService.getBannedUsernames();
+                Set<String> ignoredUsers = adminService.getIgnoredUsers(playerId);
                 usersToIgnore.addAll(ignoredUsers);
                 ChatCommunicationChannel value = new ChatCommunicationChannel(this, user, usersToIgnore);
                 _listeners.put(playerId, value);
@@ -192,5 +187,13 @@ public class ChatRoomMediator {
 
     public String getName() {
         return _roomName;
+    }
+
+    public void destroy() {
+        _destroyed = true;
+    }
+
+    public boolean isDestroyed() {
+        return _destroyed;
     }
 }

@@ -1,13 +1,13 @@
 package com.gempukku.stccg.requirement.trigger;
 
-import com.gempukku.stccg.actions.ActionResult;
-import com.gempukku.stccg.cards.ActionContext;
+import com.gempukku.stccg.actions.ActionResultType;
+import com.gempukku.stccg.cards.GameTextContext;
+import com.gempukku.stccg.game.DefaultGame;
 
 public class EndOfTurnTriggerChecker implements TriggerChecker {
 
-        @Override
-        public boolean accepts(ActionContext actionContext) {
-            return actionContext.hasActionResultType(ActionResult.Type.END_OF_TURN);
+        public boolean accepts(GameTextContext actionContext, DefaultGame cardGame) {
+            return cardGame.isCurrentActionResultType(ActionResultType.ENDED_TURN);
         }
 
 }

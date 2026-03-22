@@ -1,62 +1,86 @@
 package com.gempukku.stccg.game;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
 import com.gempukku.stccg.cards.CardBlueprintLibrary;
 import com.gempukku.stccg.cards.CardNotFoundException;
+import com.gempukku.stccg.cards.blueprints.CardBlueprint;
+import com.gempukku.stccg.cards.cardgroup.CardPile;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
 import com.gempukku.stccg.common.CardDeck;
+import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.Phase;
+import com.gempukku.stccg.common.filterable.Zone;
 import com.gempukku.stccg.decisions.AwaitingDecision;
 import com.gempukku.stccg.decisions.UserFeedback;
 import com.gempukku.stccg.formats.GameFormat;
 import com.gempukku.stccg.gameevent.ActionResultGameEvent;
 import com.gempukku.stccg.gameevent.GameStateListener;
+import com.gempukku.stccg.gamestate.ActionProxy;
 import com.gempukku.stccg.gamestate.ActionsEnvironment;
-import com.gempukku.stccg.gamestate.DefaultUserFeedback;
 import com.gempukku.stccg.gamestate.GameState;
-import com.gempukku.stccg.modifiers.ModifiersEnvironment;
+import com.gempukku.stccg.modifiers.Modifier;
+import com.gempukku.stccg.modifiers.ModifierEffect;
+import com.gempukku.stccg.modifiers.ModifiersLogic;
 import com.gempukku.stccg.player.Player;
 import com.gempukku.stccg.player.PlayerNotFoundException;
+import com.gempukku.stccg.rules.generic.RuleSet;
 
 import java.util.*;
 
-public abstract class DefaultGame {
+public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying, UserFeedback {
     private static final int LAST_MESSAGE_STORED_COUNT = 15;
 
     // Game parameters
     protected final GameFormat _format;
     protected final CardBlueprintLibrary _library;
+
     // IRL game mechanics
     protected final Set<String> _allPlayerIds;
     final List<String> _lastMessages = new LinkedList<>();
 
-    // Endgame operations
-    protected final Set<String> _requestedCancel = new HashSet<>();
+    private final Collection<Modifier> _modifierSkipSet = new HashSet<>();
     protected boolean _cancelled;
     protected boolean _finished;
     protected String _winnerPlayerId;
     protected final Map<String, String> _losers = new HashMap<>();
     // Game code infrastructure
-    protected final Set<GameResultListener> _gameResultListeners = new HashSet<>();
-    protected final Map<String, Set<Phase>> _autoPassConfiguration = new HashMap<>();
-    protected final UserFeedback _userFeedback;
+
+    // Only has one listener, to send data back to CardGameMediator when the game is finished
+    private final Set<GameResultListener> _gameResultListeners = new HashSet<>();
     protected final Set<GameStateListener> _gameStateListeners = new HashSet<>();
     protected final GameType _gameType;
+    private final GameRandomizer _randomizer;
+    private final Map<String, CardDeck> _decks;
 
-    public DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
-                       GameType gameType) {
+    protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                          GameType gameType, GameResultListener listener, GameRandomizer randomizer) {
         _format = format;
-        _userFeedback = new DefaultUserFeedback(this);
         _library = library;
         _allPlayerIds = decks.keySet();
         _gameType = gameType;
+        if (listener != null) {
+            _gameResultListeners.add(listener);
+        }
+        _randomizer = randomizer;
+        _decks = decks;
+    }
+
+    protected DefaultGame(GameFormat format, Map<String, CardDeck> decks, final CardBlueprintLibrary library,
+                          GameType gameType, GameResultListener listener) {
+        this(format, decks, library, gameType, listener, new GameRandomizer());
     }
 
 
+    public DefaultGame getGame() {
+        return this;
+    }
+
     public abstract GameState getGameState();
-    public boolean shouldAutoPass(Phase phase) {
+    public abstract RuleSet<? extends DefaultGame> getRules();
+    public boolean shouldAutoPass(Phase phase, String playerName) {
         return false;
     }
 
@@ -68,36 +92,12 @@ public abstract class DefaultGame {
 
     public Collection<Player> getPlayers() { return getGameState().getPlayers(); }
 
-    public void addGameResultListener(GameResultListener listener) {
-        _gameResultListeners.add(listener);
-    }
+    public Collection<PhysicalCard> getAllCardsInPlay() { return getGameState().getAllCardsInPlay(); }
+
     public void addGameStateListener(GameStateListener listener) {
         _gameStateListeners.add(listener);
     }
 
-    public Collection<GameStateListener> getAllGameStateListeners() {
-        return Collections.unmodifiableSet(_gameStateListeners);
-    }
-
-
-    public void requestCancel(String playerId) {
-        _requestedCancel.add(playerId);
-        if (_requestedCancel.size() == _allPlayerIds.size() && !_finished) {
-            _cancelled = true;
-
-            if (getGameState() != null)
-                sendMessage("Game was cancelled, as requested by all parties.");
-
-            for (GameResultListener gameResultListener : _gameResultListeners)
-                gameResultListener.gameCancelled();
-
-            _finished = true;
-        }
-    }
-
-    public UserFeedback getUserFeedback() {
-        return _userFeedback;
-    }
 
     public String getWinnerPlayerId() {
         return _winnerPlayerId;
@@ -107,23 +107,15 @@ public abstract class DefaultGame {
         return _finished;
     }
 
-    public void cancelGame() {
-        if (!_finished) {
-            _cancelled = true;
-
-            if (getGameState() != null) {
-                sendMessage(
-                        "Game was cancelled due to an error, the error was logged and will be fixed soon.");
-                sendMessage(
-                        "Please post the replay game link and description of what happened on the tech support forum.");
-            }
-
-            for (GameResultListener gameResultListener : _gameResultListeners)
-                gameResultListener.gameCancelled();
-
-            _finished = true;
-        }
+    public void setCancelled() {
+        _cancelled = true;
     }
+
+
+    public void setFinished() {
+        _finished = true;
+    }
+
 
     public void setCurrentPhase(Phase phase) {
         getGameState().setCurrentPhase(phase);
@@ -131,8 +123,17 @@ public abstract class DefaultGame {
     }
 
 
+    public void endInTie() {
+        if (!_finished) {
+            saveGameResult(new EndGameResult(this, EndGameResultType.TIE));
 
-    public void playerWon(String playerId, String reason) {
+            for (GameResultListener gameResultListener : _gameResultListeners) {
+                gameResultListener.gameFinished(_winnerPlayerId, "TIE", _losers);
+            }
+        }
+    }
+
+    public void playerWon(String playerId, EndGameResultType endGameType) {
         if (!_finished) {
             // Any remaining players have lost
             Set<String> losers = new HashSet<>(_allPlayerIds);
@@ -142,35 +143,50 @@ public abstract class DefaultGame {
             for (String loser : losers)
                 _losers.put(loser, "Other player won");
 
-            gameWon(playerId, reason);
+            gameWon(playerId, endGameType);
         }
     }
 
-    protected void gameWon(String winner, String reason) {
-        _winnerPlayerId = winner;
-        if (getGameState() != null)
-            sendMessage(_winnerPlayerId + " is the winner due to: " + reason);
+    public void saveGameResult(EndGameResult result) {
+        getGameState().saveGameResult(result);
+    }
 
-        assert getGameState() != null;
+    protected void gameWon(String winner, EndGameResultType endGameType) {
+        _winnerPlayerId = winner;
+        saveGameResult(new EndGameResult(this, endGameType));
 
         for (GameResultListener gameResultListener : _gameResultListeners) {
-            gameResultListener.gameFinished(_winnerPlayerId, reason, _losers);
+            gameResultListener.gameFinished(_winnerPlayerId, endGameType.name(), _losers);
         }
 
         _finished = true;
+    }
+
+    public void playerLost(String playerId, EndGameResultType endGameType) {
+        if (!_finished) {
+            if (_losers.get(playerId) == null) {
+                _losers.put(playerId, endGameType.name());
+                if (_losers.size() + 1 == _allPlayerIds.size()) {
+                    List<String> allPlayers = new LinkedList<>(_allPlayerIds);
+                    allPlayers.removeAll(_losers.keySet());
+                    if (_allPlayerIds.size() > 2) {
+                        gameWon(allPlayers.getFirst(), EndGameResultType.LAST_PLAYER_REMAINING);
+                    } else {
+                        gameWon(allPlayers.getFirst(), endGameType);
+                    }
+                }
+            }
+        }
     }
 
     public void playerLost(String playerId, String reason) {
         if (!_finished) {
             if (_losers.get(playerId) == null) {
                 _losers.put(playerId, reason);
-                if (getGameState() != null)
-                    sendMessage(playerId + " lost due to: " + reason);
-
                 if (_losers.size() + 1 == _allPlayerIds.size()) {
                     List<String> allPlayers = new LinkedList<>(_allPlayerIds);
                     allPlayers.removeAll(_losers.keySet());
-                    gameWon(allPlayers.getFirst(), "Last remaining player in game");
+                    gameWon(allPlayers.getFirst(), EndGameResultType.LAST_PLAYER_REMAINING);
                 }
             }
         }
@@ -180,18 +196,11 @@ public abstract class DefaultGame {
         _gameStateListeners.remove(gameStateListener);
     }
 
-    public void setPlayerAutoPassSettings(String playerId, Set<Phase> phases) {
-        _autoPassConfiguration.put(playerId, phases);
-    }
-    public CardBlueprintLibrary getBlueprintLibrary() {
-        return _library;
-    }
-
     public ActionsEnvironment getActionsEnvironment() {
         return getGameState().getActionsEnvironment();
     }
 
-    public ModifiersEnvironment getModifiersEnvironment() {
+    public ModifiersLogic getModifiersEnvironment() {
         return getGameState().getModifiersLogic();
     }
 
@@ -204,41 +213,32 @@ public abstract class DefaultGame {
     }
 
     public void carryOutPendingActionsUntilDecisionNeeded() throws InvalidGameOperationException {
-        try {
-            if (!_cancelled) {
-                int numSinceDecision = 0;
-                ActionsEnvironment actionsEnvironment = getActionsEnvironment();
+        if (!_cancelled) {
+            int numSinceDecision = 0;
+            ActionsEnvironment actionsEnvironment = getActionsEnvironment();
 
-                while (isCarryingOutEffects()) {
-                    numSinceDecision++;
-                    actionsEnvironment.carryOutPendingActions(this);
-                    sendActionResultToClient();
+            while (isCarryingOutEffects()) {
+                numSinceDecision++;
+                actionsEnvironment.carryOutPendingActions(this);
+                sendActionResultToClient();
 
-                    // Check if an unusually large number loops since user decision, which means game is probably in a loop
-                    if (numSinceDecision >= 5000)
-                        breakExcessiveLoop(numSinceDecision);
-                }
+                // Check if an unusually large number loops since user decision, which means game is probably in a loop
+                if (numSinceDecision >= 5000)
+                    breakExcessiveLoop(numSinceDecision);
             }
-        } catch(PlayerNotFoundException | InvalidGameLogicException | CardNotFoundException exp) {
-            throw new InvalidGameOperationException(exp);
         }
     }
 
-    private void breakExcessiveLoop(int numSinceDecision) {
+    private void breakExcessiveLoop(int numSinceDecision) throws InvalidGameLogicException {
         String errorMessage = "There's been " + numSinceDecision +
                 " actions/effects since last user decision. Game is probably looping, so ending game.";
-        sendErrorMessage(errorMessage);
 
         Stack<Action> actionStack = getActionsEnvironment().getActionStack();
-        sendErrorMessage("Action stack size: " + actionStack.size());
-        actionStack.forEach(action -> sendErrorMessage("Action " + (actionStack.indexOf(action) + 1) + ": " +
-                action.getClass().getSimpleName()));
-
-        List<ActionResult> actionResults =
-                getActionsEnvironment().consumeEffectResults().stream().toList();
-        actionResults.forEach(effectResult -> sendErrorMessage(
-                "EffectResult " + (actionResults.indexOf(effectResult) + 1) + ": " + effectResult.getType().name()));
-        throw new UnsupportedOperationException(errorMessage);
+        errorMessage = errorMessage + " Action stack size: " + actionStack.size();
+        for (Action action : actionStack) {
+            errorMessage = errorMessage + "Action " + actionStack.indexOf(action) + 1 + ": " + action.getClass().getSimpleName();
+        }
+        throw new InvalidGameLogicException(errorMessage);
     }
     
 
@@ -268,30 +268,12 @@ public abstract class DefaultGame {
                     getAllPlayerIds()[1] : getAllPlayerIds()[0];
     }
 
-    public Player getOpponent(Player player) throws PlayerNotFoundException {
-        return getPlayer(getOpponent(player.getPlayerId()));
-    }
-
-    public void sendMessage(String message) {
-        addMessage(message);
-        for (GameStateListener listener : getAllGameStateListeners())
-            listener.sendMessageEvent(message);
-    }
-
     public Phase getCurrentPhase() { return getGameState().getCurrentPhase(); }
 
     public String getCurrentPlayerId() { return getGameState().getCurrentPlayerId(); }
 
-    public AwaitingDecision getAwaitingDecision(String playerName) {
-        return _userFeedback.getAwaitingDecision(playerName);
-    }
-
-    public Set<String> getUsersPendingDecision() {
-        return _userFeedback.getUsersPendingDecision();
-    }
-
-    public void sendAwaitingDecision(AwaitingDecision awaitingDecision) {
-        _userFeedback.sendAwaitingDecision(awaitingDecision);
+    public void addPendingDecision(AwaitingDecision decision) {
+        getGameState().addPendingDecision(decision);
     }
 
     public String getStatus() {
@@ -307,12 +289,8 @@ public abstract class DefaultGame {
         return gameStatus;
     }
 
-    public boolean isDiscardPilePublic() {
-        return _format.discardPileIsPublic();
-    }
-
     public boolean isCarryingOutEffects() {
-        return _userFeedback.hasNoPendingDecisions() && _winnerPlayerId == null;
+        return getGameState().hasNoPendingDecisions() && _winnerPlayerId == null;
     }
 
     public PhysicalCard getCardFromCardId(int cardId) throws CardNotFoundException {
@@ -332,22 +310,19 @@ public abstract class DefaultGame {
     }
 
     public void sendErrorMessage(String message) {
-        sendMessage("ERROR: " + message);
-    }
-
-    public Action getActionById(int actionId) {
-        ActionsEnvironment environment = getActionsEnvironment();
-        return environment.getActionById(actionId);
+        addMessage("ERROR: " + message);
+        for (GameStateListener listener : _gameStateListeners)
+            listener.sendMessageEvent("ERROR: " + message);
     }
 
 
     public void sendWarning(String player, String warning) {
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendWarning(player, warning);
     }
 
     public void sendActionResultToClient() {
-        for (GameStateListener listener : getAllGameStateListeners())
+        for (GameStateListener listener : _gameStateListeners)
             listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));
     }
 
@@ -356,7 +331,119 @@ public abstract class DefaultGame {
         return _gameType;
     }
 
-    public void continueCurrentProcess() throws PlayerNotFoundException, InvalidGameLogicException {
+    public void continueCurrentProcess() throws InvalidGameOperationException {
         getGameState().continueCurrentProcess(this);
+    }
+
+    public boolean processUserDecision(String playerName, int decisionId, String answer) {
+        AwaitingDecision awaitingDecision = getAwaitingDecision(playerName);
+
+        if (awaitingDecision != null) {
+            if (awaitingDecision.getDecisionId() == decisionId && !isFinished()) {
+                try {
+                    removeDecision(playerName);
+                    awaitingDecision.decisionMade(answer);
+                    return true;
+                } catch (DecisionResultInvalidException exp) {
+                        /* Participant provided wrong answer - send a warning message,
+                        and ask again for the same decision */
+                    sendWarning(playerName, exp.getWarningMessage());
+                    sendAwaitingDecision(awaitingDecision);
+                }
+            }
+        }
+        return false;
+    }
+
+    public PhysicalCard createPhysicalCard(String blueprintId, int cardId, String playerId) throws CardNotFoundException {
+        CardBlueprint blueprint = _library.get(blueprintId);
+        if (blueprint != null) {
+            return blueprint.createPhysicalCard(cardId, playerId);
+        } else {
+            throw new CardNotFoundException("Unable to find card matching blueprint id " + blueprintId);
+        }
+    }
+
+    public void addCardToTopOfDiscardPile(PhysicalCard card) {
+        String cardOwnerName = card.getOwnerName();
+        List<PhysicalCard> zoneCardList = getGameState().getZoneCards(cardOwnerName, Zone.DISCARD);
+        zoneCardList.addFirst(card);
+        card.setZone(Zone.DISCARD);
+        card.reveal();
+        card.clearLocation();
+    }
+
+
+    public List<Modifier> getAllModifiersByEffect(ModifierEffect modifierEffect) {
+        return Collections.unmodifiableList(getModifiersEnvironment().getAllModifiersByEffect(modifierEffect));
+    }
+
+    public List<Modifier> getAllModifiers() {
+        return Collections.unmodifiableList(getModifiersEnvironment().getAllModifiers());
+    }
+
+    public void addToSkipSet(Modifier modifier) {
+        _modifierSkipSet.add(modifier);
+    }
+    public void removeFromSkipSet(Modifier modifier) {
+        _modifierSkipSet.remove(modifier);
+    }
+    public boolean modifierIsInSkipSet(Modifier modifier) {
+        return _modifierSkipSet.contains(modifier);
+    }
+
+    public Collection<ActionProxy> getAllActionProxies() {
+        return getActionsEnvironment().getAllActionProxies();
+    }
+
+    public Action getCurrentAction() {
+        return getActionsEnvironment().getCurrentAction();
+    }
+    public void addActionToStack(Action action) { getActionsEnvironment().addActionToStack(action); }
+
+    public void removeCardsFromZone(Collection<PhysicalCard> cards) {
+        getGameState().removeCardsFromZoneWithoutSendingToClient(this, cards);
+    }
+
+    public String serializeCompleteGameState() throws JsonProcessingException {
+        return getGameState().serializeComplete();
+    }
+
+    public JsonNode serializeGameStateForPlayer(String playerName) throws JsonProcessingException {
+        return getGameState().serializeForPlayerIntoNode(playerName);
+    }
+
+    public boolean isCancelled() {
+        return _cancelled;
+    }
+
+    public boolean isPlayersTurn(String playerName) {
+        return getGameState().getCurrentTurnNumber() > 0 &&
+                Objects.equals(getCurrentPlayerId(), playerName);
+    }
+
+    public boolean cardsArePresentWithEachOther(PhysicalCard card1, PhysicalCard card2) {
+        return getRules().cardsArePresentWithEachOther(this, card1, card2);
+    }
+
+    public Collection<PhysicalCard> getRandomSelectionOfCards(Collection<? extends PhysicalCard> selectableCards,
+                                                              int numberToSelect) {
+        return _randomizer.getRandomItemsFromList(selectableCards, numberToSelect);
+    }
+
+    public void shuffleCardPile(CardPile<? extends PhysicalCard> cardPile) {
+        _randomizer.shuffleCardPile(cardPile);
+    }
+
+    public Map<String, CardDeck> getPlayerDecks() {
+        return _decks;
+    }
+
+    public void addGameResultListener(GameResultListener listener) {
+        _gameResultListeners.add(listener);
+    }
+
+    public Collection<String> getLosingPlayers() {
+        return _losers.keySet();
     }
 }

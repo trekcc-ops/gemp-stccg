@@ -25,6 +25,11 @@ body {
     z-index: 0;
 }
 
+#banner-subtitle {
+    grid-column: 1 / 5;
+    grid-row: 2 / 3;
+}
+
 #splash {
     grid-column: 4 / 5;
     grid-row: 2 / 3;

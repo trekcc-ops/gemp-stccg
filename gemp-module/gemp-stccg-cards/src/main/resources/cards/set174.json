@@ -1,0 +1,24 @@
+{
+    "setId" : "174",
+    "setName" : "20th Anniversary Collection",
+    "gameType" : "First Edition",
+    "cards" : [
+        {
+            "blueprintId" : "174_008",
+            "title" : "Commodore Decker",
+            "type" : "personnel",
+            "affiliation" : "federation",
+            "property-logo" : "tos-logo",
+            "classification" : "OFFICER",
+            "icons" : "command,au-icon,tos-icon",
+            "lore" : "Matt Decker commanded the <i>Starship Constellation</i>. Vowed revenge on the machine that killed his crew. Father of Willard Decker. Dislikes practical jokes.",
+            "species" : "human",
+            "gender" : "male",
+            "skill-box" : "[*] Leadership [*] Exobiology [*] ENGINEER [*] SECURITY",
+            "integrity" : 5,
+            "cunning" : 7,
+            "strength" : 6,
+            "image-url" : "https://www.trekcc.org/1e/cardimages/20th/8V.jpg"
+        }
+    ]
+}

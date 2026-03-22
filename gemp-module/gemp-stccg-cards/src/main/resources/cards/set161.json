@@ -1,0 +1,493 @@
+{
+    "setId": "161",
+    "setName": "Engage",
+    "gameType": "First Edition",
+    "cards": [
+        {
+            "blueprintId": "161_003",
+            "title": "Captain's Holiday",
+            "type": "dilemma",
+            "mission-type": "planet",
+            "property-logo": "tng-logo",
+            "lore": "Thieves, time travel, mysterious artifacts, and digging in caves made for a refreshing change from the demands of commanding a starship.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/3.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Archaeology x2 OR Geology x2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "161_006",
+            "title": "Invidium Leak",
+            "type": "dilemma",
+            "mission-type": "space",
+            "property-logo": "tng-logo",
+            "lore": "A broken container of invidium disrupted the <i>U.S.S. Enterprise</i>'s systems in 2366 before it was rendered inert by Geordi La Forge and Reginald Barclay.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/6.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "ENGINEER x3 OR personnelWith(CUNNING>7 + MEDICAL) OR personnelWith(CUNNING>7 + Physics)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "161_007",
+            "title": "Ornaran Threat",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "tng-logo",
+            "lore": "Suffering from felicium withdrawal, T'Jon threatened William T. Riker's life in an attempt to manipulate Jean-Luc Picard. Picard refused to enable the Ornaran's addiction.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/7.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "filter": "personnel + encounteringThisCard",
+                                "count": 1,
+                                "random": true
+                            },
+                            "saveToMemoryId": "stoppedPersonnel"
+                        },
+                        {
+                            "type": "overcomeCondition",
+                            "requires": "Diplomacy x2 + MEDICAL OR SECURITY x2 + STRENGTH>25",
+                            "failEffect": {
+                                "type": "kill",
+                                "target": {
+                                    "type": "memory",
+                                    "memoryId": "stoppedPersonnel"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "161_009",
+            "title": "Shall We Begin Again?",
+            "type": "dilemma",
+            "mission-type": "dual",
+            "property-logo": "tng-logo",
+            "lore": "In 2369, the Cardassians expended considerable resources to capture and interrogate Jean-Luc Picard. They failed to extract the Federation's defense plans for Minos Korva.",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/9.jpg",
+            "actions": [
+                {
+                    "type": "encounter",
+                    "effect": [
+                        {
+                            "type": "drawCards",
+                            "player": "opponent",
+                            "count": 3
+                        },
+                        {
+                            "type": "revealHand",
+                            "handPlayer": "opponent",
+                            "saveToMemoryId": "handCards"
+                        },
+                        {
+                            "type": "stop",
+                            "target": {
+                                "type": "select",
+                                "random": true,
+                                "filter": "personnel + presentWithThisCard",
+                                "count": {
+                                    "type": "personnelCount",
+                                    "filter": "command + memoryId=handCards"
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blueprintId": "161_015",
+            "title": "Illegitimate Leader of the Empire",
+            "type": "incident",
+            "icons": "warp-core",
+            "property-logo": "tng-logo",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/15.jpg",
+            "playThisCardAction": {
+                "type": "playThis"
+            },
+            "actions": [
+                {
+                    "type": "downloadCardToDestination",
+                    "inPlaceOfNormalCardPlay": true,
+                    "filter": "tng-icon + (affiliation=klingon OR affiliation=romulan) + (textInLore(Duras) OR textInTitle(Duras))",
+                    "destination": {
+                        "type": "toCard",
+                        "destinationCardFilter": "yours + facility"
+                    }
+                },
+                {
+                    "type": "playCardForFree",
+                    "limit": {
+                        "type": "eachOfYourTurns",
+                        "count": 1
+                    },
+                    "destination": {
+                        "type": "toCard",
+                        "destinationCardFilter": "yours + ((affiliation=klingon + outpost) OR name(Duras) OR name(Lursa) OR name(B'Etor) OR name(Sisters of Duras))"
+                    },
+                    "filter": "not(Honor) + affiliation=klingon + tng-icon"
+                },
+                {
+                    "type" : "requiredTrigger",
+                    "trigger" : {
+                        "type" : "cardInPlay",
+                        "filter": "ownedByYou + (name(Gowron) OR (klingon + Honor))"
+                    },
+                    "triggerDuringSeed" : true,
+                    "effect" : {
+                        "type": "discardThisCard"
+                    }
+                }
+            ]
+        },
+        {
+            "blueprintId": "161_021",
+            "title": "Advanced Combat Training",
+            "type": "mission",
+            "mission-type": "planet",
+            "uniqueness": "universal",
+            "point-box": 30,
+            "span": 2,
+            "affiliation-icons": "romulan,cardassian,bajoran",
+            "location": "Inhospitable planet",
+            "lore": "Participate in tactical training scenarios in harsh environment.",
+            "mission-requirements": "Computer Skill + SECURITY + Leadership + MEDICAL",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/21.jpg"
+        },
+        {
+            "blueprintId": "161_024",
+            "title": "Attend Mysterious Rendezvous",
+            "type": "mission",
+            "mission-type": "space",
+            "point-box": 35,
+            "span": 3,
+            "affiliation-icons": "federation,ferengi",
+            "location": "Near Xendi Sabu system",
+            "lore": "Meet with old adversary to discuss a \"gift.\"",
+            "mission-requirements": "Navigation x2 + Leadership x2 + (DaiMon Bok OR Jean-Luc Picard OR INTEGRITY>30)",
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/24.jpg"
+        },
+        {
+            "blueprintId": "161_033",
+            "title": "Corak",
+            "type": "personnel",
+            "affiliation": "cardassian",
+            "property-logo": "tng-logo",
+            "classification": "SCIENCE",
+            "uniqueness": "universal",
+            "icons": "staff",
+            "lore": "Representative of Cardassians researching new means of interrogation. Glinn. Visited the U.S.S. Enterprise in 2369 as Gul Lemec's aide.",
+            "species": "cardassian",
+            "gender": "male",
+            "skill-box": "[*] Biology [*] Physics",
+            "integrity": 4,
+            "cunning": 7,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/33.jpg"
+        },
+        {
+            "blueprintId": "161_034",
+            "title": "Gollek",
+            "type": "personnel",
+            "affiliation": "cardassian",
+            "property-logo": "tng-logo",
+            "classification": "ENGINEER",
+            "icons": "command",
+            "lore": "Female chief engineer on the Vetar. Believes females make better engineers. Injured in a Maquis attack in 2370. Tactful manager.",
+            "species": "cardassian",
+            "gender": "female",
+            "skill-box": "[*] Leadership [*] Computer Skill [*] Navigation [*] Diplomacy",
+            "integrity": 6,
+            "cunning": 8,
+            "strength": 4,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/34.jpg"
+        },
+        {
+            "blueprintId": "161_038",
+            "title": "Agyer",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "SCIENCE",
+            "icons": "staff",
+            "lore": "Expert in shield and cloak technology serving on the Apnex in 2368. Invited to Dr. Reyga's metaphasic shield test but refused permission by his government.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Navigation [*] Stellar Cartography x2 [*] Transporter Skill [DL] Space Boomer",
+            "integrity": 5,
+            "cunning": 9,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/38.jpg"
+        },
+        {
+            "blueprintId": "161_039",
+            "title": "Ambassador Spock",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "V.I.P.",
+            "icons": "staff",
+            "persona": "Spock",
+            "lore": "Legendary 1/2 Vulcan, 1/2 human head of the Romulan underground. An advocate of reunification, <b>Spock</b> was betrayed by his friend Senator Pardek.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 5,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "SCIENCE"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Diplomacy",
+                        "level": 2
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Honor"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Law"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Mindmeld"
+                    },
+                    {
+                        "type": "specialDownload",
+                        "text": "Any [univ] [Rom] personnel with INTEGRITY>6 OR Pardek",
+                        "downloadCardFilter": "name(Pardek) OR universal + personnel + affiliation=romulan + integrity>6"
+                    }
+                ]
+            },
+            "integrity": 10,
+            "cunning": 9,
+            "strength": 7,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/39.jpg"
+        },
+        {
+            "blueprintId": "161_040",
+            "title": "D'Lors",
+            "type": "personnel",
+            "uniqueness": "universal",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "V.I.P.",
+            "lore": "Typical political aide. Dissident who defected to the Federation in stasis with Vice-Proconsul M'ret in 2369. Former senator in the youth diplomatic corps.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Diplomacy",
+            "integrity": 5,
+            "cunning": 7,
+            "strength": 4,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/40.jpg"
+        },
+        {
+            "blueprintId": "161_041",
+            "title": "Jean-Luc Picard",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "CIVILIAN",
+            "icons": "staff",
+            "lore": "Human captain disguised as a Romulan. Worked with the Romulan underground movement. Shared his memories of Sarek through a mindmeld with Spock.",
+            "species": "human,romulan",
+            "gender": "male",
+            "skill-box": "[*] Diplomacy [*] Anthropology [*] Archaeology [*] Music [*] Honor [DL] Vulcan Mindmeld",
+            "integrity": 8,
+            "cunning": 8,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/41.jpg"
+        },
+        {
+            "blueprintId": "161_043",
+            "title": "Kharic",
+            "type": "personnel",
+            "uniqueness": "universal",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "CIVILIAN",
+            "lore": "Typical member of the Romulan underground. Female colleague of Tamarith. Pleased by Spock's decision to stay on Romulus after Pardek's betrayal.",
+            "species": "romulan",
+            "gender": "female",
+            "skill-box": "[*] MEDICAL [*] Exobiology [*] Anthropology [*] Honor",
+            "integrity": 7,
+            "cunning": 5,
+            "strength": 2,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/43.jpg"
+        },
+        {
+            "blueprintId": "161_044",
+            "title": "Khev",
+            "type": "personnel",
+            "uniqueness": "universal",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "CIVILIAN",
+            "icons": "staff",
+            "lore": "Representative of non-military personnel guarding the Carraya system prison camp for Khitomer survivors. Sometimes serves as Tokath's bodyguard.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] SECURITY [*] Biology [*] Youth",
+            "integrity": 5,
+            "cunning": 5,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/44.jpg"
+        },
+        {
+            "blueprintId": "161_045",
+            "title": "Mareth",
+            "type": "personnel",
+            "uniqueness": "universal",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "ENGINEER",
+            "icons": "staff",
+            "lore": "Typical Romulan engineer who became trapped in a temporal fragment in 2369. Did not realize the cause was life-form incubation in the engine core.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Computer Skill [*] Transporter Skill [*] Youth",
+            "integrity": 4,
+            "cunning": 7,
+            "strength": 5,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/45.jpg"
+        },
+        {
+            "blueprintId": "161_046",
+            "title": "Parem",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "SECURITY",
+            "icons": "staff",
+            "lore": "Special security officer aboard the <i>Apnex</i>. Assigned to guard the prototype phase-inverting cloaking device. Worked as a bartender before joining the military.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": {
+                "skill-dots": 4,
+                "skills": [
+                    {
+                        "type": "regular",
+                        "name": "Astrophysics"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Physics"
+                    },
+                    {
+                        "type": "regular",
+                        "name": "Treachery"
+                    },
+                    {
+                        "type": "specialModifier",
+                        "text": "Attributes all +1 when facing a dilemma.",
+                        "modifier": {
+                            "type": "addToAllAttributes",
+                            "modifiedCards": "thisCard",
+                            "amount": 1,
+                            "ifCondition": {
+                                "type": "thisCardIsFacingDilemma"
+                            }
+                        }
+                    }
+                ]
+            },
+            "integrity": 4,
+            "cunning": 6,
+            "strength": 8,
+            "image-url": "https://www.trekcc.org/1e/cardimages/tng/84V.jpg"
+        },
+        {
+            "blueprintId": "161_048",
+            "title": "T'Jev",
+            "type": "personnel",
+            "uniqueness": "universal",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "MEDICAL",
+            "lore": "Typical field nurse assigned to a damage control team on the Haakona in 2365. Was tending injured crew members when Jean-Luc Picard appeared.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Biology [*] Greed [*] Anthropology",
+            "integrity": 5,
+            "cunning": 8,
+            "strength": 7,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/48.jpg"
+        },
+        {
+            "blueprintId": "161_049",
+            "title": "Tacil",
+            "type": "personnel",
+            "uniqueness": "universal",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "OFFICER",
+            "icons": "command",
+            "lore": "One of many female officers serving aboard Romulan warbirds. Former engineering technician who got caught in a temporal fragment in 2369.",
+            "species": "romulan",
+            "gender": "female",
+            "skill-box": "[*] ENGINEER [*] Treachery [*] Geology",
+            "integrity": 4,
+            "cunning": 7,
+            "strength": 6,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/49.jpg"
+        },
+        {
+            "blueprintId": "161_050",
+            "title": "Toraan",
+            "type": "personnel",
+            "affiliation": "romulan",
+            "property-logo": "tng-logo",
+            "classification": "SECURITY",
+            "icons": "staff",
+            "lore": "Tal Shiar officer assigned to the Office of the Proconsul in 2368. Often works alongside his twin brother Telak. Likes viinerine with Romulan ale.",
+            "species": "romulan",
+            "gender": "male",
+            "skill-box": "[*] Tal Shiar [*] Exobiology [*] Treachery [*] Transporter Skill [DL] Romulan Disruptor",
+            "integrity": 5,
+            "cunning": 7,
+            "strength": 7,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/50.jpg"
+        },
+        {
+            "blueprintId": "161_051",
+            "title": "U.S.S. Excalibur",
+            "type": "ship",
+            "affiliation": "federation",
+            "property-logo": "tng-logo",
+            "ship-class": "AMBASSADOR CLASS",
+            "lore": "Refitted vessel captained by William T. Riker during Starfleet's blockade of the Klingon-Romulan border in 2368. Underwent further refit in 2373.",
+            "staffing": "command,staff,staff",
+            "gametext": "Tractor Beam",
+            "range": 8,
+            "weapons": 7,
+            "shields": 9,
+            "image-url": "https://www.trekcc.org/1e/cardimages/engage/51.jpg"
+        }
+    ]
+}

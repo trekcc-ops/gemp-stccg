@@ -14,9 +14,9 @@ public class DbLeagueParticipationDAO implements LeagueParticipationDAO {
         _dbAccess = dbAccess;
     }
 
-    public final void userJoinsLeague(String leagueId, User player, String remoteAddress) {
+    public final void userJoinsLeague(int leagueId, User player, String remoteAddress) {
         try {
-            String sqlStatement = "insert into league_participation (league_type, player_name, join_ip) values (?,?,?)";
+            String sqlStatement = "insert into league_participation (league_id, player_name, join_ip) values (?,?,?)";
             SQLUtils.executeStatementWithParameters(_dbAccess, sqlStatement,
                     leagueId, player.getName(), remoteAddress);
         } catch (SQLException exp) {
@@ -24,12 +24,13 @@ public class DbLeagueParticipationDAO implements LeagueParticipationDAO {
         }
     }
 
-    public final Collection<String> getUsersParticipating(String leagueId) {
+    @Override
+    public final Collection<String> getUsersParticipating(int leagueId) {
         try {
             try (Connection conn = _dbAccess.getDataSource().getConnection()) {
                 try (PreparedStatement statement = conn.prepareStatement(
-                        "select player_name from league_participation where league_type=?")) {
-                    statement.setString(1, leagueId);
+                        "select player_name from league_participation where league_id=?")) {
+                    statement.setInt(1, leagueId);
                     try (ResultSet rs = statement.executeQuery()) {
                         Collection<String> result = new HashSet<>();
                         while (rs.next())
@@ -42,4 +43,5 @@ public class DbLeagueParticipationDAO implements LeagueParticipationDAO {
             throw new RuntimeException(exp);
         }
     }
+
 }

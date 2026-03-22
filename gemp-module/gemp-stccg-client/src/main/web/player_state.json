@@ -1,0 +1,3688 @@
+{
+    "requestingPlayer": "andrew",
+    "currentPhase": "EXECUTE_ORDERS",
+    "phasesInOrder": [
+        "START_OF_TURN",
+        "CARD_PLAY",
+        "EXECUTE_ORDERS",
+        "END_OF_TURN"
+    ],
+    "players": [
+        {
+            "playerId": "andrew2",
+            "points": {
+                "bonus": 5,
+                "nonBonus": 20,
+                "total": 25,
+                "towardWinning": 25,
+                "requiredToWin": 140
+            },
+            "decked": false,
+            "cardGroups": {
+                "DRAW_DECK": {
+                    "cardCount": 7,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "SEED_DECK": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "REMOVED": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "POINT_AREA": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "HAND": {
+                    "cardCount": 12,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "CORE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "MISSIONS_PILE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                }
+            }
+        },
+        {
+            "playerId": "andrew",
+            "points": {
+                "bonus": 0,
+                "nonBonus": 35,
+                "total": 35,
+                "towardWinning": 35,
+                "requiredToWin": 140
+            },
+            "decked": false,
+            "cardGroups": {
+                "DRAW_DECK": {
+                    "cardCount": 1,
+                    "cardIds": [
+                        -99
+                    ]
+                },
+                "SEED_DECK": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "REMOVED": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "POINT_AREA": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "HAND": {
+                    "cardCount": 8,
+                    "cardIds": [
+                        59,
+                        64,
+                        60,
+                        80,
+                        71,
+                        75,
+                        66,
+                        52
+                    ]
+                },
+                "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "CORE": {
+                    "cardCount": 4,
+                    "cardIds": [
+                        47,
+                        45,
+                        43,
+                        44
+                    ]
+                },
+                "MISSIONS_PILE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                }
+            }
+        }
+    ],
+    "playerMap": {
+        "andrew2": {
+            "playerId": "andrew2",
+            "points": {
+                "bonus": 5,
+                "nonBonus": 20,
+                "total": 25,
+                "towardWinning": 25,
+                "requiredToWin": 140
+            },
+            "decked": false,
+            "cardGroups": {
+                "DRAW_DECK": {
+                    "cardCount": 7,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "SEED_DECK": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "REMOVED": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "POINT_AREA": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "HAND": {
+                    "cardCount": 12,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "CORE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "MISSIONS_PILE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                }
+            }
+        },
+        "andrew": {
+            "playerId": "andrew",
+            "points": {
+                "bonus": 0,
+                "nonBonus": 35,
+                "total": 35,
+                "towardWinning": 35,
+                "requiredToWin": 140
+            },
+            "decked": false,
+            "cardGroups": {
+                "DRAW_DECK": {
+                    "cardCount": 1,
+                    "cardIds": [
+                        -99
+                    ]
+                },
+                "SEED_DECK": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "REMOVED": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "POINT_AREA": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "HAND": {
+                    "cardCount": 8,
+                    "cardIds": [
+                        59,
+                        64,
+                        60,
+                        80,
+                        71,
+                        75,
+                        66,
+                        52
+                    ]
+                },
+                "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "CORE": {
+                    "cardCount": 4,
+                    "cardIds": [
+                        47,
+                        45,
+                        43,
+                        44
+                    ]
+                },
+                "MISSIONS_PILE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                }
+            }
+        }
+    },
+    "playerOrder": {
+        "turnOrder": [
+            "andrew",
+            "andrew2"
+        ],
+        "firstPlayer": "andrew",
+        "currentPlayer": "andrew",
+        "isReversed": false
+    },
+    "visibleCardsInGame": {
+        "44": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 44,
+            "title": "Assign Mission Specialists",
+            "blueprintId": "109_063",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg",
+            "cardType": "OBJECTIVE",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "45": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 45,
+            "title": "Battle Bridge Door",
+            "blueprintId": "116_011",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "46": {
+            "className": ".FacilityCard",
+            "cardId": 46,
+            "title": "Husnock Outpost",
+            "blueprintId": "111_009",
+            "owner": "andrew",
+            "locationId": 11,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/otsdr/9.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "47": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 47,
+            "title": "Q-Flash",
+            "blueprintId": "105_015",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "48": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 48,
+            "title": "Ferengi Attack",
+            "blueprintId": "103_014",
+            "owner": "andrew",
+            "locationId": 12,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "49": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 49,
+            "title": "Dedication to Duty",
+            "blueprintId": "152_003",
+            "owner": "andrew",
+            "locationId": 4,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/homefront2/3.jpg",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "50": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 50,
+            "title": "Friendly Fire",
+            "blueprintId": "115_010",
+            "owner": "andrew",
+            "locationId": 12,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/dom/friendlyfire.gif",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "51": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 51,
+            "title": "Friendly Fire",
+            "blueprintId": "115_010",
+            "owner": "andrew",
+            "locationId": 4,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/dom/friendlyfire.gif",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "52": {
+            "className": ".PersonnelCard",
+            "cardId": 52,
+            "title": "Dr. Syrus",
+            "blueprintId": "155_092",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/92V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "53": {
+            "className": ".PersonnelCard",
+            "cardId": 53,
+            "title": "Alyssa Ogawa",
+            "blueprintId": "109_095",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/twtstarters/TWT-alyssaogawa.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "54": {
+            "className": ".PersonnelCard",
+            "cardId": 54,
+            "title": "Simon Tarses",
+            "blueprintId": "101_236",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR236.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "55": {
+            "className": ".PersonnelCard",
+            "cardId": 55,
+            "title": "Hannah Bates",
+            "blueprintId": "101_214",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR214.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "56": {
+            "className": ".PersonnelCard",
+            "cardId": 56,
+            "title": "Jenna D'Sora",
+            "blueprintId": "101_216",
+            "owner": "andrew",
+            "locationId": 5,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 42,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR216.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "57": {
+            "className": ".PersonnelCard",
+            "cardId": 57,
+            "title": "Admiral McCoy",
+            "blueprintId": "106_014",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/vpromos/63VP.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "14": {
+            "className": ".EquipmentCard",
+            "cardId": 14,
+            "title": "Tricorder",
+            "blueprintId": "101_065",
+            "owner": "andrew2",
+            "locationId": 4,
+            "attachedToCardId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR65.jpg",
+            "cardType": "EQUIPMENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "58": {
+            "className": ".PersonnelCard",
+            "cardId": 58,
+            "title": "Jadzia Dax",
+            "blueprintId": "112_208",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "15": {
+            "className": ".ShipCard",
+            "cardId": 15,
+            "title": "Science Vessel",
+            "blueprintId": "101_362",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR362.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "59": {
+            "className": ".PersonnelCard",
+            "cardId": 59,
+            "title": "Jace Michaels",
+            "blueprintId": "112_207",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/emissarysup/58.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "17": {
+            "className": ".PersonnelCard",
+            "cardId": 17,
+            "title": "Varel",
+            "blueprintId": "101_330",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 15,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "18": {
+            "className": ".PersonnelCard",
+            "cardId": 18,
+            "title": "Varel",
+            "blueprintId": "101_330",
+            "owner": "andrew2",
+            "locationId": 4,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "1": {
+            "className": ".ShipCard",
+            "cardId": 1,
+            "title": "Romulan Shuttle",
+            "blueprintId": "116_108",
+            "owner": "andrew2",
+            "locationId": 4,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/bog/romulanshuttle.gif",
+            "cardType": "SHIP",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "2": {
+            "className": ".PersonnelCard",
+            "cardId": 2,
+            "title": "Baran",
+            "blueprintId": "101_290",
+            "owner": "andrew2",
+            "locationId": 4,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "attachedToCardId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR290.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "4": {
+            "className": ".PersonnelCard",
+            "cardId": 4,
+            "title": "Dr. Farek",
+            "blueprintId": "101_293",
+            "owner": "andrew2",
+            "locationId": 4,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "attachedToCardId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR293.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "7": {
+            "className": ".PersonnelCard",
+            "cardId": 7,
+            "title": "Vekor",
+            "blueprintId": "101_303",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "attachedToCardId": 8,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR303.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "8": {
+            "className": ".ShipCard",
+            "cardId": 8,
+            "title": "Devoras",
+            "blueprintId": "101_358",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR358.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "60": {
+            "className": ".PersonnelCard",
+            "cardId": 60,
+            "title": "Alexander Rozhenko",
+            "blueprintId": "101_196",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR196.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "61": {
+            "className": ".PersonnelCard",
+            "cardId": 61,
+            "title": "Alynna Nechayev",
+            "blueprintId": "101_197",
+            "owner": "andrew",
+            "locationId": 5,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 42,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR197.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "62": {
+            "className": ".PersonnelCard",
+            "cardId": 62,
+            "title": "Cal Hudson",
+            "blueprintId": "172_028",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/maquis/28V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "63": {
+            "className": ".PersonnelCard",
+            "cardId": 63,
+            "title": "Fleet Admiral Shanthi",
+            "blueprintId": "101_211",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR211.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "20": {
+            "className": ".PersonnelCard",
+            "cardId": 20,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 8,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "64": {
+            "className": ".PersonnelCard",
+            "cardId": 64,
+            "title": "Geordi La Forge",
+            "blueprintId": "101_212",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR212.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "21": {
+            "className": ".PersonnelCard",
+            "cardId": 21,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 35,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "65": {
+            "className": ".ShipCard",
+            "cardId": 65,
+            "title": "U.S.S. Drake",
+            "blueprintId": "127_035",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/38V.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "66": {
+            "className": ".PersonnelCard",
+            "cardId": 66,
+            "title": "Giusti",
+            "blueprintId": "101_213",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR213.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "67": {
+            "className": ".PersonnelCard",
+            "cardId": 67,
+            "title": "Geordi La Forge",
+            "blueprintId": "155_060",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/60V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "24": {
+            "className": ".PersonnelCard",
+            "cardId": 24,
+            "title": "Jo'Bril",
+            "blueprintId": "101_299",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "attachedToCardId": 15,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR299.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "68": {
+            "className": ".PersonnelCard",
+            "cardId": 68,
+            "title": "Inge Eiger",
+            "blueprintId": "109_103",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/fc/ingeeiger.gif",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "69": {
+            "className": ".PersonnelCard",
+            "cardId": 69,
+            "title": "Dr. Farek",
+            "blueprintId": "101_293",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR293.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "27": {
+            "className": ".PersonnelCard",
+            "cardId": 27,
+            "title": "N'Vek",
+            "blueprintId": "101_312",
+            "owner": "andrew2",
+            "locationId": 4,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR312.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "28": {
+            "className": ".PersonnelCard",
+            "cardId": 28,
+            "title": "Alidar Jarok",
+            "blueprintId": "101_304",
+            "owner": "andrew2",
+            "locationId": 4,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR304.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "70": {
+            "className": ".PersonnelCard",
+            "cardId": 70,
+            "title": "Jean-Luc Picard",
+            "blueprintId": "135_004",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/chainofcommand/jeanlucpicard.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "71": {
+            "className": ".PersonnelCard",
+            "cardId": 71,
+            "title": "Darian Wallace",
+            "blueprintId": "101_203",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR203.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "72": {
+            "className": ".PersonnelCard",
+            "cardId": 72,
+            "title": "Data",
+            "blueprintId": "101_204",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR204.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "73": {
+            "className": ".PersonnelCard",
+            "cardId": 73,
+            "title": "Dr. Selar",
+            "blueprintId": "101_208",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR208.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "74": {
+            "className": ".PersonnelCard",
+            "cardId": 74,
+            "title": "Erik Pressman",
+            "blueprintId": "101_209",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR209.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "75": {
+            "className": ".PersonnelCard",
+            "cardId": 75,
+            "title": "Barron",
+            "blueprintId": "155_053",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/53V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "76": {
+            "className": ".PersonnelCard",
+            "cardId": 76,
+            "title": "Beverly",
+            "blueprintId": "155_054",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/54V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "77": {
+            "className": ".PersonnelCard",
+            "cardId": 77,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew",
+            "locationId": 11,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 46,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "34": {
+            "className": ".PersonnelCard",
+            "cardId": 34,
+            "title": "Toreth",
+            "blueprintId": "101_329",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 8,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR329.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "78": {
+            "className": ".PersonnelCard",
+            "cardId": 78,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew",
+            "locationId": 11,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 46,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "35": {
+            "className": ".FacilityCard",
+            "cardId": 35,
+            "title": "Romulan Outpost",
+            "blueprintId": "101_106",
+            "owner": "andrew2",
+            "locationId": 6,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR106.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "79": {
+            "className": ".PersonnelCard",
+            "cardId": 79,
+            "title": "Deanna Troi",
+            "blueprintId": "155_058",
+            "owner": "andrew",
+            "locationId": 6,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "attachedToCardId": 65,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/58V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "36": {
+            "className": ".MissionCard",
+            "cardId": 36,
+            "title": "Covert Installation",
+            "blueprintId": "101_148",
+            "owner": "andrew2",
+            "locationId": 12,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR148.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "37": {
+            "className": ".MissionCard",
+            "cardId": 37,
+            "title": "Covert Rescue",
+            "blueprintId": "101_149",
+            "owner": "andrew2",
+            "locationId": 10,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR149.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "38": {
+            "className": ".MissionCard",
+            "cardId": 38,
+            "title": "Iconia Investigation",
+            "blueprintId": "101_163",
+            "owner": "andrew2",
+            "locationId": 8,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR163.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "39": {
+            "className": ".MissionCard",
+            "cardId": 39,
+            "title": "Excavation",
+            "blueprintId": "101_154",
+            "owner": "andrew2",
+            "locationId": 6,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR154.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "80": {
+            "className": ".PersonnelCard",
+            "cardId": 80,
+            "title": "Narik",
+            "blueprintId": "101_300",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "81": {
+            "className": ".PersonnelCard",
+            "cardId": 81,
+            "title": "Dr. Christopher",
+            "blueprintId": "155_059",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/59V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false
+        },
+        "82": {
+            "className": ".MissionCard",
+            "cardId": 82,
+            "title": "Host Metaphasic Shielding Test",
+            "blueprintId": "155_039",
+            "owner": "andrew",
+            "locationId": 11,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/39V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "83": {
+            "className": ".MissionCard",
+            "cardId": 83,
+            "title": "Investigate Rogue Comet",
+            "blueprintId": "101_171",
+            "owner": "andrew",
+            "locationId": 9,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR171.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "40": {
+            "className": ".MissionCard",
+            "cardId": 40,
+            "title": "Explore Typhon Expanse",
+            "blueprintId": "101_157",
+            "owner": "andrew2",
+            "locationId": 4,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR157.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "84": {
+            "className": ".MissionCard",
+            "cardId": 84,
+            "title": "Wormhole Negotiations",
+            "blueprintId": "101_194",
+            "owner": "andrew",
+            "locationId": 7,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR194.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "41": {
+            "className": ".MissionCard",
+            "cardId": 41,
+            "title": "Expose Covert Supply",
+            "blueprintId": "101_158",
+            "owner": "andrew2",
+            "locationId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR158.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "85": {
+            "className": ".MissionCard",
+            "cardId": 85,
+            "title": "Evaluate Terraforming",
+            "blueprintId": "101_153",
+            "owner": "andrew",
+            "locationId": 5,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR153.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "42": {
+            "className": ".FacilityCard",
+            "cardId": 42,
+            "title": "Federation Outpost",
+            "blueprintId": "101_104",
+            "owner": "andrew",
+            "locationId": 5,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "86": {
+            "className": ".MissionCard",
+            "cardId": 86,
+            "title": "Botanical Research",
+            "blueprintId": "113_003",
+            "owner": "andrew",
+            "locationId": 3,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/15V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "43": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 43,
+            "title": "Alternate Universe Door",
+            "blueprintId": "103_032",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        },
+        "87": {
+            "className": ".MissionCard",
+            "cardId": 87,
+            "title": "Avert Solar Implosion",
+            "blueprintId": "155_037",
+            "owner": "andrew",
+            "locationId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/37V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false
+        }
+    },
+    "spacelineLocations": [
+        {
+            "locationId": 11,
+            "quadrant": "ALPHA",
+            "locationName": "Veytan",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                82
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 10,
+            "quadrant": "ALPHA",
+            "locationName": "Galorndon Core",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                37
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 9,
+            "quadrant": "ALPHA",
+            "locationName": "Sector 1156",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                83
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 12,
+            "quadrant": "ALPHA",
+            "region": "NEUTRAL_ZONE",
+            "locationName": "Devora",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                36
+            ],
+            "seedCardCount": 2
+        },
+        {
+            "locationId": 8,
+            "quadrant": "ALPHA",
+            "region": "NEUTRAL_ZONE",
+            "locationName": "Iconia",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                38
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 7,
+            "quadrant": "ALPHA",
+            "locationName": "Wormhole Terminus",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                84
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 6,
+            "quadrant": "ALPHA",
+            "locationName": "Kurl",
+            "isCompleted": true,
+            "isHomeworld": false,
+            "missionCardIds": [
+                39
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 5,
+            "quadrant": "ALPHA",
+            "locationName": "Velara III",
+            "isCompleted": true,
+            "isHomeworld": false,
+            "missionCardIds": [
+                85
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 4,
+            "quadrant": "ALPHA",
+            "locationName": "Typhon Expanse",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                40
+            ],
+            "seedCardCount": 2
+        },
+        {
+            "locationId": 3,
+            "quadrant": "ALPHA",
+            "locationName": "Unexplored planet",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                86
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 2,
+            "quadrant": "ALPHA",
+            "locationName": "Qo'noS",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                41
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 1,
+            "quadrant": "ALPHA",
+            "locationName": "Veridian III",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                87
+            ],
+            "seedCardCount": 0
+        }
+    ],
+    "versionNumber": "1.1.0",
+    "awayTeams": [],
+    "performedActions": [
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 13,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardAction",
+            "actionId": 11,
+            "seededCardId": 47,
+            "performingCardId": 47,
+            "performingPlayerId": "andrew",
+            "destinationZone": "CORE",
+            "status": "completed_success",
+            "targetCardId": 47,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 14,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardAction",
+            "actionId": 9,
+            "seededCardId": 45,
+            "performingCardId": 45,
+            "performingPlayerId": "andrew",
+            "destinationZone": "CORE",
+            "status": "completed_success",
+            "targetCardId": 45,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 15,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardAction",
+            "actionId": 7,
+            "seededCardId": 43,
+            "performingCardId": 43,
+            "performingPlayerId": "andrew",
+            "destinationZone": "CORE",
+            "status": "completed_success",
+            "targetCardId": 43,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 16,
+            "seededCardId": 87,
+            "performingCardId": 87,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 87,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 17,
+            "seededCardId": 41,
+            "performingCardId": 41,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 41,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 18,
+            "seededCardId": 86,
+            "performingCardId": 86,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 86,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 19,
+            "seededCardId": 40,
+            "performingCardId": 40,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 40,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 20,
+            "seededCardId": 85,
+            "performingCardId": 85,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 85,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 21,
+            "seededCardId": 39,
+            "performingCardId": 39,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 39,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 22,
+            "seededCardId": 84,
+            "performingCardId": 84,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 84,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 23,
+            "seededCardId": 38,
+            "performingCardId": 38,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 38,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 24,
+            "seededCardId": 83,
+            "performingCardId": 83,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 83,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 25,
+            "seededCardId": 37,
+            "performingCardId": 37,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 37,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 26,
+            "seededCardId": 82,
+            "performingCardId": 82,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 82,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 27,
+            "seededCardId": 36,
+            "performingCardId": 36,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 36,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".placecard.AddCardsToSeedCardStackAction",
+            "actionId": 35,
+            "locationId": 12,
+            "status": "completed_success",
+            "targetCardIds": [
+                48,
+                50
+            ],
+            "performingCardId": 36,
+            "performingPlayerId": "andrew",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".placecard.AddCardsToSeedCardStackAction",
+            "actionId": 45,
+            "locationId": 4,
+            "status": "completed_success",
+            "targetCardIds": [
+                51,
+                49
+            ],
+            "performingCardId": 40,
+            "performingPlayerId": "andrew",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 71,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".playcard.SeedFacilityAction",
+            "actionId": 70,
+            "status": "completed_success",
+            "destinationZone": "AT_LOCATION",
+            "seededCardId": 46,
+            "performingCardId": 46,
+            "targetCardId": 46,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 74,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 75,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedFacilityAction",
+            "actionId": 72,
+            "status": "completed_success",
+            "destinationZone": "AT_LOCATION",
+            "seededCardId": 35,
+            "performingCardId": 35,
+            "targetCardId": 35,
+            "performingPlayerId": "andrew2",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 79,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 80,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedFacilityAction",
+            "actionId": 76,
+            "status": "completed_success",
+            "destinationZone": "AT_LOCATION",
+            "seededCardId": 42,
+            "performingCardId": 42,
+            "targetCardId": 42,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedCardAction",
+            "actionId": 81,
+            "seededCardId": 44,
+            "performingCardId": 44,
+            "performingPlayerId": "andrew",
+            "destinationZone": "CORE",
+            "status": "completed_success",
+            "targetCardId": 44,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".choose.SelectValidCardCombinationFromDialogToDownloadAction",
+            "actionId": 85,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 86,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".playcard.DownloadMultipleReportablesActionNew",
+            "actionId": 84,
+            "status": "completed_success",
+            "performingCardId": 44,
+            "performingPlayerId": "andrew",
+            "actionType": "DOWNLOAD_CARD"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 88,
+            "status": "completed_success",
+            "performingCardId": 69,
+            "targetCardId": 69,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 87,
+            "status": "completed_success",
+            "performingCardId": 68,
+            "targetCardId": 68,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".turn.UseGameTextAction",
+            "actionId": 82,
+            "status": "completed_success",
+            "performingCardId": 44,
+            "performingPlayerId": "andrew",
+            "actionType": "USE_GAME_TEXT"
+        },
+        {
+            "className": ".draw.DrawMultipleCardsUnrespondableAction",
+            "actionId": 89,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawMultipleCardsUnrespondableAction",
+            "actionId": 90,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 108,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 105,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 104,
+            "status": "completed_success",
+            "performingCardId": 67,
+            "targetCardId": 67,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 146,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 162,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 161,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 160,
+            "status": "completed_success",
+            "performingCardId": 18,
+            "targetCardId": 18,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 201,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 217,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 210,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 209,
+            "status": "completed_success",
+            "performingCardId": 54,
+            "targetCardId": 54,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 255,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 256,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 257,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 253,
+            "status": "completed_success",
+            "targetCardIds": [
+                68,
+                69,
+                67,
+                54
+            ],
+            "performingCardId": 42,
+            "originCardId": 42,
+            "destinationCardId": 85,
+            "performingPlayerId": "andrew",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 284,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 285,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 286,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 283,
+            "status": "completed_success",
+            "targetCardIds": [
+                68,
+                69,
+                67,
+                54
+            ],
+            "performingCardId": 42,
+            "originCardId": 85,
+            "destinationCardId": 42,
+            "performingPlayerId": "andrew",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 314,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 315,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 316,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 312,
+            "status": "completed_success",
+            "targetCardIds": [
+                68,
+                69,
+                67,
+                54
+            ],
+            "performingCardId": 42,
+            "originCardId": 42,
+            "destinationCardId": 85,
+            "performingPlayerId": "andrew",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".choose.SelectAttemptingUnitAction",
+            "actionId": 326,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_AWAY_TEAM"
+        },
+        {
+            "className": ".missionattempt.AttemptMissionAction",
+            "actionId": 325,
+            "locationId": 5,
+            "status": "completed_success",
+            "targetCardId": 85,
+            "performingCardId": 85,
+            "performingPlayerId": "andrew",
+            "actionType": "ATTEMPT_MISSION"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 369,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 370,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 371,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 368,
+            "status": "completed_success",
+            "targetCardIds": [
+                68,
+                69,
+                67,
+                54
+            ],
+            "performingCardId": 42,
+            "originCardId": 85,
+            "destinationCardId": 42,
+            "performingPlayerId": "andrew",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 399,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 415,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 412,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 411,
+            "status": "completed_success",
+            "performingCardId": 27,
+            "targetCardId": 27,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 454,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 470,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 467,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 466,
+            "status": "completed_success",
+            "performingCardId": 72,
+            "targetCardId": 72,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 508,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 524,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 523,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 522,
+            "status": "completed_success",
+            "performingCardId": 2,
+            "targetCardId": 2,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 563,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 564,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 565,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 561,
+            "status": "completed_success",
+            "targetCardIds": [
+                2
+            ],
+            "performingCardId": 35,
+            "originCardId": 35,
+            "destinationCardId": 39,
+            "performingPlayerId": "andrew2",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 592,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 593,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 594,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 590,
+            "status": "completed_success",
+            "targetCardIds": [
+                27
+            ],
+            "performingCardId": 35,
+            "originCardId": 35,
+            "destinationCardId": 39,
+            "performingPlayerId": "andrew2",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".choose.SelectAttemptingUnitAction",
+            "actionId": 606,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_AWAY_TEAM"
+        },
+        {
+            "className": ".missionattempt.AttemptMissionAction",
+            "actionId": 605,
+            "locationId": 6,
+            "status": "completed_success",
+            "targetCardId": 39,
+            "performingCardId": 39,
+            "performingPlayerId": "andrew2",
+            "actionType": "ATTEMPT_MISSION"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 647,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 648,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 649,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 645,
+            "status": "completed_success",
+            "targetCardIds": [
+                2,
+                27
+            ],
+            "performingCardId": 35,
+            "originCardId": 39,
+            "destinationCardId": 35,
+            "performingPlayerId": "andrew2",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 676,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 692,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 691,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 690,
+            "status": "completed_success",
+            "performingCardId": 58,
+            "targetCardId": 58,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 730,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 746,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 745,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 744,
+            "status": "completed_success",
+            "performingCardId": 28,
+            "targetCardId": 28,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 785,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 801,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 800,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 799,
+            "status": "completed_success",
+            "performingCardId": 73,
+            "targetCardId": 73,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 839,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 855,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 842,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 841,
+            "status": "completed_success",
+            "performingCardId": 4,
+            "targetCardId": 4,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 894,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 910,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 905,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 904,
+            "status": "completed_success",
+            "performingCardId": 63,
+            "targetCardId": 63,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 948,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 964,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 963,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 962,
+            "status": "completed_success",
+            "performingCardId": 14,
+            "targetCardId": 14,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1003,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1019,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1008,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1007,
+            "status": "completed_success",
+            "performingCardId": 79,
+            "targetCardId": 79,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1057,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1073,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1072,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1071,
+            "status": "completed_success",
+            "performingCardId": 1,
+            "targetCardId": 1,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 1117,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 1118,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1119,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 1112,
+            "status": "completed_success",
+            "targetCardIds": [
+                2,
+                27,
+                14,
+                4,
+                18,
+                28
+            ],
+            "performingCardId": 1,
+            "originCardId": 35,
+            "destinationCardId": 1,
+            "performingPlayerId": "andrew2",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".movecard.UndockAction",
+            "actionId": 1147,
+            "status": "completed_success",
+            "performingCardId": 1,
+            "targetCardId": 1,
+            "performingPlayerId": "andrew2",
+            "actionType": "UNDOCK_SHIP"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 1179,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.FlyShipAction",
+            "actionId": 1178,
+            "status": "completed_success",
+            "targetCardId": 1,
+            "performingCardId": 1,
+            "performingPlayerId": "andrew2",
+            "actionType": "FLY_SHIP"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1212,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1228,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1225,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1224,
+            "status": "completed_success",
+            "performingCardId": 57,
+            "targetCardId": 57,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1266,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1282,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1281,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1280,
+            "status": "completed_success",
+            "performingCardId": 15,
+            "targetCardId": 15,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 1324,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.FlyShipAction",
+            "actionId": 1323,
+            "status": "completed_success",
+            "targetCardId": 1,
+            "performingCardId": 1,
+            "performingPlayerId": "andrew2",
+            "actionType": "FLY_SHIP"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1367,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1383,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1382,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1381,
+            "status": "completed_success",
+            "performingCardId": 62,
+            "targetCardId": 62,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1421,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1437,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1436,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1435,
+            "status": "completed_success",
+            "performingCardId": 24,
+            "targetCardId": 24,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1487,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1503,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1502,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1501,
+            "status": "completed_success",
+            "performingCardId": 74,
+            "targetCardId": 74,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1541,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1557,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1544,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1543,
+            "status": "completed_success",
+            "performingCardId": 17,
+            "targetCardId": 17,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 1607,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 1608,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1609,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.BeamCardsAction",
+            "actionId": 1601,
+            "status": "completed_success",
+            "targetCardIds": [
+                17,
+                24
+            ],
+            "performingCardId": 15,
+            "originCardId": 35,
+            "destinationCardId": 15,
+            "performingPlayerId": "andrew2",
+            "actionType": "BEAM_CARDS"
+        },
+        {
+            "className": ".movecard.UndockAction",
+            "actionId": 1642,
+            "status": "completed_success",
+            "performingCardId": 15,
+            "targetCardId": 15,
+            "performingPlayerId": "andrew2",
+            "actionType": "UNDOCK_SHIP"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1682,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1698,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1697,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1696,
+            "status": "completed_success",
+            "performingCardId": 78,
+            "targetCardId": 78,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1737,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1753,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1750,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1749,
+            "status": "completed_success",
+            "performingCardId": 8,
+            "targetCardId": 8,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1804,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1820,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1819,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1818,
+            "status": "completed_success",
+            "performingCardId": 53,
+            "targetCardId": 53,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1859,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1875,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1874,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1873,
+            "status": "completed_success",
+            "performingCardId": 34,
+            "targetCardId": 34,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1927,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1943,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1942,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1941,
+            "status": "completed_success",
+            "performingCardId": 70,
+            "targetCardId": 70,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 1982,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 1998,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 1995,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 1994,
+            "status": "completed_success",
+            "performingCardId": 20,
+            "targetCardId": 20,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2050,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2066,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 2065,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 2064,
+            "status": "completed_success",
+            "performingCardId": 55,
+            "targetCardId": 55,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2105,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2119,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 2110,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 2109,
+            "status": "completed_success",
+            "performingCardId": 7,
+            "targetCardId": 7,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 2169,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 2170,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2171,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.WalkCardsAction",
+            "actionId": 2155,
+            "status": "completed_success",
+            "targetCardIds": [
+                34,
+                20,
+                7
+            ],
+            "performingCardId": 35,
+            "originCardId": 35,
+            "destinationCardId": 8,
+            "performingPlayerId": "andrew2",
+            "actionType": "WALK_CARDS"
+        },
+        {
+            "className": ".movecard.UndockAction",
+            "actionId": 2209,
+            "status": "completed_success",
+            "performingCardId": 8,
+            "targetCardId": 8,
+            "performingPlayerId": "andrew2",
+            "actionType": "UNDOCK_SHIP"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2254,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2270,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 2269,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 2268,
+            "status": "completed_success",
+            "performingCardId": 76,
+            "targetCardId": 76,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2309,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2364,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2408,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2465,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2483,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 2482,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 2481,
+            "status": "completed_success",
+            "performingCardId": 77,
+            "targetCardId": 77,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2524,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2583,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2629,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2690,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2710,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 2709,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 2708,
+            "status": "completed_success",
+            "performingCardId": 65,
+            "targetCardId": 65,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 2755,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 2756,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2757,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.WalkCardsAction",
+            "actionId": 2752,
+            "status": "completed_success",
+            "targetCardIds": [
+                57,
+                79,
+                68,
+                67,
+                73,
+                53,
+                54,
+                58,
+                63,
+                55,
+                70,
+                72,
+                69,
+                62,
+                76,
+                74
+            ],
+            "performingCardId": 42,
+            "originCardId": 42,
+            "destinationCardId": 65,
+            "performingPlayerId": "andrew",
+            "actionType": "WALK_CARDS"
+        },
+        {
+            "className": ".movecard.UndockAction",
+            "actionId": 2787,
+            "status": "completed_success",
+            "performingCardId": 65,
+            "targetCardId": 65,
+            "performingPlayerId": "andrew",
+            "actionType": "UNDOCK_SHIP"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 2821,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".movecard.FlyShipAction",
+            "actionId": 2820,
+            "status": "completed_success",
+            "targetCardId": 65,
+            "performingCardId": 65,
+            "performingPlayerId": "andrew",
+            "actionType": "FLY_SHIP"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2856,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2878,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 2865,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 2864,
+            "status": "completed_success",
+            "performingCardId": 21,
+            "targetCardId": 21,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 2939,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 2959,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 2952,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 2951,
+            "status": "completed_success",
+            "performingCardId": 56,
+            "targetCardId": 56,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 3008,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 3072,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 3092,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 3081,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 3080,
+            "status": "completed_success",
+            "performingCardId": 61,
+            "targetCardId": 61,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        }
+    ],
+    "playerClocks": [
+        {
+            "playerId": "andrew2",
+            "maxTimeAllowed": 7200,
+            "timeElapsed": 275,
+            "timeRemaining": 6925
+        },
+        {
+            "playerId": "andrew",
+            "maxTimeAllowed": 7200,
+            "timeElapsed": 378,
+            "timeRemaining": 6822
+        }
+    ],
+    "pendingDecision": {
+        "decisionId": 191,
+        "actions": [
+            {
+                "className": ".movecard.BeamCardsAction",
+                "actionId": 3133,
+                "status": "virtual",
+                "targetCardIds": [],
+                "performingCardId": 42,
+                "performingPlayerId": "andrew",
+                "actionType": "BEAM_CARDS"
+            },
+            {
+                "className": ".movecard.BeamCardsAction",
+                "actionId": 3135,
+                "status": "virtual",
+                "targetCardIds": [],
+                "performingCardId": 65,
+                "performingPlayerId": "andrew",
+                "actionType": "BEAM_CARDS"
+            },
+            {
+                "className": ".movecard.FlyShipAction",
+                "actionId": 3138,
+                "status": "virtual",
+                "targetCardId": 65,
+                "performingCardId": 65,
+                "performingPlayerId": "andrew",
+                "actionType": "FLY_SHIP"
+            },
+            {
+                "className": ".battle.InitiateShipBattleAction",
+                "actionId": 3140,
+                "status": "virtual",
+                "performingPlayerId": "andrew",
+                "actionType": "BATTLE"
+            }
+        ],
+        "context": "SELECT_PHASE_ACTION",
+        "min": 0,
+        "elementType": "ACTION",
+        "text": "Play current phase action or pass"
+    },
+    "spacelineElements": [
+        {
+            "type": "location",
+            "locationId": 11,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 10,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 9,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 12,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 8,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 7,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 6,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 5,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 4,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 3,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 2,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 1,
+            "quadrant": "ALPHA"
+        }
+    ],
+    "gameLocations": {
+        "11": 11,
+        "12": 12,
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "7": 7,
+        "8": 8,
+        "9": 9,
+        "10": 10
+    }
+}

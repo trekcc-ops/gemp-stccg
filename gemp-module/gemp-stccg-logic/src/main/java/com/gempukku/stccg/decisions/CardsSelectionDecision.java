@@ -2,14 +2,13 @@ package com.gempukku.stccg.decisions;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.common.AwaitingDecisionType;
 import com.gempukku.stccg.common.DecisionResultInvalidException;
 import com.gempukku.stccg.game.DefaultGame;
 import com.gempukku.stccg.player.Player;
 
 import java.util.*;
 
-public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
+public abstract class CardsSelectionDecision extends AbstractAwaitingDecision implements CardSelectionDecision {
     private final List<? extends PhysicalCard> _physicalCards;
 
     @JsonProperty("min")
@@ -18,33 +17,43 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
     @JsonProperty("max")
     private final int _maximum;
 
-    @JsonProperty("cardIds")
     private final String[] _cardIds;
+
+    @JsonProperty("independentlySelectable")
+    private final boolean _independentlySelectable = true;
 
     public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
                                   DefaultGame cardGame) {
         this(player, text, physicalCards, 0, physicalCards.size(), cardGame);
     }
 
-    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
+    public CardsSelectionDecision(String playerName, String text, Collection<? extends PhysicalCard> physicalCards,
                                   int minimum, int maximum, DefaultGame cardGame) {
-        super(player, text, AwaitingDecisionType.CARD_SELECTION, cardGame);
+        super(playerName, text, cardGame);
         _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
         _minimum = minimum;
         _maximum = maximum;
-
-
         _cardIds = new String[physicalCards.size()];
         for (int i = 0; i < physicalCards.size(); i++)
             _cardIds[i] = String.valueOf(_physicalCards.get(i).getCardId());
+    }
 
-        setParam("min", String.valueOf(minimum));
-        setParam("max", String.valueOf(maximum));
+    public CardsSelectionDecision(Player player, String text, Collection<? extends PhysicalCard> physicalCards,
+                                  int minimum, int maximum, DefaultGame cardGame) {
+        super(player, text, cardGame);
+        _physicalCards = new LinkedList<PhysicalCard>(physicalCards);
+        _minimum = minimum;
+        _maximum = maximum;
+        _cardIds = new String[physicalCards.size()];
+        for (int i = 0; i < physicalCards.size(); i++)
+            _cardIds[i] = String.valueOf(_physicalCards.get(i).getCardId());
     }
 
     public String[] getCardIds() {
         return _cardIds;
     }
+
+    public String getElementType() { return "CARD"; }
 
     protected PhysicalCard getSelectedCardByResponse(String response) throws DecisionResultInvalidException {
         if (_minimum != 1 || _maximum != 1 || response.isEmpty())
@@ -92,18 +101,32 @@ public abstract class CardsSelectionDecision extends AbstractAwaitingDecision {
         throw new DecisionResultInvalidException();
     }
 
-    public List<? extends PhysicalCard> getCardOptions() { return _physicalCards; }
-
     public void decisionMade(PhysicalCard card) throws DecisionResultInvalidException {
         decisionMade(String.valueOf(card.getCardId()));
     }
 
-    public void decisionMade(List<PhysicalCard> cards) throws DecisionResultInvalidException {
+    public void decisionMade(Collection<? extends PhysicalCard> cards) throws DecisionResultInvalidException {
         StringJoiner sj = new StringJoiner(",");
         for (PhysicalCard card : cards) {
             sj.add(String.valueOf(card.getCardId()));
         }
         decisionMade(sj.toString());
+    }
+
+    @JsonProperty("displayedCards")
+    private List<Map<Object, Object>> getDisplayedCards() {
+        List<Map<Object, Object>> result = new ArrayList<>();
+        for (PhysicalCard card : _physicalCards) {
+            Map<Object, Object> mapToAdd = new HashMap<>();
+            mapToAdd.put("cardId", String.valueOf(card.getCardId()));
+            mapToAdd.put("selectable", true);
+            result.add(mapToAdd);
+        }
+        return result;
+    }
+
+    public List<? extends PhysicalCard> getSelectableCards() {
+        return _physicalCards;
     }
 
 }

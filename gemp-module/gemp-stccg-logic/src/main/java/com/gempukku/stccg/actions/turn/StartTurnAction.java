@@ -1,21 +1,28 @@
 package com.gempukku.stccg.actions.turn;
 
-import com.gempukku.stccg.actions.Action;
-import com.gempukku.stccg.actions.ActionResult;
+import com.gempukku.stccg.actions.ActionType;
+import com.gempukku.stccg.actions.ActionyAction;
+import com.gempukku.stccg.common.filterable.Phase;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.player.PlayerNotFoundException;
-import com.gempukku.stccg.modifiers.ModifiersLogic;
+import com.gempukku.stccg.gamestate.GameState;
 
-public class StartTurnAction extends SystemQueueAction {
+public class StartTurnAction extends ActionyAction {
 
-    public StartTurnAction(DefaultGame cardGame) {
-        super(cardGame);
-        appendEffect(new AllowResponsesAction(cardGame, ActionResult.Type.START_OF_TURN));
+    public StartTurnAction(DefaultGame cardGame, String playerName) {
+        super(cardGame, playerName, ActionType.START_TURN);
     }
+
     @Override
-    protected void processEffect(DefaultGame cardGame) throws PlayerNotFoundException {
-        ModifiersLogic logic = cardGame.getGameState().getModifiersLogic();
-        logic.signalStartOfTurn(cardGame.getCurrentPlayer());
+    public boolean requirementsAreMet(DefaultGame cardGame) {
+        return true;
+    }
+
+    @Override
+    protected void processEffect(DefaultGame cardGame) {
+        GameState gameState = cardGame.getGameState();
+        gameState.signalStartOfTurn(cardGame, cardGame.getCurrentPlayerId());
+        gameState.setCurrentPhase(Phase.START_OF_TURN);
+        saveResult(new StartTurnResult(cardGame, this), cardGame);
         setAsSuccessful();
     }
 }

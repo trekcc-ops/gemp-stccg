@@ -2,50 +2,43 @@ package com.gempukku.stccg.actions.movecard;
 
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gempukku.stccg.actions.Action;
 import com.gempukku.stccg.actions.ActionType;
 import com.gempukku.stccg.actions.ActionyAction;
-import com.gempukku.stccg.actions.TopLevelSelectableAction;
+import com.gempukku.stccg.actions.CardPerformedAction;
 import com.gempukku.stccg.cards.physicalcard.PhysicalCard;
-import com.gempukku.stccg.cards.physicalcard.PhysicalShipCard;
+import com.gempukku.stccg.cards.physicalcard.ShipCard;
+import com.gempukku.stccg.common.filterable.CardType;
 import com.gempukku.stccg.game.DefaultGame;
-import com.gempukku.stccg.game.InvalidGameOperationException;
-import com.gempukku.stccg.player.Player;
+import com.gempukku.stccg.gamestate.ChildCardRelationshipType;
 
-public class UndockAction extends ActionyAction implements TopLevelSelectableAction {
-    private final PhysicalShipCard _performingCard;
+public class UndockAction extends ActionyAction implements CardPerformedAction {
+    private final ShipCard _performingCard;
 
-    public UndockAction(Player player, PhysicalShipCard cardUndocking) {
-        super(cardUndocking.getGame(), player, "Undock", ActionType.UNDOCK_SHIP);
+    public UndockAction(DefaultGame cardGame, String performingPlayerName, ShipCard cardUndocking) {
+        super(cardGame, performingPlayerName, ActionType.UNDOCK_SHIP);
         _performingCard = cardUndocking;
     }
 
-    @Override
-    public int getCardIdForActionSelection() { return _performingCard.getCardId(); }
+
     @Override
     public PhysicalCard getPerformingCard() { return _performingCard; }
 
     @Override
-    public Action nextAction(DefaultGame cardGame) throws InvalidGameOperationException {
-//        if (!isAnyCostFailed()) {
-
-        Action cost = getNextCost();
-        if (cost != null)
-            return cost;
-
-        if (!_wasCarriedOut) {
-            _performingCard.undockFromFacility();
-            _wasCarriedOut = true;
-            setAsSuccessful();
+    public void processEffect(DefaultGame cardGame) {
+        PhysicalCard dockedAtCard = _performingCard.getDockedAtCard();
+        if (dockedAtCard != null && dockedAtCard.getCardType() == CardType.FACILITY) {
+            _performingCard.setParentCardRelationship(dockedAtCard.getParentCard(), ChildCardRelationshipType.IN_SPACE);
+        } else if (dockedAtCard != null && dockedAtCard.getCardType() == CardType.SITE) {
+            _performingCard.setParentCardRelationship(dockedAtCard.getParentCard().getParentCard(), ChildCardRelationshipType.IN_SPACE);
         }
-
-        return getNextAction();
+        saveResult(new UndockShipActionResult(cardGame, this, _performingCard, dockedAtCard), cardGame);
+        setAsSuccessful();
     }
 
     public boolean requirementsAreMet(DefaultGame cardGame) { return _performingCard.isDocked(); }
 
     @JsonProperty("targetCardId")
     @JsonIdentityReference(alwaysAsId=true)
-    public PhysicalShipCard getCardToMove() { return _performingCard; }
+    public ShipCard getCardToMove() { return _performingCard; }
 
 }

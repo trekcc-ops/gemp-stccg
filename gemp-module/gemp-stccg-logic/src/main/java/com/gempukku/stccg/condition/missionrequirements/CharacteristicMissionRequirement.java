@@ -1,7 +1,9 @@
 package com.gempukku.stccg.condition.missionrequirements;
 
+import com.gempukku.stccg.cards.GameTextContext;
 import com.gempukku.stccg.cards.physicalcard.PersonnelCard;
 import com.gempukku.stccg.common.filterable.Characteristic;
+import com.gempukku.stccg.game.DefaultGame;
 
 import java.util.Collection;
 
@@ -13,7 +15,7 @@ public class CharacteristicMissionRequirement implements MissionRequirement {
     }
 
     @Override
-    public boolean canBeMetBy(Collection<PersonnelCard> personnel) {
+    public boolean canBeMetBy(Collection<PersonnelCard> personnel, DefaultGame cardGame, GameTextContext context) {
         boolean result = false;
         for (PersonnelCard card : personnel) {
             if (card.hasCharacteristic(_characteristic)) {

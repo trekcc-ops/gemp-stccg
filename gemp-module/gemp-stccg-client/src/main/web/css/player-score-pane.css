@@ -1,0 +1,49 @@
+.PlayerScorePane {
+    display: grid;
+    grid-template-columns: [name] 2fr [clock] 1fr [draw] 1fr [hand] 1fr [discard] 1fr [removed] 1fr [score] 2fr;
+    grid-template-rows: [player] 50px;
+}
+/*
+.playerStats .clickable {
+    cursor: pointer;
+}
+
+.player.current {
+    background-color: #191970;
+}
+*/
+
+.PlayerScorePane > .PlayerName {
+    grid-column-start: name;
+    grid-row-start: player;
+}
+
+.PlayerScorePane > .Clock {
+    grid-column-start: clock;
+    grid-row-start: player;
+}
+
+.PlayerScorePane > .DrawDeckSize {
+    grid-column-start: draw;
+    grid-row-start: player;
+}
+
+.PlayerScorePane > .HandSize {
+    grid-column-start: hand;
+    grid-row-start: player;
+}
+
+.PlayerScorePane > .DiscardSize {
+    grid-column-start: discard;
+    grid-row-start: player;
+}
+
+.PlayerScorePane > .RemovedSize {
+    grid-column-start: removed;
+    grid-row-start: player;
+}
+
+.PlayerScorePane > .Score {
+    grid-column-start: score;
+    grid-row-start: player;
+}
