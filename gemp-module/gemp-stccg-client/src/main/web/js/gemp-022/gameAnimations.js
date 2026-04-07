@@ -614,7 +614,9 @@ export default class GameAnimations {
     }
 
     async revealCard(targetCardId, jsonGameState) {
-        await this.queue.add(async () => {
+        $("#main").queue(async (next) => {
+        
+        //await this.queue.add(async () => {
             // animation layer setup
             // TODO: Create a permanent animation layer that's invisible so I don't have to copy this every time.
             let animation_layer = document.createElement("div");
@@ -700,11 +702,13 @@ export default class GameAnimations {
             );
 
             animation_layer.remove();
+            next();
         });
     }
 
     async stopCards(targetCardIds, jsonGameState) {
-        await this.queue.add(async () => {
+        //await this.queue.add(async () => {
+        $("#main").queue(async (next) => {
             // animation layer setup
             let animation_layer = document.createElement("div");
             animation_layer.id = "animation-layer";
@@ -801,6 +805,7 @@ export default class GameAnimations {
             );
             
             animation_layer.remove();
+            next();
         });
     }
 
