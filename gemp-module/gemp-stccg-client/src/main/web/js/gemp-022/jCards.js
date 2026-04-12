@@ -6,7 +6,8 @@ import rulesImg from "../../images/rules.png";
 import errataVerticalImg from "../../images/errata-vertical.png";
 import pixelImg from "../../images/pixel.png";
 import cardBackImg from "../../images/decipher_card_back.svg?url";
-import stoppedImg from "../../images/emblem-error.svg?url";
+import stoppedImg from "../../images/emblem-stop.svg?url";
+import killedImg from "../../images/emblem-error.svg?url";
 import disabledImg from "../../images/emblem-locked.svg?url";
 import capturedImg from "../../images/emblem-symbolic-link.svg?url";
 
@@ -456,6 +457,12 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
                         let stoppedImgTag = document.createElement("img");
                         stoppedImgTag.src = stoppedImg;
                         overlayDiv.appendChild(stoppedImgTag);
+                        break;
+                    }
+                    case "KILL": {
+                        let killedImgTag = document.createElement("img");
+                        killedImgTag.src = killedImg;
+                        overlayDiv.appendChild(killedImgTag);
                         break;
                     }
                     case "STASIS": {
