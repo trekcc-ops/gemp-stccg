@@ -808,8 +808,8 @@ export default class GameAnimations {
         });
     }
 
-    async killCards(targetCardIds, jsonGameState) {
-        if (targetCardIds.length === 0) {
+    async killCards(killedCardIds, jsonGameState) {
+        if (killedCardIds.length === 0) {
             return;
         }
 
@@ -818,8 +818,8 @@ export default class GameAnimations {
             let animation_layer = document.createElement("div");
             animation_layer.id = "animation-layer";
 
-            for (const targetCardId of targetCardIds) {
-                let card_json = jsonGameState.visibleCardsInGame[targetCardId];
+            for (const killedCardId of killedCardIds) {
+                let card_json = jsonGameState.visibleCardsInGame[killedCardId];
                 let blueprintId = card_json.blueprintId;
                 let zone = "VOID";
                 let cardId = card_json.cardId;
