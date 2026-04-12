@@ -704,6 +704,10 @@ export default class GameAnimations {
     }
 
     async stopCards(targetCardIds, jsonGameState) {
+        if (targetCardIds.length === 0) {
+            return;
+        }
+
         await this.queue.add(async () => {
             // animation layer setup
             let animation_layer = document.createElement("div");
