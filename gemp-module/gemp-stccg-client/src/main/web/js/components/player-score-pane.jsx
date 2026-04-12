@@ -93,15 +93,15 @@ export default function PlayerScorePane ( {gamestate, player_id, openPileDetails
     return(
         <Box className="PlayerScorePane">
             <Stack direction="row" spacing={0.5} className="PlayerName">
-                {player_data.isCurrentPlayer ? <Tooltip title="Current player"><KeyboardDoubleArrowRightIcon /></Tooltip> : null}
-                <Typography>{player_data.username}</Typography>
-                {player_data.isFirstPlayer ? <Tooltip title="First player"><WorkspacePremiumIcon/></Tooltip> : null}
+                {player_data.isCurrentPlayer ? <Tooltip title="Current player"><KeyboardDoubleArrowRightIcon /></Tooltip> : <Box minWidth={24} />}
+                <Stack direction="column">
+                    <Typography>{player_data.username}</Typography>
+                    <Tooltip title="Remaining clock">
+                        <Typography>{player_data.clock}</Typography>
+                    </Tooltip>
+                </Stack>
+                {player_data.isFirstPlayer ? <Tooltip title="First player"><WorkspacePremiumIcon/></Tooltip> : <Box minWidth={24} />}
             </Stack>
-            <Box>
-                <Tooltip title="Remaining clock">
-                    <Typography>{player_data.clock}</Typography>
-                </Tooltip>
-            </Box>
             <Box className="DrawDeckSize" sx={{minWidth: '42px', backgroundImage: `url(${decipher_card_deck})`, backgroundSize: '42px 42px', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Tooltip title="Draw deck size">
                     <Typography align='center'>{player_data.drawsize}</Typography>

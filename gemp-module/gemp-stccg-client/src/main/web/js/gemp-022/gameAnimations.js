@@ -707,6 +707,10 @@ export default class GameAnimations {
     }
 
     async stopCards(targetCardIds, jsonGameState) {
+        if (targetCardIds.length === 0) {
+            return;
+        }
+
         //await this.queue.add(async () => {
         $("#main").queue(async (next) => {
             // animation layer setup
@@ -774,7 +778,208 @@ export default class GameAnimations {
             );
 
             // set up multiple promises, one for each overlay token
-            const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlay");
+            const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlayRight");
+            let animation_promises = [];
+            for (const overlay of tokenOverlays) {
+                animation_promises.push(
+                    overlay.animate([
+                        {opacity: 1}, {opacity: 0}],
+                        {direction: "alternate", duration: 500, easing: "linear", iterations: 6})
+                );
+            }
+            
+            // wait for tokens to animate
+            await Promise.all(animation_promises.map((animation) => animation.finished));
+            
+            // fade out
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 1,
+                    },
+                    { // to
+                        opacity: 0,
+                    },
+                ],
+                {
+                    duration: 500, //ms
+                    fill: "forwards"
+                }
+            );
+            
+            animation_layer.remove();
+            next();
+        });
+    }
+
+    async killCards(killedCardIds, jsonGameState) {
+        if (killedCardIds.length === 0) {
+            return;
+        }
+
+        await this.queue.add(async () => {
+            // animation layer setup
+            let animation_layer = document.createElement("div");
+            animation_layer.id = "animation-layer";
+
+            for (const killedCardId of killedCardIds) {
+                let card_json = jsonGameState.visibleCardsInGame[killedCardId];
+                let blueprintId = card_json.blueprintId;
+                let zone = "VOID";
+                let cardId = card_json.cardId;
+                let noOwner = "";
+                let title = (card_json.title) ? card_json.title : "";
+                let imageUrl = card_json.imageUrl;
+                let emptyLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
+
+                card.addStatusToken("KILLED");
+
+                let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+
+                let pageWidth = document.body.clientWidth;
+                let oneSixthWidthVal = (pageWidth / 6);
+                let cardWidth = oneSixthWidthVal + "px"; // 5 width
+                let cardHeight = Math.floor(oneSixthWidthVal * 1.5) + "px"; // 3:2 ratio
+
+                baseCardDiv.style.margin = "auto";
+                baseCardDiv.style.width = cardWidth;
+                baseCardDiv.style.height = cardHeight;
+                baseCardDiv.style.flex = `0 1 ${cardWidth}`;
+
+                animation_layer.appendChild(baseCardDiv);
+            }
+
+            let gamediv;
+            if (this.game.mainDiv instanceof jQuery) {
+                gamediv = this.game.mainDiv[0];
+            }
+            else {
+                gamediv = this.game;
+            }
+            gamediv.appendChild(animation_layer);
+
+            // fade in
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 0,
+                    },
+                    { // to
+                        opacity: 1,
+                    },
+                ],
+                {
+                    duration: 1000, //ms
+                    fill: "forwards"
+                }
+            );
+
+            // set up multiple promises, one for each overlay token
+            const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlayRight");
+            let animation_promises = [];
+            for (const overlay of tokenOverlays) {
+                animation_promises.push(
+                    overlay.animate([
+                        {opacity: 1}, {opacity: 0}],
+                        {direction: "alternate", duration: 500, easing: "linear", iterations: 6})
+                );
+            }
+            
+            // wait for tokens to animate
+            await Promise.all(animation_promises.map((animation) => animation.finished));
+            
+            // fade out
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 1,
+                    },
+                    { // to
+                        opacity: 0,
+                    },
+                ],
+                {
+                    duration: 500, //ms
+                    fill: "forwards"
+                }
+            );
+            
+            animation_layer.remove();
+        });
+    }
+
+    async killCards(killedCardIds, jsonGameState) {
+        if (killedCardIds.length === 0) {
+            return;
+        }
+
+        await this.queue.add(async () => {
+            // animation layer setup
+            let animation_layer = document.createElement("div");
+            animation_layer.id = "animation-layer";
+
+            for (const killedCardId of killedCardIds) {
+                let card_json = jsonGameState.visibleCardsInGame[killedCardId];
+                let blueprintId = card_json.blueprintId;
+                let zone = "VOID";
+                let cardId = card_json.cardId;
+                let noOwner = "";
+                let title = (card_json.title) ? card_json.title : "";
+                let imageUrl = card_json.imageUrl;
+                let emptyLocationIndex = "";
+                let upsideDown = false;
+                let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
+
+                card.addStatusToken("KILLED");
+
+                let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+
+                let pageWidth = document.body.clientWidth;
+                let oneSixthWidthVal = (pageWidth / 6);
+                let cardWidth = oneSixthWidthVal + "px"; // 5 width
+                let cardHeight = Math.floor(oneSixthWidthVal * 1.5) + "px"; // 3:2 ratio
+
+                baseCardDiv.style.margin = "auto";
+                baseCardDiv.style.width = cardWidth;
+                baseCardDiv.style.height = cardHeight;
+                baseCardDiv.style.flex = `0 1 ${cardWidth}`;
+
+                animation_layer.appendChild(baseCardDiv);
+            }
+
+            let gamediv;
+            if (this.game.mainDiv instanceof jQuery) {
+                gamediv = this.game.mainDiv[0];
+            }
+            else {
+                gamediv = this.game;
+            }
+            gamediv.appendChild(animation_layer);
+
+            // fade in
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 0,
+                    },
+                    { // to
+                        opacity: 1,
+                    },
+                ],
+                {
+                    duration: 1000, //ms
+                    fill: "forwards"
+                }
+            );
+
+            // set up multiple promises, one for each overlay token
+            const tokenOverlays = animation_layer.getElementsByClassName("tokenOverlayRight");
             let animation_promises = [];
             for (const overlay of tokenOverlays) {
                 animation_promises.push(

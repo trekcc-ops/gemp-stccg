@@ -468,7 +468,7 @@ export function integerDecision(decision, gameUi) {
     }
 
     // Default value. Used to be sent by the server, but will be up to the client going forward.
-    let val = min;
+    let val = max;
 
     gameUi.smallDialog.html(text + `<br /><input id='integerDecision' value='${val}'>`);
 

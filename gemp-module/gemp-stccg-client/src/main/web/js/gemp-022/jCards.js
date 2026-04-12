@@ -6,7 +6,8 @@ import rulesImg from "../../images/rules.png";
 import errataVerticalImg from "../../images/errata-vertical.png";
 import pixelImg from "../../images/pixel.png";
 import cardBackImg from "../../images/decipher_card_back.svg?url";
-import stoppedImg from "../../images/emblem-error.svg?url";
+import stoppedImg from "../../images/emblem-stop-hand.svg?url";
+import killedImg from "../../images/emblem-killed.svg?url";
 import disabledImg from "../../images/emblem-locked.svg?url";
 import capturedImg from "../../images/emblem-symbolic-link.svg?url";
 
@@ -19,7 +20,10 @@ export var packBlueprints = {
 
 // TODO: corresponds to the list of tokens we have icons for, not the full 1E list
 export const STATUS_TOKENS = [
-    "STOPPED"
+    "STOPPED",
+    "KILLED",
+    "STASIS",
+    "CAPTURED"
 ];
 
 export default class Card {
@@ -446,8 +450,11 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     }
 
     if (tokens) {
-        let overlayDiv = document.createElement("div");
-        overlayDiv.classList.add("tokenOverlay");
+        let centerOverlayDiv = document.createElement("div");
+        centerOverlayDiv.classList.add("tokenOverlay"); // for tokens that should be centered
+        
+        let rightOverlayDiv = document.createElement("div");
+        rightOverlayDiv.classList.add("tokenOverlayRight"); // for tokens that should be top-right
 
         if (tokens instanceof Set) { // handle back-compat case where tokens could be bool true
             for (const status of tokens) {
@@ -455,19 +462,25 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
                     case "STOPPED": {
                         let stoppedImgTag = document.createElement("img");
                         stoppedImgTag.src = stoppedImg;
-                        overlayDiv.appendChild(stoppedImgTag);
+                        rightOverlayDiv.appendChild(stoppedImgTag);
+                        break;
+                    }
+                    case "KILLED": {
+                        let killedImgTag = document.createElement("img");
+                        killedImgTag.src = killedImg;
+                        rightOverlayDiv.appendChild(killedImgTag);
                         break;
                     }
                     case "STASIS": {
                         let disabledImgTag = document.createElement("img");
                         disabledImgTag.src = disabledImg;
-                        overlayDiv.appendChild(disabledImgTag);
+                        rightOverlayDiv.appendChild(disabledImgTag);
                         break;
                     }
                     case "CAPTURED": {
                         let capturedImgTag = document.createElement("img");
                         capturedImgTag.src = capturedImg;
-                        overlayDiv.appendChild(capturedImgTag);
+                        rightOverlayDiv.appendChild(capturedImgTag);
                         break;
                     }
                     default:
@@ -476,7 +489,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
             }
         }
 
-        front_face.appendChild(overlayDiv);
+        front_face.appendChild(centerOverlayDiv);
+        front_face.appendChild(rightOverlayDiv);
     }
 
     let borderDiv = document.createElement("div");
