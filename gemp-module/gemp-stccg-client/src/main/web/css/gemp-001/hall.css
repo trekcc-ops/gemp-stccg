@@ -108,13 +108,12 @@ button {
 }
 
 .hall-tab {
-	background: linear-gradient(to top, #200902, #111111 80%) !important;
+	background: linear-gradient(to top, #192359, #111111 80%) !important;
 	width: calc(100% - 0.4em);
 	height: 100%;
 	overflow-x: hidden;
 	display: flex;
 	flex-direction: row;
-	gap: 2px;
 	flex-grow: 3;
 	gap: 5px;
 }
