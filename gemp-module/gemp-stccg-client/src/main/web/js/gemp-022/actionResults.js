@@ -34,6 +34,8 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             gameAnimations.putNonMissionIntoPlay(targetCard, jsonAction.performingPlayerId, jsonGameState, spacelineIndex, true);
             break;
         }
+        // TODO: Determine if we want discard to have "types" of discard like Killed so we can have
+        //       a different, seamless animation for those discard events, rather than two separate events.
         case "DISCARDED": {
             cardList.push(jsonAction.targetCardId);
             gameAnimations.removeCardFromPlay(cardList, jsonAction.performingPlayerId, true);
@@ -128,6 +130,10 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
             gameAnimations.stopCards(jsonAction.targetCardIds, jsonGameState).then(() => {return});
             break;
         }
+        case "KILLED": {
+            gameAnimations.killCards(jsonAction.killedCardIds, jsonGameState).then(() => {return});
+            break;
+        }
         case "UNDOCKED": {
             targetCard = getActionTargetCard(jsonAction, jsonGameState);
             gameAnimations.undockShip(targetCard);
@@ -137,7 +143,6 @@ export function animateActionResult(jsonAction, jsonGameState, gameAnimations) {
         // Actions with no specific animations in a 1E game
         case "ACTIVATED_TRIBBLE_POWER":
         case "ENDED_TURN":
-        case "KILLED": // only the kill part of the action; typically this will result in a separate discard action
         case "MISSION_ATTEMPT_ENDED":
         case "MISSION_ATTEMPT_STARTED":
         case "NULLIFIED": // only the nullify part of the action; typically this will result in a separate discard action
