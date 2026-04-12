@@ -1064,8 +1064,9 @@ describe('createCardDiv', () => {
         let errata_img = errata_tag.children[0];
         let foil_tag = front_face.children[3];
         let foil_img = foil_tag.children[0];
-        let tokens_tag = front_face.children[4];
-        let border_tag = front_face.children[5];
+        let center_tokens_tag = front_face.children[4];
+        let right_tokens_tag = front_face.children[5];
+        let border_tag = front_face.children[6];
         let border_img = border_tag.children[0];
 
         // null value set to an empty string
@@ -1087,7 +1088,8 @@ describe('createCardDiv', () => {
         expect(foil_img.src).toBe("http://localhost/gemp-module/images/" + "holo.jpg");
 
         // tokens tag
-        expect(tokens_tag.classList.contains('tokenOverlay')).toBe(true);
+        expect(center_tokens_tag.classList.contains('tokenOverlay')).toBe(true);
+        expect(right_tokens_tag.classList.contains('tokenOverlayRight')).toBe(true);
 
         // border tag
         expect(border_tag.classList.contains('borderOverlay')).toBe(true);

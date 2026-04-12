@@ -447,8 +447,11 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
     }
 
     if (tokens) {
-        let overlayDiv = document.createElement("div");
-        overlayDiv.classList.add("tokenOverlayRight"); // display in top right
+        let centerOverlayDiv = document.createElement("div");
+        centerOverlayDiv.classList.add("tokenOverlay"); // for tokens that should be centered
+        
+        let rightOverlayDiv = document.createElement("div");
+        rightOverlayDiv.classList.add("tokenOverlayRight"); // for tokens that should be top-right
 
         if (tokens instanceof Set) { // handle back-compat case where tokens could be bool true
             for (const status of tokens) {
@@ -456,25 +459,25 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
                     case "STOPPED": {
                         let stoppedImgTag = document.createElement("img");
                         stoppedImgTag.src = stoppedImg;
-                        overlayDiv.appendChild(stoppedImgTag);
+                        rightOverlayDiv.appendChild(stoppedImgTag);
                         break;
                     }
                     case "KILL": {
                         let killedImgTag = document.createElement("img");
                         killedImgTag.src = killedImg;
-                        overlayDiv.appendChild(killedImgTag);
+                        rightOverlayDiv.appendChild(killedImgTag);
                         break;
                     }
                     case "STASIS": {
                         let disabledImgTag = document.createElement("img");
                         disabledImgTag.src = disabledImg;
-                        overlayDiv.appendChild(disabledImgTag);
+                        rightOverlayDiv.appendChild(disabledImgTag);
                         break;
                     }
                     case "CAPTURED": {
                         let capturedImgTag = document.createElement("img");
                         capturedImgTag.src = capturedImg;
-                        overlayDiv.appendChild(capturedImgTag);
+                        rightOverlayDiv.appendChild(capturedImgTag);
                         break;
                     }
                     default:
@@ -483,7 +486,8 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
             }
         }
 
-        front_face.appendChild(overlayDiv);
+        front_face.appendChild(centerOverlayDiv);
+        front_face.appendChild(rightOverlayDiv);
     }
 
     let borderDiv = document.createElement("div");
