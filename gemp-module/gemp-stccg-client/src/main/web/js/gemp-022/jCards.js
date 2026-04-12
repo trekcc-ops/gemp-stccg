@@ -448,7 +448,7 @@ export function createCardDiv(image, text, foil, tokens, noBorder, errata, upsid
 
     if (tokens) {
         let overlayDiv = document.createElement("div");
-        overlayDiv.classList.add("tokenOverlay");
+        overlayDiv.classList.add("tokenOverlayRight"); // display in top right
 
         if (tokens instanceof Set) { // handle back-compat case where tokens could be bool true
             for (const status of tokens) {

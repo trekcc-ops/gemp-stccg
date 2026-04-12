@@ -744,16 +744,6 @@ export default class GameAnimations {
                 baseCardDiv.style.height = cardHeight;
                 baseCardDiv.style.flex = `0 1 ${cardWidth}`;
 
-                // BUG: The tokenOverlay is used for both these new top right corner style tokens
-                //      and the numbers used for dilemma count and cards-in-deck count in the deck builder.
-                //      Until such time as those are split out from each other, override positioning here
-                //      since this is the case that wants the custom positioning.
-                let tokenOverlays = baseCardDiv.getElementsByClassName("tokenOverlay");
-                for (const overlay of tokenOverlays) {
-                    overlay.classList.remove("tokenOverlay");
-                    overlay.classList.add("tokenOverlayRight");
-                }
-
                 animation_layer.appendChild(baseCardDiv);
             }
 
