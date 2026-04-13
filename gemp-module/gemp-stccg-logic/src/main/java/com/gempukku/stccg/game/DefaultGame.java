@@ -148,7 +148,14 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
     }
 
     public void saveGameResult(EndGameResult result) {
+        for (String playerName : _allPlayerIds) {
+            removeDecision(playerName);
+        }
+
         getGameState().saveGameResult(result);
+        for (GameStateListener listener : _gameStateListeners) {
+            listener.sendEvent(new ActionResultGameEvent(getGameState(), listener.getPlayerId()));
+        }
     }
 
     protected void gameWon(String winner, EndGameResultType endGameType) {
@@ -174,19 +181,6 @@ public abstract class DefaultGame implements ActionsQuerying, ModifiersQuerying,
                     } else {
                         gameWon(allPlayers.getFirst(), endGameType);
                     }
-                }
-            }
-        }
-    }
-
-    public void playerLost(String playerId, String reason) {
-        if (!_finished) {
-            if (_losers.get(playerId) == null) {
-                _losers.put(playerId, reason);
-                if (_losers.size() + 1 == _allPlayerIds.size()) {
-                    List<String> allPlayers = new LinkedList<>(_allPlayerIds);
-                    allPlayers.removeAll(_losers.keySet());
-                    gameWon(allPlayers.getFirst(), EndGameResultType.LAST_PLAYER_REMAINING);
                 }
             }
         }

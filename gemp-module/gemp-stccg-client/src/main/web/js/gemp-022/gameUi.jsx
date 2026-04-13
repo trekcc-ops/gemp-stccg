@@ -60,6 +60,7 @@ export default class GameTableUI {
     animations;
     replayPlay = false;
     lastActionIndex;
+    gameEnded = false;
 
     constructor(url, replayMode) {
         this.replayMode = replayMode;
@@ -990,6 +991,10 @@ export default class GameTableUI {
                     animateActionResult(action, gameState, this.animations);
                     communicateActionResult(action, gameState, this);
                     this.lastActionIndex = i;
+                }
+                if (this.gameEnded === false && gameState.endGameResult != null && typeof gameState.endGameResult != "undefined") {
+                    this.chatBox.appendMessage(gameState.endGameResult.reason, "gameMessage");
+                    this.gameEnded = true;
                 }
                 break;
             }
