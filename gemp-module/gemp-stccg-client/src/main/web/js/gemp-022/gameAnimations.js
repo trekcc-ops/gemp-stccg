@@ -614,8 +614,10 @@ export default class GameAnimations {
     }
 
     async revealCard(targetCardId, jsonGameState) {
+        // BUG: JQueryUI dialogs attached to main render out-of-sync with the animations
+        //      if we use the new animation queue, because there are two queues.
+        //      Fallback to the old jQuery animation queue until JQUI is removed.
         $("#main").queue(async (next) => {
-        
         //await this.queue.add(async () => {
             // animation layer setup
             // TODO: Create a permanent animation layer that's invisible so I don't have to copy this every time.
@@ -707,10 +709,15 @@ export default class GameAnimations {
     }
 
     async stopCards(targetCardIds, jsonGameState) {
-        if (targetCardIds.length === 0) {
+        if (targetCardIds == null ||
+            targetCardIds.length === 0) {
+            
             return;
         }
 
+        // BUG: JQueryUI dialogs attached to main render out-of-sync with the animations
+        //      if we use the new animation queue, because there are two queues.
+        //      Fallback to the old jQuery animation queue until JQUI is removed.
         //await this.queue.add(async () => {
         $("#main").queue(async (next) => {
             // animation layer setup
@@ -814,10 +821,15 @@ export default class GameAnimations {
     }
 
     async killCards(killedCardIds, jsonGameState) {
-        if (killedCardIds.length === 0) {
+        if (killedCardIds == null ||
+            killedCardIds.length === 0) {
+            
             return;
         }
 
+        // BUG: JQueryUI dialogs attached to main render out-of-sync with the animations
+        //      if we use the new animation queue, because there are two queues.
+        //      Fallback to the old jQuery animation queue until JQUI is removed.
         //await this.queue.add(async () => {
         $("#main").queue(async (next) => {
             // animation layer setup
