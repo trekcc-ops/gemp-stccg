@@ -1387,7 +1387,7 @@ export default class GameTableUI {
 
     gameOver(gameState) {
         this.animations.gameOverAnimation(gameState);
-        this.chatBox.appendMessage(`${gameState.endGameResult.los} ${gameState.endGameResult.reason}`, "gameMessage");
+        this.chatBox.appendMessage(`Game over. Reason: ${gameState.endGameResult.reason}`, "gameMessage");
         this.gameEnded = true;
     }
 }
