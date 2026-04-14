@@ -186,11 +186,11 @@ td button {
 }
 
 table.tables tr.played {
-	background-color: #590902;
+	background-color: #2b3ea1;
 }
 
 table.tables tr.privateForPlayer {
-	background-color: #A63F03;
+	background-color: #596ac2;
 }
 
 .eventHeader {
