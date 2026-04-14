@@ -5,7 +5,7 @@ import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js'
 import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
 import { animateActionResult, communicateActionResult, getSpacelineIndexFromLocationId } from './actionResults.js';
 import { processDecision } from './decisions.js';
-import GameAnimations from './gameAnimations.js';
+import GameAnimations from './gameAnimations.jsx';
 import ChatBoxUI from './chat.js';
 import { openSizeDialog, showLinkableCardTitle, removeFromArray } from "./common.js";
 import Cookies from "js-cookie";
@@ -980,21 +980,26 @@ export default class GameTableUI {
             this.initializePlayerOrder(gameState);
         }
 
+        // check for game ended
+        if (this.gameEnded === false &&
+            gameState.endGameResult != null) {
+                this.gameOver(gameState);
+                return;
+        }
+
         switch(eventType) {
             case "ACTION_RESULT": {
                 this.updateGameStats(gameState); // updates count of card piles
-                this.animations.gamePhaseChange(gameState); // includes adding cards to seed piles
-                this.animations.turnChange(gameState, true);
+                this.animations.gamePhaseChange(gameState); // check for phase change, includes adding cards to seed piles
+                this.animations.turnChange(gameState, true); // check for turn change
+
+                // process actions
                 let firstActionToReceive = (this.lastActionIndex == null) ? 0 : this.lastActionIndex + 1;
                 for (let i = firstActionToReceive; i < gameState.actionResults.length; i++) {
                     let action = gameState.actionResults[i];
                     animateActionResult(action, gameState, this.animations);
                     communicateActionResult(action, gameState, this);
                     this.lastActionIndex = i;
-                }
-                if (this.gameEnded === false && gameState.endGameResult != null && typeof gameState.endGameResult != "undefined") {
-                    this.chatBox.appendMessage(gameState.endGameResult.reason, "gameMessage");
-                    this.gameEnded = true;
                 }
                 break;
             }
@@ -1173,6 +1178,11 @@ export default class GameTableUI {
     processGameEvents(jsonNode, animate) {
         try {
             this.channelNumber = jsonNode.channelNumber;
+
+            // if we're done there's nothing else to process, goodbye
+            if (this.gameEnded) {
+                return;
+            }
             
 
             // Go through all the events
@@ -1373,6 +1383,12 @@ export default class GameTableUI {
 
     updateGameStats(gameState) {
         this.reRenderReactRoot();
+    }
+
+    gameOver(gameState) {
+        this.animations.gameOverAnimation(gameState);
+        this.chatBox.appendMessage(`${gameState.endGameResult.los} ${gameState.endGameResult.reason}`, "gameMessage");
+        this.gameEnded = true;
     }
 }
 
