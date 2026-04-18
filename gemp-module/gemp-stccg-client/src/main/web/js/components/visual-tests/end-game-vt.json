@@ -1,0 +1,2737 @@
+{
+    "requestingPlayer": "andrew",
+    "currentPhase": "CARD_PLAY",
+    "phasesInOrder": [
+        "START_OF_TURN",
+        "CARD_PLAY",
+        "EXECUTE_ORDERS",
+        "END_OF_TURN"
+    ],
+    "playerMap": {
+        "andrew2": {
+            "playerId": "andrew2",
+            "score": 0,
+            "decked": false,
+            "cardGroups": {
+                "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "POINT_AREA": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "HAND": {
+                    "cardCount": 9,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "MISSIONS_PILE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "SEED_DECK_OTHER": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "DRAW_DECK": {
+                    "cardCount": 25,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "REMOVED": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "CORE": {
+                    "cardCount": 1,
+                    "cardIds": [
+                        17
+                    ]
+                },
+                "SEED_DECK_FOR_DILEMMA_PHASE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                }
+            },
+            "points": {
+                "nonBonus": 0,
+                "total": 0,
+                "requiredToWin": 140,
+                "bonus": 0,
+                "towardWinning": 0
+            }
+        },
+        "andrew": {
+            "playerId": "andrew",
+            "score": 0,
+            "decked": false,
+            "cardGroups": {
+                "DISCARD": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "POINT_AREA": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "HAND": {
+                    "cardCount": 8,
+                    "cardIds": [
+                        78,
+                        88,
+                        87,
+                        84,
+                        91,
+                        81,
+                        70,
+                        93
+                    ]
+                },
+                "MISSIONS_PILE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "SEED_DECK_OTHER": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "DRAW_DECK": {
+                    "cardCount": 26,
+                    "cardIds": [
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99,
+                        -99
+                    ]
+                },
+                "REMOVED": {
+                    "cardCount": 0,
+                    "cardIds": []
+                },
+                "CORE": {
+                    "cardCount": 1,
+                    "cardIds": [
+                        67
+                    ]
+                },
+                "SEED_DECK_FOR_DILEMMA_PHASE": {
+                    "cardCount": 0,
+                    "cardIds": []
+                }
+            },
+            "points": {
+                "nonBonus": 0,
+                "total": 0,
+                "requiredToWin": 140,
+                "bonus": 0,
+                "towardWinning": 0
+            }
+        }
+    },
+    "playerOrder": {
+        "turnOrder": [
+            "andrew2",
+            "andrew"
+        ],
+        "firstPlayer": "andrew2",
+        "currentPlayer": "andrew2",
+        "isReversed": false
+    },
+    "visibleCardsInGame": {
+        "88": {
+            "className": ".PersonnelCard",
+            "cardId": 88,
+            "title": "Darian Wallace",
+            "blueprintId": "101_203",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR203.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "45": {
+            "className": ".MissionCard",
+            "cardId": 45,
+            "title": "Covert Installation",
+            "blueprintId": "101_148",
+            "owner": "andrew2",
+            "locationId": 7,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR148.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "89": {
+            "className": ".PersonnelCard",
+            "cardId": 89,
+            "title": "Data",
+            "blueprintId": "101_204",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR204.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "46": {
+            "className": ".MissionCard",
+            "cardId": 46,
+            "title": "Covert Rescue",
+            "blueprintId": "101_149",
+            "owner": "andrew2",
+            "locationId": 5,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR149.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "IN_SPACE": [
+                    2
+                ]
+            }
+        },
+        "47": {
+            "className": ".MissionCard",
+            "cardId": 47,
+            "title": "Study Pulsar",
+            "blueprintId": "113_008",
+            "owner": "andrew2",
+            "locationId": 11,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/promos/sd2/studypulsar.gif",
+            "cardType": "MISSION",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "48": {
+            "className": ".MissionCard",
+            "cardId": 48,
+            "title": "Iconia Investigation",
+            "blueprintId": "101_163",
+            "owner": "andrew2",
+            "locationId": 3,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR163.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "49": {
+            "className": ".MissionCard",
+            "cardId": 49,
+            "title": "Excavation",
+            "blueprintId": "101_154",
+            "owner": "andrew2",
+            "locationId": 1,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR154.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "90": {
+            "className": ".PersonnelCard",
+            "cardId": 90,
+            "title": "Dr. Selar",
+            "blueprintId": "101_208",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR208.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "91": {
+            "className": ".PersonnelCard",
+            "cardId": 91,
+            "title": "Erik Pressman",
+            "blueprintId": "101_209",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR209.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "92": {
+            "className": ".PersonnelCard",
+            "cardId": 92,
+            "title": "Barron",
+            "blueprintId": "155_053",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/53V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "93": {
+            "className": ".PersonnelCard",
+            "cardId": 93,
+            "title": "Beverly",
+            "blueprintId": "155_054",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/54V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "50": {
+            "className": ".MissionCard",
+            "cardId": 50,
+            "title": "Explore Typhon Expanse",
+            "blueprintId": "101_157",
+            "owner": "andrew2",
+            "locationId": 9,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR157.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "94": {
+            "className": ".PersonnelCard",
+            "cardId": 94,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "51": {
+            "className": ".FacilityCard",
+            "cardId": 51,
+            "title": "Federation Outpost",
+            "blueprintId": "101_104",
+            "owner": "andrew",
+            "locationId": 8,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR104.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {},
+            "parentCard": 106,
+            "relationToParent": "IN_SPACE"
+        },
+        "95": {
+            "className": ".PersonnelCard",
+            "cardId": 95,
+            "title": "Takket",
+            "blueprintId": "101_320",
+            "owner": "andrew",
+            "locationId": 12,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 57,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR320.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {},
+            "parentCard": 57,
+            "relationToParent": "ABOARD"
+        },
+        "52": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 52,
+            "title": "Alternate Universe Door",
+            "blueprintId": "103_032",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "96": {
+            "className": ".PersonnelCard",
+            "cardId": 96,
+            "title": "Deanna Troi",
+            "blueprintId": "155_058",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/58V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "53": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 53,
+            "title": "Friendly Fire",
+            "blueprintId": "115_010",
+            "owner": "andrew",
+            "locationId": 9,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/dom/friendlyfire.gif",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "97": {
+            "className": ".PersonnelCard",
+            "cardId": 97,
+            "title": "Narik",
+            "blueprintId": "101_300",
+            "owner": "andrew",
+            "locationId": 12,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "attachedToCardId": 57,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR300.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {},
+            "parentCard": 57,
+            "relationToParent": "ABOARD"
+        },
+        "54": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 54,
+            "title": "Friendly Fire",
+            "blueprintId": "115_010",
+            "owner": "andrew",
+            "locationId": 11,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/dom/friendlyfire.gif",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "98": {
+            "className": ".PersonnelCard",
+            "cardId": 98,
+            "title": "Dr. Christopher",
+            "blueprintId": "155_059",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/59V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "55": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 55,
+            "title": "Assign Mission Specialists",
+            "blueprintId": "109_063",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/AssignMissionSpecialistsFC.jpg",
+            "cardType": "OBJECTIVE",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "99": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 99,
+            "title": "Cowboy Diplomacy",
+            "blueprintId": "155_016",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/16V.jpg",
+            "cardType": "EVENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "56": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 56,
+            "title": "Battle Bridge Door",
+            "blueprintId": "116_011",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/bog/battlebridgedoor.gif",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "57": {
+            "className": ".FacilityCard",
+            "cardId": 57,
+            "title": "Husnock Outpost",
+            "blueprintId": "111_009",
+            "owner": "andrew",
+            "locationId": 12,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/otsdr/9.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "ABOARD": [
+                    97,
+                    95
+                ]
+            },
+            "parentCard": 102,
+            "relationToParent": "IN_SPACE"
+        },
+        "58": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 58,
+            "title": "Q-Flash",
+            "blueprintId": "105_015",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/Q-Flash.jpg",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "59": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 59,
+            "title": "Ferengi Attack",
+            "blueprintId": "103_014",
+            "owner": "andrew",
+            "locationId": 7,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/au/ferengiattack.gif",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "17": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 17,
+            "title": "Attention All Hands",
+            "blueprintId": "155_021",
+            "owner": "andrew2",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/Attention-All-Hands.jpg",
+            "cardType": "INCIDENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "1": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 1,
+            "title": "Alternate Universe Door",
+            "blueprintId": "103_032",
+            "owner": "andrew2",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/9V.jpg",
+            "cardType": "DOORWAY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "2": {
+            "className": ".FacilityCard",
+            "cardId": 2,
+            "title": "Romulan Outpost",
+            "blueprintId": "101_106",
+            "owner": "andrew2",
+            "locationId": 5,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR106.jpg",
+            "cardType": "FACILITY",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "ABOARD": [
+                    25,
+                    20
+                ]
+            },
+            "parentCard": 46,
+            "relationToParent": "IN_SPACE"
+        },
+        "5": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 5,
+            "title": "Continuing Mission",
+            "blueprintId": "155_022",
+            "owner": "andrew2",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/errata/Continuing-Mission.jpg",
+            "cardType": "INCIDENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "60": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 60,
+            "title": "Dedication to Duty",
+            "blueprintId": "152_003",
+            "owner": "andrew",
+            "locationId": 9,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/homefront2/3.jpg",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "61": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 61,
+            "title": "Armus: Skin of Evil",
+            "blueprintId": "101_015",
+            "owner": "andrew",
+            "locationId": 5,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR15.jpg",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "62": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 62,
+            "title": "Shall We Begin Again?",
+            "blueprintId": "161_009",
+            "owner": "andrew",
+            "locationId": 5,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/engage/9.jpg",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "63": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 63,
+            "title": "Shall We Begin Again?",
+            "blueprintId": "161_009",
+            "owner": "andrew",
+            "locationId": 7,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/engage/9.jpg",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "20": {
+            "className": ".PersonnelCard",
+            "cardId": 20,
+            "title": "Varel",
+            "blueprintId": "101_330",
+            "owner": "andrew2",
+            "locationId": 5,
+            "affiliation": [
+                "ROMULAN"
+            ],
+            "attachedToCardId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR330.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {},
+            "parentCard": 2,
+            "relationToParent": "ABOARD"
+        },
+        "64": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 64,
+            "title": "Armus: Skin of Evil",
+            "blueprintId": "101_015",
+            "owner": "andrew",
+            "locationId": 7,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR15.jpg",
+            "cardType": "DILEMMA",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "65": {
+            "className": ".PersonnelCard",
+            "cardId": 65,
+            "title": "Dr. Syrus",
+            "blueprintId": "155_092",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/92V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "66": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 66,
+            "title": "Surprise Party",
+            "blueprintId": "156_010",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/10V.jpg",
+            "cardType": "EVENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "67": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 67,
+            "title": "Surprise Party",
+            "blueprintId": "156_010",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/10V.jpg",
+            "cardType": "EVENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "68": {
+            "className": ".ShipCard",
+            "cardId": 68,
+            "title": "U.S.S. Enterprise",
+            "blueprintId": "135_011",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/chainofcommand/ussenterprise.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "ABOARD": [],
+                "ATOP": []
+            }
+        },
+        "25": {
+            "className": ".PersonnelCard",
+            "cardId": 25,
+            "title": "Baran",
+            "blueprintId": "101_290",
+            "owner": "andrew2",
+            "locationId": 5,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "attachedToCardId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR290.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {},
+            "parentCard": 2,
+            "relationToParent": "ABOARD"
+        },
+        "69": {
+            "className": ".PersonnelCard",
+            "cardId": 69,
+            "title": "Alyssa Ogawa",
+            "blueprintId": "109_095",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/twtstarters/TWT-alyssaogawa.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "70": {
+            "className": ".PersonnelCard",
+            "cardId": 70,
+            "title": "Simon Tarses",
+            "blueprintId": "101_236",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR236.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "71": {
+            "className": ".PersonnelCard",
+            "cardId": 71,
+            "title": "Hannah Bates",
+            "blueprintId": "101_214",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR214.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "72": {
+            "className": ".PersonnelCard",
+            "cardId": 72,
+            "title": "Jenna D'Sora",
+            "blueprintId": "101_216",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR216.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "73": {
+            "className": ".ShipCard",
+            "cardId": 73,
+            "title": "U.S.S. Hood",
+            "blueprintId": "101_337",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR337.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "ABOARD": [],
+                "ATOP": []
+            }
+        },
+        "74": {
+            "className": ".PersonnelCard",
+            "cardId": 74,
+            "title": "Admiral McCoy",
+            "blueprintId": "106_014",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/vpromos/63VP.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "75": {
+            "className": ".PersonnelCard",
+            "cardId": 75,
+            "title": "Jadzia Dax",
+            "blueprintId": "112_208",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/ds9/jadziadax.gif",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "76": {
+            "className": ".PersonnelCard",
+            "cardId": 76,
+            "title": "Jace Michaels",
+            "blueprintId": "112_207",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/emissarysup/58.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "77": {
+            "className": ".PersonnelCard",
+            "cardId": 77,
+            "title": "Alexander Rozhenko",
+            "blueprintId": "101_196",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR196.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "78": {
+            "className": ".PersonnelCard",
+            "cardId": 78,
+            "title": "Alynna Nechayev",
+            "blueprintId": "101_197",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR197.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "79": {
+            "className": ".PersonnelCard",
+            "cardId": 79,
+            "title": "Cal Hudson",
+            "blueprintId": "172_028",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/maquis/28V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "100": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 100,
+            "title": "Cowboy Diplomacy",
+            "blueprintId": "155_016",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/16V.jpg",
+            "cardType": "EVENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "101": {
+            "className": ".ST1EPhysicalCard",
+            "cardId": 101,
+            "title": "Cowboy Diplomacy",
+            "blueprintId": "155_016",
+            "owner": "andrew",
+            "locationId": -999,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/16V.jpg",
+            "cardType": "EVENT",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "102": {
+            "className": ".MissionCard",
+            "cardId": 102,
+            "title": "Host Metaphasic Shielding Test",
+            "blueprintId": "155_039",
+            "owner": "andrew",
+            "locationId": 12,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/39V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "IN_SPACE": [
+                    57
+                ]
+            }
+        },
+        "103": {
+            "className": ".MissionCard",
+            "cardId": 103,
+            "title": "Investigate Rogue Comet",
+            "blueprintId": "101_171",
+            "owner": "andrew",
+            "locationId": 6,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR171.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "104": {
+            "className": ".MissionCard",
+            "cardId": 104,
+            "title": "Wormhole Negotiations",
+            "blueprintId": "101_194",
+            "owner": "andrew",
+            "locationId": 2,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR194.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "105": {
+            "className": ".MissionCard",
+            "cardId": 105,
+            "title": "Evaluate Terraforming",
+            "blueprintId": "101_153",
+            "owner": "andrew",
+            "locationId": 10,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR153.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "106": {
+            "className": ".MissionCard",
+            "cardId": 106,
+            "title": "Botanical Research",
+            "blueprintId": "113_003",
+            "owner": "andrew",
+            "locationId": 8,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tngsup/15V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "IN_SPACE": [
+                    51
+                ]
+            }
+        },
+        "80": {
+            "className": ".PersonnelCard",
+            "cardId": 80,
+            "title": "Fleet Admiral Shanthi",
+            "blueprintId": "101_211",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR211.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "107": {
+            "className": ".MissionCard",
+            "cardId": 107,
+            "title": "Avert Solar Implosion",
+            "blueprintId": "155_037",
+            "owner": "andrew",
+            "locationId": 4,
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/37V.jpg",
+            "cardType": "MISSION",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": true,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "81": {
+            "className": ".PersonnelCard",
+            "cardId": 81,
+            "title": "Geordi La Forge",
+            "blueprintId": "101_212",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR212.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "82": {
+            "className": ".ShipCard",
+            "cardId": 82,
+            "title": "U.S.S. Drake",
+            "blueprintId": "127_035",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/agt/ST1E-ENAGT035.jpg",
+            "cardType": "SHIP",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {
+                "ABOARD": [],
+                "ATOP": []
+            }
+        },
+        "83": {
+            "className": ".PersonnelCard",
+            "cardId": 83,
+            "title": "Giusti",
+            "blueprintId": "101_213",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR213.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "84": {
+            "className": ".PersonnelCard",
+            "cardId": 84,
+            "title": "Geordi La Forge",
+            "blueprintId": "155_060",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/tng/60V.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "85": {
+            "className": ".PersonnelCard",
+            "cardId": 85,
+            "title": "Inge Eiger",
+            "blueprintId": "109_103",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/fc/ingeeiger.gif",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "86": {
+            "className": ".PersonnelCard",
+            "cardId": 86,
+            "title": "Dr. Farek",
+            "blueprintId": "101_293",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "NON_ALIGNED"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/premiere/PR293.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIVERSAL",
+            "hasUniversalIcon": true,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        },
+        "87": {
+            "className": ".PersonnelCard",
+            "cardId": 87,
+            "title": "Jean-Luc Picard",
+            "blueprintId": "135_004",
+            "owner": "andrew",
+            "locationId": -999,
+            "affiliation": [
+                "FEDERATION"
+            ],
+            "isStopped": false,
+            "imageUrl": "https://www.trekcc.org/1e/cardimages/chainofcommand/jeanlucpicard.jpg",
+            "cardType": "PERSONNEL",
+            "uniqueness": "UNIQUE",
+            "hasUniversalIcon": false,
+            "isInPlay": false,
+            "isPlacedOnMission": false,
+            "childrenCards": {}
+        }
+    },
+    "spacelineLocations": [
+        {
+            "locationId": 12,
+            "quadrant": "ALPHA",
+            "locationName": "Veytan",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                102
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 11,
+            "quadrant": "ALPHA",
+            "locationName": "Uncharted space",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                47
+            ],
+            "seedCardCount": 1
+        },
+        {
+            "locationId": 10,
+            "quadrant": "ALPHA",
+            "locationName": "Velara III",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                105
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 9,
+            "quadrant": "ALPHA",
+            "locationName": "Typhon Expanse",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                50
+            ],
+            "seedCardCount": 2
+        },
+        {
+            "locationId": 8,
+            "quadrant": "ALPHA",
+            "locationName": "Unexplored planet",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                106
+            ],
+            "seedCardCount": 2
+        },
+        {
+            "locationId": 6,
+            "quadrant": "ALPHA",
+            "locationName": "Sector 1156",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                103
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 5,
+            "quadrant": "ALPHA",
+            "locationName": "Galorndon Core",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                46
+            ],
+            "seedCardCount": 2
+        },
+        {
+            "locationId": 4,
+            "quadrant": "ALPHA",
+            "locationName": "Veridian III",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                107
+            ],
+            "seedCardCount": 2
+        },
+        {
+            "locationId": 7,
+            "quadrant": "ALPHA",
+            "region": "NEUTRAL_ZONE",
+            "locationName": "Devora",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                45
+            ],
+            "seedCardCount": 3
+        },
+        {
+            "locationId": 3,
+            "quadrant": "ALPHA",
+            "region": "NEUTRAL_ZONE",
+            "locationName": "Iconia",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                48
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 2,
+            "quadrant": "ALPHA",
+            "locationName": "Wormhole Terminus",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                104
+            ],
+            "seedCardCount": 0
+        },
+        {
+            "locationId": 1,
+            "quadrant": "ALPHA",
+            "locationName": "Kurl",
+            "isCompleted": false,
+            "isHomeworld": false,
+            "missionCardIds": [
+                49
+            ],
+            "seedCardCount": 0
+        }
+    ],
+    "versionNumber": "1.2.0",
+    "actionResults": [
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 1,
+            "seededCardId": 1,
+            "toCore": true,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:10:06.687589463Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 2,
+            "seededCardId": 58,
+            "toCore": true,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:06.691281200Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 3,
+            "seededCardId": 56,
+            "toCore": true,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:06.692361916Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 4,
+            "seededCardId": 52,
+            "toCore": true,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:06.693238009Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 5,
+            "seededCardId": 49,
+            "toCore": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:10:14.941137381Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 6,
+            "seededCardId": 104,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:18.547784014Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 7,
+            "seededCardId": 48,
+            "toCore": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:10:21.777635866Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 8,
+            "seededCardId": 107,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:24.794455773Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 9,
+            "seededCardId": 46,
+            "toCore": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:10:28.322154156Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 10,
+            "seededCardId": 103,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:32.477954038Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 11,
+            "seededCardId": 45,
+            "toCore": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:10:35.442685668Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 12,
+            "seededCardId": 106,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:38.912776216Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 13,
+            "seededCardId": 50,
+            "toCore": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:10:42.408074967Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 14,
+            "seededCardId": 105,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:45.965760309Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 15,
+            "seededCardId": 47,
+            "toCore": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:10:49.406789763Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 16,
+            "seededCardId": 102,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:10:52.730957278Z[UTC]"
+        },
+        {
+            "type": "ADDED_PRESEEDS",
+            "resultId": 17,
+            "targetCardIds": [
+                61,
+                62
+            ],
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:11:02.563592070Z[UTC]"
+        },
+        {
+            "type": "ADDED_PRESEEDS",
+            "resultId": 18,
+            "targetCardIds": [
+                59,
+                64,
+                63
+            ],
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:11:10.340004276Z[UTC]"
+        },
+        {
+            "type": "ADDED_PRESEEDS",
+            "resultId": 19,
+            "targetCardIds": [
+                53,
+                60
+            ],
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:11:14.020956004Z[UTC]"
+        },
+        {
+            "type": "ADDED_PRESEEDS",
+            "resultId": 20,
+            "targetCardIds": [
+                54
+            ],
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:11:16.945045166Z[UTC]"
+        },
+        {
+            "type": "ADDED_PRESEEDS",
+            "resultId": 21,
+            "targetCardIds": [
+                -999,
+                -999
+            ],
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:11:26.019536062Z[UTC]"
+        },
+        {
+            "type": "ADDED_PRESEEDS",
+            "resultId": 22,
+            "targetCardIds": [
+                -999,
+                -999
+            ],
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:11:29.875795988Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 23,
+            "seededCardId": 2,
+            "destinationCardId": 46,
+            "toCore": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:11:45.654820221Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 24,
+            "seededCardId": 51,
+            "destinationCardId": 106,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:11:49.687229411Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 25,
+            "seededCardId": 5,
+            "toCore": true,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:11:53.060337808Z[UTC]"
+        },
+        {
+            "type": "PLAYED_CARD",
+            "resultId": 26,
+            "playedCardId": 17,
+            "toCore": true,
+            "isDownload": true,
+            "performingCardId": 5,
+            "isReport": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:11:54.111302822Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 27,
+            "seededCardId": 57,
+            "destinationCardId": 102,
+            "toCore": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:00.395602115Z[UTC]"
+        },
+        {
+            "type": "SEEDED_INTO_PLAY",
+            "resultId": 28,
+            "seededCardId": 55,
+            "toCore": true,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:01.043976127Z[UTC]"
+        },
+        {
+            "type": "PLAYED_CARD",
+            "resultId": 29,
+            "playedCardId": 97,
+            "destinationCardId": 57,
+            "toCore": false,
+            "isDownload": true,
+            "performingCardId": 55,
+            "isReport": true,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:05.797725975Z[UTC]"
+        },
+        {
+            "type": "PLAYED_CARD",
+            "resultId": 30,
+            "playedCardId": 95,
+            "destinationCardId": 57,
+            "toCore": false,
+            "isDownload": true,
+            "performingCardId": 55,
+            "isReport": true,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:05.798599064Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 31,
+            "drawnCardIds": [
+                -999,
+                -999,
+                -999,
+                -999,
+                -999,
+                -999,
+                -999
+            ],
+            "isStartingHand": true,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:05.799570997Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 32,
+            "drawnCardIds": [
+                78,
+                88,
+                67,
+                87,
+                84,
+                91,
+                81
+            ],
+            "isStartingHand": true,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:05.799905216Z[UTC]"
+        },
+        {
+            "type": "STARTED_TURN",
+            "resultId": 33,
+            "gameTurnNumber": 1,
+            "playerTurnNumber": 1,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:05.800911950Z[UTC]"
+        },
+        {
+            "type": "PLAYED_CARD",
+            "resultId": 34,
+            "playedCardId": 25,
+            "destinationCardId": 2,
+            "toCore": false,
+            "isDownload": false,
+            "performingCardId": 25,
+            "isReport": true,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:13.339863813Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 35,
+            "drawnCardIds": [
+                -999
+            ],
+            "performingCardId": 5,
+            "isStartingHand": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:15.260833812Z[UTC]"
+        },
+        {
+            "type": "PLAYED_CARD",
+            "resultId": 36,
+            "playedCardId": 20,
+            "destinationCardId": 2,
+            "toCore": false,
+            "isDownload": false,
+            "performingCardId": 17,
+            "isReport": true,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:16.649706145Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 37,
+            "drawnCardIds": [
+                -999
+            ],
+            "isStartingHand": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:20.281162367Z[UTC]"
+        },
+        {
+            "type": "STARTED_TURN",
+            "resultId": 38,
+            "gameTurnNumber": 2,
+            "playerTurnNumber": 1,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:20.282932191Z[UTC]"
+        },
+        {
+            "type": "PLAYED_CARD",
+            "resultId": 39,
+            "playedCardId": 67,
+            "toCore": true,
+            "isDownload": false,
+            "performingCardId": 67,
+            "isReport": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:25.944173768Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 40,
+            "drawnCardIds": [
+                -999
+            ],
+            "performingCardId": 67,
+            "isStartingHand": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:30.144545931Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 41,
+            "drawnCardIds": [
+                -999
+            ],
+            "performingCardId": 67,
+            "isStartingHand": false,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:30.145370527Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 42,
+            "drawnCardIds": [
+                70
+            ],
+            "isStartingHand": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:40.405274621Z[UTC]"
+        },
+        {
+            "type": "DREW_CARDS",
+            "resultId": 43,
+            "drawnCardIds": [
+                93
+            ],
+            "performingCardId": 67,
+            "isStartingHand": false,
+            "performingPlayerId": "andrew",
+            "timestamp": "2026-04-18T20:12:42.984672514Z[UTC]"
+        },
+        {
+            "type": "STARTED_TURN",
+            "resultId": 44,
+            "gameTurnNumber": 3,
+            "playerTurnNumber": 2,
+            "performingPlayerId": "andrew2",
+            "timestamp": "2026-04-18T20:12:42.985186094Z[UTC]"
+        }
+    ],
+    "endGameResult": {
+        "reason": "CONCEDED",
+        "winnerName": "andrew",
+        "loserNames": [
+            "andrew2"
+        ]
+    },
+    "awayTeams": [],
+    "performedActions": [
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 9,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardToDestinationAction",
+            "actionId": 8,
+            "status": "completed_success",
+            "seededCardId": 1,
+            "performingCardId": 1,
+            "targetCardId": 1,
+            "performingPlayerId": "andrew2",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 10,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardToDestinationAction",
+            "actionId": 7,
+            "status": "completed_success",
+            "seededCardId": 58,
+            "performingCardId": 58,
+            "targetCardId": 58,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 11,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardToDestinationAction",
+            "actionId": 6,
+            "status": "completed_success",
+            "seededCardId": 56,
+            "performingCardId": 56,
+            "targetCardId": 56,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 12,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardToDestinationAction",
+            "actionId": 5,
+            "status": "completed_success",
+            "seededCardId": 52,
+            "performingCardId": 52,
+            "targetCardId": 52,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 13,
+            "seededCardId": 49,
+            "performingCardId": 49,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 49,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 14,
+            "seededCardId": 104,
+            "performingCardId": 104,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 104,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 15,
+            "seededCardId": 48,
+            "performingCardId": 48,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 48,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 16,
+            "seededCardId": 107,
+            "performingCardId": 107,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 107,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 17,
+            "seededCardId": 46,
+            "performingCardId": 46,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 46,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 18,
+            "seededCardId": 103,
+            "performingCardId": 103,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 103,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 19,
+            "seededCardId": 45,
+            "performingCardId": 45,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 45,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 20,
+            "seededCardId": 106,
+            "performingCardId": 106,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 106,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 21,
+            "seededCardId": 50,
+            "performingCardId": 50,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 50,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 22,
+            "seededCardId": 105,
+            "performingCardId": 105,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 105,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 23,
+            "seededCardId": 47,
+            "performingCardId": 47,
+            "performingPlayerId": "andrew2",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 47,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedMissionCardAction",
+            "actionId": 24,
+            "seededCardId": 102,
+            "performingCardId": 102,
+            "performingPlayerId": "andrew",
+            "destinationZone": "SPACELINE",
+            "status": "completed_success",
+            "targetCardId": 102,
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".placecard.AddCardsToPreseedStackAction",
+            "actionId": 33,
+            "locationId": 5,
+            "status": "completed_success",
+            "targetCardIds": [
+                61,
+                62
+            ],
+            "performingCardId": 46,
+            "performingPlayerId": "andrew",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".placecard.AddCardsToPreseedStackAction",
+            "actionId": 41,
+            "locationId": 7,
+            "status": "completed_success",
+            "targetCardIds": [
+                59,
+                64,
+                63
+            ],
+            "performingCardId": 45,
+            "performingPlayerId": "andrew",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".placecard.AddCardsToPreseedStackAction",
+            "actionId": 45,
+            "locationId": 9,
+            "status": "completed_success",
+            "targetCardIds": [
+                53,
+                60
+            ],
+            "performingCardId": 50,
+            "performingPlayerId": "andrew",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".placecard.AddCardsToPreseedStackAction",
+            "actionId": 52,
+            "locationId": 11,
+            "status": "completed_success",
+            "targetCardIds": [
+                54
+            ],
+            "performingCardId": 47,
+            "performingPlayerId": "andrew",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".placecard.AddCardsToPreseedStackAction",
+            "actionId": 27,
+            "locationId": 8,
+            "status": "completed_success",
+            "targetCardIds": [
+                3,
+                4
+            ],
+            "performingCardId": 106,
+            "performingPlayerId": "andrew2",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".placecard.AddCardsToPreseedStackAction",
+            "actionId": 69,
+            "locationId": 4,
+            "status": "completed_success",
+            "targetCardIds": [
+                6,
+                7
+            ],
+            "performingCardId": 107,
+            "performingPlayerId": "andrew2",
+            "actionType": "ADD_CARDS_TO_PRESEED_STACK"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 75,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 76,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedFacilityAction",
+            "actionId": 73,
+            "status": "completed_success",
+            "destinationZone": "AT_LOCATION",
+            "seededCardId": 2,
+            "performingCardId": 2,
+            "targetCardId": 2,
+            "performingPlayerId": "andrew2",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 80,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 81,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedFacilityAction",
+            "actionId": 77,
+            "status": "completed_success",
+            "destinationZone": "AT_LOCATION",
+            "seededCardId": 51,
+            "performingCardId": 51,
+            "targetCardId": 51,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerGameAction",
+            "actionId": 83,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.SeedCardToDestinationAction",
+            "actionId": 82,
+            "status": "completed_success",
+            "seededCardId": 5,
+            "performingCardId": 5,
+            "targetCardId": 5,
+            "performingPlayerId": "andrew2",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.DownloadActionBlueprint$1",
+            "actionId": 84,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "MAKE_DECISION"
+        },
+        {
+            "className": ".playcard.DownloadCardAction",
+            "actionId": 85,
+            "status": "completed_success",
+            "performingCardId": 5,
+            "performingPlayerId": "andrew2",
+            "actionType": "DOWNLOAD_CARD"
+        },
+        {
+            "className": ".choose.SelectVisibleCardAction",
+            "actionId": 88,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".playcard.SeedFacilityAction",
+            "actionId": 87,
+            "status": "completed_success",
+            "destinationZone": "AT_LOCATION",
+            "seededCardId": 57,
+            "performingCardId": 57,
+            "targetCardId": 57,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.SeedCardToDestinationAction",
+            "actionId": 89,
+            "status": "completed_success",
+            "seededCardId": 55,
+            "performingCardId": 55,
+            "targetCardId": 55,
+            "performingPlayerId": "andrew",
+            "actionType": "SEED_CARD"
+        },
+        {
+            "className": ".playcard.DownloadReportableActionBlueprint$1",
+            "actionId": 90,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "MAKE_DECISION"
+        },
+        {
+            "className": ".choose.SelectValidCardCombinationFromDialogToDownloadAction",
+            "actionId": 92,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".playcard.DownloadMultipleReportablesAction",
+            "actionId": 91,
+            "status": "completed_success",
+            "performingCardId": 55,
+            "performingPlayerId": "andrew",
+            "actionType": "DOWNLOAD_CARD"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 94,
+            "status": "completed_success",
+            "performingCardId": 55,
+            "targetCardId": 97,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 93,
+            "status": "completed_success",
+            "performingCardId": 55,
+            "targetCardId": 95,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawStartingHandAction",
+            "actionId": 95,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawStartingHandAction",
+            "actionId": 96,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".turn.StartTurnAction",
+            "actionId": 97,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "START_TURN"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 109,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 110,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 102,
+            "status": "completed_success",
+            "performingCardId": 25,
+            "targetCardId": 25,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerTurnAction",
+            "actionId": 112,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".draw.DrawCardsAction",
+            "actionId": 113,
+            "status": "completed_success",
+            "performingCardId": 5,
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".turn.UseGameTextAction",
+            "actionId": 111,
+            "status": "completed_success",
+            "performingCardId": 5,
+            "performingPlayerId": "andrew2",
+            "actionType": "USE_GAME_TEXT"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 125,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".choose.SelectVisibleCardsAction",
+            "actionId": 126,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "SELECT_CARDS"
+        },
+        {
+            "className": ".usage.UseOncePerTurnAction",
+            "actionId": 127,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".playcard.ReportCardAction",
+            "actionId": 122,
+            "status": "completed_success",
+            "performingCardId": 17,
+            "targetCardId": 20,
+            "performingPlayerId": "andrew2",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 163,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".turn.StartTurnAction",
+            "actionId": 164,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "START_TURN"
+        },
+        {
+            "className": ".usage.UseNormalCardPlayAction",
+            "actionId": 173,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 175,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 176,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".draw.DrawCardsAction",
+            "actionId": 174,
+            "status": "completed_success",
+            "performingCardId": 67,
+            "performingPlayerId": "andrew2",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".playcard.PlayCardToDestinationAction",
+            "actionId": 168,
+            "status": "completed_success",
+            "performingCardId": 67,
+            "targetCardId": 67,
+            "performingPlayerId": "andrew",
+            "actionType": "PLAY_CARD"
+        },
+        {
+            "className": ".draw.DrawSingleCardAction",
+            "actionId": 210,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".usage.UseOncePerTurnAction",
+            "actionId": 212,
+            "status": "completed_success",
+            "performingPlayerId": "andrew",
+            "actionType": "USAGE_LIMIT"
+        },
+        {
+            "className": ".draw.DrawCardsAction",
+            "actionId": 213,
+            "status": "completed_success",
+            "performingCardId": 67,
+            "performingPlayerId": "andrew",
+            "actionType": "DRAW_CARD"
+        },
+        {
+            "className": ".turn.UseGameTextAction",
+            "actionId": 211,
+            "status": "completed_success",
+            "performingCardId": 67,
+            "performingPlayerId": "andrew",
+            "actionType": "USE_GAME_TEXT"
+        },
+        {
+            "className": ".turn.StartTurnAction",
+            "actionId": 214,
+            "status": "completed_success",
+            "performingPlayerId": "andrew2",
+            "actionType": "START_TURN"
+        }
+    ],
+    "playerClocks": [
+        {
+            "playerId": "andrew2",
+            "maxTimeAllowed": 7200,
+            "timeElapsed": 58,
+            "timeRemaining": 7142
+        },
+        {
+            "playerId": "andrew",
+            "maxTimeAllowed": 7200,
+            "timeElapsed": 76,
+            "timeRemaining": 7124
+        }
+    ],
+    "spacelineElements": [
+        {
+            "type": "location",
+            "locationId": 12,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 11,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 10,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 9,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 8,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 6,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 5,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 4,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 7,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 3,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 2,
+            "quadrant": "ALPHA"
+        },
+        {
+            "type": "location",
+            "locationId": 1,
+            "quadrant": "ALPHA"
+        }
+    ],
+    "gameLocations": {
+        "11": 11,
+        "12": 12,
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "7": 7,
+        "8": 8,
+        "9": 9,
+        "10": 10
+    }
+}
