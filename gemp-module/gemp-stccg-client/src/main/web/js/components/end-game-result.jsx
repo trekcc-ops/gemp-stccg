@@ -119,11 +119,11 @@ function result_text(gamestate) {
         case "WINNING_SCORE": {
             let oppId = get_opponent_player_id(gamestate);
             let oppData = gamestate.playerMap[oppId];
-            let oppScore = oppData["points"]["total"];
+            let oppScore = oppData["points"]["towardWinning"];
 
             let yourId = get_your_player_id(gamestate);
             let yourData = gamestate.playerMap[yourId];
-            let yourScore = yourData["points"]["total"];
+            let yourScore = yourData["points"]["towardWinning"];
             
             if (gamestate.endGameResult.winnerName) {
                 if (gamestate.endGameResult.winnerName == get_your_player_id(gamestate)) {
