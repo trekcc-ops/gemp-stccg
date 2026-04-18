@@ -1,7 +1,8 @@
-import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { get_your_player_id, get_opponent_player_id } from "./common.jsx";
+import { border, padding } from "@mui/system";
 
 function result_text(gamestate) {
     switch(gamestate.endGameResult.reason) {
@@ -160,11 +161,13 @@ function result_text(gamestate) {
 export default function EndGameResult({gamestate}) {
     let result = result_text(gamestate);
     return(
-        <Box>
+        <Paper elevation={4} sx={{
+            padding: "20px"
+        }}>
             <Stack direction={"column"}>
-                <Typography align='center'>{result.title}</Typography>
-                <Typography align='center'>{result.description}</Typography>
+                <Typography variant="h4" align='center'>{result.title}</Typography>
+                <Typography align='center' sx={{paddingTop: "1em"}}>{result.description}</Typography>
             </Stack>
-        </Box>
+        </Paper>
     );
 }
