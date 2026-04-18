@@ -1,69 +1,121 @@
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { get_your_player_id, get_opponent_player_id } from "./common.jsx";
 
 function result_text(gamestate) {
     switch(gamestate.endGameResult.reason) {
-        case "ALL_PLAYERS_CANCELLED":
-            return "All players cancelled.";
+        case "ALL_PLAYERS_CANCELLED": {
+            return {
+                title: "Cancelled",
+                description: "All players cancelled."
+            };
+        }
         case "CONCEDED": {
             if (gamestate.endGameResult.winnerName) {
                 if (gamestate.endGameResult.winnerName == get_your_player_id(gamestate)) {
-                    return `${get_opponent_player_id(gamestate)} conceded.`;
+                    return {
+                        title: "Victory",
+                        description: `${get_opponent_player_id(gamestate)} conceded.`
+                    };
                 }
                 else {
-                    return "You conceded.";
+                    return {
+                        title: "Defeat",
+                        description: `You conceded.`
+                    };
                 }
             }
             else {
                 console.error("EndGameResult: Concession with no winner probably shouldn't happen...");
-                return "Game Over, concession. No winner."
+                return {
+                    title: "Game Over",
+                    description: `Concession. No winner.`
+                };
             }
         }
-        case "DECISION_TIMEOUT":
+        case "DECISION_TIMEOUT": {
             if (gamestate.endGameResult.winnerName) {
                 if (gamestate.endGameResult.winnerName == get_your_player_id(gamestate)) {
-                    return `${get_opponent_player_id(gamestate)} did not make a decision in time.`;
+                    return {
+                        title: "Victory",
+                        description: `${get_opponent_player_id(gamestate)} did not make a decision in time.`
+                    };
                 }
                 else {
-                    return "You did not make a decision in time.";
+                    return {
+                        title: "Defeat",
+                        description: "You did not make a decision in time."
+                    }
                 }
             }
             else {
                 console.error("EndGameResult: Decision timeout with no winner probably shouldn't happen...");
-                return "Game Over, decision timeout. No winner."
+                return {
+                    title: "Game Over",
+                    description: "Decision timeout. No winner."
+                };
             }
-        case "ERROR":
-            return "Game Over. A critical error occurred.";
-        case "LAST_PLAYER_REMAINING":
+        }
+        case "ERROR": {
+            return {
+                title: "Game Over",
+                description: "A critical error occurred."
+            };
+        }
+        case "LAST_PLAYER_REMAINING": {
             if (gamestate.endGameResult.winnerName) {
                 if (gamestate.endGameResult.winnerName == get_your_player_id(gamestate)) {
-                    return "You are the last player remaining.";
+                    return {
+                        title: "Victory",
+                        description: "You are the last player remaining."
+                    };
                 }
                 else {
-                    return `${get_opponent_player_id(gamestate)} is the last player remaining.`;
+                    return {
+                        title: "Victory",
+                        description: `${get_opponent_player_id(gamestate)} is the last player remaining.`
+                    };
                 }
             }
             else {
                 console.error("EndGameResult: Last player with no winner probably shouldn't happen...");
-                return "Game Over, last player remaining. No winner."
+                return {
+                    title: "Game Over",
+                    description: "Last player remaining. No winner."
+                };
             }
-        case "PLAYER_TIMEOUT":
+        }
+        case "PLAYER_TIMEOUT": {
             if (gamestate.endGameResult.winnerName) {
                 if (gamestate.endGameResult.winnerName == get_your_player_id(gamestate)) {
-                    return `${get_opponent_player_id(gamestate)} timed out.`;
+                    return {
+                        title: "Victory",
+                        description: `${get_opponent_player_id(gamestate)} timed out.`
+                    };
                 }
                 else {
-                    return "You timed out.";
+                    return {
+                        title: "Defeat",
+                        description: "You timed out."
+                    };
                 }
             }
             else {
                 console.error("EndGameResult: Player timeout with no winner probably shouldn't happen...");
-                return "Game Over, player timeout. No winner."
+                return {
+                    title: "Game Over",
+                    description: "Player timeout. No winner."
+                };
             }
-        case "TIE":
-            return "Tie game."
-        case "WINNING_SCORE":
+        }
+        case "TIE": {
+            return {
+                title: "Tie",
+                description: ""
+            };
+        }
+        case "WINNING_SCORE": {
             if (gamestate.endGameResult.winnerName) {
                 let oppId = get_opponent_player_id(gamestate);
                 let oppData = gamestate.playerMap[oppId];
@@ -75,26 +127,44 @@ function result_text(gamestate) {
 
                 if (gamestate.endGameResult.winnerName == get_your_player_id(gamestate)) {
                     // assumes a 2 player game
-                    return `You win, ${yourScore}-${oppScore}.`;
+                    return {
+                        title: "Victory",
+                        description: `Final score: ${yourScore}-${oppScore}`
+                    };
                 }
                 else {
                     // assumes a 2 player game
-                    return `${oppId} wins, ${yourScore}-${oppScore}.`;
+                    return {
+                        title: "Defeat",
+                        description: `${oppId} wins. Final score: ${yourScore}-${oppScore}.`
+                    };
                 }
             }
             else {
-                console.error("EndGameResult: Player timeout with no winner probably shouldn't happen...");
-                return "Game Over, player timeout. No winner."
+                console.error("EndGameResult: Winning score with no winner probably shouldn't happen...");
+                return {
+                    title: "Game Over",
+                    description: "Winning score., ${yourScore}-${oppScore}. No winner."
+                };
             }
-        default:
-            return "Game Over";
+        }
+        default: {
+            return {
+                title: "Game Over",
+                description: ""
+            };
+        }
     }
 }
 
 export default function EndGameResult({gamestate}) {
+    let result = result_text(gamestate);
     return(
         <Box>
-            <Typography align='center'>{result_text(gamestate)}</Typography>
+            <Stack direction={"column"}>
+                <Typography align='center'>{result.title}</Typography>
+                <Typography align='center'>{result.description}</Typography>
+            </Stack>
         </Box>
     );
 }
