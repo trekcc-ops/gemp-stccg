@@ -116,15 +116,15 @@ function result_text(gamestate) {
             };
         }
         case "WINNING_SCORE": {
+            let oppId = get_opponent_player_id(gamestate);
+            let oppData = gamestate.playerMap[oppId];
+            let oppScore = oppData["points"]["total"];
+
+            let yourId = get_your_player_id(gamestate);
+            let yourData = gamestate.playerMap[yourId];
+            let yourScore = yourData["points"]["total"];
+            
             if (gamestate.endGameResult.winnerName) {
-                let oppId = get_opponent_player_id(gamestate);
-                let oppData = gamestate.playerMap[oppId];
-                let oppScore = oppData["points"]["total"];
-
-                let yourId = get_your_player_id(gamestate);
-                let yourData = gamestate.playerMap[yourId];
-                let yourScore = yourData["points"]["total"];
-
                 if (gamestate.endGameResult.winnerName == get_your_player_id(gamestate)) {
                     // assumes a 2 player game
                     return {
@@ -144,7 +144,7 @@ function result_text(gamestate) {
                 console.error("EndGameResult: Winning score with no winner probably shouldn't happen...");
                 return {
                     title: "Game Over",
-                    description: "Winning score., ${yourScore}-${oppScore}. No winner."
+                    description: `Winning score. ${yourScore}-${oppScore}. No winner.`
                 };
             }
         }
