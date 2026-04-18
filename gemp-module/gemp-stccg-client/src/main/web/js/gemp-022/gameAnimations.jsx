@@ -1,11 +1,12 @@
 import Card from "./jCards.js";
 import { getCardDivFromId, createCardDiv, createSimpleCardDiv } from "./jCards.js";
 import { layoutCardElem } from "./jCardGroup.js";
-import { getFriendlyPhaseName } from "./common.js";
+import { getFriendlyPhaseName, theme } from "./common.js";
 import PQueue from 'p-queue';
 import delay from 'delay';
 import { createRoot } from 'react-dom/client';
 import EndGameResult from "../components/end-game-result.jsx";
+import { ThemeProvider } from "@emotion/react";
 
 export default class GameAnimations {
     game;
@@ -1213,7 +1214,9 @@ export default class GameAnimations {
             let reactRoot = createRoot(reactWrapper);
             animation_layer.appendChild(reactWrapper);
             reactRoot.render(
-                <EndGameResult gamestate={jsonGameState} />
+                <ThemeProvider theme={theme}>
+                    <EndGameResult gamestate={jsonGameState} />
+                </ThemeProvider>
             );
 
             let gamediv;
