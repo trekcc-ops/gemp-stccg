@@ -712,7 +712,7 @@ export class MissionCardGroup extends CardGroup {
     */
     layoutCards() {
         // Get the cards to layout
-        var cardsToLayout = this.getCardElems();
+        let cardsToLayout = this.getCardElems();
         if (cardsToLayout.length == 0) {
             return;
         }
@@ -721,7 +721,7 @@ export class MissionCardGroup extends CardGroup {
 
         // Get max card size that will fit in the container
             // cardScale = width / height of card template, defined in JCards.js
-        var sharedMissionScale = cardScale / (2 - this.sharedOverlap);
+        let sharedMissionScale = cardScale / (2 - this.sharedOverlap);
         if ((this.width / this.height) > sharedMissionScale) {
             this.maxCardHeight = this.height / (2 - this.sharedOverlap);
             this.maxCardWidth = this.maxCardHeight * cardScale;
@@ -730,18 +730,19 @@ export class MissionCardGroup extends CardGroup {
             this.maxCardHeight = this.maxCardWidth / cardScale;
         }
 
-        var index = 10;
+        let index = 10;
         // Layout cards. Assumes no padding and that there will never be more than 2 missions in the group.
-        for (var cardIndex in cardsToLayout) {
-            var cardElem = cardsToLayout[cardIndex];
-            var cardData = cardElem.data("card");
-            var cardX = this.x + ((this.width - this.maxCardWidth) / 2);
+        for (let cardIndex in cardsToLayout) {
+            let cardElem = cardsToLayout[cardIndex];
+            let cardData = cardElem.data("card");
+            let cardX = this.x + ((this.width - this.maxCardWidth) / 2);
+            let cardY;
             if (cardsToLayout.length == 1) {
-                var cardY = this.y + ((this.height - this.maxCardHeight) / 2);
+                cardY = this.y + ((this.height - this.maxCardHeight) / 2);
             } else if (cardData.owner == this.bottomPlayerId) {
-                var cardY = this.y + ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+                cardY = this.y + ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
             } else {
-                var cardY = this.y + ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
+                cardY = this.y + ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
             }
             cardX = cardX - this.x;
             cardY = cardY - this.y;
