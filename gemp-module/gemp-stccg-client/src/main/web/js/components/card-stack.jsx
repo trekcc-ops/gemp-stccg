@@ -96,6 +96,14 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
     return retarr;
 }
 
+function flat_create_shared_mission_card(gamestate, anchor_id) {
+
+    // if (missionIsSharedMission(anchor_id))
+    // let shared_mission_arr = [];
+    return [];
+
+}
+
 function numPersonnelAttached(gamestate, anchor_id) {
     let beneath_arr = [];
     for (const [id, cardData] of Object.entries(gamestate["visibleCardsInGame"])) {
@@ -240,6 +248,40 @@ function missionQuadrantAndRegion(card, gamestate) {
     }
 }
 
+function missionIsSharedMission(card) {
+    if (card.cardType !== "MISSION") {
+        return false;
+    }
+    
+    if (Object.hasOwn(card, "relationToParent")) {
+        if (card.relationToParent === "TOP_SHARED_MISSION") {
+            return true;
+        }
+    }
+    
+    if (Object.hasOwn(card, "childrenCards")) {
+        if (Object.hasOwn(card.childrenCards, "TOP_SHARED_MISSION")) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+function missionIsTopSharedMission(card) {
+    if (card.cardType !== "MISSION") {
+        return false;
+    }
+    
+    if (Object.hasOwn(card, "relationToParent")) {
+        if (card.relationToParent === "TOP_SHARED_MISSION") {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
 export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, sx} ) {
     /* CardStack sets a grid with columns that are smaller than the content.
      * By setting a z-index and the minimum card width and height to values larger than the
@@ -272,14 +314,30 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
 
     // Get the card data
     let anchorCard = gamestate["visibleCardsInGame"][anchor_id.toString()];
-    let cards_above = flat_create_card_objs_above(gamestate, anchor_id)
+    let sharedMissionCard = flat_create_shared_mission_card(gamestate, anchorCard);
+    let cards_above = flat_create_card_objs_above(gamestate, anchor_id);
     let cards_beneath = flat_create_card_objs_beneath(gamestate, anchor_id);
-    let allCards = cards_above.concat([anchorCard], cards_beneath);
+    let allCards = cards_above.concat(sharedMissionCard, [anchorCard], cards_beneath);
 
     // anchor card data for chip display
     const isShip = (anchorCard.cardType === "SHIP");
     const isFacility = (anchorCard.cardType === "FACILITY");
     const isMission = (anchorCard.cardType === "MISSION");
+    let isTopSharedMission = false;
+    if (isMission) {
+        if (missionIsSharedMission(anchorCard)) {
+            // If this cardstack has an anchor card that is the bottom shared mission,
+            // skip it, because the bottom shared mission card will be displayed as part of the
+            // top card's stack.
+            if (missionIsTopSharedMission(anchorCard)) {
+                isTopSharedMission = true;
+            }
+            else {
+                return null;
+            }
+        }
+    }
+
     const isStaffed = (anchorCard.cardType === "SHIP"); // TODO: staffing check
 
     // Set minimum size of the stack as a whole.
