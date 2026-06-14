@@ -13,6 +13,7 @@ import QuizIcon from '@mui/icons-material/Quiz';
 import { useState } from "react";
 import Card from "./card.jsx";
 import { theme } from '../../js/gemp-022/common.js';
+import { get_your_player_id } from './common.jsx';
 
 // TODO: This is dependent on gamestate having an attached cardTreeModel.
 //       Use flat version until such time as that's integrated.
@@ -96,11 +97,10 @@ function flat_create_card_objs_beneath(gamestate, anchor_id) {
     return retarr;
 }
 
-function flat_create_shared_mission_card(gamestate, anchor_id) {
-
-    // if (missionIsSharedMission(anchor_id))
-    // let shared_mission_arr = [];
-    return [];
+function flat_create_bottom_mission_card(gamestate, anchor_card) {
+    let bottomMissionId = anchor_card.parentCard.toString();
+    let bottomCard = gamestate["visibleCardsInGame"][bottomMissionId];
+    return [bottomCard];
 
 }
 
@@ -289,6 +289,8 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
      *   giving the illusion of cards stacking on top of each other.
      */
 
+    const yourPlayerId = get_your_player_id(gamestate);
+
     // Display Popover containing stack data on hover.
     // setup state
     const [onHoverAnchorElement, setOnHoverAnchorElement] = useState(null);
@@ -312,14 +314,8 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
     //      May have to set this dynamically based on document width? Grr. Gonna be weird.
     //      May have to go back to absolute positioned elements that are ~90% wide?
 
-    // Get the card data
+    // Get the anchor card data
     let anchorCard = gamestate["visibleCardsInGame"][anchor_id.toString()];
-    let sharedMissionCard = flat_create_shared_mission_card(gamestate, anchorCard);
-    let cards_above = flat_create_card_objs_above(gamestate, anchor_id);
-    let cards_beneath = flat_create_card_objs_beneath(gamestate, anchor_id);
-    let allCards = cards_above.concat(sharedMissionCard, [anchorCard], cards_beneath);
-
-    // anchor card data for chip display
     const isShip = (anchorCard.cardType === "SHIP");
     const isFacility = (anchorCard.cardType === "FACILITY");
     const isMission = (anchorCard.cardType === "MISSION");
@@ -337,33 +333,73 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
             }
         }
     }
-
     const isStaffed = (anchorCard.cardType === "SHIP"); // TODO: staffing check
+
+    // Get cards related to the anchor card
+    let cards_above = flat_create_card_objs_above(gamestate, anchor_id);
+    let cards_beneath = flat_create_card_objs_beneath(gamestate, anchor_id);
+    let allCards = cards_above.concat([anchorCard], cards_beneath);
 
     // Set minimum size of the stack as a whole.
     // Dependent on quantity of cards in the stack, calculated above.
     const nestedCardOffset = 5; //px
+    const sharedMissionHeightOffset = 36; //px, 40% of cardMinHeight, roughly
     const stackMinWidth = allCards.length > 1 ? `${cardMinWidth + (nestedCardOffset * allCards.length) + (validActionBorder * 2)}px` : `${cardMinWidth + (validActionBorder * 2)}px`;
-    const stackMinHeight = allCards.length > 1 ? `${cardMinHeight + (nestedCardOffset * allCards.length) + (validActionBorder * 2)}px` : `${cardMinHeight + (validActionBorder * 2)}px`;
+    let stackMinHeight;
+    if (isTopSharedMission) {
+        stackMinHeight = allCards.length > 2 ? `${cardMinHeight + sharedMissionHeightOffset + (nestedCardOffset * allCards.length) + (validActionBorder * 2)}px` : `${cardMinHeight + sharedMissionHeightOffset + (validActionBorder * 2)}px`;
+    }
+    else {
+        stackMinHeight = allCards.length > 1 ? `${cardMinHeight + (nestedCardOffset * allCards.length) + (validActionBorder * 2)}px` : `${cardMinHeight + (validActionBorder * 2)}px`;
+    }
 
     const validAction = cardInStackHasValidAction(gamestate, allCards);
     const stackBorder = validAction ? `2px solid ${theme.palette.primary.light}` : "none";
     const stackBorderRadius =  validAction ? "7px" : "none";
 
     // Render the card data
-    let reactCardObjs = allCards.map((cardData, i) => 
-        <Card
-            key={cardData.cardId}
-            gamestate={gamestate}
-            card={cardData}
-            index={i}
-            openCardDetailsFunc={openCardDetailsFunc}
-            sx={{
-                minWidth: `${cardMinWidth}px`,
-                minHeight:`${cardMinHeight}px`
-            }}
-        />
-    );
+    let reactCardObjs = allCards.map((cardData, i) => {
+        const rotateIfNotYours = cardData.owner === yourPlayerId ? "none" : "rotate(180deg)";
+        
+        return(
+            <Card
+                key={cardData.cardId}
+                gamestate={gamestate}
+                card={cardData}
+                index={i}
+                openCardDetailsFunc={openCardDetailsFunc}
+                sx={{
+                    transform: `${rotateIfNotYours}`,
+                    minWidth: `${cardMinWidth}px`,
+                    minHeight:`${cardMinHeight}px`
+                }}
+            />
+        )
+    });
+
+    let reactBottomSharedMission = null;
+    if (isTopSharedMission) {
+        let bottomMissionCardArr = flat_create_bottom_mission_card(gamestate, anchorCard);
+
+        reactBottomSharedMission = bottomMissionCardArr.map((cardData, i) => {
+            const rotateIfNotYours = cardData.owner === yourPlayerId ? "none" : "rotate(180deg)";
+            return(
+                <Card
+                    key={cardData.cardId}
+                    gamestate={gamestate}
+                    card={cardData}
+                    index={i}
+                    openCardDetailsFunc={openCardDetailsFunc}
+                    sx={{
+                        transform: `${rotateIfNotYours}`,
+                        minWidth: `${cardMinWidth}px`,
+                        minHeight:`${cardMinHeight}px`,
+                        gridRowStart:"bottom-shared-mission-start"
+                    }}
+                />
+            )
+        });
+    }
 
     return(
         <Box>
@@ -378,12 +414,13 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
                     minHeight: stackMinHeight,
                     display: "grid",
                     gridTemplateColumns: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
-                    gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px)`,
+                    gridTemplateRows: `repeat(${allCards.length}, ${nestedCardOffset}px) [bottom-shared-mission] ${sharedMissionHeightOffset}px`,
                     border: stackBorder,
                     borderRadius: stackBorderRadius,
                     ...sx //also use incoming styles from parent
                 }}>
                 {reactCardObjs}
+                {reactBottomSharedMission}
             </Box>
             <Popover
                 id={`${anchor_id}-right-popover`}
