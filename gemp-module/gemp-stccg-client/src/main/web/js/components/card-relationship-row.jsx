@@ -21,7 +21,7 @@ export default function CardRelationshipRow({title, gamestate, cardData, cardPro
     let children = find_cards_by_filter(gamestate, cardData, cardPropertyFilter);
     let cardStacks = children.map((card) => 
         <Grid>
-            <CardStack key={card.cardId} gamestate={gamestate} anchor_id={card.cardId} openCardDetailsFunc={openCardDetailsFunc} />
+            <CardStack key={card.cardId} gamestate={gamestate} anchor_id={card.cardId} openCardDetailsFunc={openCardDetailsFunc} allowedToRotate={false} />
         </Grid>
     );
     return(

@@ -147,7 +147,7 @@ export default function SpacelineLocation( {gamestate, locationid, openCardDetai
     /* Disable showing core cards in the spaceline since we made a special row for them.
     // TODO: Decide if we keep this
     if (showCoreCards) {
-        opponentCoreCards = <CoreCardStack key={`core-${opponentPlayerId}`} gamestate={gamestate} player_id={opponentPlayerId} sx={{transform: "rotate(180deg)"}} />
+        opponentCoreCards = <CoreCardStack key={`core-${opponentPlayerId}`} gamestate={gamestate} player_id={opponentPlayerId} />
     }
     */
 
@@ -195,10 +195,10 @@ export default function SpacelineLocation( {gamestate, locationid, openCardDetai
                     {opponentCoreCards}
                 </Stack>
                 {/* TODO: Time locations */}
-                <Stack direction="row" sx={{transform: "rotate(180deg)"}}>
+                <Stack direction="row">
                     {opponentFacilityCards}
                 </Stack>
-                <Stack direction="row" sx={{transform: "rotate(180deg)"}}>
+                <Stack direction="row">
                     {opponentShipCards}
                 </Stack>
             </Stack>

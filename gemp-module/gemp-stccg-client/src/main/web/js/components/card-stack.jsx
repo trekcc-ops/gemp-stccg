@@ -282,7 +282,7 @@ function missionIsTopSharedMission(card) {
     return false;
 }
 
-export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, sx} ) {
+export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, sx, allowedToRotate=true} ) {
     /* CardStack sets a grid with columns that are smaller than the content.
      * By setting a z-index and the minimum card width and height to values larger than the
      *   width and height of the cell, the card image overflows its grid cell
@@ -359,7 +359,14 @@ export default function CardStack( {gamestate, anchor_id, openCardDetailsFunc, s
 
     // Render the card data
     let reactCardObjs = allCards.map((cardData, i) => {
-        const rotateIfNotYours = cardData.owner === yourPlayerId ? "none" : "rotate(180deg)";
+        let rotateIfNotYours;
+        if (allowedToRotate) {
+            rotateIfNotYours = cardData.owner === yourPlayerId ? "none" : "rotate(180deg)";
+        }
+        else {
+            rotateIfNotYours = "none";
+        }
+        
         
         return(
             <Card
