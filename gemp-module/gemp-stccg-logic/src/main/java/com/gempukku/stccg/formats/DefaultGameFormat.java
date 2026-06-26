@@ -9,12 +9,17 @@ import com.gempukku.stccg.common.SetDefinition;
 import com.gempukku.stccg.common.filterable.GameType;
 import com.gempukku.stccg.common.filterable.SubDeck;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 
 @JsonPropertyOrder({ "gameType", "code", "name", "order", "discardPileIsPublic", "playtest", "minimumDrawDeckSize",
         "maximumSeedDeckSize", "missions", "maximumSameName", "hall"
 })
 public class DefaultGameFormat implements GameFormat {
+
+    private static final Logger LOGGER = LogManager.getLogger(DefaultGameFormat.class);
 
     private static final int DEFAULT_MAX_VALUE = 999;
     private static final int DEFAULT_MIN_VALUE = 0;
@@ -89,7 +94,7 @@ public class DefaultGameFormat implements GameFormat {
                 Enum.valueOf(GameType.class, gameType.toUpperCase().replaceAll("[ '\\-.]", "_"));
         for (SetDefinition set : blueprintLibrary.getSetDefinitions().values()) {
             if (set.getGameType() == _gameType && !excludedSets.contains(set.getSetId())) {
-                addValidSet(Integer.parseInt(set.getSetId()));
+                addValidSet(set.getSetId());
             }
         }
         if (!bannedCards.isEmpty()) {
@@ -135,7 +140,18 @@ public class DefaultGameFormat implements GameFormat {
         sets.put("disabled", "disabled");
         Map<String, SetDefinition> librarySets = library.getSetDefinitions();
         for (String setId : _validSets) {
-            sets.put(setId, librarySets.get(setId).getSetName());
+            if (librarySets.containsKey(setId)) {
+                SetDefinition theSet = librarySets.get(setId);
+                if (theSet != null) {
+                    sets.put(setId, librarySets.get(setId).getSetName());
+                }
+                else {
+                    LOGGER.error("DefaultGameFormat.getValidSetsAndTheirCards(): CardBlueprintLibrary set id {} was null", setId);    
+                }
+            }
+            else {
+                LOGGER.error("DefaultGameFormat.getValidSetsAndTheirCards: CardBlueprintLibrary did not contain set id: {}", setId);
+            }
         }
         return sets;
     }
@@ -206,8 +222,8 @@ public class DefaultGameFormat implements GameFormat {
             _validCards.add(baseBlueprintId);
     }
 
-    private void addValidSet(int setNo) {
-        _validSets.add(String.valueOf(setNo));
+    private void addValidSet(String setNo) {
+        _validSets.add(setNo);
     }
 
     //Additional Hobbit Draft card lists
@@ -223,21 +239,23 @@ public class DefaultGameFormat implements GameFormat {
         _restrictedCardNames.add(cardName);
     }
 
-    private void addErrataSet(CardBlueprintLibrary library, int setID) throws InvalidPropertiesFormatException {
+    // 2026-06-26: I think this logic is leftover from LotR code and does not apply to our sets.
+    private void addErrataSet(CardBlueprintLibrary library, String setID) throws InvalidPropertiesFormatException {
         //Valid errata sets:
         // 50-69 are live errata versions of sets 0-19
         // 70-89 are playtest errata versions of sets 0-19
         // 150-199 are playtest versions of sets V0-V49
-        if(setID < 50 || (setID >= 90 && setID <= 149) || setID > 199)
-            throw new InvalidPropertiesFormatException("Errata sets must be 50-69, 70-89, or 150-159.  Received: " + setID);
+        int setIdAsInt = Integer.parseInt(setID);
+        if(setIdAsInt < 50 || (setIdAsInt >= 90 && setIdAsInt <= 149) || setIdAsInt > 199)
+            throw new InvalidPropertiesFormatException("Errata sets must be 50-69, 70-89, or 150-159.  Received: " + setIdAsInt);
 
         //maps 69 to 19, and also 151 to 101
-        int ogSet = setID - 50;
+        int ogSet = setIdAsInt - 50;
         //playtest sets are offset by 20 more
-        if(setID >= 70 && setID <=89)
-            ogSet = setID - 70;
+        if(setIdAsInt >= 70 && setIdAsInt <=89)
+            ogSet = setIdAsInt - 70;
 
-        var cards = library.getBaseCards().keySet().stream().filter(x -> x.startsWith(String.valueOf(setID))).toList();
+        var cards = library.getBaseCards().keySet().stream().filter(x -> x.startsWith(setID)).toList();
         for(String errataBP : cards) {
             String cardID = errataBP.split("_")[1];
 
