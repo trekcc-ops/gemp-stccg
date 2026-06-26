@@ -32,12 +32,15 @@ public class GetSetsRequestHandler extends DeckRequestHandler implements UriRequ
     }
 
     @Override
-    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter)
-            throws Exception {
-        Object[] output = _sets.entrySet().stream()
-                .map(x -> new JSONData.ItemStub(x.getKey(), x.getValue()))
-                .toArray();
-        responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(output));
+    public final void handleRequest(GempHttpRequest request, ResponseWriter responseWriter) throws Exception {
+        try {
+            Object[] output = _sets.entrySet().stream()
+                    .map(x -> new JSONData.ItemStub(x.getKey(), x.getValue()))
+                    .toArray();
+            responseWriter.writeJsonResponse(_jsonMapper.writeValueAsString(output));
+        } catch (Exception exp) {
+            throw new RuntimeException("Can't load set", exp);
+        }
     }
 
 }
