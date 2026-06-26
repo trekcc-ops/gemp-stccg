@@ -242,6 +242,7 @@ public class GempHttpRequest {
             UriRequestHandler newHandler = mapper.convertValue(parameters, UriRequestHandler.class);
             newHandler.handleRequest(this, _responseWriter);
         } catch (IllegalArgumentException exp) {
+            LOGGER.error("IllegalArgumentException in handleServerRequest:", exp);
             if (exp.getCause() instanceof InvalidTypeIdException) {
                 // InvalidTypeIdException thrown if initial path not recognized by the Json deserializer
                 logHttpError(uri,
