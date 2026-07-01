@@ -717,7 +717,58 @@ export class MissionCardGroup extends TableCardGroup {
             return;
         }
 
-        // TODO - Make sure the mission on top is always correct. The order isn't specified here
+        // Note / BUG: Without passing in GameState or Spaceline Location data this function
+        //             has no real way of telling which card was seeded second. It instead
+        //             always displays your mission as the top/anchor mission and the opponent's
+        //             as the shared mission.
+
+        let numMissions = 0; // TODO: Get that data
+        let anchorMissionElem;
+        let sharedMissionElem;
+
+        // Zone is a stand-in for type in this case
+        let missions = cardsToLayout.filter((elem) => elem.data("card").zone === "SPACELINE");
+        let otherCardElems = cardsToLayout.filter((elem) => elem.data("card").zone === "PLACED_ON_MISSION");
+        numMissions = missions.length;
+
+        if (numMissions === 2) {
+            for (let cardIndex in missions) {
+                let cardElem = missions[cardIndex];
+                let cardData = cardElem.data("card");
+                
+                if (cardData.owner === this.bottomPlayerId) {
+                    // your mission
+                    anchorMissionElem = cardElem;
+                }
+                else {
+                    // opponent's mission
+                    sharedMissionElem = cardElem;
+                }
+            }
+
+            this.twoMissionLayout(anchorMissionElem, sharedMissionElem, otherCardElems);
+        }
+        else if (numMissions === 1) {
+            anchorMissionElem = missions[0];
+            this.oneMissionLayout(anchorMissionElem, otherCardElems);
+        }
+        else {
+            // well something has gone horribly wrong
+            console.error(`Unexpected number of missions: ${numMissions}`);
+            console.error(`missions to lay out: ${missions}`);
+            return;
+        }
+    }
+
+    twoMissionLayout(anchorMissionElem, sharedMissionElem, otherCardElems) {
+        // Sanity checks
+        if (anchorMissionElem == null) {
+            console.error(`anchorMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
+        }
+
+        if (sharedMissionElem == null) {
+            console.error(`sharedMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
+        }
 
         // Get max card size that will fit in the container
             // cardScale = width / height of card template, defined in JCards.js
@@ -729,27 +780,70 @@ export class MissionCardGroup extends TableCardGroup {
             this.maxCardWidth = this.width;
             this.maxCardHeight = this.maxCardWidth / cardScale;
         }
+        
+        // anchorMissionElem
+        let anchorZIndex = 10;
+        let anchorCardData = anchorMissionElem.data("card");
+        let anchorCardX = ((this.width - this.maxCardWidth) / 2);
+        let anchorCardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+        anchorMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+        this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
 
-        let index = 10;
-        // Layout cards. Assumes no padding and that there will never be more than 2 missions in the group.
-        for (let cardIndex in cardsToLayout) {
-            let cardElem = cardsToLayout[cardIndex];
+        // sharedMissionMissionElem
+        let sharedMissionZIndex = 11;
+        let sharedMissionCardData = sharedMissionElem.data("card");
+        let sharedMissionCardX = ((this.width - this.maxCardWidth) / 2);
+        let sharedMissionCardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
+        sharedMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+        this.layoutCard(sharedMissionElem, sharedMissionCardX, sharedMissionCardY, this.maxCardWidth, this.maxCardHeight, sharedMissionZIndex, sharedMissionCardData);
+
+        // Layout cards on top.
+        let onTopZIndex = 12;
+        for (let cardIndex in otherCardElems) {
+            let cardElem = otherCardElems[cardIndex];
             let cardData = cardElem.data("card");
-            let cardX = this.x + ((this.width - this.maxCardWidth) / 2);
+            let cardX = ((this.width - this.maxCardWidth) / 2);
             let cardY;
-            if (cardsToLayout.length == 1) {
-                cardY = this.y + ((this.height - this.maxCardHeight) / 2);
-            } else if (cardData.owner == this.bottomPlayerId) {
-                cardY = this.y + ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+            if (cardData.owner == this.bottomPlayerId) {
+                cardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
             } else {
-                cardY = this.y + ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
+                cardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
             }
-            cardX = cardX - this.x;
-            cardY = cardY - this.y;
-            cardElem.detach().appendTo(this.descDiv);
+            
+            cardElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+            this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, onTopZIndex, cardData);
+            onTopZIndex++;
+        }
+    }
 
-            this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, index, cardData);
-            index++;
+    oneMissionLayout(anchorMissionElem, otherCardElems) {
+        // Sanity checks
+        if (anchorMissionElem == null) {
+            console.error(`anchorMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
+        }
+
+        this.maxCardWidth = this.width;
+        this.maxCardHeight = this.maxCardWidth / cardScale;
+
+        // anchorMissionElem
+        let anchorZIndex = 10;
+        let anchorCardData = anchorMissionElem.data("card");
+        let anchorCardX = ((this.width - this.maxCardWidth) / 2);
+        let anchorCardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+        anchorMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+        this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
+
+        // Layout cards on top.
+        let onTopZIndex = 12;
+        for (let cardIndex in otherCardElems) {
+            let cardElem = otherCardElems[cardIndex];
+            let cardData = cardElem.data("card");
+            let cardX = ((this.width - this.maxCardWidth) / 2);
+            let cardY = ((this.height - (this.maxCardHeight)) / 2);
+            
+            cardElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+            this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, onTopZIndex, cardData);
+            onTopZIndex++;
         }
     }
 }
