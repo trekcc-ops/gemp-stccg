@@ -16,7 +16,7 @@
             "lore" : "Arrange a cargo transfer at this major commercial shipping center.",
             "affiliation-icons" : "bajoran,federation,ferengi,klingon,romulan",
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01154A.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01154a.jpg"
         },
 		{
             "blueprintId" : "1_155",
@@ -437,7 +437,7 @@
 			"integrity" : 4,
 			"cunning" : 6,
 			"strength" : 5,
-			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01.jpg"
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01250.jpg"
 		},
         {
             "blueprintId" : "1_251",
