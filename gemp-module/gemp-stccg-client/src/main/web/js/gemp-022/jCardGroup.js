@@ -1,5 +1,6 @@
 import Card from "./jCards.js";
 import { cardScale } from "./jCards.js";
+import { st1eGameUiZIndexes } from "./common.js";
 
 export default class CardGroup {
     container;
@@ -79,8 +80,9 @@ export class VerticalBarGroup extends CardGroup {
         var cardCount = cardsToLayout.length;
         var totalHeight = 0;
 
-        for (var cardIndex in cardsToLayout)
+        for (let cardIndex in cardsToLayout) {
             totalHeight += cardsToLayout[cardIndex].data("card").getHeightForWidth(this.width);
+        }
 
         var topGap = 20;
 
@@ -88,8 +90,8 @@ export class VerticalBarGroup extends CardGroup {
 
         var x = this.x;
         var y = this.y + topGap;
-        var index = 10;
-        for (var cardIndex in cardsToLayout) {
+        var index = st1eGameUiZIndexes.cardZIndex;
+        for (let cardIndex in cardsToLayout) {
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardHeight = (cardElem.data("card").getHeightForWidth(this.width));
@@ -98,7 +100,7 @@ export class VerticalBarGroup extends CardGroup {
                 this.layoutCard(cardData.attachedCards[0], x + (this.width - cardHeight) / 2, y - (this.width - cardHeight) / 2, cardHeight, this.width, index);
                 index++;
             } else {
-                for (var i = 0; i < cardData.attachedCards.length; i++) {
+                for (let i = 0; i < cardData.attachedCards.length; i++) {
                     this.layoutCard(cardData.attachedCards[i], x + i * (this.width - cardHeight) / (cardData.attachedCards.length - 1), y - (this.width - cardHeight) / 2, cardHeight, this.width, index);
                     index++;
                 }
@@ -223,7 +225,7 @@ export class NormalCardGroup extends CardGroup {
         var y = Math.floor((this.height - height) / 2);
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(height);
@@ -247,7 +249,7 @@ export class NormalCardGroup extends CardGroup {
         var y = yBias;
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(rowHeight);
@@ -371,7 +373,7 @@ export class PlayPileCardGroup extends CardGroup {
         layoutVars.y = this.y;
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(height);
@@ -393,7 +395,7 @@ export class PlayPileCardGroup extends CardGroup {
         var y = yBias;
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(rowHeight);
@@ -443,8 +445,9 @@ export class TableCardGroup extends CardGroup {
      */
      constructor(container, belongTest, createDiv, locationIndex, bottomPlayerId) {
         super(container, belongTest, createDiv);
+        this.descDiv.removeClass("ui-widget-content");
         this.descDiv.removeClass("card-group");
-        this.descDiv.addClass("st1e-card-group");
+        this.descDiv.addClass("st1e-tablecard-group");
         this.locationIndex = locationIndex;
         this.bottomPlayerId = bottomPlayerId;
         this.heightPadding = 1;
@@ -602,7 +605,7 @@ export class TableCardGroup extends CardGroup {
 
         // Initialize layout variables
         let layoutVars = {};
-        layoutVars.index = 10;
+        layoutVars.index = st1eGameUiZIndexes.cardZIndex;
         layoutVars.x = xOffset;
         layoutVars.y = Math.floor((this.height - (totalCardHeight)) / 2);
 
@@ -700,8 +703,8 @@ export class MissionCardGroup extends TableCardGroup {
      */
      constructor(container, belongTest, createDiv, locationIndex, bottomPlayerId) {
         super(container, belongTest, createDiv);
-        this.descDiv.removeClass("card-group");
-        this.descDiv.addClass("st1e-card-group");
+        this.descDiv.removeClass("st1e-tablecard-group");
+        this.descDiv.addClass("st1e-missioncard-group");
         this.locationIndex = locationIndex;
         this.bottomPlayerId = bottomPlayerId;
         this.sharedOverlap = .60; // Percentage of a bottom shared mission card that will be covered by the mission on top
@@ -786,7 +789,7 @@ export class MissionCardGroup extends TableCardGroup {
         }
         
         // anchorMissionElem
-        let anchorZIndex = 10;
+        let anchorZIndex = st1eGameUiZIndexes.cardZIndex;
         let anchorCardData = anchorMissionElem.data("card");
         let anchorCardX = ((this.width - this.maxCardWidth) / 2); // center
         let anchorCardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2); // offset Y upper
@@ -794,7 +797,7 @@ export class MissionCardGroup extends TableCardGroup {
         this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
 
         // sharedMissionMissionElem
-        let sharedMissionZIndex = 11;
+        let sharedMissionZIndex = st1eGameUiZIndexes.cardZIndex + 1;
         let sharedMissionCardData = sharedMissionElem.data("card");
         let sharedMissionCardX = ((this.width - this.maxCardWidth) / 2); // center
         let sharedMissionCardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2); // offset Y lower
@@ -802,7 +805,7 @@ export class MissionCardGroup extends TableCardGroup {
         this.layoutCard(sharedMissionElem, sharedMissionCardX, sharedMissionCardY, this.maxCardWidth, this.maxCardHeight, sharedMissionZIndex, sharedMissionCardData);
 
         // Layout cards on top.
-        let onTopZIndex = 12;
+        let onTopZIndex = st1eGameUiZIndexes.cardZIndex + 2;
         for (let cardIndex in otherCardElems) {
             let cardElem = otherCardElems[cardIndex];
             let cardData = cardElem.data("card");
@@ -841,7 +844,7 @@ export class MissionCardGroup extends TableCardGroup {
         }
 
         // anchorMissionElem
-        let anchorZIndex = 10;
+        let anchorZIndex = st1eGameUiZIndexes.cardZIndex;
         let anchorCardData = anchorMissionElem.data("card");
         let anchorCardX = ((this.width - this.maxCardWidth) / 2); // center
         let anchorCardY = ((this.height - this.maxCardHeight) / 2); // center
@@ -849,7 +852,7 @@ export class MissionCardGroup extends TableCardGroup {
         this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
 
         // Layout cards on top.
-        let onTopZIndex = 12;
+        let onTopZIndex = st1eGameUiZIndexes.cardZIndex + 2;
         for (let cardIndex in otherCardElems) {
             let cardElem = otherCardElems[cardIndex];
             let cardData = cardElem.data("card");

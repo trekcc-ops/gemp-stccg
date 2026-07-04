@@ -353,8 +353,10 @@ red/pink: #C2599F
     border-right-color: white;
 }
 
-.st1e-card-group {
-    z-index: 9;
+.st1e-tablecard-group,
+.st1e-missioncard-group {
+    z-index: 11;
+	border: 1px solid #555555;
 }
 
 .upside-down {
