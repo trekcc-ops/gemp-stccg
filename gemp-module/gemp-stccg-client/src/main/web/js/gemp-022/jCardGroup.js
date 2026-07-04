@@ -770,12 +770,16 @@ export class MissionCardGroup extends TableCardGroup {
             console.error(`sharedMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
         }
 
-        // Get max card size that will fit in the container
-            // cardScale = width / height of card template, defined in JCards.js
+        // If the width is more than 3/4ths of the expected overlapped height
+        // (cardscale being approx 0.71, defined in jCards.js),
+        // then we probably have a situation where there's not many spaceline locations and 
+        // the locations have expanded width-wise to fill the screen. In these cases, the 
+        // height is the limiting factor for the card size.
         let sharedMissionScale = cardScale / (2 - this.sharedOverlap);
         if ((this.width / this.height) > sharedMissionScale) {
             this.maxCardHeight = this.height / (2 - this.sharedOverlap);
             this.maxCardWidth = this.maxCardHeight * cardScale;
+        // Otherwise, the width is the limiting factor for the card size, use that.
         } else {
             this.maxCardWidth = this.width;
             this.maxCardHeight = this.maxCardWidth / cardScale;
@@ -784,16 +788,16 @@ export class MissionCardGroup extends TableCardGroup {
         // anchorMissionElem
         let anchorZIndex = 10;
         let anchorCardData = anchorMissionElem.data("card");
-        let anchorCardX = ((this.width - this.maxCardWidth) / 2);
-        let anchorCardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+        let anchorCardX = ((this.width - this.maxCardWidth) / 2); // center
+        let anchorCardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2); // offset Y upper
         anchorMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
         this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
 
         // sharedMissionMissionElem
         let sharedMissionZIndex = 11;
         let sharedMissionCardData = sharedMissionElem.data("card");
-        let sharedMissionCardX = ((this.width - this.maxCardWidth) / 2);
-        let sharedMissionCardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
+        let sharedMissionCardX = ((this.width - this.maxCardWidth) / 2); // center
+        let sharedMissionCardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2); // offset Y lower
         sharedMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
         this.layoutCard(sharedMissionElem, sharedMissionCardX, sharedMissionCardY, this.maxCardWidth, this.maxCardHeight, sharedMissionZIndex, sharedMissionCardData);
 
@@ -805,9 +809,9 @@ export class MissionCardGroup extends TableCardGroup {
             let cardX = ((this.width - this.maxCardWidth) / 2);
             let cardY;
             if (cardData.owner == this.bottomPlayerId) {
-                cardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+                cardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2); // offset Y upper
             } else {
-                cardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
+                cardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2); // offset Y lower
             }
             
             cardElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
@@ -822,14 +826,25 @@ export class MissionCardGroup extends TableCardGroup {
             console.error(`anchorMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
         }
 
-        this.maxCardWidth = this.width;
-        this.maxCardHeight = this.maxCardWidth / cardScale;
+        // If the width is more than 3/4ths of the height (cardscale being approx 0.71, defined in jCards.js),
+        // then we probably have a situation where there's not many spaceline locations and 
+        // the locations have expanded width-wise to fill the screen. In these cases, the 
+        // height is the limiting factor for the card size.
+        if ((this.width / this.height) > cardScale) {
+            this.maxCardHeight = this.height / (2 - this.sharedOverlap);
+            this.maxCardWidth = this.maxCardHeight * cardScale;
+        
+        // Otherwise, the width is the limiting factor for the card size, use that.
+        } else {
+            this.maxCardWidth = this.width;
+            this.maxCardHeight = this.maxCardWidth / cardScale;
+        }
 
         // anchorMissionElem
         let anchorZIndex = 10;
         let anchorCardData = anchorMissionElem.data("card");
-        let anchorCardX = ((this.width - this.maxCardWidth) / 2);
-        let anchorCardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
+        let anchorCardX = ((this.width - this.maxCardWidth) / 2); // center
+        let anchorCardY = ((this.height - this.maxCardHeight) / 2); // center
         anchorMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
         this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
 
@@ -838,8 +853,8 @@ export class MissionCardGroup extends TableCardGroup {
         for (let cardIndex in otherCardElems) {
             let cardElem = otherCardElems[cardIndex];
             let cardData = cardElem.data("card");
-            let cardX = ((this.width - this.maxCardWidth) / 2);
-            let cardY = ((this.height - (this.maxCardHeight)) / 2);
+            let cardX = ((this.width - this.maxCardWidth) / 2); // center
+            let cardY = ((this.height - (this.maxCardHeight)) / 2); // center
             
             cardElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
             this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, onTopZIndex, cardData);
