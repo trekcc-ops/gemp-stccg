@@ -1102,8 +1102,12 @@ export async function fetchImage(url) {
         // Long term we should update the .json files to the intended host.
         let newUrl;
         if (url.startsWith("https://www.trekcc.org/1e/cardimages/")) {
-            newUrl = url.replace("https://www.trekcc.org/1e/cardimages/", "https://trekcc.dev/1e/images/imgp.php?src=")
-            newUrl = newUrl + "&w=330&q=100&sharpen&sa=webp"
+            newUrl = url.replace("https://www.trekcc.org/1e/cardimages/", "https://trekcc.dev/1e/images/imgp.php?src=");
+            newUrl = newUrl + "&w=330&q=100&sharpen&sa=webp";
+        }
+        else if (url.startsWith("https://www.trekcc.org/2e/cardimages/")) {
+            newUrl = url.replace("https://www.trekcc.org/2e/cardimages/", "https://trekcc.dev/2e/images/imgp.php?src=");
+            newUrl = newUrl + "&w=330&q=100&sharpen&sa=webp";
         }
         else {
             newUrl = url;

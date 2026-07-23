@@ -43,7 +43,8 @@ public enum SkillName implements Filterable {
     ASTROMETRICS("Astrometrics", false),
     PROGRAMMING("Programming", false),
     TELEPATHY("Telepathy", false),
-    TRANSPORTERS("Transporters", false);
+    TRANSPORTERS("Transporters", false),
+    INTELLIGENCE("Intelligence", false);
 
     private final String _humanReadable;
 

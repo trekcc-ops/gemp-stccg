@@ -255,6 +255,8 @@ export default class Card {
         return false;
     }
 
+    // 2026-06-25: I think this is leftover LotR code and it's making its way into some of the 2E cards,
+    //             namely 001_162, 017_066, and 017_087.
     remadeErratas = {
         "0": [7],
         "1": [3, 12, 43, 46, 55, 109, 113, 138, 162, 211, 235, 263, 309, 318, 331, 338, 343, 360],
