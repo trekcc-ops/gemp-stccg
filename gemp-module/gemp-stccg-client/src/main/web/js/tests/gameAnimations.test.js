@@ -1,5 +1,5 @@
-import GameAnimations from "../gemp-022/gameAnimations.js";
+import GameAnimations from "../gemp-022/gameAnimations.jsx";
 
-test('gameAnimations.js is valid syntax', () => {
+test('gameAnimations.jsx is valid syntax', () => {
     // noop
 });

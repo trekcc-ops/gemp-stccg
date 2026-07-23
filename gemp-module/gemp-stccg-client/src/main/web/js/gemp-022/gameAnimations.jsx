@@ -1,9 +1,12 @@
 import Card from "./jCards.js";
 import { getCardDivFromId, createCardDiv, createSimpleCardDiv } from "./jCards.js";
 import { layoutCardElem } from "./jCardGroup.js";
-import { getFriendlyPhaseName } from "./common.js";
+import { getFriendlyPhaseName, theme } from "./common.js";
 import PQueue from 'p-queue';
 import delay from 'delay';
+import { createRoot } from 'react-dom/client';
+import EndGameResult from "../components/end-game-result.jsx";
+import { ThemeProvider } from "@emotion/react";
 
 export default class GameAnimations {
     game;
@@ -1178,5 +1181,73 @@ export default class GameAnimations {
                 }
             }
         }
+    }
+
+    async gameOverAnimation(jsonGameState) {
+        // BUG: JQueryUI dialogs attached to main render out-of-sync with the animations
+        //      if we use the new animation queue, because there are two queues.
+        //      Fallback to the old jQuery animation queue until JQUI is removed.
+        $("#main").queue(async (next) => {
+        //await this.queue.add(async () => {
+            let knownReasons = [
+                "ALL_PLAYERS_CANCELLED",
+                "CONCEDED",
+                "DECISION_TIMEOUT",
+                "ERROR",
+                "LAST_PLAYER_REMAINING",
+                "PLAYER_TIMEOUT",
+                "TIE",
+                "WINNING_SCORE"
+            ];
+
+            if (! knownReasons.includes(jsonGameState.endGameResult.reason)) {
+                console.error(`gameOverAnimation: endGameResult.reason '${jsonGameState.endGameResult.reason}' not recognized.`);
+                next(); // bail out of this animation completely
+            }
+            
+            // animation layer setup
+            // TODO: Create a permanent animation layer that's invisible so I don't have to copy this every time.
+            let animation_layer = document.createElement("div");
+            animation_layer.id = "animation-layer";
+
+            let reactWrapper = document.createElement("div");
+            let reactRoot = createRoot(reactWrapper);
+            animation_layer.appendChild(reactWrapper);
+            reactRoot.render(
+                <ThemeProvider theme={theme}>
+                    <EndGameResult gamestate={jsonGameState} />
+                </ThemeProvider>
+            );
+
+            let gamediv;
+            if (this.game.mainDiv instanceof jQuery) {
+                gamediv = this.game.mainDiv[0];
+            }
+            else {
+                gamediv = this.game;
+            }
+            gamediv.appendChild(animation_layer);
+
+            // fade in
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 0,
+                    },
+                    { // to
+                        opacity: 1,
+                    },
+                ],
+                {
+                    duration: 500, //ms
+                    fill: "forwards"
+                }
+            );
+
+            // do not fade out, leave it there
+
+            next();
+        });
     }
 }
