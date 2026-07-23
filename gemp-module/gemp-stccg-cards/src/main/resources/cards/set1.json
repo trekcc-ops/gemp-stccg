@@ -16,7 +16,22 @@
             "lore" : "Arrange a cargo transfer at this major commercial shipping center.",
             "affiliation-icons" : "bajoran,federation,ferengi,klingon,romulan",
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01154A.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01154a.jpg"
+        },
+		{
+            "blueprintId" : "1_155",
+            "title" : "L-S VI",
+            "subtitle" : "Changeling Research",
+            "uniqueness" : "unique",
+            "type" : "mission",
+            "mission-type" : "planet",
+            "quadrant" : "gamma",
+            "point-box" : 45,
+            "mission-requirements" : "2 Exobiology, Geology, 3 Science, and Cunning>42",
+            "lore" : "\"One of the Bajoran science probes recently scanned a planet about six light-years from the wormhole. It picked up some very unique and familiar DNA patterns.\"",
+            "affiliation-icons" : "bajoran,cardassian,federation,romulan",
+            "span" : 2,
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01155a.jpg"
         },
         {
             "blueprintId" : "1_156",
@@ -35,17 +50,18 @@
         },
         {
             "blueprintId" : "1_157",
-            "title" : "Collect Sample",
+            "title" : "Satvintri Cloud",
+			"subtitle" : "Collect Sample",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "space",
             "quadrant" : "alpha",
             "point-box" : 35,
             "mission-requirements" : "Physics, 2 Science, Transporters, and Cunning>34",
-            "lore" : "Gaseous cloud: Beam a sample of this volatile gas aboard your ship and explore possible applications in weapon design.",
+            "lore" : "Beam a sample of this volatile gas aboard your ship and explore possible applications in weapon design.",
             "affiliation-icons" : "cardassian,dominion,ferengi,klingon,romulan",
             "span" : 3,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01157.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01157a.jpg"
         },
         {
             "blueprintId" : "1_161",
@@ -73,13 +89,14 @@
             "headquarters" : "Federation",
             "playable" : "federation+ds9-icon,earth,non-aligned,equipment",
             "region" : "Sector 001",
-            "lore" : "Earth: \"Now there’s something I never get tired of looking at.\"",
+            "lore" : "Earth: \"Now there's something I never get tired of looking at.\"",
             "span" : 2,
             "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01162.jpg"
         },
         {
             "blueprintId" : "1_166",
-            "title" : "Excavation",
+            "title" : "Kurl",
+			"subtitle" : "Excavation",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "planet",
@@ -89,7 +106,7 @@
             "mission-requirements" : "Anthropology, 2 Archaeology, and Cunning>30",
             "point-box" : 30,
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01166.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01166a.jpg"
         },
         {
             "blueprintId" : "1_167",
@@ -104,7 +121,7 @@
             "mission-requirements" : "Astrometrics, Leadership, Physics, Science, and Cunning>34",
             "point-box" : 35,
             "span" : 4,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01167.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01167a.jpg"
         },
         {
             "blueprintId" : "1_169",
@@ -119,7 +136,7 @@
             "mission-requirements" : "Engineer, Geology, Cunning>28, and (Acquisition or Law or 2 Treachery)",
             "point-box" : 30,
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01169.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01169a.jpg"
         },
         {
             "blueprintId" : "1_170",
@@ -134,7 +151,7 @@
             "mission-requirements" : "Astrometrics, Engineer, Physics, Science, and Cunning>36",
             "point-box" : 35,
             "span" : 3,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01170.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01170a.jpg"
         },
         {
             "blueprintId" : "1_180",
@@ -153,21 +170,23 @@
         },
         {
             "blueprintId" : "1_182",
-            "title" : "Investigate Sighting",
+            "title" : "Beta Stromgren",
+			"subtitle" : "Investigate Sighting",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "space",
             "quadrant" : "alpha",
             "affiliation-icons" : "federation,romulan",
-            "lore" : "Beta Stromgren: \"They call it ‘Tin Man.’ ... Its energy source is unknown. The people who’ve studied the transmissions think it’s a starship. And they’re sure it’s alive. ... No one knows where it came from, or why it’s here. But we’re going to meet it. We’re going to talk to it.\"",
+            "lore" : "Beta Stromgren: \"They call it 'Tin Man.' ... Its energy source is unknown. The people who've studied the transmissions think it's a starship. And they're sure it's alive. ... No one knows where it came from, or why it's here. But we're going to meet it. We're going to talk to it.\"",
             "mission-requirements" : "Exobiology, 2 Treachery, and Cunning>28 or 2 Telepathy and Integrity>29",
             "point-box" : 30,
             "span" : 3,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01182.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01182a.jpg"
         },
         {
             "blueprintId" : "1_185",
-            "title" : "Medical Relief",
+            "title" : "Beta Lankal",
+			"subtitle" : "Medical Relief",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "planet",
@@ -177,11 +196,12 @@
             "mission-requirements" : "Biology, Exobiology, Medical, and Cunning>32",
             "point-box" : 30,
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01185.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01185a.jpg"
         },
         {
             "blueprintId" : "1_186",
-            "title" : "Military Exercises",
+            "title" : "Oneamisu Sector",
+			"subtitle" : "Military Exercises",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "space",
@@ -191,7 +211,7 @@
             "mission-requirements" : "Leadership, 2 Officer, Security, and Cunning>34",
             "point-box" : 35,
             "span" : 3,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01186.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01186a.jpg"
         },
         {
             "blueprintId" : "1_191",
@@ -210,21 +230,23 @@
         },
         {
             "blueprintId" : "1_193",
-            "title" : "Quest for the Sword of Kahless",
+            "title" : "Hur'q",
+			"subtitle" : "Quest for the Sword of Kahless",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "planet",
             "quadrant" : "gamma",
             "point-box" : 40,
             "mission-requirements" : "Archaeology, Leadership, 2 Science, Strength>38, and (Honor or Treachery)",
-            "lore" : "Hur’q planet: \"The Hur’q invaded our homeworld over 1,000 years ago. Whatever they could not pillage, they destroyed. They took the Sword and my people have been searching for it ever since.\"",
+            "lore" : "Hur'q planet: \"The Hur'q invaded our homeworld over 1,000 years ago. Whatever they could not pillage, they destroyed. They took the Sword and my people have been searching for it ever since.\"",
             "affiliation-icons" : "cardassian,ferengi,klingon,romulan",
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01193.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01193a.jpg"
         },
         {
             "blueprintId" : "1_200",
-            "title" : "Sensitive Search",
+            "title" : "Nequencia System",
+			"subtitle" : "Sensitive Search",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "planet",
@@ -234,25 +256,27 @@
             "mission-requirements" : "Programming, Security, Cunning>30, and (Acquisition or Honor or Law or Treachery)",
             "point-box" : 30,
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01200.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01200a.jpg"
         },
         {
             "blueprintId" : "1_201",
-            "title" : "Study Cometary Cloud",
+            "title" : "Cruses System",
+			"subtitle" : "Study Cometary Cloud",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "space",
             "quadrant" : "alpha",
             "point-box" : 35,
             "mission-requirements" : "Astrometrics, Navigation, Programming, Cunning>34, and (Acquisition or Security)",
-            "lore" : "Cruses system: Collect samples of the unusual particles in this system’s Oort cloud. Conduct research on their military or commercial potential.",
+            "lore" : "Cruses system: Collect samples of the unusual particles in this system's Oort cloud. Conduct research on their military or commercial potential.",
             "affiliation-icons" : "dominion,ferengi,klingon,non-aligned,romulan",
             "span" : 3,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01201.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01201a.jpg"
         },
         {
             "blueprintId" : "1_203",
-            "title" : "Surgery Under Fire",
+            "title" : "Ajilon Prime",
+			"subtitle" : "Surgery Under Fire",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "planet",
@@ -262,11 +286,12 @@
             "mission-requirements" : "Biology, Leadership, Medical, Officer, and Strength>36",
             "point-box" : 35,
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01203.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01203a.jpg"
         },
         {
             "blueprintId" : "1_206",
             "title" : "Barzan Wormhole",
+			"subtitle" : "Wormhole Negotiations",
             "uniqueness" : "unique",
             "type" : "mission",
             "mission-type" : "space",
@@ -276,8 +301,144 @@
             "affiliation-icons" : "federation,ferengi,klingon,non-aligned,romulan",
             "point-box" : 45,
             "span" : 2,
-            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01206.jpg"
+            "image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01206a.jpg"
         },
+		{
+			"blueprintId" : "1_207",
+			"title" : "Anara",
+			"type" : "personnel",
+			"affiliation" : "bajoran",
+			"cost" : 1,
+			"species" : "Bajoran",
+			"icons" : "staff, ds9-icon",
+			"skill-box" : "[*] Engineer [*] Physics [*] Transporters",
+			"lore" : "In the early years following the Occupation, Bajoran tours of duty aboard Deep Space 9 often lasted only a few months. The Militia hoped to train a number of junior officers in skills useful for the rebuilding efforts on Bajor.",
+			"integrity" : 5,
+			"cunning" : 5,
+			"strength" : 4,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01207.jpg"
+		},
+		{
+			"blueprintId" : "1_210",
+			"title" : "Brilgar",
+			"type" : "personnel",
+			"affiliation" : "bajoran",
+			"cost" : 1,
+			"species" : "Bajoran",
+			"icons" : "staff, ds9-icon",
+			"skill-box" : "[*] Anthropology [*] Law [*] Security",
+			"lore" : "Most improvements to Deep Space 9's security came from knowledge of how Bajorans had defeated it while the station was under Cardassian control.",
+			"integrity" : 5,
+			"cunning" : 5,
+			"strength" : 6,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01210.jpg"
+		},
+		{
+			"blueprintId" : "1_214",
+			"title" : "Jabara",
+			"type" : "personnel",
+			"affiliation" : "bajoran",
+			"cost" : 1,
+			"species" : "Bajoran",
+			"icons" : "ds9-icon",
+			"skill-box" : "[*] Exobiology [*] Medical [*] Programming",
+			"lore" : "Bajorans on the Infirmary staff proved every bit as reliable as the Starfleet personnel.",
+			"integrity" : 6,
+			"cunning" : 6,
+			"strength" : 4,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01214.jpg"
+		},
+		{
+			"blueprintId" : "1_215",
+			"title" : "Keeve Falor",
+			"type" : "personnel",
+			"affiliation" : "bajoran",
+			"cost" : 1,
+			"species" : "Bajoran",
+			"icons" : "staff",
+			"skill-box" : "[*] Biology [*] Honor [*] Leadership",
+			"lore" : "\"You were 'innocent bystanders' for decades as the Cardassians took our homes. As they violated and tortured our people in the most hideous ways imaginable. As we were forced to flee.\"",
+			"integrity" : 6,
+			"cunning" : 5,
+			"strength" : 6,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01215.jpg"
+		},
+		{
+			"blueprintId" : "1_219",
+			"title" : "Mora Pol",
+            "subtitle" : "Pioneering Scientist",
+            "uniqueness" : "unique",
+			"type" : "personnel",
+			"affiliation" : "bajoran",
+			"cost" : 2,
+			"species" : "Bajoran",
+			"icons" : "staff",
+			"skill-box" : "[*] 2 Exobiology [*] Physics [*] 2 Science",
+			"lore" : "\"In science we look for the obvious. We track in a straight line. If something looks too good to be true, it usually isn't true. If there appears to be more to something than meets the eye, there usually is more. We take it step by step.\"",
+			"integrity" : 5,
+			"cunning" : 7,
+			"strength" : 4,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01219.jpg"
+		},
+		{
+			"blueprintId" : "1_227",
+			"title" : "Weld Ram",
+			"type" : "personnel",
+			"affiliation" : "bajoran",
+			"cost" : 1,
+			"species" : "Bajoran",
+			"icons" : "staff",
+			"skill-box" : "[*] Archaeology [*] Geology [*] Science",
+			"lore" : "Member of the Bajoran Institute of Science who accompanied Dr. Mora Pol on an expedition to the Gamma Quadrant.",
+			"integrity" : 5,
+			"cunning" : 5,
+			"strength" : 5,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01227.jpg"
+		},
+		{
+			"blueprintId" : "1_237",
+			"title" : "Emok",
+			"type" : "personnel",
+			"affiliation" : "cardassian",
+			"cost" : 1,
+			"species" : "Cardassian",
+			"icons" : "staff",
+			"skill-box" : "[*] Exobiology [*] Intelligence [*] Medical",
+			"lore" : "\"The Obsidian Order. ... Even the Romulan Tal Shiar can't compete with them when it comes to intelligence gathering and covert operations.\"",
+			"integrity" : 5,
+			"cunning" : 5,
+			"strength" : 5,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01237.jpg"
+		},
+		{
+			"blueprintId" : "1_247",
+			"title" : "Megar",
+			"type" : "personnel",
+			"affiliation" : "cardassian",
+			"cost" : 1,
+			"species" : "Cardassian",
+			"skill-box" : "[*] Anthropology [*] Biology [*] Law",
+			"lore" : "Established over 500 years ago, the Detapa Council ostensibly leads the Cardassian government. Over time, its true power has eroded as the Central Command and Obsidian Order have acted with increasing autonomy.",
+			"integrity" : 5,
+			"cunning" : 5,
+			"strength" : 5,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01247.jpg"
+		},
+		{
+			"blueprintId" : "1_250",
+			"title" : "Rogesh",
+			"type" : "personnel",
+			"affiliation" : "cardassian",
+			"cost" : 2,
+			"species" : "Cardassian",
+			"icons" : "staff",
+			"skill-box" : "[*] Intelligence [*] Navigation [*] Physics [*] Science [*] Treachery",
+			"lore" : "\"...the ever-vigilant eyes and ears of the Cardassian Empire. It is said that a Cardassian citizen cannot sit down to a meal without each dish being duly noted and recorded by the Order.\"",
+			"integrity" : 4,
+			"cunning" : 6,
+			"strength" : 5,
+			"image-url" : "https://www.trekcc.org/2e/cardimages/ST2E-EN01250.jpg"
+		},
         {
             "blueprintId" : "1_251",
             "title" : "Altman",
@@ -468,7 +629,7 @@
             "staffing" : "staff,staff,staff",
             "ship-class" : "Excelsior Class",
             "icons" : "earth",
-            "lore" : "Although the transwarp drive experiment of the late 23rd century was a failure, the design of the ship itself was one of Starfleet’s greatest successes. New Excelsior-class ships were still being constructed over 75 years later.",
+            "lore" : "Although the transwarp drive experiment of the late 23rd century was a failure, the design of the ship itself was one of Starfleet's greatest successes. New Excelsior-class ships were still being constructed over 75 years later.",
             "range" : 8,
             "weapons" : 7,
             "shields" : 7,
@@ -513,7 +674,7 @@
             "staffing" : "command,command,staff,staff",
             "ship-class" : "Sovereign Class",
             "icons" : "tng-icon",
-            "lore" : "One of several Starfleet designs introduced in the 2370s, the Sovereign-class starship would become the Federation’s primary deep-space exploration vessel.",
+            "lore" : "One of several Starfleet designs introduced in the 2370s, the Sovereign-class starship would become the Federation's primary deep-space exploration vessel.",
             "range" : 9,
             "weapons" : 9,
             "shields" : 9,
