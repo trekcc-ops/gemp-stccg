@@ -147,7 +147,7 @@ export default function SpacelineLocation( {gamestate, locationid, openCardDetai
     /* Disable showing core cards in the spaceline since we made a special row for them.
     // TODO: Decide if we keep this
     if (showCoreCards) {
-        opponentCoreCards = <CoreCardStack key={`core-${opponentPlayerId}`} gamestate={gamestate} player_id={opponentPlayerId} sx={{transform: "rotate(180deg)"}} />
+        opponentCoreCards = <CoreCardStack key={`core-${opponentPlayerId}`} gamestate={gamestate} player_id={opponentPlayerId} />
     }
     */
 
@@ -158,8 +158,7 @@ export default function SpacelineLocation( {gamestate, locationid, openCardDetai
         <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
     );
     let missionCards = get_mission_cards(gamestate, locationData, yourPlayerId).map((cardData, index) => {
-        let isInverted = cardData.owner === yourPlayerId ? "none" : "rotate(180deg)";
-        return(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} sx={{transform: isInverted}} />);
+        return(<CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc}  />);
     });
     let yourShipCards = get_ship_cards(gamestate, locationid, yourPlayerId).map((cardData, index) =>
         <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
@@ -196,10 +195,10 @@ export default function SpacelineLocation( {gamestate, locationid, openCardDetai
                     {opponentCoreCards}
                 </Stack>
                 {/* TODO: Time locations */}
-                <Stack direction="row" sx={{transform: "rotate(180deg)"}}>
+                <Stack direction="row">
                     {opponentFacilityCards}
                 </Stack>
-                <Stack direction="row" sx={{transform: "rotate(180deg)"}}>
+                <Stack direction="row">
                     {opponentShipCards}
                 </Stack>
             </Stack>

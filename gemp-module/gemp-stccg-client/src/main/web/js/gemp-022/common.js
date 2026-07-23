@@ -153,6 +153,13 @@ export const zones_all = [
     "TRIBBLE"
 ]
 
+export const st1eGameUiZIndexes = {
+    "spacelineLocationZIndex": 10,
+    "cardGroupZIndex": 11,
+    "cardZIndex": 12,
+    "animationLayer": 200
+}
+
 export function showLinkableCardTitle(cardNode) {
     // Takes a json node of card properties and creates a hyperlink that the user can click on to show the card
     let title = cardNode.title; // string

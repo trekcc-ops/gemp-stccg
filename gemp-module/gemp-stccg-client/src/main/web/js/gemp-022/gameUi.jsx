@@ -2,7 +2,7 @@ import GempClientCommunication from './communication.js';
 import { log, getUrlParam, getAffiliationName } from './common.js';
 import Card from './jCards.js';
 import { createCardDiv, createFullCardDiv, getCardDivFromId } from './jCards.js';
-import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup } from './jCardGroup.js';
+import { NormalCardGroup, PlayPileCardGroup, NormalGameCardGroup, TableCardGroup, MissionCardGroup } from './jCardGroup.js';
 import { animateActionResult, communicateActionResult, getSpacelineIndexFromLocationId } from './actionResults.js';
 import { processDecision } from './decisions.js';
 import GameAnimations from './gameAnimations.jsx';
@@ -1645,7 +1645,7 @@ export class ST1EGameTableUI extends GameTableUI {
             return false;
         };
         // TODO - MissionCardGroup class exists for this, but using TableCardGroup to test beaming function
-        let missionCardGroup = new TableCardGroup($("#main"), missionOrOnTopOfMission, false, index, this.bottomPlayerId);
+        let missionCardGroup = new MissionCardGroup($("#main"), missionOrOnTopOfMission, false, index, this.bottomPlayerId);
         this.missionCardGroups.splice(index, 0, missionCardGroup);
 
         let opponentAtLocationCardGroup = new TableCardGroup($("#main"), function (card) {

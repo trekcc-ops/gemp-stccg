@@ -330,9 +330,142 @@ export default class GameAnimations {
             });
 
         if (animate && (thisGame.spectatorMode || thisGame.replayMode || (participantId != thisGame.bottomPlayerId))) {
-            this.animateCardPlay(cardId);
+            this.animateMissionPlay(cardJson);
         }
     }
+
+    animateMissionPlay(card_json) {
+        // BUG: JQueryUI dialogs attached to main render out-of-sync with the animations
+        //      if we use the new animation queue, because there are two queues.
+        //      Fallback to the old jQuery animation queue until JQUI is removed.
+        //await this.queue.add(async () => {
+        let that = this;
+        $("#main").queue(async (next) => {
+            // animation layer setup
+            // TODO: Create a permanent animation layer that's invisible so I don't have to copy this every time.
+            let animation_layer = document.createElement("div");
+            animation_layer.id = "animation-layer";
+
+            let blueprintId = card_json.blueprintId;
+            let zone = "VOID";
+            let cardId = `anim-${card_json.cardId}`; // don't use real card ID or createCardDiv will clash
+            let noOwner = "";
+            let title = (card_json.title) ? card_json.title : "";
+            let imageUrl = card_json.imageUrl;
+            let emptyLocationIndex = "";
+            let upsideDown = false;
+            let card = new Card(blueprintId, zone, cardId, noOwner, title, imageUrl, emptyLocationIndex, upsideDown);
+
+            let baseCardDiv = createCardDiv(card.imageUrl, card.title, card.isFoil(), card.status_tokens, false, card.hasErrata(), card.isUpsideDown(), card.cardId);
+
+            let pageWidth = document.body.clientWidth;
+            // BUG: WTF GEMP, why is body height 0 despite containing elems?
+            // let pageHeight = document.body.clientHeight;
+            let pageHeight = document.getElementById("main").clientHeight;
+            let oneSixthWidthVal = (pageWidth / 6);
+            let cardWidth = oneSixthWidthVal; // 5 width
+            let cardHeight = Math.floor(oneSixthWidthVal * 1.5); // 3:2 ratio
+            let cardX = (pageWidth / 2) - (oneSixthWidthVal / 2);
+            let cardY = (pageHeight / 2) - (cardHeight / 2);
+
+            baseCardDiv.style.position = "absolute";
+            baseCardDiv.style.left = cardX + "px";
+            baseCardDiv.style.top = cardY + "px";
+            baseCardDiv.style.width = cardWidth + "px";
+            baseCardDiv.style.height = cardHeight + "px";
+            baseCardDiv.style.flex = `0 1 ${cardWidth}`;
+
+            animation_layer.appendChild(baseCardDiv);
+            
+            let gamediv;
+            if (this.game.mainDiv instanceof jQuery) {
+                gamediv = this.game.mainDiv[0];
+            }
+            else {
+                gamediv = this.game;
+            }
+            gamediv.appendChild(animation_layer);
+
+            // fade in
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 0,
+                    },
+                    { // to
+                        opacity: 1,
+                    },
+                ],
+                {
+                    duration: 200, //ms
+                    fill: "forwards"
+                }
+            );
+            
+            // wait for people to read them
+            await delay(that.putCardIntoPlayDuration);
+
+            // get card in animation layer
+            //baseCardDiv
+            const startingCardStyles = window.getComputedStyle(baseCardDiv);
+            let startX = startingCardStyles.getPropertyValue("left");
+            let startY = startingCardStyles.getPropertyValue("top");
+            let startWidth = startingCardStyles.getPropertyValue("width");
+            let startHeight = startingCardStyles.getPropertyValue("height");
+
+            // get card location and size in base game
+            let targetCardElem = document.getElementById(card_json.cardId);
+            const targetCardStyles = targetCardElem.getBoundingClientRect(); // gets absolute values
+            let targetX = targetCardStyles.left + "px";
+            let targetY = targetCardStyles.top + "px";
+            let targetWidth = targetCardStyles.width + "px";
+            let targetHeight = targetCardStyles.height + "px";
+
+            // shrink animation card down to position
+            await this.animateElementAndSaveCSSPromise(
+                baseCardDiv,
+                [
+                    { // from
+                        left: startX,
+                        top: startY,
+                        width: startWidth,
+                        height: startHeight,
+                    },
+                    { // to
+                        left: targetX,
+                        top: targetY,
+                        width: targetWidth,
+                        height: targetHeight,
+                    },
+                ],
+                {
+                    duration: 200, //ms
+                    fill: "forwards"
+                }
+            );
+            
+            // fade out
+            await this.animateElementAndSaveCSSPromise(
+                animation_layer,
+                [
+                    { // from
+                        opacity: 1,
+                    },
+                    { // to
+                        opacity: 0,
+                    },
+                ],
+                {
+                    duration: 200, //ms
+                    fill: "forwards"
+                }
+            );
+
+            animation_layer.remove();
+            next();
+        });
+    };
 
     putNonMissionIntoPlay(cardJson, performingPlayerId, gameState, spacelineIndex, animate) {
 

@@ -1,5 +1,6 @@
 import Card from "./jCards.js";
 import { cardScale } from "./jCards.js";
+import { st1eGameUiZIndexes } from "./common.js";
 
 export default class CardGroup {
     container;
@@ -79,8 +80,9 @@ export class VerticalBarGroup extends CardGroup {
         var cardCount = cardsToLayout.length;
         var totalHeight = 0;
 
-        for (var cardIndex in cardsToLayout)
+        for (let cardIndex in cardsToLayout) {
             totalHeight += cardsToLayout[cardIndex].data("card").getHeightForWidth(this.width);
+        }
 
         var topGap = 20;
 
@@ -88,8 +90,8 @@ export class VerticalBarGroup extends CardGroup {
 
         var x = this.x;
         var y = this.y + topGap;
-        var index = 10;
-        for (var cardIndex in cardsToLayout) {
+        var index = st1eGameUiZIndexes.cardZIndex;
+        for (let cardIndex in cardsToLayout) {
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardHeight = (cardElem.data("card").getHeightForWidth(this.width));
@@ -98,7 +100,7 @@ export class VerticalBarGroup extends CardGroup {
                 this.layoutCard(cardData.attachedCards[0], x + (this.width - cardHeight) / 2, y - (this.width - cardHeight) / 2, cardHeight, this.width, index);
                 index++;
             } else {
-                for (var i = 0; i < cardData.attachedCards.length; i++) {
+                for (let i = 0; i < cardData.attachedCards.length; i++) {
                     this.layoutCard(cardData.attachedCards[i], x + i * (this.width - cardHeight) / (cardData.attachedCards.length - 1), y - (this.width - cardHeight) / 2, cardHeight, this.width, index);
                     index++;
                 }
@@ -223,7 +225,7 @@ export class NormalCardGroup extends CardGroup {
         var y = Math.floor((this.height - height) / 2);
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(height);
@@ -247,7 +249,7 @@ export class NormalCardGroup extends CardGroup {
         var y = yBias;
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(rowHeight);
@@ -371,7 +373,7 @@ export class PlayPileCardGroup extends CardGroup {
         layoutVars.y = this.y;
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(height);
@@ -393,7 +395,7 @@ export class PlayPileCardGroup extends CardGroup {
         var y = yBias;
 
         for (var cardIndex in cardsToLayout) {
-            layoutVars.index = 10;
+            layoutVars.index = st1eGameUiZIndexes.cardZIndex;
             var cardElem = cardsToLayout[cardIndex];
             var cardData = cardElem.data("card");
             var cardWidth = cardData.getWidthForMaxDimension(rowHeight);
@@ -443,8 +445,9 @@ export class TableCardGroup extends CardGroup {
      */
      constructor(container, belongTest, createDiv, locationIndex, bottomPlayerId) {
         super(container, belongTest, createDiv);
+        this.descDiv.removeClass("ui-widget-content");
         this.descDiv.removeClass("card-group");
-        this.descDiv.addClass("st1e-card-group");
+        this.descDiv.addClass("st1e-tablecard-group");
         this.locationIndex = locationIndex;
         this.bottomPlayerId = bottomPlayerId;
         this.heightPadding = 1;
@@ -457,19 +460,19 @@ export class TableCardGroup extends CardGroup {
     */
     layoutCards(){
         // Get the cards to layout
-        var cardsToLayout = this.getCardElems();
+        let cardsToLayout = this.getCardElems();
         if (cardsToLayout.length == 0) {
             return;
         }
 
-        var columns;
-        var columnCount = 0;
+        let columns;
+        let columnCount = 0;
         if (((this.width / this.height) / 1) > (this.maxCardWidth / this.maxCardHeight)) {
             columns = Math.floor(cardsToLayout.length / 3);
         }
 
         // Attempt to layout the cards in as few columns as possible, until enough columns to layout cards nicely
-        var result = false;
+        let result = false;
         do {
             columnCount++;
             result = this.layoutInColumnsIfPossible(cardsToLayout, columnCount);
@@ -484,13 +487,13 @@ export class TableCardGroup extends CardGroup {
     * @return {Number} the total height of the attached cards
     */
     getAttachedCardsHeight(cardData, columnWidth, totalHeightNotAboveSoFar) {
-        var result = 0;
-        for (var i = 0; i < cardData.attachedCards.length; i++) {
-            var attachedCardData = cardData.attachedCards[i].data("card");
-            var attachedCardHeight = attachedCardData.getHeightForColumnWidth(columnWidth);
-            var attachedCardHeightAbove = Math.min(attachedCardHeight, (columnWidth * this.columnWidthToAttachedHeightAboveRatio));
+        let result = 0;
+        for (let i = 0; i < cardData.attachedCards.length; i++) {
+            let attachedCardData = cardData.attachedCards[i].data("card");
+            let attachedCardHeight = attachedCardData.getHeightForColumnWidth(columnWidth);
+            let attachedCardHeightAbove = Math.min(attachedCardHeight, (columnWidth * this.columnWidthToAttachedHeightAboveRatio));
             result += attachedCardHeightAbove;
-            var attachedCardHeightBelow = Math.max(0, attachedCardHeight - attachedCardHeightAbove - totalHeightNotAboveSoFar);
+            let attachedCardHeightBelow = Math.max(0, attachedCardHeight - attachedCardHeightAbove - totalHeightNotAboveSoFar);
             result += attachedCardHeightBelow;
             totalHeightNotAboveSoFar += attachedCardHeightBelow;
             result += this.getAttachedCardsHeight(attachedCardData, columnWidth, totalHeightNotAboveSoFar);
@@ -506,12 +509,12 @@ export class TableCardGroup extends CardGroup {
     */
     layoutInColumnsIfPossible(cardsToLayout, columnCount) {
         // Determine column width if layout in multiple columns
-        var columnWidth = this.getWidthForLayoutInColumns(cardsToLayout, columnCount);
+        let columnWidth = this.getWidthForLayoutInColumns(cardsToLayout, columnCount);
 
         if (columnCount == 1) {
             // If only one card, or column width is wide enough, then just layout in one column
             if (cardsToLayout.length == 1 || (columnWidth * 2.5 > this.width)) {
-                var xOffset = Math.max(this.widthPadding, Math.floor((this.width - columnWidth) / 2));
+                let xOffset = Math.max(this.widthPadding, Math.floor((this.width - columnWidth) / 2));
                 this.layoutInColumn(cardsToLayout, columnWidth, xOffset);
                 return true;
             } else {
@@ -535,29 +538,29 @@ export class TableCardGroup extends CardGroup {
     * @return {Number} the column width, or 0 if not valid
     */
     getWidthForLayoutInColumns(cardsToLayout, columnCount) {
-        var columnWidth = Math.min(this.maxCardWidth, (this.width - (this.widthPadding * columnCount)) / columnCount);
-        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
-        var numColumnsRemainingToLayout = columnCount;
-        var numCardsRemainingToLayout = cardsToLayout.length;
-        var largestTotalCardHeight = 0;
+        let columnWidth = Math.min(this.maxCardWidth, (this.width - (this.widthPadding * columnCount)) / columnCount);
+        let maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
+        let numColumnsRemainingToLayout = columnCount;
+        let numCardsRemainingToLayout = cardsToLayout.length;
+        let largestTotalCardHeight = 0;
 
-        var numCardsInColumn = 0;
-        var totalCardHeight = this.heightPadding;
-        var overlappedHeight = 0;
+        let numCardsInColumn = 0;
+        let totalCardHeight = this.heightPadding;
+        let overlappedHeight = 0;
 
-        for (var cardIndex in cardsToLayout) {
+        for (let cardIndex in cardsToLayout) {
             totalCardHeight -= overlappedHeight;
-            var cardElem = cardsToLayout[cardIndex];
-            var cardData = cardElem.data("card");
-            var cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
-            var cardWidth = cardData.getWidthForHeight(cardHeight);
-            var attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
-            var cardHeightWithAttachments = cardHeight + attachmentHeights;
+            let cardElem = cardsToLayout[cardIndex];
+            let cardData = cardElem.data("card");
+            let cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
+            let cardWidth = cardData.getWidthForHeight(cardHeight);
+            let attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
+            let cardHeightWithAttachments = cardHeight + attachmentHeights;
             totalCardHeight += cardHeightWithAttachments;
             overlappedHeight = (cardHeight / 2);
             numCardsInColumn++;
 
-            var cardsToPutInColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
+            let cardsToPutInColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
 
             if (numCardsInColumn >= cardsToPutInColumn) {
                 largestTotalCardHeight = Math.max(largestTotalCardHeight, totalCardHeight);
@@ -583,37 +586,37 @@ export class TableCardGroup extends CardGroup {
     * @param {Number} the x-offset for the column
     */
     layoutInColumn(cardsToLayout, columnWidth, xOffset) {
-        var maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
-        var totalCardHeight = this.heightPadding;
-        var overlappedHeight = 0;
+        let maxVerticalCardWidth = Math.min(this.maxCardWidth, columnWidth * cardScale);
+        let totalCardHeight = this.heightPadding;
+        let overlappedHeight = 0;
 
         // Determine the total height of the all the cards
-        for (var cardIndex in cardsToLayout) {
+        for (let cardIndex in cardsToLayout) {
             totalCardHeight -= overlappedHeight;
-            var cardElem = cardsToLayout[cardIndex];
-            var cardData = cardElem.data("card");
-            var cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
-            var cardWidth = cardData.getWidthForHeight(cardHeight);
-            var attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
-            var cardHeightWithAttachments = cardHeight + attachmentHeights;
+            let cardElem = cardsToLayout[cardIndex];
+            let cardData = cardElem.data("card");
+            let cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
+            let cardWidth = cardData.getWidthForHeight(cardHeight);
+            let attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
+            let cardHeightWithAttachments = cardHeight + attachmentHeights;
             totalCardHeight += cardHeightWithAttachments;
             overlappedHeight = (cardHeight / 2);
         }
 
         // Initialize layout variables
-        var layoutVars = {};
-        layoutVars.index = 10;
+        let layoutVars = {};
+        layoutVars.index = st1eGameUiZIndexes.cardZIndex;
         layoutVars.x = xOffset;
         layoutVars.y = Math.floor((this.height - (totalCardHeight)) / 2);
 
         // Layout the cards
-        for (var cardIndex in cardsToLayout) {
-            var cardElem = cardsToLayout[cardIndex];
-            var cardData = cardElem.data("card");
-            var cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
-            var cardWidth = cardData.getWidthForHeight(cardHeight);
-            var attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
-            var cardHeightWithAttachments = cardHeight + attachmentHeights;
+        for (let cardIndex in cardsToLayout) {
+            let cardElem = cardsToLayout[cardIndex];
+            let cardData = cardElem.data("card");
+            let cardHeight = cardData.getHeightForColumnWidth(maxVerticalCardWidth);
+            let cardWidth = cardData.getWidthForHeight(cardHeight);
+            let attachmentHeights = this.getAttachedCardsHeight(cardData, maxVerticalCardWidth, cardHeight);
+            let cardHeightWithAttachments = cardHeight + attachmentHeights;
 
             // Layout the card (and attached cards)
             this.layoutAttached(cardData, maxVerticalCardWidth, layoutVars)
@@ -634,10 +637,10 @@ export class TableCardGroup extends CardGroup {
     * @param {Object} the layout variables
     */
     layoutAttached(cardData, columnWidth, layoutVars) {
-        for (var i = 0; i < cardData.attachedCards.length; i++) {
-            var attachedCardData = cardData.attachedCards[i].data("card");
-            var attachedCardHeight = attachedCardData.getHeightForColumnWidth(columnWidth);
-            var attachedCardWidth = attachedCardData.getWidthForHeight(attachedCardHeight);
+        for (let i = 0; i < cardData.attachedCards.length; i++) {
+            let attachedCardData = cardData.attachedCards[i].data("card");
+            let attachedCardHeight = attachedCardData.getHeightForColumnWidth(columnWidth);
+            let attachedCardWidth = attachedCardData.getWidthForHeight(attachedCardHeight);
 
             // Layout cards attached to this card
             this.layoutAttached(attachedCardData, columnWidth, layoutVars);
@@ -658,19 +661,19 @@ export class TableCardGroup extends CardGroup {
     * @param {Number} columnCount the number of columns in which to layout cards
     */
     layoutInColumns(cardsToLayout, columnWidth, columnCount) {
-        var numCardsRemainingToLayout = cardsToLayout.length;
-        var numColumnsRemainingToLayout = columnCount;
+        let numCardsRemainingToLayout = cardsToLayout.length;
+        let numColumnsRemainingToLayout = columnCount;
 
-        var numCardsInColumn = 0;
-        var cardsToLayoutInColumn = new Array();
-        var maxCardsPerColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
-        var xOffset = Math.max(this.widthPadding, Math.floor((this.width - (columnWidth * columnCount) - (this.widthPadding * columnCount)) / 2));
+        let numCardsInColumn = 0;
+        let cardsToLayoutInColumn = new Array();
+        let maxCardsPerColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
+        let xOffset = Math.max(this.widthPadding, Math.floor((this.width - (columnWidth * columnCount) - (this.widthPadding * columnCount)) / 2));
 
-        for (var cardIndex in cardsToLayout) {
-            var cardElem = cardsToLayout[cardIndex];
+        for (let cardIndex in cardsToLayout) {
+            let cardElem = cardsToLayout[cardIndex];
             cardsToLayoutInColumn.push(cardElem);
             numCardsInColumn++;
-            var cardsToPutInColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
+            let cardsToPutInColumn = Math.ceil(numCardsRemainingToLayout / numColumnsRemainingToLayout);
 
             if (numCardsInColumn >= cardsToPutInColumn) {
                 // Layout the cards in a column
@@ -691,7 +694,7 @@ export class TableCardGroup extends CardGroup {
 }
 
 
-export class MissionCardGroup extends CardGroup {
+export class MissionCardGroup extends TableCardGroup {
 
     locationIndex;
     bottomPlayerId;
@@ -700,8 +703,8 @@ export class MissionCardGroup extends CardGroup {
      */
      constructor(container, belongTest, createDiv, locationIndex, bottomPlayerId) {
         super(container, belongTest, createDiv);
-        this.descDiv.removeClass("card-group");
-        this.descDiv.addClass("st1e-card-group");
+        this.descDiv.removeClass("st1e-tablecard-group");
+        this.descDiv.addClass("st1e-missioncard-group");
         this.locationIndex = locationIndex;
         this.bottomPlayerId = bottomPlayerId;
         this.sharedOverlap = .60; // Percentage of a bottom shared mission card that will be covered by the mission on top
@@ -712,43 +715,153 @@ export class MissionCardGroup extends CardGroup {
     */
     layoutCards() {
         // Get the cards to layout
-        var cardsToLayout = this.getCardElems();
+        let cardsToLayout = this.getCardElems();
         if (cardsToLayout.length == 0) {
             return;
         }
 
-        // TODO - Make sure the mission on top is always correct. The order isn't specified here
+        // Note / BUG: Without passing in GameState or Spaceline Location data this function
+        //             has no real way of telling which card was seeded second. It instead
+        //             always displays your mission as the top/anchor mission and the opponent's
+        //             as the shared mission.
 
-        // Get max card size that will fit in the container
-            // cardScale = width / height of card template, defined in JCards.js
-        var sharedMissionScale = cardScale / (2 - this.sharedOverlap);
+        let numMissions = 0; // TODO: Get that data
+        let anchorMissionElem;
+        let sharedMissionElem;
+
+        // Zone is a stand-in for type in this case
+        let missions = cardsToLayout.filter((elem) => elem.data("card").zone === "SPACELINE");
+        let otherCardElems = cardsToLayout.filter((elem) => elem.data("card").zone === "PLACED_ON_MISSION");
+        numMissions = missions.length;
+
+        if (numMissions === 2) {
+            for (let cardIndex in missions) {
+                let cardElem = missions[cardIndex];
+                let cardData = cardElem.data("card");
+                
+                if (cardData.owner === this.bottomPlayerId) {
+                    // your mission
+                    anchorMissionElem = cardElem;
+                }
+                else {
+                    // opponent's mission
+                    sharedMissionElem = cardElem;
+                }
+            }
+
+            this.twoMissionLayout(anchorMissionElem, sharedMissionElem, otherCardElems);
+        }
+        else if (numMissions === 1) {
+            anchorMissionElem = missions[0];
+            this.oneMissionLayout(anchorMissionElem, otherCardElems);
+        }
+        else {
+            // well something has gone horribly wrong
+            console.error(`Unexpected number of missions: ${numMissions}`);
+            console.error(`missions to lay out: ${missions}`);
+            return;
+        }
+    }
+
+    twoMissionLayout(anchorMissionElem, sharedMissionElem, otherCardElems) {
+        // Sanity checks
+        if (anchorMissionElem == null) {
+            console.error(`anchorMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
+        }
+
+        if (sharedMissionElem == null) {
+            console.error(`sharedMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
+        }
+
+        // If the width is more than 3/4ths of the expected overlapped height
+        // (cardscale being approx 0.71, defined in jCards.js),
+        // then we probably have a situation where there's not many spaceline locations and 
+        // the locations have expanded width-wise to fill the screen. In these cases, the 
+        // height is the limiting factor for the card size.
+        let sharedMissionScale = cardScale / (2 - this.sharedOverlap);
         if ((this.width / this.height) > sharedMissionScale) {
             this.maxCardHeight = this.height / (2 - this.sharedOverlap);
             this.maxCardWidth = this.maxCardHeight * cardScale;
+        // Otherwise, the width is the limiting factor for the card size, use that.
+        } else {
+            this.maxCardWidth = this.width;
+            this.maxCardHeight = this.maxCardWidth / cardScale;
+        }
+        
+        // anchorMissionElem
+        let anchorZIndex = st1eGameUiZIndexes.cardZIndex;
+        let anchorCardData = anchorMissionElem.data("card");
+        let anchorCardX = ((this.width - this.maxCardWidth) / 2); // center
+        let anchorCardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2); // offset Y upper
+        anchorMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+        this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
+
+        // sharedMissionMissionElem
+        let sharedMissionZIndex = st1eGameUiZIndexes.cardZIndex + 1;
+        let sharedMissionCardData = sharedMissionElem.data("card");
+        let sharedMissionCardX = ((this.width - this.maxCardWidth) / 2); // center
+        let sharedMissionCardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2); // offset Y lower
+        sharedMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+        this.layoutCard(sharedMissionElem, sharedMissionCardX, sharedMissionCardY, this.maxCardWidth, this.maxCardHeight, sharedMissionZIndex, sharedMissionCardData);
+
+        // Layout cards on top.
+        let onTopZIndex = st1eGameUiZIndexes.cardZIndex + 2;
+        for (let cardIndex in otherCardElems) {
+            let cardElem = otherCardElems[cardIndex];
+            let cardData = cardElem.data("card");
+            let cardX = ((this.width - this.maxCardWidth) / 2);
+            let cardY;
+            if (cardData.owner == this.bottomPlayerId) {
+                cardY = ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2); // offset Y upper
+            } else {
+                cardY = ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2); // offset Y lower
+            }
+            
+            cardElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+            this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, onTopZIndex, cardData);
+            onTopZIndex++;
+        }
+    }
+
+    oneMissionLayout(anchorMissionElem, otherCardElems) {
+        // Sanity checks
+        if (anchorMissionElem == null) {
+            console.error(`anchorMissionElem was null, this indicates a problem in getCardElems() or the cardBelongs function.`);
+        }
+
+        // If the width is more than 3/4ths of the height (cardscale being approx 0.71, defined in jCards.js),
+        // then we probably have a situation where there's not many spaceline locations and 
+        // the locations have expanded width-wise to fill the screen. In these cases, the 
+        // height is the limiting factor for the card size.
+        if ((this.width / this.height) > cardScale) {
+            this.maxCardHeight = this.height / (2 - this.sharedOverlap);
+            this.maxCardWidth = this.maxCardHeight * cardScale;
+        
+        // Otherwise, the width is the limiting factor for the card size, use that.
         } else {
             this.maxCardWidth = this.width;
             this.maxCardHeight = this.maxCardWidth / cardScale;
         }
 
-        var index = 10;
-        // Layout cards. Assumes no padding and that there will never be more than 2 missions in the group.
-        for (var cardIndex in cardsToLayout) {
-            var cardElem = cardsToLayout[cardIndex];
-            var cardData = cardElem.data("card");
-            var cardX = this.x + ((this.width - this.maxCardWidth) / 2);
-            if (cardsToLayout.length == 1) {
-                var cardY = this.y + ((this.height - this.maxCardHeight) / 2);
-            } else if (cardData.owner == this.bottomPlayerId) {
-                var cardY = this.y + ((this.height - (this.maxCardHeight * this.sharedOverlap)) / 2);
-            } else {
-                var cardY = this.y + ((this.height - (this.maxCardHeight * (2 - this.sharedOverlap))) / 2);
-            }
-            cardX = cardX - this.x;
-            cardY = cardY - this.y;
-            cardElem.detach().appendTo(this.descDiv);
+        // anchorMissionElem
+        let anchorZIndex = st1eGameUiZIndexes.cardZIndex;
+        let anchorCardData = anchorMissionElem.data("card");
+        let anchorCardX = ((this.width - this.maxCardWidth) / 2); // center
+        let anchorCardY = ((this.height - this.maxCardHeight) / 2); // center
+        anchorMissionElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+        this.layoutCard(anchorMissionElem, anchorCardX, anchorCardY, this.maxCardWidth, this.maxCardHeight, anchorZIndex, anchorCardData);
 
-            this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, index, cardData);
-            index++;
+        // Layout cards on top.
+        let onTopZIndex = st1eGameUiZIndexes.cardZIndex + 2;
+        for (let cardIndex in otherCardElems) {
+            let cardElem = otherCardElems[cardIndex];
+            let cardData = cardElem.data("card");
+            let cardX = ((this.width - this.maxCardWidth) / 2); // center
+            let cardY = ((this.height - (this.maxCardHeight)) / 2); // center
+            
+            cardElem.detach().appendTo(this.descDiv); // jQuery: Move from previous DOM location to current location
+            this.layoutCard(cardElem, cardX, cardY, this.maxCardWidth, this.maxCardHeight, onTopZIndex, cardData);
+            onTopZIndex++;
         }
     }
 }

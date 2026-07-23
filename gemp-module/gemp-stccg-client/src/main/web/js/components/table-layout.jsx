@@ -58,7 +58,7 @@ export default function TableLayout({gamestate, openCardDetailsFunc}) {
                 justifyContent: "center"
             }}>
                 {opponentCoreCards.map((cardData, index) => 
-                    <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} sx={{transform: "rotate(180deg)"}} />
+                    <CardStack key={cardData.cardId} gamestate={gamestate} anchor_id={cardData.cardId} openCardDetailsFunc={openCardDetailsFunc} />
                 )}
             </Stack>
             <Stack id="space"
